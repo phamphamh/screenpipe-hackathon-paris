@@ -556,3 +556,29 @@ JEPA est une option pour choisir les images, uniquement s'il reste du temps.
   - Ça colle au track 3 (« un workflow que quelqu'un d'autre peut utiliser »).
   - Option « données » : un don volontaire de journées anonymisées, relues par la personne, pour la recherche.
 - **Non vérifié** : si screenpipe a encore son « pipe store », ce qui en ferait le canal naturel.
+
+## 16. Test de JEPA sur une vraie journée (16/10, 20h20, Mac M5 Pro)
+**Comment JEPA marche** : au lieu de décrire une image avec des mots ou de redessiner les pixels, le modèle apprend à prédire l'« empreinte » (une liste de nombres) d'un morceau caché à partir du reste. Deux moments qui se ressemblent par le sens ont des empreintes proches. Ça permet de comparer et de trier des images sans appeler une grosse IA.
+
+**Le test** : 927 captures « regardées » de la journée de Youssef (12 apps, 98 fenêtres), comparées avec 3 méthodes. V-JEPA 2 (Meta), SigLIP (un modèle d'image classique de Google) et une simple vignette de pixels. Tout tourne en local. Scripts dans `experiences/jepa/`, pas d'images dans le dépôt.
+
+| | repère un changement de fenêtre (AUC) | reconnaît l'app d'un moment | 20 % des captures gardées → fenêtres couvertes |
+|---|---|---|---|
+| pixels | 0,774 | 84,7 % | 63,3 % |
+| SigLIP | **0,789** | **86,2 %** | **75,5 %** |
+| V-JEPA 2 (image) | **0,789** | 80,2 % | 70,4 % |
+| V-JEPA 2 en vraie vidéo (8 captures) | — | 70,9 % (SigLIP : 83,9 %) | — |
+
+Références : 20 % au hasard → 52,3 % des fenêtres ; 1 capture sur 5 → 58,2 % ; toujours répondre l'app la plus fréquente → 46,5 %.
+Vitesse : V-JEPA 2 environ 10 ms par capture, SigLIP environ 4 ms (GPU du Mac, demi-précision).
+
+**Conclusion**
+- **JEPA n'apporte rien de plus ici.** Il fait jeu égal sur les changements et moins bien sur le reste, même dans son vrai mode vidéo. Il est 2,5 fois plus lent que SigLIP.
+- Raison probable : il est entraîné sur des vidéos du monde réel (mouvements), pas sur des écrans. Et les captures screenpipe sont espacées d'environ 1,4 s, donc il y a peu de « mouvement » à exploiter.
+- **Le résultat utile pour le pitch** : garder seulement 20 % des captures, choisies par nouveauté visuelle (SigLIP), conserve **75 % des fenêtres**, contre 58 % en gardant 1 capture sur 5. Le 80/20 tient aussi sur l'image, avec un petit modèle de 4 ms.
+
+**Limites (non vérifié)** :
+- une seule journée, une seule personne ;
+- « fenêtre » et « app » ne sont que des approximations de « tâche » ;
+- le texte n'a pas été comparé, car l'API refuse de le renvoyer en SQL pour les captures archivées ;
+- UI-JEPA d'Apple, entraîné sur des écrans, aurait peut-être fait mieux, mais ses poids ne sont pas publiés.
