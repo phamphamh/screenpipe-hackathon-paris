@@ -2,12 +2,22 @@
 
 Tout ce qu'on a appris et préparé pour le hackathon « Build Agents That Remember ».
 
-## Comment on travaille (à lire en premier)
-Pas de chef de projet : chacun construit ce qu'il veut, dans son coin, sans écraser les autres.
-- **Au début** : `git pull --rebase origin main`, puis `sh scripts/etat.sh` pour voir qui fait quoi.
-- **Où écrire** : `labs/<ton-pseudo>/` (ton bac à sable), `chantiers/<ton-pseudo>.md` (ce que tu fais en ce moment), `journal/<date>/<HHMM>-<ton-pseudo>.md` (une entrée par avancée).
-- **Pousser** : `sh scripts/pousser.sh "message"`. Le script refuse les clés API, les vidéos et les bases screenpipe, et il bloque si tu modifies le lab d'un autre. Il ne force jamais.
-- Claude Code et Codex lisent ces règles tout seuls (`CLAUDE.md`, `AGENTS.md`, skill `.claude/skills/equipe/`).
+## Comment on travaille (rien à taper, tout est automatique)
+Pas de chef de projet : chacun construit ce qu'il veut. **Tu n'as aucune commande à taper.**
+
+**La première fois (5 min)**
+1. Installe Claude Code : https://claude.com/download (ou l'app Claude, onglet « Code »).
+2. Accepte l'invitation GitHub reçue par email.
+3. Dans Claude, colle ce message :
+   > Clone https://github.com/phamphamh/screenpipe-hackathon-paris dans mon dossier Documents, connecte-moi à GitHub si besoin, puis dis-moi comment ouvrir une nouvelle session Claude dans ce dossier.
+4. Ouvre une nouvelle session dans ce dossier. Si Claude demande s'il peut faire confiance au dossier, réponds **oui**.
+
+**Ensuite, à chaque fois** : ouvre Claude dans ce dossier et dis ce que tu veux faire, en français normal.
+- Au démarrage, Claude récupère tout seul le travail des autres et te résume qui fait quoi.
+- Il range ton travail dans ton coin (`labs/<ton-pseudo>/`) et tient à jour ta fiche (`chantiers/`) et le journal.
+- **À la fin de chacune de ses réponses, tout est sauvegardé et partagé automatiquement.** Les clés API, les vidéos et les fichiers des autres sont bloqués.
+
+(Pour les curieux : les hooks sont dans `.claude/settings.json`, les règles dans `.claude/skills/equipe/`, et les scripts dans `scripts/`. Si tu utilises Codex, il lit `AGENTS.md`.)
 
 ## Le projet
 - [`produit/decoupage.md`](produit/decoupage.md) : **le découpage du produit « FDE en produit / Wrapped »** (parcours, briques, contrat de données, cas à tester, répartition, planning, pitch).

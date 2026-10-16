@@ -2,12 +2,14 @@
 # Pousse sans jamais écraser les autres : vérifie, commit, rebase sur le travail des autres, puis push (jamais en forçant).
 # Usage : sh scripts/pousser.sh "message du commit"
 cd "$(git rev-parse --show-toplevel)" || exit 1
-MSG=$1; ME=$(sh scripts/pseudo.sh); BR=$(git rev-parse --abbrev-ref HEAD)
+MSG=$1; ME=$(sh scripts/pseudo.sh); BR=$(sh scripts/branche.sh)
 [ -n "$ME" ] || { echo "Pseudo introuvable : lance avec PSEUDO=ton-login sh scripts/pousser.sh \"...\""; exit 1; }
 git add -A
 # 1. Fichiers interdits : données screenpipe, médias bruts, secrets
 bad=$(git diff --cached --name-only | grep -iE '\.(sqlite|db|mp4|wav|m4a|mov|env)$|(^|/)\.env|secrets' )
 if [ -n "$bad" ]; then echo "STOP : fichiers à ne pas commiter :"; echo "$bad"; git reset -q; exit 1; fi
+big=$(git diff --cached --name-only --diff-filter=AM | while read -r f; do [ -f "$f" ] && [ "$(wc -c < "$f")" -gt 20000000 ] && echo "$f"; done)
+if [ -n "$big" ]; then echo "STOP : fichiers de plus de 20 Mo (à garder hors du dépôt) :"; echo "$big"; git reset -q; exit 1; fi
 if git diff --cached | grep -qE 'sp-[0-9a-f]{8}|Bearer [A-Za-z0-9_-]{8,}|sk-[A-Za-z0-9]{20,}|gh[op]_[A-Za-z0-9]{20,}'; then
   echo "STOP : une clé API semble présente dans tes changements. Retire-la, puis relance."; git reset -q; exit 1; fi
 # 2. Ce qui part : les changements en attente + les commits pas encore poussés

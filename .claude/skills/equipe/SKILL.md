@@ -9,6 +9,13 @@ L'équipe n'a pas de chef de projet. Chacun construit ce qu'il veut et contribue
 1. **Savoir ce que font les autres** sans leur demander.
 2. **Ne jamais écraser le travail d'un autre.**
 
+## Automatique (la plupart des gens de l'équipe ne sont pas techniques)
+- Avec Claude Code, deux hooks (`.claude/settings.json`) font tout le travail :
+  - au début de la session, `scripts/debut.sh` récupère le travail des autres et te donne l'état de l'équipe ;
+  - à la fin de chacune de tes réponses, `scripts/sauver.sh` commit et pousse. S'il bloque, il te renvoie la raison : corrige toi-même (déplacer le fichier dans ton lab, retirer la clé…), sans jamais demander à la personne de taper une commande.
+- **Ne demande jamais à la personne de lancer git ou un script.** Parle-lui simplement : ce que tu as fait, si ça marche, et ce dont tu as besoin.
+- Sans hooks (Codex, ou autre outil) : lance toi-même `sh scripts/debut.sh` au début, puis `sh scripts/sauver.sh < /dev/null` après chaque modification.
+
 ## Ton pseudo
 `PSEUDO` = le login GitHub de la personne (`gh api user --jq .login`). Sinon, `git config user.name` en minuscules, sans espaces.
 
