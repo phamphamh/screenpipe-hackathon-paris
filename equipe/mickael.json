@@ -1,0 +1,568 @@
+{
+  "personne": "mickael",
+  "genere_le": "2026-10-16T22:53:29+02:00",
+  "fuseau": "UTC",
+  "periode": {
+    "debut": "2026-10-16T17:16:38+00:00",
+    "fin": "2026-10-16T20:53:27+00:00"
+  },
+  "filtrage": {
+    "captures_lues": 1371,
+    "retirees_perso": 146,
+    "blocs_eclair_retires": 135,
+    "blocs_gardes": 68,
+    "regles": "focused=1 seulement ; pas d'audio ; pas d'URL ; perso/DM/mails retirés ; Discord et recherches Google sans détail ; blocs de moins de 5 s retirés"
+  },
+  "temps_par_app_s": {
+    "Firefox": 3872,
+    "Terminal": 2302,
+    "Claude": 445,
+    "Edge": 124
+  },
+  "blocs": [
+    {
+      "debut": "2026-10-16T17:16:38+00:00",
+      "fin": "2026-10-16T17:16:53+00:00",
+      "duree_s": 15,
+      "app": "Firefox",
+      "fenetre": "Discord",
+      "captures": 7
+    },
+    {
+      "debut": "2026-10-16T17:17:07+00:00",
+      "fin": "2026-10-16T17:17:16+00:00",
+      "duree_s": 9,
+      "app": "Firefox",
+      "fenetre": "Discord",
+      "captures": 5
+    },
+    {
+      "debut": "2026-10-16T17:17:25+00:00",
+      "fin": "2026-10-16T17:17:40+00:00",
+      "duree_s": 15,
+      "app": "Firefox",
+      "fenetre": "Discord",
+      "captures": 6
+    },
+    {
+      "debut": "2026-10-16T17:29:03+00:00",
+      "fin": "2026-10-16T17:30:48+00:00",
+      "duree_s": 105,
+      "app": "Firefox",
+      "fenetre": "Discord",
+      "captures": 10
+    },
+    {
+      "debut": "2026-10-16T17:32:03+00:00",
+      "fin": "2026-10-16T17:32:33+00:00",
+      "duree_s": 29,
+      "app": "Firefox",
+      "fenetre": "Discord",
+      "captures": 15
+    },
+    {
+      "debut": "2026-10-16T17:42:10+00:00",
+      "fin": "2026-10-16T17:42:33+00:00",
+      "duree_s": 23,
+      "app": "Firefox",
+      "fenetre": "Screenpipe | AI memory and workflow discovery",
+      "captures": 2
+    },
+    {
+      "debut": "2026-10-16T17:44:05+00:00",
+      "fin": "2026-10-16T17:44:47+00:00",
+      "duree_s": 41,
+      "app": "Firefox",
+      "fenetre": "Discord",
+      "captures": 10
+    },
+    {
+      "debut": "2026-10-16T17:46:57+00:00",
+      "fin": "2026-10-16T17:47:33+00:00",
+      "duree_s": 35,
+      "app": "Firefox",
+      "fenetre": "Composio",
+      "captures": 3
+    },
+    {
+      "debut": "2026-10-16T17:47:52+00:00",
+      "fin": "2026-10-16T17:48:05+00:00",
+      "duree_s": 13,
+      "app": "Firefox",
+      "fenetre": "Mozilla Firefox",
+      "captures": 4
+    },
+    {
+      "debut": "2026-10-16T17:49:54+00:00",
+      "fin": "2026-10-16T17:50:07+00:00",
+      "duree_s": 13,
+      "app": "Firefox",
+      "fenetre": "Page not found · GitHub · GitHub",
+      "captures": 3
+    },
+    {
+      "debut": "2026-10-16T17:51:32+00:00",
+      "fin": "2026-10-16T17:52:26+00:00",
+      "duree_s": 54,
+      "app": "Firefox",
+      "fenetre": "Invitation to join phamphamh/screenpipe-hackathon-paris",
+      "captures": 4
+    },
+    {
+      "debut": "2026-10-16T17:52:27+00:00",
+      "fin": "2026-10-16T17:52:56+00:00",
+      "duree_s": 28,
+      "app": "Firefox",
+      "fenetre": "phamphamh/screenpipe-hackathon-paris: Notes et préparation — hackathon screenpipe × 42 Paris (oct. 2026)",
+      "captures": 4
+    },
+    {
+      "debut": "2026-10-16T17:52:58+00:00",
+      "fin": "2026-10-16T17:53:11+00:00",
+      "duree_s": 13,
+      "app": "Firefox",
+      "fenetre": "phamphamh/screenpipe-hackathon-paris: Notes et préparation — hackathon screenpipe × 42 Paris (oct. 2026)",
+      "captures": 2
+    },
+    {
+      "debut": "2026-10-16T17:55:54+00:00",
+      "fin": "2026-10-16T17:57:09+00:00",
+      "duree_s": 75,
+      "app": "Firefox",
+      "fenetre": "Screenpipe | AI memory and workflow discovery",
+      "captures": 6
+    },
+    {
+      "debut": "2026-10-16T17:57:51+00:00",
+      "fin": "2026-10-16T17:59:16+00:00",
+      "duree_s": 85,
+      "app": "Firefox",
+      "fenetre": "Discord",
+      "captures": 19
+    },
+    {
+      "debut": "2026-10-16T17:59:48+00:00",
+      "fin": "2026-10-16T17:59:53+00:00",
+      "duree_s": 5,
+      "app": "Firefox",
+      "fenetre": "OpenCode | L'agent de code IA open source",
+      "captures": 3
+    },
+    {
+      "debut": "2026-10-16T17:59:55+00:00",
+      "fin": "2026-10-16T18:00:07+00:00",
+      "duree_s": 11,
+      "app": "Firefox",
+      "fenetre": "OpenCode Go | Modèles de code à faible coût pour tous",
+      "captures": 5
+    },
+    {
+      "debut": "2026-10-16T18:00:15+00:00",
+      "fin": "2026-10-16T18:00:30+00:00",
+      "duree_s": 14,
+      "app": "Firefox",
+      "fenetre": "OpenCode Go | Modèles de code à faible coût pour tous",
+      "captures": 4
+    },
+    {
+      "debut": "2026-10-16T18:15:14+00:00",
+      "fin": "2026-10-16T18:15:20+00:00",
+      "duree_s": 5,
+      "app": "Firefox",
+      "fenetre": "Mozilla Firefox",
+      "captures": 4
+    },
+    {
+      "debut": "2026-10-16T18:17:23+00:00",
+      "fin": "2026-10-16T18:17:38+00:00",
+      "duree_s": 15,
+      "app": "Firefox",
+      "fenetre": "AI News | Latest News | Insights Powering AI-Driven Business Growth",
+      "captures": 8
+    },
+    {
+      "debut": "2026-10-16T18:17:44+00:00",
+      "fin": "2026-10-16T18:18:33+00:00",
+      "duree_s": 48,
+      "app": "Firefox",
+      "fenetre": "AI workflow and automation use cases | screenpipe",
+      "captures": 5
+    },
+    {
+      "debut": "2026-10-16T18:18:44+00:00",
+      "fin": "2026-10-16T18:18:51+00:00",
+      "duree_s": 7,
+      "app": "Firefox",
+      "fenetre": "GitHub",
+      "captures": 4
+    },
+    {
+      "debut": "2026-10-16T18:19:00+00:00",
+      "fin": "2026-10-16T18:19:12+00:00",
+      "duree_s": 12,
+      "app": "Firefox",
+      "fenetre": "phamphamh/screenpipe-hackathon-paris: Notes et préparation — hackathon screenpipe × 42 Paris (oct. 2026)",
+      "captures": 4
+    },
+    {
+      "debut": "2026-10-16T18:20:26+00:00",
+      "fin": "2026-10-16T18:21:25+00:00",
+      "duree_s": 58,
+      "app": "Firefox",
+      "fenetre": "ChatGPT",
+      "captures": 17
+    },
+    {
+      "debut": "2026-10-16T18:21:55+00:00",
+      "fin": "2026-10-16T18:22:56+00:00",
+      "duree_s": 61,
+      "app": "Firefox",
+      "fenetre": "Utilité de Screenpipe",
+      "captures": 3
+    },
+    {
+      "debut": "2026-10-16T18:25:06+00:00",
+      "fin": "2026-10-16T18:25:23+00:00",
+      "duree_s": 16,
+      "app": "Firefox",
+      "fenetre": "hackathon-starter/docs/submission.md at main · screenpipe/hackathon-starter · GitHub",
+      "captures": 2
+    },
+    {
+      "debut": "2026-10-16T18:25:30+00:00",
+      "fin": "2026-10-16T18:26:26+00:00",
+      "duree_s": 56,
+      "app": "Firefox",
+      "fenetre": "Utilité de Screenpipe",
+      "captures": 3
+    },
+    {
+      "debut": "2026-10-16T18:26:52+00:00",
+      "fin": "2026-10-16T18:26:57+00:00",
+      "duree_s": 5,
+      "app": "Firefox",
+      "fenetre": "Commits · phamphamh/screenpipe-hackathon-paris",
+      "captures": 4
+    },
+    {
+      "debut": "2026-10-16T18:26:58+00:00",
+      "fin": "2026-10-16T18:35:32+00:00",
+      "duree_s": 514,
+      "app": "Firefox",
+      "fenetre": "Idée marketplace : avis et version qui passe · phamphamh/screenpipe-hackathon-paris@c6f1419",
+      "captures": 24
+    },
+    {
+      "debut": "2026-10-16T18:35:46+00:00",
+      "fin": "2026-10-16T18:37:51+00:00",
+      "duree_s": 124,
+      "app": "Edge",
+      "fenetre": "screenpipe_hackathon_kickoff_recap.pdf - Profil 1 – Microsoft​ Edge",
+      "captures": 6
+    },
+    {
+      "debut": "2026-10-16T18:38:21+00:00",
+      "fin": "2026-10-16T18:38:51+00:00",
+      "duree_s": 30,
+      "app": "Firefox",
+      "fenetre": "Utilité de Screenpipe",
+      "captures": 2
+    },
+    {
+      "debut": "2026-10-16T18:39:19+00:00",
+      "fin": "2026-10-16T18:40:26+00:00",
+      "duree_s": 67,
+      "app": "Firefox",
+      "fenetre": "OpenCode Go | Modèles de code à faible coût pour tous",
+      "captures": 13
+    },
+    {
+      "debut": "2026-10-16T18:41:38+00:00",
+      "fin": "2026-10-16T18:42:16+00:00",
+      "duree_s": 38,
+      "app": "Firefox",
+      "fenetre": "Idée marketplace : avis et version qui passe · phamphamh/screenpipe-hackathon-paris@c6f1419",
+      "captures": 8
+    },
+    {
+      "debut": "2026-10-16T18:42:40+00:00",
+      "fin": "2026-10-16T18:42:47+00:00",
+      "duree_s": 6,
+      "app": "Firefox",
+      "fenetre": "Mozilla Firefox",
+      "captures": 5
+    },
+    {
+      "debut": "2026-10-16T18:42:49+00:00",
+      "fin": "2026-10-16T18:48:37+00:00",
+      "duree_s": 348,
+      "app": "Firefox",
+      "fenetre": "Recherche Google",
+      "captures": 18
+    },
+    {
+      "debut": "2026-10-16T18:51:07+00:00",
+      "fin": "2026-10-16T18:55:47+00:00",
+      "duree_s": 280,
+      "app": "Firefox",
+      "fenetre": "hackathon-starter/docs/submission.md at main · screenpipe/hackathon-starter · GitHub",
+      "captures": 13
+    },
+    {
+      "debut": "2026-10-16T18:58:16+00:00",
+      "fin": "2026-10-16T18:58:26+00:00",
+      "duree_s": 9,
+      "app": "Firefox",
+      "fenetre": "Mozilla Firefox",
+      "captures": 4
+    },
+    {
+      "debut": "2026-10-16T18:58:29+00:00",
+      "fin": "2026-10-16T18:59:04+00:00",
+      "duree_s": 35,
+      "app": "Firefox",
+      "fenetre": "Discord",
+      "captures": 13
+    },
+    {
+      "debut": "2026-10-16T18:59:09+00:00",
+      "fin": "2026-10-16T18:59:15+00:00",
+      "duree_s": 6,
+      "app": "Firefox",
+      "fenetre": "phamphamh/screenpipe-hackathon-paris: Notes et préparation — hackathon screenpipe × 42 Paris (oct. 2026)",
+      "captures": 4
+    },
+    {
+      "debut": "2026-10-16T18:59:21+00:00",
+      "fin": "2026-10-16T19:01:04+00:00",
+      "duree_s": 103,
+      "app": "Terminal",
+      "fenetre": "WSL (Claude Code)",
+      "captures": 52
+    },
+    {
+      "debut": "2026-10-16T19:01:06+00:00",
+      "fin": "2026-10-16T19:02:39+00:00",
+      "duree_s": 93,
+      "app": "Firefox",
+      "fenetre": "phamphamh/screenpipe-hackathon-paris: Notes et préparation — hackathon screenpipe × 42 Paris (oct. 2026)",
+      "captures": 6
+    },
+    {
+      "debut": "2026-10-16T19:03:50+00:00",
+      "fin": "2026-10-16T19:04:04+00:00",
+      "duree_s": 13,
+      "app": "Firefox",
+      "fenetre": "Idée marketplace : avis et version qui passe · phamphamh/screenpipe-hackathon-paris@c6f1419",
+      "captures": 3
+    },
+    {
+      "debut": "2026-10-16T19:08:11+00:00",
+      "fin": "2026-10-16T19:08:24+00:00",
+      "duree_s": 13,
+      "app": "Firefox",
+      "fenetre": "phamphamh/screenpipe-hackathon-paris: Notes et préparation — hackathon screenpipe × 42 Paris (oct. 2026)",
+      "captures": 3
+    },
+    {
+      "debut": "2026-10-16T19:08:27+00:00",
+      "fin": "2026-10-16T19:09:34+00:00",
+      "duree_s": 67,
+      "app": "Firefox",
+      "fenetre": "Recherche Google",
+      "captures": 7
+    },
+    {
+      "debut": "2026-10-16T19:09:45+00:00",
+      "fin": "2026-10-16T19:15:55+00:00",
+      "duree_s": 369,
+      "app": "Terminal",
+      "fenetre": "WSL (Claude Code)",
+      "captures": 149
+    },
+    {
+      "debut": "2026-10-16T19:39:55+00:00",
+      "fin": "2026-10-16T19:44:42+00:00",
+      "duree_s": 286,
+      "app": "Claude",
+      "fenetre": "Claude",
+      "captures": 19
+    },
+    {
+      "debut": "2026-10-16T19:46:50+00:00",
+      "fin": "2026-10-16T19:49:30+00:00",
+      "duree_s": 159,
+      "app": "Claude",
+      "fenetre": "Claude",
+      "captures": 10
+    },
+    {
+      "debut": "2026-10-16T19:49:35+00:00",
+      "fin": "2026-10-16T19:49:41+00:00",
+      "duree_s": 5,
+      "app": "Terminal",
+      "fenetre": "WSL (Claude Code)",
+      "captures": 3
+    },
+    {
+      "debut": "2026-10-16T19:49:43+00:00",
+      "fin": "2026-10-16T19:49:52+00:00",
+      "duree_s": 8,
+      "app": "Firefox",
+      "fenetre": "Discord",
+      "captures": 2
+    },
+    {
+      "debut": "2026-10-16T19:49:57+00:00",
+      "fin": "2026-10-16T19:50:28+00:00",
+      "duree_s": 30,
+      "app": "Firefox",
+      "fenetre": "hackathon-starter/docs/submission.md at main · screenpipe/hackathon-starter · GitHub",
+      "captures": 3
+    },
+    {
+      "debut": "2026-10-16T19:52:49+00:00",
+      "fin": "2026-10-16T19:54:22+00:00",
+      "duree_s": 93,
+      "app": "Firefox",
+      "fenetre": "hackathon-starter/docs/submission.md at main · screenpipe/hackathon-starter · GitHub",
+      "captures": 5
+    },
+    {
+      "debut": "2026-10-16T19:54:24+00:00",
+      "fin": "2026-10-16T19:55:23+00:00",
+      "duree_s": 58,
+      "app": "Firefox",
+      "fenetre": "Discord",
+      "captures": 4
+    },
+    {
+      "debut": "2026-10-16T19:55:37+00:00",
+      "fin": "2026-10-16T20:00:06+00:00",
+      "duree_s": 269,
+      "app": "Firefox",
+      "fenetre": "Utilité de Screenpipe",
+      "captures": 17
+    },
+    {
+      "debut": "2026-10-16T20:00:37+00:00",
+      "fin": "2026-10-16T20:01:14+00:00",
+      "duree_s": 37,
+      "app": "Firefox",
+      "fenetre": "Recherche Google",
+      "captures": 9
+    },
+    {
+      "debut": "2026-10-16T20:01:15+00:00",
+      "fin": "2026-10-16T20:03:01+00:00",
+      "duree_s": 106,
+      "app": "Firefox",
+      "fenetre": "Discord",
+      "captures": 15
+    },
+    {
+      "debut": "2026-10-16T20:04:23+00:00",
+      "fin": "2026-10-16T20:06:02+00:00",
+      "duree_s": 98,
+      "app": "Firefox",
+      "fenetre": "Utilité de Screenpipe",
+      "captures": 6
+    },
+    {
+      "debut": "2026-10-16T20:06:22+00:00",
+      "fin": "2026-10-16T20:09:19+00:00",
+      "duree_s": 176,
+      "app": "Terminal",
+      "fenetre": "WSL (Claude Code)",
+      "captures": 46
+    },
+    {
+      "debut": "2026-10-16T20:09:26+00:00",
+      "fin": "2026-10-16T20:16:13+00:00",
+      "duree_s": 406,
+      "app": "Firefox",
+      "fenetre": "Discord",
+      "captures": 34
+    },
+    {
+      "debut": "2026-10-16T20:16:18+00:00",
+      "fin": "2026-10-16T20:26:07+00:00",
+      "duree_s": 589,
+      "app": "Terminal",
+      "fenetre": "WSL (Claude Code)",
+      "captures": 130
+    },
+    {
+      "debut": "2026-10-16T20:26:26+00:00",
+      "fin": "2026-10-16T20:26:31+00:00",
+      "duree_s": 5,
+      "app": "Firefox",
+      "fenetre": "Discord",
+      "captures": 6
+    },
+    {
+      "debut": "2026-10-16T20:26:36+00:00",
+      "fin": "2026-10-16T20:31:35+00:00",
+      "duree_s": 298,
+      "app": "Firefox",
+      "fenetre": "AI workflow and automation use cases | screenpipe",
+      "captures": 18
+    },
+    {
+      "debut": "2026-10-16T20:32:47+00:00",
+      "fin": "2026-10-16T20:35:00+00:00",
+      "duree_s": 132,
+      "app": "Terminal",
+      "fenetre": "WSL (Claude Code)",
+      "captures": 12
+    },
+    {
+      "debut": "2026-10-16T20:35:23+00:00",
+      "fin": "2026-10-16T20:42:56+00:00",
+      "duree_s": 452,
+      "app": "Terminal",
+      "fenetre": "WSL (Claude Code)",
+      "captures": 20
+    },
+    {
+      "debut": "2026-10-16T20:43:27+00:00",
+      "fin": "2026-10-16T20:43:37+00:00",
+      "duree_s": 10,
+      "app": "Firefox",
+      "fenetre": "Recherche Google",
+      "captures": 9
+    },
+    {
+      "debut": "2026-10-16T20:43:47+00:00",
+      "fin": "2026-10-16T20:44:50+00:00",
+      "duree_s": 62,
+      "app": "Firefox",
+      "fenetre": "GodHands | Turn how your team works into playbooks and agents",
+      "captures": 9
+    },
+    {
+      "debut": "2026-10-16T20:44:51+00:00",
+      "fin": "2026-10-16T20:51:22+00:00",
+      "duree_s": 390,
+      "app": "Terminal",
+      "fenetre": "WSL (Claude Code)",
+      "captures": 67
+    },
+    {
+      "debut": "2026-10-16T20:51:52+00:00",
+      "fin": "2026-10-16T20:52:00+00:00",
+      "duree_s": 7,
+      "app": "Firefox",
+      "fenetre": "GodHands | Turn how your team works into playbooks and agents",
+      "captures": 3
+    },
+    {
+      "debut": "2026-10-16T20:52:01+00:00",
+      "fin": "2026-10-16T20:53:27+00:00",
+      "duree_s": 86,
+      "app": "Terminal",
+      "fenetre": "WSL (Claude Code)",
+      "captures": 83
+    }
+  ]
+}
