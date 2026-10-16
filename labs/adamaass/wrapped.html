@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wrapped entreprise</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="commun.css">
+<style>
+  body { height: 100dvh; display: flex; flex-direction: column; }
+  main { flex: 1; min-height: 0; }
+  header.barre { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 14px max(16px, 3vw); border-bottom: 1px solid var(--line); }
+  header.barre .titre { font-family: var(--mono); font-size: 0.8rem; color: var(--muted); }
+  header.barre label { font-family: var(--mono); font-size: 0.75rem; color: var(--muted); cursor: pointer; }
+  header.barre input { display: none; }
+  .progres { display: flex; gap: 4px; padding: 10px max(16px, 3vw) 0; }
+  .progres button { flex: 1; height: 3px; border: 0; padding: 0; background: var(--line); }
+  .progres button.fait { background: var(--fg); }
+  main { position: relative; overflow: hidden; }
+  .slide { position: absolute; inset: 0; display: none; padding: clamp(24px, 5vw, 64px) max(16px, 6vw); overflow-y: auto; }
+  .slide.active { display: block; animation: entree 0.35s ease-out; }
+  @keyframes entree { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { .slide.active { animation: none; } }
+  .contenu { max-width: 960px; margin: 0 auto; display: grid; gap: 28px; }
+  .slide h1 { font-size: clamp(2.2rem, 6vw, 4rem); line-height: 1.05; }
+  .slide h2 { font-size: clamp(1.6rem, 4vw, 2.6rem); line-height: 1.1; }
+  .lede { font-size: 1.15rem; color: var(--muted); max-width: 60ch; }
+  .lede em { font-family: var(--display); color: var(--fg); }
+  .chiffres { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .chiffre { padding: 22px 18px 22px 0; display: grid; gap: 8px; align-content: start; }
+  .chiffre + .chiffre { padding-left: 18px; border-left: 1px solid var(--line); }
+  .chiffre b { font-family: var(--mono); font-weight: 500; font-size: clamp(2rem, 5vw, 3.2rem); line-height: 1; font-variant-numeric: tabular-nums; }
+  .chiffre span { color: var(--muted); font-size: 0.9rem; }
+  .preuve { cursor: pointer; border-bottom: 1px dotted var(--muted); }
+  .preuve:hover { color: var(--signal); border-color: var(--signal); }
+  .barres { display: grid; gap: 14px; }
+  .barre { display: grid; grid-template-columns: minmax(120px, 240px) 1fr 70px; gap: 14px; align-items: center; }
+  .barre .piste { height: 14px; background: var(--line); border-radius: 2px; overflow: hidden; }
+  .barre .rempli { height: 100%; background: var(--fg); transform-origin: left; animation: pousse 0.7s ease-out; }
+  .barre .rempli.signal { background: var(--signal); }
+  @keyframes pousse { from { transform: scaleX(0); } }
+  .barre .val { font-family: var(--mono); text-align: right; font-variant-numeric: tabular-nums; }
+  .taches { display: grid; gap: 0; border-top: 1px solid var(--line); }
+  .tache { display: grid; grid-template-columns: 48px 1fr auto; gap: 18px; padding: 20px 0; border-bottom: 1px solid var(--line); align-items: start; }
+  .tache .rang { font-family: var(--mono); font-size: 1.6rem; color: var(--muted); }
+  .tache h3 { font-size: 1.25rem; margin-bottom: 6px; }
+  .tache .meta { color: var(--muted); font-size: 0.9rem; }
+  .tache .cout { text-align: right; display: grid; gap: 4px; }
+  .tache .cout b { font-family: var(--mono); font-weight: 500; font-size: 1.5rem; }
+  .etapes { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; counter-reset: e; border-left: 2px solid var(--line); }
+  .etapes li { counter-increment: e; padding: 10px 0 10px 22px; position: relative; display: grid; gap: 4px; }
+  .etapes li::before { content: counter(e); position: absolute; left: -13px; top: 10px; width: 24px; height: 24px; border-radius: 50%;
+    background: var(--bg); border: 1px solid var(--line); font-family: var(--mono); font-size: 0.75rem; display: grid; place-items: center; }
+  .etapes .type { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+  .deux { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 32px; }
+  .bloc { display: grid; gap: 10px; align-content: start; }
+  .bloc ul { margin: 0; padding-left: 18px; display: grid; gap: 6px; }
+  .carte { background: var(--surface); border: 1px solid var(--line); padding: 18px; border-radius: 4px; display: grid; gap: 8px; }
+  .masque-carte { border-style: dashed; color: var(--muted); }
+  .carte > .badge { justify-self: start; }
+  .grand-signal { color: var(--signal); }
+  pre.skill { background: var(--surface); border: 1px solid var(--line); padding: 16px; font-family: var(--mono); font-size: 0.82rem;
+    white-space: pre-wrap; max-height: 40vh; overflow: auto; margin: 0; }
+  .actions { display: flex; gap: 10px; flex-wrap: wrap; }
+  .recu { border-left: 3px solid var(--signal); padding: 10px 14px; background: var(--signal-soft); font-family: var(--mono); font-size: 0.85rem; }
+  nav.pied { display: flex; justify-content: space-between; align-items: center; padding: 12px max(16px, 3vw); border-top: 1px solid var(--line); }
+  nav.pied .compteur { font-family: var(--mono); font-size: 0.8rem; color: var(--muted); }
+  /* Panneau des preuves */
+  aside#panneau { position: fixed; top: 0; right: 0; bottom: 0; width: min(440px, 100%); background: var(--surface); border-left: 1px solid var(--line);
+    padding: 24px; overflow-y: auto; transform: translateX(100%); transition: transform 0.25s ease; z-index: 10; display: grid; gap: 14px; align-content: start; }
+  aside#panneau.ouvert { transform: none; }
+  aside#panneau .fermer { justify-self: end; }
+  aside#panneau .calcul { font-family: var(--mono); font-size: 0.85rem; background: var(--bg); padding: 10px; border-radius: 3px; }
+  aside#panneau table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  aside#panneau td, aside#panneau th { text-align: left; padding: 6px 4px; border-bottom: 1px solid var(--line); }
+  @media (max-width: 640px) {
+    .barre { grid-template-columns: 1fr 60px; } .barre .piste { grid-column: 1 / -1; grid-row: 2; }
+    .tache { grid-template-columns: 32px 1fr; } .tache .cout { grid-column: 2; text-align: left; }
+    .chiffre + .chiffre { padding-left: 0; border-left: 0; border-top: 1px solid var(--line); }
+  }
+  @media print {
+    header.barre, nav.pied, .progres, aside#panneau, .bandeau-fictif { display: none !important; }
+    body { display: block; } main { overflow: visible; }
+    .slide { position: static; display: block !important; page-break-after: always; animation: none; }
+  }
+</style>
+</head>
+<body>
+<div class="bandeau-fictif" id="bandeau" hidden>Données inventées pour la démo</div>
+<header class="barre">
+  <span class="titre" id="titre-barre">Wrapped</span>
+  <label title="Charger le fichier produit par la fusion">Charger un insights.json<input type="file" id="fichier" accept="application/json,.json"></label>
+</header>
+<div class="progres" id="progres"></div>
+<main id="slides"></main>
+<nav class="pied">
+  <button class="btn" id="prec" aria-label="Slide précédente">←</button>
+  <span class="compteur" id="compteur"></span>
+  <button class="btn primaire" id="suiv" aria-label="Slide suivante">→</button>
+</nav>
+<aside id="panneau" aria-live="polite"></aside>
+
+<script src="donnees/insights-exemple.js"></script>
+<script>
+// Le Wrapped lit un seul objet "insights" (sortie de la fusion, brique D).
+// Règles appliquées ici : pas de chiffre par personne, agrégat masqué sous 3 personnes, badge observé / estimé, chaque chiffre cliquable.
+const MIN_PERSONNES = 3;
+const SEMAINES_PAR_MOIS = 4.33;
+const fmt = (n, d = 0) => n.toLocaleString('fr-FR', { minimumFractionDigits: d, maximumFractionDigits: d });
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const dateFr = iso => new Date(iso).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' });
+const heureFr = iso => new Date(iso).toLocaleString('fr-FR', { weekday: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+const badge = statut => statut === 'observé' ? '<span class="badge observe">observé</span>'
+  : statut === 'supposé' ? '<span class="badge suppose">supposé</span>' : '<span class="badge estime">estimé</span>';
+
+let D, slides = [], courant = 0, preuves = {};
+
+function preparer(data) {
+  const cout = data.entreprise.cout_horaire_eur;
+  const taches = data.taches.map(t => {
+    const heures_mois = t.frequence_par_semaine * t.duree_moyenne_min / 60 * SEMAINES_PAR_MOIS;
+    const euros_mois = heures_mois * cout;
+    return { ...t, heures_mois, euros_mois, gain_mois: euros_mois * t.score_automatisation / 100, masquee: (t.personnes || 0) < MIN_PERSONNES };
+  });
+  return { ...data, taches,
+    visibles: taches.filter(t => !t.masquee).sort((a, b) => b.euros_mois - a.euros_mois),
+    masquees: taches.filter(t => t.masquee) };
+}
+
+// Enregistre de quoi expliquer un chiffre, et renvoie le HTML cliquable.
+function chiffre(id, texte, explication) { preuves[id] = explication; return `<span class="preuve" data-preuve="${id}" tabindex="0" role="button">${texte}</span>`; }
+
+function slidesDe(d) {
+  const p = d.personnes, s = [];
+  const sem = `du ${dateFr(d.campagne.debut)} au ${dateFr(d.campagne.fin)}`;
+  const t1 = d.visibles[0];
+  const top3 = d.visibles.slice(0, 3);
+  const totalCat = d.temps_par_categorie.reduce((a, c) => a + c.heures_semaine, 0);
+  const maxCat = Math.max(...d.temps_par_categorie.map(c => c.heures_semaine));
+  const prior = [...d.visibles].sort((a, b) => b.gain_mois - a.gain_mois);
+  const part = d.tri_80_20 ? d.tri_80_20.captures_gardees / d.tri_80_20.captures_regardees : null;
+
+  s.push(`<div class="contenu">
+    <span class="eyebrow">${esc(d.campagne.nom)} · ${sem}</span>
+    <h1>Le Wrapped de ${esc(d.entreprise.nom)}</h1>
+    <p class="lede">Une semaine de travail, vue par ${p.validees} personnes volontaires. <em>Où part le temps, ce qui se répète, et ce qu'on confie à l'IA en premier.</em></p>
+    <p class="muted">Chaque chiffre souligné est cliquable : il ouvre sa preuve. Aucune capture n'a quitté les ordinateurs.</p>
+  </div>`);
+
+  s.push(`<div class="contenu">
+    <span class="eyebrow">01 · Votre semaine en chiffres</span>
+    <h2>${p.validees} personnes ont partagé leur semaine.</h2>
+    <div class="chiffres">
+      <div class="chiffre"><b>${chiffre('heures', fmt(d.heures_captees) + ' h', { titre: 'Heures captées', calcul: `somme des heures captées dans les ${p.validees} résumés validés`, note: 'Pauses, musique et usage perso déjà retirés par le collecteur.' })}</b><span>de travail observé</span></div>
+      <div class="chiffre"><b>${chiffre('personnes', p.validees + ' / ' + p.invitees, { titre: 'Participation', calcul: `${p.invitees} invitées · ${p.participantes} ont installé · ${p.validees} ont validé leur résumé`, note: 'Seuls les résumés validés par la personne entrent dans le Wrapped.' })}</b><span>personnes, sur les invitées</span></div>
+      <div class="chiffre"><b>${chiffre('apps', fmt(d.nb_apps), { titre: 'Apps utilisées', calcul: 'apps distinctes dans les résumés validés', note: '' })}</b><span>apps différentes</span></div>
+      ${part ? `<div class="chiffre"><b class="grand-signal">${chiffre('tri', fmt(part * 100) + ' %', { titre: 'Tri 80/20', calcul: `${fmt(d.tri_80_20.captures_gardees)} captures gardées sur ${fmt(d.tri_80_20.captures_regardees)} regardées`, note: "Seules ces captures ont été lues par l'IA : c'est ce qui rend l'analyse d'une semaine abordable." })}</b><span>des captures suffisent à l'analyse</span></div>` : ''}
+    </div>
+  </div>`);
+
+  s.push(`<div class="contenu">
+    <span class="eyebrow">02 · Où part le temps</span>
+    <h2>${esc(d.temps_par_categorie[0].categorie)} : ${fmt(d.temps_par_categorie[0].heures_semaine / totalCat * 100)} % de la semaine.</h2>
+    <div class="barres">${d.temps_par_categorie.map((c, i) => `<div class="barre">
+      <span>${esc(c.categorie)}</span>
+      <div class="piste"><div class="rempli ${i === 0 ? 'signal' : ''}" style="width:${c.heures_semaine / maxCat * 100}%"></div></div>
+      <span class="val">${chiffre('cat' + i, fmt(c.heures_semaine) + ' h', { titre: c.categorie, calcul: `${fmt(c.heures_semaine)} h par semaine, toutes personnes confondues (${fmt(c.heures_semaine / totalCat * 100)} % du total)`, note: 'Catégories proposées par le résumé de chaque personne, puis regroupées.' })}</span>
+    </div>`).join('')}</div>
+    <p class="muted">Heures par semaine, pour l'équipe entière. Aucun chiffre individuel.</p>
+  </div>`);
+
+  s.push(`<div class="contenu">
+    <span class="eyebrow">03 · Vos tâches répétées</span>
+    <h2>Le top 3 coûte ${chiffre('top3', fmt(top3.reduce((a, t) => a + t.euros_mois, 0)) + ' €', { titre: 'Coût du top 3', calcul: top3.map(t => `${t.titre} : ${fmt(t.euros_mois)} €`).join('\n'), note: 'Somme des coûts mensuels des 3 tâches.' })} par mois.</h2>
+    <div class="taches">${top3.map((t, i) => `<div class="tache">
+      <span class="rang">${i + 1}</span>
+      <div><h3>${esc(t.titre)} ${badge(t.statut)}</h3>
+        <p class="meta">${t.personnes} personnes · ${fmt(t.frequence_par_semaine)} fois par semaine · ${fmt(t.duree_moyenne_min)} min · ${t.apps.map(esc).join(', ')}</p></div>
+      <div class="cout"><b>${chiffre('cout' + t.id, fmt(t.euros_mois) + ' €', explicationCout(t, d))}</b><span class="muted mono">${fmt(t.heures_mois, 1)} h / mois</span></div>
+    </div>`).join('')}</div>
+  </div>`);
+
+  if (t1) s.push(`<div class="contenu">
+    <span class="eyebrow">04 · Zoom sur la tâche n°1</span>
+    <h2>${esc(t1.titre)}</h2>
+    <div class="deux">
+      <div class="bloc"><span class="eyebrow">Les étapes</span>
+        <ol class="etapes">${t1.etapes.map(e => `<li><span class="type">${esc(e.type)} · ${esc(e.app)}</span><span>${esc(e.texte)} ${badge(e.statut)}</span></li>`).join('')}</ol></div>
+      <div class="bloc">
+        <span class="eyebrow">Les exceptions</span>
+        <ul>${t1.exceptions.map(x => `<li>${esc(x)}</li>`).join('') || '<li class="muted">aucune vue</li>'}</ul>
+        <span class="eyebrow" style="margin-top:12px">Les preuves</span>
+        <ul>${t1.preuves.map((p, i) => `<li>${chiffre('p' + i, heureFr(p.debut), { titre: 'Moment source', calcul: `${heureFr(p.debut)} → ${new Date(p.fin).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })} · ${p.app}`, note: "Identifiant de moment anonymisé. La capture elle-même reste sur l'ordinateur de la personne, qui peut la montrer si elle le souhaite." })} · ${esc(p.app)}</li>`).join('')}</ul>
+      </div>
+    </div>
+  </div>`);
+
+  s.push(`<div class="contenu">
+    <span class="eyebrow">05 · Les goulots</span>
+    <h2>${fmt(d.goulots.reduce((a, g) => a + g.heures_semaine, 0), 1)} h par semaine perdues entre deux outils ou à attendre.</h2>
+    <div class="deux">${d.goulots.map((g, i) => `<div class="carte">
+      <span class="eyebrow">${{ switching: 'allers-retours', waiting: 'attente', rework: 'reprises', handoff: 'passage de relais' }[g.type] || esc(g.type)}</span>
+      <b class="mono" style="font-size:1.8rem">${chiffre('g' + i, fmt(g.heures_semaine, 1) + ' h', { titre: g.detail, calcul: `${fmt(g.heures_semaine, 1)} h par semaine pour l'équipe`, note: 'Somme des goulots de ce type repérés dans les tâches.' })}</b>
+      <span>${esc(g.detail)}</span></div>`).join('')}</div>
+  </div>`);
+
+  s.push(`<div class="contenu">
+    <span class="eyebrow">06 · L'IA chez vous aujourd'hui</span>
+    <h2>L'IA sert surtout à écrire, pas encore à faire.</h2>
+    <div class="deux">${d.usage_ia.map((u, i) => (u.personnes || 0) < MIN_PERSONNES
+      ? `<div class="carte masque-carte"><span class="eyebrow">${esc(u.outil)}</span><span class="badge masque">masqué</span><span>Moins de ${MIN_PERSONNES} personnes : chiffre masqué pour protéger l'anonymat.</span></div>`
+      : `<div class="carte"><span class="eyebrow">${esc(u.outil)}</span>
+          <b class="mono" style="font-size:1.8rem">${chiffre('ia' + i, fmt(u.heures_semaine) + ' h', { titre: u.outil, calcul: `${u.personnes} personnes · ${fmt(u.heures_semaine)} h par semaine au total`, note: '' })}</b>
+          <span>${u.personnes} personnes · ${u.usages.map(esc).join(', ')}</span></div>`).join('')}</div>
+  </div>`);
+
+  s.push(`<div class="contenu">
+    <span class="eyebrow">07 · Ce qu'on automatise en premier</span>
+    <h2>Commencer par « ${esc(prior[0].titre)} ».</h2>
+    <div class="taches">${prior.map((t, i) => `<div class="tache">
+      <span class="rang">${i + 1}</span>
+      <div><h3>${esc(t.titre)}</h3><p class="meta">score ${t.score_automatisation} / 100 · ${esc(t.pourquoi)}</p></div>
+      <div class="cout"><b class="${i === 0 ? 'grand-signal' : ''}">${chiffre('gain' + t.id, fmt(t.gain_mois) + ' €', { titre: 'Gain estimé : ' + t.titre, calcul: `coût ${fmt(t.euros_mois)} €/mois × score ${t.score_automatisation} %\n= ${fmt(t.gain_mois)} €/mois`, note: "Estimation : le score dit quelle part de la tâche une automatisation peut reprendre. À valider sur un essai réel." })}</b><span class="badge estime">estimé / mois</span></div>
+    </div>`).join('')}</div>
+  </div>`);
+
+  const faibles = d.visibles.filter(t => t.confiance < 0.65);
+  s.push(`<div class="contenu">
+    <span class="eyebrow">08 · Ce qu'on ne sait pas encore</span>
+    <h2>Ce qu'il faut vérifier avant d'agir.</h2>
+    <div class="deux">
+      <div class="bloc"><span class="eyebrow">Questions ouvertes</span><ul>${d.questions_ouvertes.map(q => `<li>${esc(q)}</li>`).join('')}</ul></div>
+      <div class="bloc"><span class="eyebrow">Confiance faible</span><ul>${faibles.map(t => `<li>${esc(t.titre)} <span class="muted mono">(${fmt(t.confiance * 100)} %)</span></li>`).join('') || '<li class="muted">aucune</li>'}</ul>
+        <span class="eyebrow" style="margin-top:12px">Masqué pour l'anonymat</span><ul>${d.masquees.map(t => `<li>${esc(t.titre)} <span class="badge masque">moins de ${MIN_PERSONNES} personnes</span></li>`).join('') || '<li class="muted">rien</li>'}</ul></div>
+    </div>
+  </div>`);
+
+  s.push(`<div class="contenu">
+    <span class="eyebrow">09 · Et maintenant</span>
+    <h2>Lancer l'automatisation n°1.</h2>
+    <p class="lede">La tâche « ${esc(prior[0].titre)} » devient une skill pour Claude Code ou Codex. Relisez-la avant de l'activer.</p>
+    <pre class="skill" id="skill">${esc(skillDe(prior[0]))}</pre>
+    <div class="actions">
+      <button class="btn primaire" id="copier">Copier la skill</button>
+      <button class="btn" id="supprimer">Supprimer les données de la campagne</button>
+    </div>
+    <div id="recu"></div>
+  </div>`);
+  return s;
+}
+
+function explicationCout(t, d) {
+  return { titre: t.titre,
+    calcul: `${fmt(t.frequence_par_semaine)} fois/semaine × ${fmt(t.duree_moyenne_min)} min × ${SEMAINES_PAR_MOIS} semaines\n= ${fmt(t.heures_mois, 1)} h/mois × ${d.entreprise.cout_horaire_eur} €/h\n= ${fmt(t.euros_mois)} €/mois`,
+    note: `Coût horaire moyen donné par le dirigeant à l'onboarding. Fréquence et durée : ${t.statut}.`, preuves: t.preuves };
+}
+
+function skillDe(t) {
+  return `---\nname: ${t.titre.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}\ndescription: ${t.titre}. Générée depuis le Wrapped, à relire avant usage.\n---\n\n# ${t.titre}\n\nOutils : ${t.apps.join(', ')}.\n\n## Étapes\n${t.etapes.map((e, i) => `${i + 1}. [${e.type}] ${e.texte} (${e.app})${e.statut === 'supposé' ? ' — SUPPOSÉ, à confirmer' : ''}`).join('\n')}\n\n## Exceptions : s'arrêter et demander à un humain\n${t.exceptions.map(x => `- ${x}`).join('\n') || '- aucune connue'}\n\n## Règle\nAvant tout envoi, montrer le brouillon et attendre la validation.`;
+}
+
+function ouvrirPreuve(id) {
+  const e = preuves[id]; if (!e) return;
+  const pan = document.getElementById('panneau');
+  pan.innerHTML = `<button class="btn fermer" id="fermer" aria-label="Fermer">Fermer</button>
+    <span class="eyebrow">D'où vient ce chiffre</span><h3>${esc(e.titre)}</h3>
+    <div class="calcul">${esc(e.calcul).replace(/\n/g, '<br>')}</div>
+    ${e.note ? `<p class="muted">${esc(e.note)}</p>` : ''}
+    ${e.preuves?.length ? `<table><tr><th>Moment</th><th>App</th><th>Qui</th></tr>${e.preuves.map(p => `<tr><td class="mono">${heureFr(p.debut)}</td><td>${esc(p.app)}</td><td class="mono">${esc(p.personne || '—')}</td></tr>`).join('')}</table>` : ''}`;
+  pan.classList.add('ouvert');
+  document.getElementById('fermer').onclick = () => pan.classList.remove('ouvert');
+}
+
+function aller(i) {
+  courant = Math.max(0, Math.min(slides.length - 1, i));
+  document.querySelectorAll('.slide').forEach((el, k) => el.classList.toggle('active', k === courant));
+  document.querySelectorAll('.progres button').forEach((b, k) => b.classList.toggle('fait', k <= courant));
+  document.getElementById('compteur').textContent = `${courant + 1} / ${slides.length}`;
+  document.getElementById('prec').disabled = courant === 0;
+  document.getElementById('suiv').disabled = courant === slides.length - 1;
+  history.replaceState(null, '', '#' + (courant + 1));
+}
+
+function afficher(data) {
+  preuves = {};
+  D = preparer(data);
+  slides = slidesDe(D);
+  document.getElementById('bandeau').hidden = !data.fictif;
+  document.getElementById('titre-barre').textContent = `Wrapped · ${D.entreprise.nom}`;
+  document.getElementById('slides').innerHTML = slides.map(h => `<section class="slide">${h}</section>`).join('');
+  document.getElementById('progres').innerHTML = slides.map((_, i) => `<button aria-label="Aller à la slide ${i + 1}" data-i="${i}"></button>`).join('');
+  document.getElementById('copier').onclick = e => { navigator.clipboard?.writeText(document.getElementById('skill').textContent); e.target.textContent = 'Copiée'; };
+  document.getElementById('supprimer').onclick = () => {
+    if (!confirm('Supprimer toutes les données de la campagne ? (démo : rien n\'est réellement supprimé)')) return;
+    document.getElementById('recu').innerHTML = `<div class="recu">Reçu de suppression · ${new Date().toLocaleString('fr-FR')}<br>Campagne « ${esc(D.campagne.nom)} » : ${D.personnes.validees} résumés supprimés. Les captures n'ont jamais quitté les ordinateurs. (simulation)</div>`;
+  };
+  aller(parseInt(location.hash.slice(1)) - 1 || 0);
+}
+
+document.addEventListener('click', e => {
+  const p = e.target.closest('[data-preuve]'); if (p) return ouvrirPreuve(p.dataset.preuve);
+  const b = e.target.closest('.progres button'); if (b) aller(+b.dataset.i);
+});
+document.addEventListener('keydown', e => {
+  if (e.target.matches('[data-preuve]') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); return ouvrirPreuve(e.target.dataset.preuve); }
+  if (e.key === 'Escape') document.getElementById('panneau').classList.remove('ouvert');
+  if (e.key === 'ArrowRight' || e.key === 'PageDown') aller(courant + 1);
+  if (e.key === 'ArrowLeft' || e.key === 'PageUp') aller(courant - 1);
+});
+window.addEventListener('hashchange', () => { const i = parseInt(location.hash.slice(1)) - 1; if (i >= 0 && i !== courant) aller(i); });
+document.getElementById('prec').onclick = () => aller(courant - 1);
+document.getElementById('suiv').onclick = () => aller(courant + 1);
+let x0 = null;
+document.getElementById('slides').addEventListener('touchstart', e => x0 = e.touches[0].clientX, { passive: true });
+document.getElementById('slides').addEventListener('touchend', e => { if (x0 === null) return; const dx = e.changedTouches[0].clientX - x0; if (Math.abs(dx) > 50) aller(courant + (dx < 0 ? 1 : -1)); x0 = null; });
+document.getElementById('fichier').onchange = async e => {
+  const f = e.target.files[0]; if (!f) return;
+  try { afficher(JSON.parse(await f.text())); } catch (err) { alert('Fichier illisible : ' + err.message); }
+};
+
+afficher(window.INSIGHTS);
+</script>
+</body>
+</html>

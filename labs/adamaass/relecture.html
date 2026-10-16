@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Relecture de ma semaine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="commun.css">
+<style>
+  .page { max-width: 860px; margin: 0 auto; padding: 40px 16px 140px; display: grid; gap: 48px; }
+  header { display: grid; gap: 14px; }
+  header h1 { font-size: clamp(2rem, 5vw, 2.8rem); line-height: 1.1; }
+  .lede { font-size: 1.08rem; color: var(--muted); max-width: 62ch; }
+  .charte { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0; border: 1px solid var(--line); background: var(--surface); }
+  .charte > div { padding: 16px 18px; display: grid; gap: 8px; align-content: start; }
+  .charte > div + div { border-left: 1px solid var(--line); }
+  .charte ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; font-size: 0.92rem; }
+  section { display: grid; gap: 16px; }
+  section > h2 { font-size: 1.5rem; }
+  .apps { display: flex; flex-wrap: wrap; gap: 8px; }
+  .app { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--line); background: var(--surface); padding: 6px 10px; border-radius: 4px; font-size: 0.9rem; }
+  .app.cachee { opacity: 0.45; text-decoration: line-through; }
+  .app .mono { color: var(--muted); font-size: 0.8rem; }
+  .app button { border: 0; background: none; padding: 0 2px; color: var(--muted); font-size: 0.8rem; border-bottom: 1px dotted currentColor; }
+  .tache { border: 1px solid var(--line); background: var(--surface); border-radius: 4px; padding: 18px; display: grid; gap: 14px; }
+  .tache.retiree { opacity: 0.5; border-style: dashed; }
+  .tache.retiree .corps { display: none; }
+  .tete { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: start; }
+  .tete input.titre { font-family: var(--display); font-size: 1.25rem; border: 0; border-bottom: 1px solid transparent; background: none; color: var(--fg); width: 100%; padding: 2px 0; }
+  .tete input.titre:hover, .tete input.titre:focus { border-bottom-color: var(--line); outline: none; }
+  .chiffres { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; font-size: 0.92rem; color: var(--muted); }
+  .chiffres input { width: 64px; font-family: var(--mono); font-size: 0.92rem; padding: 4px 6px; border: 1px solid var(--line); background: var(--bg); color: var(--fg); border-radius: 3px; }
+  .etapes { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+  .etapes li { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; padding: 8px 10px; background: var(--bg); border-radius: 3px; }
+  .etapes .type { font-family: var(--mono); font-size: 0.7rem; color: var(--muted); text-transform: uppercase; margin-right: 6px; }
+  .etapes button { border: 0; background: none; color: var(--muted); font-size: 0.82rem; }
+  .etapes button:hover { color: var(--warn); }
+  .alerte { border-left: 3px solid var(--warn); background: var(--warn-soft); padding: 10px 12px; display: grid; gap: 8px; font-size: 0.9rem; }
+  .alerte mark { background: none; color: var(--warn); font-weight: 600; }
+  .alerte .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .alerte .btn { padding: 5px 10px; font-size: 0.85rem; }
+  .ia { display: grid; gap: 8px; }
+  .ia .ligne { display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+  .barre-bas { position: fixed; left: 0; right: 0; bottom: 0; background: var(--surface); border-top: 1px solid var(--line); padding: 12px 16px; }
+  .barre-bas .dedans { max-width: 860px; margin: 0 auto; display: flex; gap: 12px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+  .barre-bas .resume { font-size: 0.9rem; color: var(--muted); }
+  .barre-bas .actions { display: flex; gap: 8px; }
+  dialog { border: 1px solid var(--line); background: var(--surface); color: var(--fg); max-width: min(720px, 92vw); width: 100%; padding: 20px; border-radius: 4px; }
+  dialog::backdrop { background: rgb(0 0 0 / 0.4); }
+  dialog pre { font-family: var(--mono); font-size: 0.78rem; max-height: 55vh; overflow: auto; background: var(--bg); padding: 12px; white-space: pre-wrap; }
+  .ok { border-left: 3px solid var(--signal); background: var(--signal-soft); padding: 12px 14px; }
+  label.charger { font-family: var(--mono); font-size: 0.75rem; color: var(--muted); cursor: pointer; }
+  label.charger input { display: none; }
+  @media (max-width: 640px) { .charte > div + div { border-left: 0; border-top: 1px solid var(--line); } }
+</style>
+</head>
+<body>
+<div class="bandeau-fictif" id="bandeau" hidden>Données inventées pour la démo</div>
+<div class="page">
+  <header>
+    <span class="eyebrow" id="periode"></span>
+    <h1>Votre semaine, avant de la partager</h1>
+    <p class="lede">Voici ce que screenpipe a compris de votre travail. Corrigez, retirez ce que vous voulez. <strong>Rien ne part tant que vous n'avez pas cliqué sur « Valider et partager ».</strong></p>
+    <div class="charte">
+      <div><span class="eyebrow">Ce qui est partagé</span><ul><li>les tâches et leurs étapes, telles que vous les validez</li><li>les durées et les apps utilisées</li><li>des horaires de moments, sans contenu</li></ul></div>
+      <div><span class="eyebrow">Ce qui ne part jamais</span><ul><li>les captures d'écran</li><li>le texte lu sur votre écran</li><li>l'audio</li></ul></div>
+      <div><span class="eyebrow">Qui voit quoi</span><ul><li>le dirigeant voit des totaux d'équipe</li><li>jamais de chiffre à votre nom</li><li>un total à moins de 3 personnes est masqué</li></ul></div>
+    </div>
+    <label class="charger">Ouvrir un autre resume.json<input type="file" id="fichier" accept="application/json,.json"></label>
+  </header>
+
+  <section>
+    <h2>Vos apps</h2>
+    <p class="muted">Masquez une app pour la retirer de tout ce qui est partagé (une app perso, par exemple).</p>
+    <div class="apps" id="apps"></div>
+  </section>
+
+  <section>
+    <h2>Vos tâches répétées</h2>
+    <p class="muted">Renommez une tâche, corrigez la fréquence ou la durée, supprimez une étape fausse, ou retirez la tâche entière.</p>
+    <div id="taches" style="display:grid;gap:14px"></div>
+  </section>
+
+  <section>
+    <h2>Votre usage de l'IA</h2>
+    <div class="ia" id="ia"></div>
+  </section>
+
+  <section id="limites-bloc">
+    <h2>Ce que l'outil ne sait pas</h2>
+    <ul id="limites" class="muted" style="margin:0;padding-left:18px"></ul>
+  </section>
+</div>
+
+<div class="barre-bas"><div class="dedans">
+  <span class="resume" id="compte"></span>
+  <div class="actions">
+    <button class="btn" id="voir">Voir ce qui part</button>
+    <button class="btn primaire" id="valider">Valider et partager</button>
+  </div>
+</div></div>
+
+<dialog id="dialogue"></dialog>
+
+<script src="donnees/resume-exemple.js"></script>
+<script>
+// Brique C : le salarié relit son résumé (sortie de la brique B) avant tout partage.
+// Sortie : resume-valide-<personne>.json, même format, avec valide_par_la_personne = true.
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const fmtH = m => m >= 60 ? `${Math.floor(m / 60)} h ${String(Math.round(m % 60)).padStart(2, '0')}` : `${Math.round(m)} min`;
+const badge = s => `<span class="badge ${s === 'observé' ? 'observe' : 'suppose'}">${esc(s)}</span>`;
+
+// Ce qui ressemble à une info sensible : email, montant, téléphone, nom propre de client (« devis X », « client X »).
+const SENSIBLE = [
+  { nom: 'email', re: /[\w.+-]+@[\w-]+\.[\w.-]+/g, rempl: '[email]' },
+  { nom: 'montant', re: /\d[\d\s.,]*\s?(?:€|k€|EUR|euros?)/gi, rempl: '[montant]' },
+  { nom: 'téléphone', re: /(?:\+33\s?|0)[1-9](?:[\s.-]?\d{2}){4}/g, rempl: '[téléphone]' },
+  { nom: 'nom de client', re: /\b(?:devis|client|société|chez) (?:[A-ZÉÈ][\wéèêàç'-]+ ?){1,3}/g, rempl: m => m.split(' ')[0] + ' [client]' + (m.endsWith(' ') ? ' ' : '') },
+];
+
+let R, etat;
+
+function charger(resume) {
+  R = structuredClone(resume);
+  etat = { appsCachees: new Set(), retirees: new Set() };
+  // Les apps qui ressemblent à du perso sont proposées masquées par défaut ; la personne peut les réafficher.
+  R.temps_par_app.forEach(a => { if (/spotify|deezer|netflix|youtube music|doctolib|whatsapp|instagram/i.test(a.app)) etat.appsCachees.add(a.app); });
+  document.getElementById('bandeau').hidden = !(R.limites || []).some(l => /fictiv/i.test(l));
+  const d = new Date(R.periode.debut), f = new Date(R.periode.fin);
+  document.getElementById('periode').textContent = `${R.personne} · ${d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })} → ${f.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })} · ${R.heures_captees} h captées`;
+  rendre();
+}
+
+function sensibles(t) {
+  const textes = [t.titre, ...t.etapes.map(e => e.texte), ...(t.exceptions || []), ...(t.goulots || []).map(g => g.detail)];
+  const trouves = [];
+  textes.forEach(x => SENSIBLE.forEach(s => { for (const m of x.matchAll(s.re)) trouves.push({ type: s.nom, valeur: m[0].trim() }); }));
+  return trouves;
+}
+
+function anonymiser(t) {
+  const f = x => SENSIBLE.reduce((acc, s) => acc.replace(s.re, s.rempl), x);
+  t.titre = f(t.titre);
+  t.etapes.forEach(e => e.texte = f(e.texte));
+  t.exceptions = (t.exceptions || []).map(f);
+  (t.goulots || []).forEach(g => g.detail = f(g.detail));
+}
+
+function rendre() {
+  const total = R.temps_par_app.reduce((a, x) => a + x.minutes, 0);
+  document.getElementById('apps').innerHTML = R.temps_par_app.map(a => {
+    const c = etat.appsCachees.has(a.app);
+    return `<span class="app ${c ? 'cachee' : ''}">${esc(a.app)} <span class="mono">${fmtH(a.minutes)}</span><button data-app="${esc(a.app)}">${c ? 'réafficher' : 'masquer'}</button></span>`;
+  }).join('');
+
+  document.getElementById('taches').innerHTML = R.taches.map((t, i) => {
+    const ret = etat.retirees.has(i), sens = sensibles(t);
+    return `<article class="tache ${ret ? 'retiree' : ''}" data-i="${i}">
+      <div class="tete">
+        <input class="titre" data-champ="titre" value="${esc(t.titre)}" aria-label="Nom de la tâche">
+        <button class="btn" data-retirer="${i}">${ret ? 'Remettre' : 'Retirer'}</button>
+      </div>
+      <div class="corps" style="display:grid;gap:14px">
+        <div class="chiffres">
+          <label><input type="number" min="0" data-champ="frequence_par_semaine" value="${t.frequence_par_semaine}"> fois par semaine</label>
+          <label><input type="number" min="0" data-champ="duree_moyenne_min" value="${t.duree_moyenne_min}"> min à chaque fois</label>
+          <span class="mono">${t.apps.filter(a => !etat.appsCachees.has(a)).map(esc).join(' · ')}</span>
+        </div>
+        ${sens.length ? `<div class="alerte"><span>Cette tâche contient peut-être des infos sensibles : ${sens.map(s => `<mark>${esc(s.valeur)}</mark> (${s.type})`).join(', ')}.</span>
+          <div class="actions"><button class="btn" data-anonymiser="${i}">Remplacer par [email], [montant]…</button><button class="btn" data-retirer="${i}">Retirer la tâche</button></div></div>` : ''}
+        <ol class="etapes">${t.etapes.map((e, k) => `<li><span><span class="type">${esc(e.type)} · ${esc(e.app)}</span>${esc(e.texte)} ${badge(e.statut)}</span><button data-etape="${i}:${k}" aria-label="Supprimer cette étape">supprimer</button></li>`).join('')}</ol>
+        ${t.exceptions?.length ? `<p class="muted" style="font-size:.9rem">Exceptions : ${t.exceptions.map(esc).join(' · ')}</p>` : ''}
+      </div>
+    </article>`;
+  }).join('');
+
+  document.getElementById('ia').innerHTML = (R.usage_ia || []).filter(u => !etat.appsCachees.has(u.outil)).map(u =>
+    `<div class="ligne"><span>${esc(u.outil)} <span class="muted">· ${u.usages.map(esc).join(', ')}</span></span><span class="mono">${fmtH(u.minutes)}</span></div>`).join('') || '<p class="muted">Aucun usage de l\'IA repéré.</p>';
+  document.getElementById('limites').innerHTML = (R.limites || []).map(l => `<li>${esc(l)}</li>`).join('');
+
+  const nbS = R.taches.filter((t, i) => !etat.retirees.has(i) && sensibles(t).length).length;
+  document.getElementById('compte').innerHTML = `${R.taches.length - etat.retirees.size} tâche(s) partagée(s) · ${etat.retirees.size} retirée(s) · ${etat.appsCachees.size} app(s) masquée(s)`
+    + (nbS ? ` · <span style="color:var(--warn)">${nbS} à vérifier</span>` : '');
+}
+
+function sortie() {
+  const cache = etat.appsCachees;
+  const taches = R.taches.filter((_, i) => !etat.retirees.has(i)).map(t => ({
+    ...t, apps: t.apps.filter(a => !cache.has(a)),
+    etapes: t.etapes.filter(e => !cache.has(e.app)),
+    preuves: (t.preuves || []).filter(p => !cache.has(p.app)),
+  }));
+  const apps = R.temps_par_app.filter(a => !cache.has(a.app));
+  return { ...R,
+    heures_captees: Math.round((R.heures_captees - R.temps_par_app.filter(a => cache.has(a.app)).reduce((s, a) => s + a.minutes, 0) / 60) * 10) / 10,
+    temps_par_app: apps,
+    usage_ia: (R.usage_ia || []).filter(u => !cache.has(u.outil)),
+    taches,
+    relecture: { taches_retirees: etat.retirees.size, apps_masquees: cache.size, le: new Date().toISOString() },
+    valide_par_la_personne: true };
+}
+
+document.addEventListener('click', e => {
+  const t = e.target;
+  if (t.dataset.app) { const a = t.dataset.app; etat.appsCachees.has(a) ? etat.appsCachees.delete(a) : etat.appsCachees.add(a); return rendre(); }
+  if (t.dataset.retirer !== undefined) { const i = +t.dataset.retirer; etat.retirees.has(i) ? etat.retirees.delete(i) : etat.retirees.add(i); return rendre(); }
+  if (t.dataset.anonymiser !== undefined) { anonymiser(R.taches[+t.dataset.anonymiser]); return rendre(); }
+  if (t.dataset.etape) { const [i, k] = t.dataset.etape.split(':').map(Number); R.taches[i].etapes.splice(k, 1); return rendre(); }
+});
+document.addEventListener('change', e => {
+  const champ = e.target.dataset.champ; if (!champ) return;
+  const i = +e.target.closest('.tache').dataset.i;
+  R.taches[i][champ] = e.target.type === 'number' ? Math.max(0, +e.target.value) : e.target.value.trim();
+  rendre();
+});
+
+const dlg = document.getElementById('dialogue');
+document.getElementById('voir').onclick = () => {
+  dlg.innerHTML = `<h3>Exactement ce qui sera partagé</h3><p class="muted" style="margin:8px 0">Aucune capture, aucun texte d'écran.</p><pre>${esc(JSON.stringify(sortie(), null, 2))}</pre><button class="btn" onclick="this.closest('dialog').close()">Fermer</button>`;
+  dlg.showModal();
+};
+document.getElementById('valider').onclick = () => {
+  const s = sortie();
+  const restants = s.taches.filter(t => sensibles(t).length);
+  if (restants.length && !confirm(`${restants.length} tâche(s) contiennent encore une info qui ressemble à un email, un montant ou un nom de client. Partager quand même ?`)) return;
+  const blob = new Blob([JSON.stringify(s, null, 1)], { type: 'application/json' });
+  const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(blob), download: `resume-valide-${s.personne}.json` });
+  a.click();
+  dlg.innerHTML = `<div class="ok"><strong>Merci, c'est validé.</strong><br>Le fichier <span class="mono">resume-valide-${esc(s.personne)}.json</span> est prêt : ${s.taches.length} tâche(s), ${s.temps_par_app.length} app(s). Il ne contient ni capture ni texte d'écran.</div><p style="margin-top:12px"><button class="btn" onclick="this.closest('dialog').close()">Fermer</button></p>`;
+  dlg.showModal();
+};
+document.getElementById('fichier').onchange = async e => {
+  const f = e.target.files[0]; if (!f) return;
+  try { charger(JSON.parse(await f.text())); } catch (err) { alert('Fichier illisible : ' + err.message); }
+};
+
+charger(window.RESUME);
+</script>
+</body>
+</html>
