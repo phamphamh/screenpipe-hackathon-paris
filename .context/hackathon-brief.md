@@ -543,3 +543,16 @@ JEPA est une option pour choisir les images, uniquement s'il reste du temps.
 - **V-JEPA 2 (Meta)** : les poids sont publics sur Hugging Face (`facebook/vjepa2-vitl-fpc64-256`, 326 000 téléchargements). C'est un encodeur vidéo généraliste, non entraîné sur des écrans. Usage possible : des embeddings de courts clips pour repérer les changements de tâche ou dédoublonner. **Pas testé sur le Mac.**
 - **Computer use dans screenpipe** : l'API `/elements` propose déjà un mode `computer-use` / `automation` qui renvoie les boutons, leur état et leur position pour les agents (`routes/elements.rs:240`, `cli/mod.rs:167`). screenpipe donne donc déjà la carte de l'écran aux agents. Je n'ai pas vérifié s'il exécute lui-même des clics.
 - Autres briques repérées dans le dépôt : `screenpipe-rfdetr-mlx` (un modèle de vision local sur MLX) et `screenpipe-semantic`. Ce qu'elles font exactement n'a pas été lu.
+
+## 15. Idée de l'équipe : une marketplace des données des gens (16/10 soir)
+**Avis**
+- La version « vendre ses captures » est risquée face à ce jury.
+  - Elle contredit le positionnement de screenpipe (« tout reste en local, on ne voit pas tes données »).
+  - Les écrans contiennent les données d'autres personnes (mails, clients, collègues), qui n'ont pas consenti. C'est le RGPD, et la CNIL a déjà sanctionné les captures d'écran au travail.
+  - Elle ne colle à aucun des 3 tracks.
+- **Le marché existe quand même** : les labos qui entraînent des agents de computer use achètent des démonstrations de vraies tâches. Les jeux publics (AgentNet, VideoCUA, computer-use-large) montrent que ce type de données a de la valeur, et aucun jeu de « vraie journée » n'est public (section 10).
+- **Version qui passe** : une marketplace de **workflows et de skills**, pas de données brutes.
+  - On partage la procédure relue et anonymisée (étapes, apps, exceptions), jamais les captures.
+  - Ça colle au track 3 (« un workflow que quelqu'un d'autre peut utiliser »).
+  - Option « données » : un don volontaire de journées anonymisées, relues par la personne, pour la recherche.
+- **Non vérifié** : si screenpipe a encore son « pipe store », ce qui en ferait le canal naturel.
