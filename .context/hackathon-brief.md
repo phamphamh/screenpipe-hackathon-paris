@@ -629,3 +629,33 @@ Le pitch : la découverte et la construction se font à distance, plus besoin d'
 - Moteur de transcription : Whisper local configuré au démarrage, mais les journaux du soir parlent de « Deepgram batch ». **Non vérifié** : si le son part alors dans le cloud.
 - **Non vérifié** : si l'audio en attente est perdu quand on quitte l'app. Prudence : ne pas quitter ni redémarrer screenpipe avant qu'il ait rattrapé son retard.
 - Intérêt pour le pitch : une mesure de fiabilité concrète (« l'app dit ok, mais 2 h de son n'existent que dans la RAM »).
+
+## 21. L'idée retenue de 20h-21h, briefée par Youssef : « le FDE en produit, clé en main » (16/10, 21h20)
+**L'idée, dans ses mots** : un produit par-dessus screenpipe, hyper simple pour les entreprises. Un forward deployed engineer « as a product ».
+1. On onboarde la boîte et on lui pose des questions.
+2. On installe screenpipe chez tous les salariés pendant quelques jours ou une semaine.
+3. On rend tout : insights, data visualisation, « un site de fou ». Comment utiliser l'IA, quoi automatiser, toutes les connaissances sur la boîte. **Un genre de « Spotify Wrapped » de l'entreprise.**
+4. Si on a le temps : construire des workflows pour eux.
+C'est une boîte de service, mais vendue comme un produit. Cette idée prolonge la section 18 (FDE virtuel) et le volet 2 de la section 11 (« une semaine suffit »).
+
+**Pourquoi c'est fort**
+- C'est le discours de screenpipe à l'ouverture, mot pour mot : les entreprises paient des ingénieurs pour regarder les salariés travailler (section 19).
+- Leur offre entreprise (Map → Install → Test → Improve → Deploy) est faite à la main. Nous, on automatise le « Map » et le livrable.
+- Le marché du task mining existe (UiPath, Celonis, Mimica, Skan) : UiPath recommande environ 2 semaines pour 2 à 3 utilisateurs. Notre promesse : une semaine, sans consultant sur place.
+
+**Le risque n°1 : le RGPD.** « screenpipe chez tous les salariés », c'est exactement ce que la CNIL sanctionne (section 11). Il faut donc que le mode campagne soit **au cœur du produit**, pas une option. C'est aussi l'argument de vente en Europe.
+- Durée limitée et annoncée. Seulement des volontaires.
+- **Chaque salarié relit son propre résumé avant de le partager.** Aucune capture brute ne quitte sa machine.
+- Le rapport ne montre que des chiffres agrégés au niveau de l'équipe, sans score par personne.
+- Tout est supprimé à la fin de la campagne.
+
+**La coupe pour dimanche (track 1)**
+1. **Sur chaque machine** : le dérush local (les 20 % utiles), puis un résumé JSON (tâches répétées, étapes, apps, durée, fréquence, exceptions) que la personne relit et valide.
+2. **La fusion** : les résumés validés donnent la vue entreprise. On y voit les tâches communes à plusieurs personnes, les heures par semaine (fréquence × durée), le classement de ce qui vaut le coup d'être automatisé, et qui maîtrise quel outil.
+3. **Le « Wrapped »** : un site qui se lit comme une histoire, slide par slide. Chaque chiffre est relié à sa preuve, et ce qui est observé est séparé de ce qui est supposé.
+4. Bonus : une tâche transformée en skill pour Claude ou Codex.
+**Les données de démo** : nos propres Mac. L'équipe de 3 à 5 personnes devient « l'entreprise », et on capture pendant tout le hackathon. On complète avec des données synthétiques (autorisées). Le premier « client » peut être une autre équipe (section 18).
+
+**Non vérifié**
+- ce que screenpipe Business ou Enterprise propose déjà en vue équipe : il existe un module `screenpipe-team-memory`, à lire avant de coder ;
+- le prix d'une mission de FDE, pour la comparaison dans le pitch : à sourcer, ne pas l'inventer.
