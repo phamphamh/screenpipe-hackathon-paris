@@ -590,3 +590,26 @@ Vitesse : V-JEPA 2 environ 10 ms par capture, SigLIP environ 4 ms (GPU du Mac, d
   - Ça contredit le positionnement de screenpipe et ce que Louis met en avant : le projet qu'il a étoilé (HiddenSteps) dit « pas de vue manager, jamais », chaque chiffre relié à un vrai événement.
 - **Version qui passe** : personnel uniquement — « où est passée ma journée », chaque chiffre relié à une capture réelle, aucun score inventé, provenance visible, l'utilisateur peut corriger. C'est la vue de revue du dérush (track 1), pas un projet à part.
 - Si « trackeur » veut dire la performance de screenpipe lui-même (CPU, batterie) : c'est le `bench/` et le correctif double écran, une preuve pour le pitch, pas un track.
+
+## 18. Idée de l'équipe : un FDE virtuel (16/10 soir)
+Le pitch : la découverte et la construction se font à distance, plus besoin d'aller chez le client en physique.
+**Avis**
+- C'est la narrative la plus forte des idées d'équipe, à condition de la traiter comme une histoire, pas comme un scope (un FDE virtuel, c'est six métiers).
+- Elle tombe pile :
+  - c'est le pitch YC de screenpipe côté entreprise (« turn your company's computer work into AI agents ») ;
+  - ils recrutent un Forward Deployed Engineer, et leur flux entreprise (Map → Install → Test → Improve → Deploy) est humain et coûteux ; leur page entreprise reconnaît que les SOP générées « ne sont pas des automatisations testées » ;
+  - argument Europe : pas de consultant qui regarde les écrans du client à distance, données en local, engagement limité dans le temps (mode campagne, section 11).
+- Elle ramasse les autres idées : la marketplace = fin de mission (publier et installer la skill validée), le trackeur = revue de mission.
+
+**La coupe** : un client, un workflow, une boucle complète, mesuré. Promesse défendable : « la découverte et la construction se font à distance ; le FDE humain valide avant toute action » — pas « le FDE ne se déplace plus », la présence physique servant la confiance et l'accès.
+
+**La boucle**
+1. Engagement : une machine volontaire, périmètre déclaré façon en-tête de pipe, consentement visible.
+2. Map : le dérush sur l'historique du client → tâches répétées avec preuves, séparées des suppositions.
+3. Revue : le FDE choisit une tâche.
+4. Construction + test : skill/pipe, 2e entrée + cas d'échec, frontière explicite entre texte généré et code exécuté.
+5. Déploiement : journal d'audit, approbations, temps gagné calculé (fréquence × durée).
+
+**Track au rendu** : track 2 si une tâche s'exécute vraiment de bout en bout dimanche ; sinon track 1 (interface de revue de déploiement), la narrative FDE restant le pitch.
+**Idée de démo** : le premier client est une autre équipe du hackathon (« personne n'est allé les voir »).
+**Non vérifié** : comment Louis verrait le projet (un copilote pour ses FDE ?) — à sonder aux office hours de samedi 18h.
