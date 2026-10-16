@@ -1,0 +1,72 @@
+diff --git a/crates/screenpipe-engine/src/focus_aware_controller.rs b/crates/screenpipe-engine/src/focus_aware_controller.rs
+index 21fe1b0..be827e7 100644
+--- a/crates/screenpipe-engine/src/focus_aware_controller.rs
++++ b/crates/screenpipe-engine/src/focus_aware_controller.rs
+@@ -273,18 +273,28 @@ impl FocusAwareController {
+             .ok()
+             .map(|t| t.elapsed())
+             .unwrap_or_else(|| Duration::from_secs(0));
+-        if last_event_elapsed >= STALE_FOCUS_CUTOFF {
+-            return CaptureState::Active;
+-        }
+-
+-        // If focus is Unknown (no data yet), everything is Active — safest
+-        // fallback. Preserves existing behaviour when the tracker can't
+-        // resolve the cursor to a monitor.
+-        let current = self
+-            .current_focus
+-            .lock()
+-            .expect("focus-aware current_focus mutex poisoned")
+-            .clone();
++        //
++        // A quiet stream is not a stalled tracker, though: events only flow
++        // when focus *changes*, so working on one display for 30s makes every
++        // other display Active again — full OCR captures of a screen nobody is
++        // looking at, with no app attribution. Same trap as
++        // `hosts_focus_for_identity`: pull the tracker's own resolution (its
++        // safety-net poll keeps it fresh) and only fail open when it cannot
++        // resolve anything.
++        let current = if last_event_elapsed >= STALE_FOCUS_CUTOFF {
++            match self.tracker.current() {
++                Some(resolved) => Some(resolved),
++                None => return CaptureState::Active,
++            }
++        } else {
++            // If focus is Unknown (no data yet), everything is Active — safest
++            // fallback. Preserves existing behaviour when the tracker can't
++            // resolve the cursor to a monitor.
++            self.current_focus
++                .lock()
++                .expect("focus-aware current_focus mutex poisoned")
++                .clone()
++        };
+         let Some(current_identity) = current else {
+             return CaptureState::Active;
+         };
+@@ -596,6 +606,26 @@ mod tests {
+         assert!(!ctrl.hosts_focus_for_identity(&other));
+     }
+ 
++    /// Two displays, user parked on one for a minute: the event stream is
++    /// quiet but the tracker still resolves the focused display. The other
++    /// display must not be promoted back to Active by the stale fallback —
++    /// that re-enabled full captures of an unwatched screen on every
++    /// keypress and scroll.
++    #[tokio::test]
++    async fn quiet_stream_keeps_unfocused_monitor_out_of_active() {
++        let focused = MonitorIdentity::new(1, Some("Dell_3840x2160_0,0".to_string()));
++        let other = MonitorIdentity::new(2, Some("LG_1920x1080_3840,0".to_string()));
++        let tracker: Arc<dyn FocusTracker> =
++            Arc::new(StaticFocusTracker::resolving(focused.clone()));
++        let ctrl = FocusAwareController::new(tracker);
++
++        ctrl.set_focus_identity_for_test(focused.clone());
++        ctrl.backdate_last_event_for_test(Instant::now() - Duration::from_secs(60));
++
++        assert_eq!(ctrl.state_for_identity(&focused), CaptureState::Active);
++        assert_ne!(ctrl.state_for_identity(&other), CaptureState::Active);
++    }
++
+     #[tokio::test]
+     async fn stable_identity_matches_when_runtime_ids_differ() {
+         let ctrl = make_ctrl();

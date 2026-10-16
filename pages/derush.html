@@ -1,0 +1,319 @@
+<title>Dérush de journée</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:ital,wght@0,500;1,400&display=swap">
+<style>
+/* Layout : une colonne éditoriale, deux schémas de flux A puis B, monochrome à la manière de screenpipe avec un seul signal "phosphore" pour ce qui passe de l'humain au modèle. */
+:root {
+  --bg: #f6f7f6;
+  --surface: #ffffff;
+  --fg: #141615;
+  --muted: #5d6460;
+  --line: #d4d9d6;
+  --signal: #0a8f5a;
+  --signal-soft: #e3f3eb;
+  --warn: #a8551b;
+  --warn-soft: #f7ebe1;
+  --display: "IBM Plex Serif", Georgia, serif;
+  --body: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1110; --surface: #161918; --fg: #e8ebe9; --muted: #98a19c; --line: #2b302d;
+    --signal: #4fd69a; --signal-soft: #15291f; --warn: #e3965d; --warn-soft: #2b1d13; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1110; --surface: #161918; --fg: #e8ebe9; --muted: #98a19c; --line: #2b302d;
+  --signal: #4fd69a; --signal-soft: #15291f; --warn: #e3965d; --warn-soft: #2b1d13; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 16px; line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 40px 72px;
+}
+.wrap { max-width: 980px; margin: 0 auto; display: grid; gap: 64px; }
+h1, h2 { font-family: var(--display); font-weight: 500; text-wrap: balance; margin: 0; letter-spacing: -0.01em; }
+h1 { font-size: clamp(2rem, 5vw, 3.1rem); line-height: 1.08; }
+h2 { font-size: clamp(1.4rem, 3vw, 1.85rem); line-height: 1.2; }
+h3 { font-size: 0.95rem; font-weight: 600; margin: 0; }
+p { margin: 0; max-width: 65ch; }
+.eyebrow { font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.lede { font-size: 1.1rem; color: var(--muted); }
+.lede em { font-family: var(--display); font-style: italic; color: var(--fg); }
+header { display: grid; gap: 18px; }
+section { display: grid; gap: 22px; }
+.sechead { display: grid; gap: 8px; }
+
+/* chiffres mesurés */
+.figures { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.fig { padding: 18px 16px 18px 0; display: grid; gap: 6px; align-content: start; }
+.fig + .fig { padding-left: 16px; border-left: 1px solid var(--line); }
+.fig b { font-family: var(--mono); font-weight: 500; font-size: 1.7rem; font-variant-numeric: tabular-nums; line-height: 1; }
+.fig b.sig { color: var(--signal); }
+.fig span { font-size: 0.86rem; color: var(--muted); }
+.source { font-family: var(--mono); font-size: 0.74rem; color: var(--muted); }
+
+/* flux */
+.flow { display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: 0; align-items: stretch; }
+.stage { position: relative; background: var(--surface); border: 1px solid var(--line); padding: 16px 16px 14px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.stage + .stage { border-left: none; }
+.stage .num { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); }
+.stage p { font-size: 0.9rem; color: var(--muted); }
+.stage .tag { justify-self: start; font-family: var(--mono); font-size: 0.72rem; padding: 3px 7px; border: 1px solid currentColor; }
+.tag.pain { color: var(--warn); background: var(--warn-soft); }
+.tag.new { color: var(--signal); background: var(--signal-soft); }
+.stage::after { content: "→"; position: absolute; right: -9px; top: 14px; width: 18px; height: 18px; display: grid; place-items: center; background: var(--bg); color: var(--muted); font-family: var(--mono); font-size: 0.8rem; z-index: 1; }
+.stage:last-child::after { display: none; }
+.stage.model { border-color: var(--signal); }
+.stage.model h3 { color: var(--signal); }
+.research { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); border-top: 1px dashed var(--line); padding-top: 8px; }
+
+/* entonnoir */
+.funnel { display: grid; gap: 8px; }
+.bar { display: grid; grid-template-columns: 11rem minmax(0, 1fr) 5.5rem; gap: 12px; align-items: center; font-size: 0.9rem; }
+.bar .track { height: 14px; background: var(--line); position: relative; }
+.bar .fill { position: absolute; inset: 0 auto 0 0; background: var(--muted); }
+.bar.keep .fill { background: var(--signal); }
+.bar .val { font-family: var(--mono); font-variant-numeric: tabular-nums; text-align: right; font-size: 0.85rem; }
+
+/* mémoire en étages */
+.tiers { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.tier { border-top: 2px solid var(--fg); padding-top: 12px; display: grid; gap: 8px; align-content: start; }
+.tier:first-child { border-top-color: var(--signal); }
+.tier .grain { font-family: var(--mono); font-size: 0.75rem; color: var(--muted); }
+.tier p { font-size: 0.92rem; }
+
+/* tableau */
+.tablewrap { overflow-x: auto; border: 1px solid var(--line); background: var(--surface); }
+table { border-collapse: collapse; width: 100%; min-width: 640px; font-size: 0.9rem; }
+th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-family: var(--mono); font-weight: 500; font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+tr:last-child td { border-bottom: none; }
+.pill { font-family: var(--mono); font-size: 0.72rem; padding: 2px 7px; border: 1px solid currentColor; white-space: nowrap; }
+.pill.ok { color: var(--signal); }
+.pill.todo { color: var(--muted); }
+.pill.warn { color: var(--warn); }
+
+/* PR */
+.prs { display: grid; gap: 0; border-top: 1px solid var(--line); }
+.pr { display: grid; grid-template-columns: 3.2rem minmax(0, 1fr) minmax(0, 15rem); gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--line); align-items: start; }
+.pr .k { font-family: var(--mono); color: var(--signal); font-size: 0.9rem; }
+.pr p { font-size: 0.92rem; color: var(--muted); }
+.pr .metric { font-family: var(--mono); font-size: 0.78rem; color: var(--muted); }
+footer { font-size: 0.85rem; color: var(--muted); display: grid; gap: 6px; border-top: 1px solid var(--line); padding-top: 18px; }
+footer a { color: inherit; }
+
+@media (max-width: 760px) {
+  .figures { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .fig:nth-child(3) { padding-left: 0; border-left: none; }
+  .fig:nth-child(n+3) { border-top: 1px solid var(--line); }
+  .flow { grid-template-columns: minmax(0, 1fr); }
+  .stage + .stage { border-left: 1px solid var(--line); border-top: none; }
+  .stage::after { content: "↓"; right: auto; left: 16px; top: auto; bottom: -9px; }
+  .tiers { grid-template-columns: minmax(0, 1fr); }
+  .bar { grid-template-columns: 7.5rem minmax(0, 1fr) 4.5rem; }
+  .pr { grid-template-columns: 2.4rem minmax(0, 1fr); }
+  .pr .metric { grid-column: 2; }
+}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Hackathon screenpipe × 42 Paris · proposition</div>
+    <h1>Aujourd’hui, l’IA relit toute ta journée. Demain, elle lit ce qui compte.</h1>
+    <p class="lede">screenpipe garde tout, et c’est sa force. Mais avant d’envoyer ta journée à un modèle, personne ne fait le tri. Le montage vidéo a appris à couper les temps morts : on applique la même chose à l’écran. <em>Le dérush de ta journée.</em></p>
+  </header>
+
+  <section>
+    <div class="sechead">
+      <div class="eyebrow">Mesuré sur un vrai Mac, deux écrans, 16 octobre</div>
+      <h2>Ce qu’on a vu dans les données</h2>
+    </div>
+    <div class="figures">
+      <div class="fig"><b>144 k</b><span>tokens de texte capturés en 13 minutes</span></div>
+      <div class="fig"><b class="sig">14 %</b><span>de ce texte est vraiment nouveau</span></div>
+      <div class="fig"><b>130 / 287</b><span>captures viennent de l’écran qu’on ne regarde pas</span></div>
+      <div class="fig"><b>70 / 87</b><span>doublons exacts viennent de ce même écran</span></div>
+    </div>
+    <p class="source">Source : API locale screenpipe, /search et métadonnées des captures, 11h02 → 11h24. Échantillon court : à refaire sur des journées complètes.</p>
+  </section>
+
+  <section>
+    <div class="sechead">
+      <div class="eyebrow">État A · aujourd’hui</div>
+      <h2>Tout est capturé, tout est relu</h2>
+    </div>
+    <div class="flow" style="--n:4">
+      <div class="stage">
+        <span class="num">capture</span>
+        <h3>Une capture par action</h3>
+        <p>Clic, frappe, fin de scroll, changement de fenêtre, et une capture toutes les 30 s si rien ne bouge. Les deux écrans.</p>
+        <span class="tag pain">l’autre écran recapturé</span>
+      </div>
+      <div class="stage">
+        <span class="num">stockage</span>
+        <h3>Chaque capture gardée</h3>
+        <p>Texte d’accessibilité ou OCR, rangé tel quel. Une réponse d’IA qui s’écrit produit une rafale de captures.</p>
+        <span class="tag pain">87 doublons sur 287</span>
+      </div>
+      <div class="stage">
+        <span class="num">tâches IA</span>
+        <h3>Toutes les heures</h3>
+        <p>Les tâches programmées relisent l’historique brut, qu’il se soit passé quelque chose ou non. Le tri est confié au modèle, dans son prompt.</p>
+        <span class="tag pain">coût, batterie, bruit</span>
+      </div>
+      <div class="stage model">
+        <span class="num">agents</span>
+        <h3>Claude, Codex, Hermes</h3>
+        <p>Ils interrogent des milliers de captures presque identiques pour retrouver un fait.</p>
+        <span class="tag pain">contexte long et dilué</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sechead">
+      <div class="eyebrow">État B · la proposition</div>
+      <h2>Trier avant le modèle, pas dans le modèle</h2>
+      <p class="lede">Chaque étape s’appuie sur une méthode publiée, issue surtout de la vidéo en streaming et de la mémoire d’agents.</p>
+    </div>
+    <div class="flow" style="--n:5">
+      <div class="stage">
+        <span class="num">1 · capture sobre</span>
+        <h3>On capture ce qui change</h3>
+        <p>L’écran non regardé n’est recapturé que s’il a changé. Pendant qu’une IA écrit, une seule capture à la fin, puisque le chat est déjà lu depuis ses logs.</p>
+        <span class="tag new">nouveau</span>
+        <div class="research">Réutiliser les images proches : STC, CVPR 2026 · seuils adaptés à chaque app : FluxMem, CVPR 2026</div>
+      </div>
+      <div class="stage">
+        <span class="num">2 · moments</span>
+        <h3>Des moments, pas des captures</h3>
+        <p>Les captures proches sont fusionnées en un moment : début, fin, app, ce qui a changé. Un score dit si c’est un temps fort (on écrit, on envoie) ou un temps mort.</p>
+        <span class="tag new">nouveau</span>
+        <div class="research">Garder ce que l’historique ne couvre pas : NovaCov · découper sur la surprise : EM-LLM, ICLR 2025 · filtrer puis attribuer à une tâche : FOCAL, −60 % de tokens</div>
+      </div>
+      <div class="stage">
+        <span class="num">3 · mémoire en étages</span>
+        <h3>Détail récent, résumé ancien</h3>
+        <p>Les moments du jour en détail, la journée résumée, la semaine en faits et en workflows. L’ancien se compresse, il ne disparaît pas.</p>
+        <span class="tag new">nouveau</span>
+        <div class="research">Consolider seulement quand le budget est serré : arXiv 2607.17545 · H-MEM, EACL 2026 · consolidation pendant les temps morts : Letta sleep-time</div>
+      </div>
+      <div class="stage">
+        <span class="num">4 · déclenchement</span>
+        <h3>L’IA tourne quand il y a du neuf</h3>
+        <p>Une tâche se lance quand assez de moments forts se sont accumulés, pas à heure fixe.</p>
+        <span class="tag new">nouveau</span>
+        <div class="research">Les workflows screenpipe s’enchaînent déjà sur événement</div>
+      </div>
+      <div class="stage model">
+        <span class="num">5 · agents</span>
+        <h3>Ils lisent l’essentiel</h3>
+        <p>Les agents reçoivent des moments sourcés et des procédures, avec un lien vers la capture d’origine.</p>
+        <span class="tag new">contexte court</span>
+        <div class="research">Tâches extraites de traces : arXiv 2608.20319</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sechead">
+      <div class="eyebrow">Ce que le modèle reçoit, sur les 13 minutes mesurées</div>
+      <h2>Le même enregistrement, deux façons de le lire</h2>
+    </div>
+    <div class="funnel" role="img" aria-label="Texte envoyé au modèle : 577 000 caractères aujourd'hui, environ 81 000 caractères nouveaux.">
+      <div class="bar"><span>Aujourd’hui : tout</span><div class="track"><div class="fill" style="width:100%"></div></div><span class="val">577 k car.</span></div>
+      <div class="bar"><span>Sans l’écran non regardé</span><div class="track"><div class="fill" style="width:70.6%"></div></div><span class="val">408 k car.</span></div>
+      <div class="bar keep"><span>Seulement le nouveau</span><div class="track"><div class="fill" style="width:14%"></div></div><span class="val">81 k car.</span></div>
+    </div>
+    <p class="source">« Nouveau » = mots jamais vus plus tôt dans la session. C’est une borne : ça enlève les doublons, ça ne garantit pas que ce qui reste est important. À valider avec des questions réelles sur la journée.</p>
+  </section>
+
+  <section>
+    <div class="sechead">
+      <div class="eyebrow">Étape 3 en détail</div>
+      <h2>Une mémoire qui vieillit bien</h2>
+    </div>
+    <div class="tiers">
+      <div class="tier">
+        <span class="grain">aujourd’hui · moments</span>
+        <h3>Ce qui s’est passé</h3>
+        <p>Chaque moment avec sa durée, son app, son texte nouveau et la capture d’origine. C’est ce que lisent les agents pour la journée en cours.</p>
+      </div>
+      <div class="tier">
+        <span class="grain">hier et avant · journées</span>
+        <h3>Ce qui a compté</h3>
+        <p>Un résumé par journée, sourcé, construit hors ligne la nuit à partir des seuls temps forts.</p>
+      </div>
+      <div class="tier">
+        <span class="grain">semaines · faits et workflows</span>
+        <h3>Ce qui revient</h3>
+        <p>Les personnes, les projets, et les tâches répétées devenues des procédures qu’un agent peut suivre.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sechead">
+      <div class="eyebrow">Ce que la recherche dit aussi</div>
+      <h2>Quatre garde-fous</h2>
+    </div>
+    <div class="tiers">
+      <div class="tier">
+        <span class="grain">sans perte d’abord</span>
+        <h3>Enlever les doublons avant de résumer</h3>
+        <p>Un résumé perd de l’information. On commence par retirer ce qui se répète, et on ne résume que si le budget l’exige. Chaque moment garde un lien vers la capture d’origine.</p>
+      </div>
+      <div class="tier">
+        <span class="grain">la simplicité gagne souvent</span>
+        <h3>Battre une recherche simple</h3>
+        <p>Sur des journaux de vie, des mémoires sophistiquées ne font pas mieux qu’une recherche simple (LifeDialBench, 2026). On compare toujours à cette base.</p>
+      </div>
+      <div class="tier">
+        <span class="grain">l’écran n’est pas fiable</span>
+        <h3>Garder la provenance</h3>
+        <p>Une page web peut planter un faux souvenir. On note l’app, l’URL et si l’écran était regardé, et rien ne devient un fait sans une action de l’utilisateur.</p>
+      </div>
+    </div>
+    <p class="source">Le quatrième : aucun jeu de données public ne contient une vraie journée avec deux écrans et un chat IA. Le test se fera sur nos propres enregistrements, avec une trentaine de questions sur la journée.</p>
+  </section>
+
+  <section>
+    <div class="sechead">
+      <div class="eyebrow">Comment on prouve que c’est mieux</div>
+      <h2>Ce qu’on mesure avant et après</h2>
+    </div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Mesure</th><th>Pourquoi</th><th>État</th></tr></thead>
+        <tbody>
+          <tr><td>Texte envoyé au modèle par heure</td><td>Coût de l’IA et taille du contexte</td><td><span class="pill ok">mesuré sur 13 min</span></td></tr>
+          <tr><td>Captures par heure, par écran</td><td>Stockage et CPU</td><td><span class="pill ok">mesuré sur 22 min</span></td></tr>
+          <tr><td>Bonnes réponses à des questions sur la journée</td><td>Vérifier qu’on n’a rien jeté d’important</td><td><span class="pill todo">à mesurer</span></td></tr>
+          <tr><td>CPU et batterie pendant une journée</td><td>Priorité n° 1 de l’équipe screenpipe</td><td><span class="pill todo">à mesurer</span></td></tr>
+          <tr><td>Captures pendant qu’une IA écrit</td><td>Le chat est déjà lu depuis ses logs</td><td><span class="pill warn">hypothèse</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="sechead">
+      <div class="eyebrow">Pour le week-end</div>
+      <h2>Trois changements à proposer au dépôt</h2>
+    </div>
+    <div class="prs">
+      <div class="pr"><span class="k">PR 1</span><div><h3>L’écran non regardé n’est recapturé que s’il a changé</h3><p>Le plus petit changement, le gain le plus direct sur un setup à deux écrans.</p></div><span class="metric">plafond : jusqu’à −45 % de captures sur deux écrans</span></div>
+      <div class="pr"><span class="k">PR 2</span><div><h3>Les moments</h3><p>Fusionner les captures proches et exposer les moments aux agents, avec un score temps fort ou temps mort.</p></div><span class="metric">cible : ~80 % de texte en moins pour les agents</span></div>
+      <div class="pr"><span class="k">PR 3</span><div><h3>Les tâches IA se lancent sur nouveauté</h3><p>Une tâche ne tourne que s’il s’est passé quelque chose depuis son dernier passage.</p></div><span class="metric">cible : moins d’appels IA à vide</span></div>
+    </div>
+  </section>
+
+  <footer>
+    <span>Les cibles sont des ordres de grandeur tirés de 13 à 22 minutes de données : elles seront remesurées sur des journées complètes.</span>
+    <span>Références : STC (CVPR 2026) · FluxMem (CVPR 2026) · NovaCov (arXiv 2608.01169) · EM-LLM (arXiv 2407.09450) · FOCAL (arXiv 2604.19541) · Retain or Consolidate (arXiv 2607.17545) · H-MEM (EACL 2026) · LifeDialBench (arXiv 2604.11182) · loi du budget mémoire (arXiv 2606.20726) · induction de tâches (arXiv 2608.20319) · empoisonnement de mémoire (arXiv 2607.14611).</span>
+  </footer>
+</div>
