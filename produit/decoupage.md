@@ -119,7 +119,9 @@ Les champs `etapes`, `goulots` et `preuves` reprennent le vocabulaire de leur `o
 - **Cas d'échec à montrer dans la démo** : une tâche que l'outil classe à tort comme automatisable, que le relecteur corrige, et le classement qui change.
 - **2e entrée** : refaire tourner sur les données d'une autre personne, ou sur une journée synthétique.
 
-## 7. La répartition (à ajuster selon l'équipe)
+## 7. Les rôles possibles (rien d'imposé)
+Pas de chef de projet : chacun prend ce qu'il veut et le déclare dans `chantiers/<pseudo>.md` (voir le skill `equipe`). Le tableau ci-dessous sert seulement à voir les trous.
+
 | Rôle | Briques | Livrable de samedi midi |
 |---|---|---|
 | **Data** (Youssef + Claude) | A + B | `resume-*.json` produit sur 2 vraies machines |
