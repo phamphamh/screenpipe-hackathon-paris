@@ -613,3 +613,10 @@ Le pitch : la découverte et la construction se font à distance, plus besoin d'
 **Track au rendu** : track 2 si une tâche s'exécute vraiment de bout en bout dimanche ; sinon track 1 (interface de revue de déploiement), la narrative FDE restant le pitch.
 **Idée de démo** : le premier client est une autre équipe du hackathon (« personne n'est allé les voir »).
 **Non vérifié** : comment Louis verrait le projet (un copilote pour ses FDE ?) — à sonder aux office hours de samedi 18h.
+
+## 19. Ce que screenpipe a dit à l'ouverture (micro du Mac, 16/10 18h44–18h48, transcription de mauvaise qualité)
+- Le problème qu'ils résolvent : les entreprises veulent utiliser l'IA pour travailler plus, mais l'IA ne sait pas comment les gens travaillent vraiment. Aujourd'hui, elles paient des ingénieurs pour regarder les salariés faire (exemple cité : le traitement des factures). screenpipe capture ce contexte en continu pour le transformer en agents.
+- Le track 1, dans leurs mots : trouver les tâches répétées, les découper très précisément en étapes, avec **la logique des décisions à prendre**.
+- Ils ont rappelé le mois gratuit de Business et la possibilité d'arrêter l'enregistrement.
+- Idée entendue dans la salle : quand on accompagne une entreprise sur l'IA, screenpipe montre « des trucs qu'ils ne m'ont pas dit ». Et quelques jours de capture suffisent, puisque les process ne changent pas tous les jours (même intuition que le volet 2 de Youssef).
+- **Le briefing de 19h (critères du jury) n'est pas encore transcrit.** Le son est enregistré, mais screenpipe le transcrit par paquets, plus tard. Les conversations privées de la salle n'ont pas été recopiées ici.
