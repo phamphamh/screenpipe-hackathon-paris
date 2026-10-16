@@ -7,7 +7,7 @@ Deux pages, sans installation : **double-clique sur le fichier** pour l'ouvrir d
 | `relecture.html` | C | Le salarié relit son résumé avant de le partager : masquer une app, renommer, corriger fréquence ou durée, supprimer une étape, retirer une tâche, anonymiser un email, un montant ou un nom de client. « Voir ce qui part » montre le JSON exact. « Valider et partager » télécharge `resume-valide-<personne>.json`. |
 | `wrapped.html` | E | Le Wrapped du dirigeant, en 10 slides (flèches du clavier, swipe, ou `#4` dans l'URL). Chaque chiffre souligné ouvre sa preuve (le calcul et les moments sources). Impression = PDF (une slide par page). |
 
-Données inventées : `donnees/resume-exemple.js` (format de la brique B, repris de `labs/phamphamh/resume/exemple-resume.json`, avec une tâche sensible en plus) et `donnees/insights-exemple.js`.
+Données inventées : `exemples/resume-exemple.js` (format de la brique B, repris de `labs/phamphamh/resume/exemple-resume.json`, avec une tâche sensible en plus) et `exemples/insights-exemple.js`.
 Pour tester de vraies données : bouton « Ouvrir un autre resume.json » ou « Charger un insights.json » en haut de la page.
 
 ## Règles déjà appliquées dans le front

@@ -1,0 +1,378 @@
+{
+ "fictif": true,
+ "entreprise": {
+  "nom": "Maison Lumen (fictive)",
+  "secteur": "distribution de luminaires, 40 personnes",
+  "cout_horaire_eur": 45
+ },
+ "campagne": {
+  "nom": "Semaine test",
+  "debut": "2026-10-12",
+  "fin": "2026-10-16",
+  "suppression_prevue": "2026-10-23"
+ },
+ "personnes": {
+  "invitees": 6,
+  "participantes": 5,
+  "validees": 5
+ },
+ "heures_captees": 148,
+ "nb_apps": 23,
+ "tri_80_20": {
+  "captures_regardees": 61200,
+  "captures_gardees": 16400
+ },
+ "temps_par_categorie": [
+  {
+   "categorie": "Relances et suivi clients",
+   "heures_semaine": 31
+  },
+  {
+   "categorie": "Saisie et reporting",
+   "heures_semaine": 27
+  },
+  {
+   "categorie": "Échanges internes",
+   "heures_semaine": 24
+  },
+  {
+   "categorie": "Devis et commandes",
+   "heures_semaine": 22
+  },
+  {
+   "categorie": "Rédaction avec l'IA",
+   "heures_semaine": 9
+  },
+  {
+   "categorie": "Autre",
+   "heures_semaine": 35
+  }
+ ],
+ "temps_par_app": [
+  {
+   "app": "Gmail",
+   "heures_semaine": 34
+  },
+  {
+   "app": "HubSpot",
+   "heures_semaine": 26
+  },
+  {
+   "app": "Google Sheets",
+   "heures_semaine": 21
+  },
+  {
+   "app": "Slack",
+   "heures_semaine": 18
+  },
+  {
+   "app": "Sage",
+   "heures_semaine": 14
+  },
+  {
+   "app": "ChatGPT",
+   "heures_semaine": 6
+  }
+ ],
+ "taches": [
+  {
+   "id": "t1",
+   "titre": "Relancer un client sans réponse à un devis",
+   "personnes": 4,
+   "frequence_par_semaine": 38,
+   "duree_moyenne_min": 8,
+   "apps": [
+    "HubSpot",
+    "Gmail"
+   ],
+   "etapes": [
+    {
+     "type": "input",
+     "texte": "Repérer les devis sans réponse depuis 7 jours",
+     "app": "HubSpot",
+     "statut": "observé"
+    },
+    {
+     "type": "action",
+     "texte": "Copier le nom du contact et le montant du devis",
+     "app": "HubSpot",
+     "statut": "observé"
+    },
+    {
+     "type": "output",
+     "texte": "Envoyer une relance à partir d'un modèle de mail",
+     "app": "Gmail",
+     "statut": "observé"
+    },
+    {
+     "type": "decision",
+     "texte": "Ne pas relancer si le client a répondu entre-temps",
+     "app": "Gmail",
+     "statut": "supposé"
+    }
+   ],
+   "exceptions": [
+    "contact sans email : appel téléphonique",
+    "devis de plus de 20 000 € : relance par le gérant"
+   ],
+   "goulots": [
+    {
+     "type": "switching",
+     "detail": "copier-coller HubSpot vers Gmail à chaque relance"
+    }
+   ],
+   "score_automatisation": 84,
+   "pourquoi": "mêmes étapes à chaque fois, une seule décision simple",
+   "confiance": 0.8,
+   "statut": "observé",
+   "preuves": [
+    {
+     "debut": "2026-10-13T09:12:00+02:00",
+     "fin": "2026-10-13T09:20:00+02:00",
+     "app": "HubSpot",
+     "personne": "anonyme-1"
+    },
+    {
+     "debut": "2026-10-14T10:41:00+02:00",
+     "fin": "2026-10-14T10:48:00+02:00",
+     "app": "Gmail",
+     "personne": "anonyme-3"
+    },
+    {
+     "debut": "2026-10-15T14:05:00+02:00",
+     "fin": "2026-10-15T14:14:00+02:00",
+     "app": "HubSpot",
+     "personne": "anonyme-4"
+    }
+   ]
+  },
+  {
+   "id": "t2",
+   "titre": "Ressaisir une commande validée dans Sage",
+   "personnes": 3,
+   "frequence_par_semaine": 45,
+   "duree_moyenne_min": 6,
+   "apps": [
+    "Gmail",
+    "Sage"
+   ],
+   "etapes": [
+    {
+     "type": "input",
+     "texte": "Ouvrir le bon de commande reçu en pièce jointe",
+     "app": "Gmail",
+     "statut": "observé"
+    },
+    {
+     "type": "action",
+     "texte": "Recopier les lignes de produits et les quantités",
+     "app": "Sage",
+     "statut": "observé"
+    },
+    {
+     "type": "check",
+     "texte": "Vérifier le total avec le bon de commande",
+     "app": "Sage",
+     "statut": "observé"
+    }
+   ],
+   "exceptions": [
+    "référence produit inconnue : demande au commercial sur Slack"
+   ],
+   "goulots": [
+    {
+     "type": "rework",
+     "detail": "erreurs de saisie corrigées après coup"
+    }
+   ],
+   "score_automatisation": 78,
+   "pourquoi": "copie d'un document structuré vers un logiciel, avec un contrôle simple",
+   "confiance": 0.75,
+   "statut": "observé",
+   "preuves": [
+    {
+     "debut": "2026-10-13T11:02:00+02:00",
+     "fin": "2026-10-13T11:08:00+02:00",
+     "app": "Sage",
+     "personne": "anonyme-2"
+    },
+    {
+     "debut": "2026-10-16T08:50:00+02:00",
+     "fin": "2026-10-16T08:57:00+02:00",
+     "app": "Sage",
+     "personne": "anonyme-5"
+    }
+   ]
+  },
+  {
+   "id": "t3",
+   "titre": "Mettre à jour le tableau de suivi hebdomadaire",
+   "personnes": 3,
+   "frequence_par_semaine": 3,
+   "duree_moyenne_min": 55,
+   "apps": [
+    "HubSpot",
+    "Google Sheets",
+    "Slack"
+   ],
+   "etapes": [
+    {
+     "type": "input",
+     "texte": "Exporter les ventes de la semaine",
+     "app": "HubSpot",
+     "statut": "observé"
+    },
+    {
+     "type": "action",
+     "texte": "Coller les données et recalculer les totaux",
+     "app": "Google Sheets",
+     "statut": "observé"
+    },
+    {
+     "type": "output",
+     "texte": "Poster le résumé dans le canal de l'équipe",
+     "app": "Slack",
+     "statut": "observé"
+    }
+   ],
+   "exceptions": [],
+   "goulots": [
+    {
+     "type": "rework",
+     "detail": "formules cassées après le collage, refaites à la main"
+    }
+   ],
+   "score_automatisation": 70,
+   "pourquoi": "export et calcul répétitifs ; le commentaire reste humain",
+   "confiance": 0.7,
+   "statut": "observé",
+   "preuves": [
+    {
+     "debut": "2026-10-16T16:05:00+02:00",
+     "fin": "2026-10-16T17:00:00+02:00",
+     "app": "Google Sheets",
+     "personne": "anonyme-1"
+    }
+   ]
+  },
+  {
+   "id": "t4",
+   "titre": "Répondre aux demandes de disponibilité produit",
+   "personnes": 5,
+   "frequence_par_semaine": 60,
+   "duree_moyenne_min": 4,
+   "apps": [
+    "Gmail",
+    "Sage",
+    "Slack"
+   ],
+   "etapes": [
+    {
+     "type": "input",
+     "texte": "Lire la demande du client",
+     "app": "Gmail",
+     "statut": "observé"
+    },
+    {
+     "type": "action",
+     "texte": "Chercher le stock de la référence",
+     "app": "Sage",
+     "statut": "observé"
+    },
+    {
+     "type": "decision",
+     "texte": "Si le stock est bas, demander le délai au fournisseur",
+     "app": "Slack",
+     "statut": "supposé"
+    },
+    {
+     "type": "output",
+     "texte": "Répondre au client",
+     "app": "Gmail",
+     "statut": "observé"
+    }
+   ],
+   "exceptions": [
+    "produit sur mesure : devis à faire"
+   ],
+   "goulots": [
+    {
+     "type": "waiting",
+     "detail": "attente de la réponse du fournisseur, souvent plus d'une demi-journée"
+    }
+   ],
+   "score_automatisation": 62,
+   "pourquoi": "la recherche de stock s'automatise ; la réponse au client demande souvent un jugement",
+   "confiance": 0.6,
+   "statut": "estimé",
+   "preuves": [
+    {
+     "debut": "2026-10-14T15:30:00+02:00",
+     "fin": "2026-10-14T15:34:00+02:00",
+     "app": "Gmail",
+     "personne": "anonyme-2"
+    }
+   ]
+  },
+  {
+   "id": "t5",
+   "titre": "Préparer la paie des intérimaires",
+   "personnes": 1,
+   "frequence_par_semaine": 1,
+   "duree_moyenne_min": 90,
+   "apps": [
+    "Google Sheets",
+    "Sage"
+   ],
+   "etapes": [],
+   "exceptions": [],
+   "goulots": [],
+   "score_automatisation": 55,
+   "pourquoi": "une seule personne concernée",
+   "confiance": 0.5,
+   "statut": "estimé",
+   "preuves": []
+  }
+ ],
+ "goulots": [
+  {
+   "type": "switching",
+   "detail": "allers-retours entre HubSpot et Gmail",
+   "heures_semaine": 6.5
+  },
+  {
+   "type": "waiting",
+   "detail": "attente des réponses fournisseurs",
+   "heures_semaine": 4
+  },
+  {
+   "type": "rework",
+   "detail": "corrections après saisie ou collage",
+   "heures_semaine": 3.5
+  }
+ ],
+ "usage_ia": [
+  {
+   "outil": "ChatGPT",
+   "personnes": 4,
+   "heures_semaine": 6,
+   "usages": [
+    "reformuler des mails",
+    "résumer des appels"
+   ]
+  },
+  {
+   "outil": "Claude",
+   "personnes": 1,
+   "heures_semaine": 3,
+   "usages": [
+    "rédaction"
+   ]
+  }
+ ],
+ "questions_ouvertes": [
+  "Les relances au-dessus de 20 000 € suivent-elles une règle écrite ?",
+  "La tâche « disponibilité produit » est mesurée sur une seule semaine : à confirmer sur une deuxième.",
+  "Une partie du temps « Autre » (35 h) n'a pas pu être rattachée à une tâche."
+ ]
+}
