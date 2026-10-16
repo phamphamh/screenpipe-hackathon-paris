@@ -582,3 +582,11 @@ Vitesse : V-JEPA 2 environ 10 ms par capture, SigLIP environ 4 ms (GPU du Mac, d
 - « fenêtre » et « app » ne sont que des approximations de « tâche » ;
 - le texte n'a pas été comparé, car l'API refuse de le renvoyer en SQL pour les captures archivées ;
 - UI-JEPA d'Apple, entraîné sur des écrans, aurait peut-être fait mieux, mais ses poids ne sont pas publiés.
+
+## 17. Idée de l'équipe : un trackeur de performance (16/10 soir)
+**Avis**
+- La version « tableau de bord pour un manager » (scores par salarié) est à écarter.
+  - Le droit français est contre : la CNIL juge déjà les captures d'écran régulières disproportionnées et a sanctionné (40 000 € en 2024, 32 M€ contre Amazon, section 11).
+  - Ça contredit le positionnement de screenpipe et ce que Louis met en avant : le projet qu'il a étoilé (HiddenSteps) dit « pas de vue manager, jamais », chaque chiffre relié à un vrai événement.
+- **Version qui passe** : personnel uniquement — « où est passée ma journée », chaque chiffre relié à une capture réelle, aucun score inventé, provenance visible, l'utilisateur peut corriger. C'est la vue de revue du dérush (track 1), pas un projet à part.
+- Si « trackeur » veut dire la performance de screenpipe lui-même (CPU, batterie) : c'est le `bench/` et le correctif double écran, une preuve pour le pitch, pas un track.
