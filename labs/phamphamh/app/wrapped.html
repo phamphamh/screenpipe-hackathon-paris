@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wrapped</title>
+<link rel="stylesheet" href="/commun.css">
+<style>
+  html, body { height: 100%; overflow: hidden; background: #0d0b12; }
+  .barres { position: fixed; top: 14px; left: 18px; right: 18px; display: flex; gap: 5px; z-index: 20; }
+  .barres span { flex: 1; height: 3px; border-radius: 3px; background: rgba(255, 255, 255, .25); overflow: hidden; cursor: pointer; }
+  .barres span i { display: block; height: 100%; width: 0; background: #fff; transition: width .35s ease; }
+  .barres span.fait i { width: 100%; }
+  .outils { position: fixed; top: 28px; right: 18px; display: flex; gap: 8px; z-index: 20; }
+  .outils a, .outils button { border: 0; background: rgba(255, 255, 255, .14); color: #fff; font-size: 13px; font-weight: 600; padding: 7px 12px; border-radius: 999px; cursor: pointer; text-decoration: none; backdrop-filter: blur(6px); }
+  .outils a:hover, .outils button:hover { background: rgba(255, 255, 255, .26); }
+  .marque-w { position: fixed; top: 30px; left: 20px; z-index: 20; color: #fff; font-weight: 800; font-size: 14px; letter-spacing: -.01em; display: flex; gap: 8px; align-items: center; text-decoration: none; }
+  .marque-w i { width: 18px; height: 18px; border-radius: 6px; background: conic-gradient(from 200deg, #5b3df5, #ff5fa2, #d4f53c, #5b3df5); }
+
+  .slide { position: fixed; inset: 0; display: none; padding: 92px max(28px, 6vw) 64px; color: var(--t); background: var(--f); overflow: auto; }
+  .slide.active { display: flex; flex-direction: column; }
+  .slide .dedans { margin: auto 0; width: 100%; max-width: 1100px; align-self: center; }
+  .sur { font-size: 14px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; opacity: .7; margin-bottom: 14px; }
+  .gros { font-size: clamp(40px, 6.4vw, 92px); font-weight: 900; letter-spacing: -.045em; line-height: .98; margin: 0 0 20px; }
+  .gros em { font-family: var(--serif); font-weight: 400; font-style: italic; letter-spacing: -.02em; color: var(--a); }
+  .sous { font-size: clamp(17px, 1.6vw, 21px); opacity: .82; max-width: 720px; margin: 0; }
+  .apparait { opacity: 0; transform: translateY(18px); }
+  .active .apparait { animation: monte .6s cubic-bezier(.2, .8, .2, 1) forwards; animation-delay: calc(var(--d, 0) * 90ms + 80ms); }
+  @keyframes monte { to { opacity: 1; transform: none; } }
+
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-top: 44px; }
+  .stat { border-top: 2px solid currentColor; padding-top: 14px; }
+  .stat b { display: block; font-size: clamp(44px, 5.4vw, 80px); font-weight: 900; letter-spacing: -.05em; line-height: 1; color: var(--a); font-variant-numeric: tabular-nums; }
+  .stat span { font-size: 16px; opacity: .85; }
+
+  .chiffre { cursor: pointer; border-bottom: 2px dotted currentColor; text-decoration: none; color: inherit; }
+  .chiffre:hover { opacity: .8; }
+  .badge { display: inline-block; vertical-align: middle; font-size: 12px; font-weight: 700; letter-spacing: .02em; padding: 3px 9px; border-radius: 999px; background: rgba(255, 255, 255, .16); color: inherit; margin-left: 6px; white-space: nowrap; }
+  .badge.observe::before { content: "●  "; color: #5ee6a8; }
+  .badge.estime::before { content: "◐  "; color: #ffc65c; }
+  .clair .badge { background: rgba(0, 0, 0, .08); }
+  .clair .badge.observe::before { color: #1f9d6b; }
+  .clair .badge.estime::before { color: #b7791f; }
+
+  .barre-h { display: grid; grid-template-columns: minmax(140px, 260px) 1fr 110px; gap: 16px; align-items: center; margin: 12px 0; font-size: 18px; }
+  .barre-h .jauge { height: 30px; border-radius: 8px; background: rgba(255, 255, 255, .1); overflow: hidden; }
+  .clair .barre-h .jauge { background: rgba(0, 0, 0, .07); }
+  .barre-h .jauge i { display: block; height: 100%; width: 0; background: var(--a); border-radius: 8px; transition: width 1s cubic-bezier(.2, .8, .2, 1) .2s; }
+  .barre-h .val { text-align: right; font-weight: 800; font-variant-numeric: tabular-nums; }
+  .barre-h.gris .jauge i { background: currentColor; opacity: .3; }
+
+  .top { display: flex; flex-direction: column; gap: 14px; margin-top: 30px; }
+  .rang { display: grid; grid-template-columns: 80px 1fr auto; gap: 22px; align-items: center; padding: 20px 24px; border-radius: 20px; background: rgba(255, 255, 255, .08); }
+  .clair .rang { background: rgba(0, 0, 0, .06); }
+  .rang .n { font-family: var(--serif); font-size: 64px; line-height: .8; color: var(--a); }
+  .rang h3 { font-size: clamp(20px, 2.1vw, 28px); font-weight: 800; letter-spacing: -.02em; }
+  .rang p { margin: 4px 0 0; opacity: .75; font-size: 15px; }
+  .rang .euros { text-align: right; }
+  .rang .euros b { display: block; font-size: clamp(26px, 3vw, 40px); font-weight: 900; letter-spacing: -.04em; color: var(--a); }
+  .rang .euros span { font-size: 14px; opacity: .75; }
+
+  .flux { display: flex; flex-wrap: wrap; gap: 10px; align-items: stretch; margin: 30px 0 24px; }
+  .flux .pas { flex: 1 1 180px; padding: 16px; border-radius: 16px; background: rgba(255, 255, 255, .1); position: relative; }
+  .flux .pas small { display: block; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; opacity: .6; margin-bottom: 6px; }
+  .flux .pas p { margin: 0 0 10px; font-size: 16px; font-weight: 600; line-height: 1.3; }
+  .flux .pas .app { font-size: 13px; padding: 3px 8px; border-radius: 6px; background: var(--a); color: var(--f); font-weight: 700; }
+  .flux .pas.suppose { outline: 2px dashed rgba(255, 255, 255, .35); background: transparent; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+  .cols h4 { font-size: 14px; text-transform: uppercase; letter-spacing: .08em; opacity: .65; margin: 0 0 8px; }
+  .cols ul { margin: 0; padding-left: 18px; font-size: 16px; }
+
+  .grille { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; margin-top: 30px; }
+  .bloc { padding: 22px; border-radius: 20px; background: rgba(255, 255, 255, .1); }
+  .clair .bloc { background: rgba(0, 0, 0, .06); }
+  .bloc b.v { display: block; font-size: 44px; font-weight: 900; letter-spacing: -.05em; color: var(--a); line-height: 1; margin: 8px 0; }
+  .bloc h3 { font-size: 20px; font-weight: 800; }
+  .bloc p { margin: 6px 0 0; opacity: .78; font-size: 14.5px; }
+
+  .gain { display: flex; flex-wrap: wrap; gap: 36px; margin: 26px 0 8px; }
+  .gain b { display: block; font-size: clamp(44px, 5.6vw, 84px); font-weight: 900; letter-spacing: -.05em; line-height: 1; color: var(--a); }
+  .classement { margin-top: 26px; }
+  .classement .barre-h { grid-template-columns: 34px minmax(180px, 1fr) minmax(120px, 1.2fr) 120px; font-size: 16.5px; }
+  .classement .num { font-family: var(--serif); font-size: 28px; color: var(--a); }
+  .corrige { font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: #ffc65c; color: #2a1d00; margin-left: 6px; white-space: nowrap; }
+
+  .actions { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 34px; }
+  .actions button, .actions a { border: 0; border-radius: 999px; padding: 15px 24px; font-weight: 800; font-size: 16px; cursor: pointer; text-decoration: none; }
+  .actions .plein { background: var(--a); color: var(--f); }
+  .actions .creux { background: transparent; color: inherit; border: 2px solid currentColor; }
+
+  .tiroir { position: fixed; top: 0; right: 0; bottom: 0; width: min(440px, 100%); background: #fff; color: var(--encre); z-index: 40; transform: translateX(100%); transition: transform .3s cubic-bezier(.2, .8, .2, 1); padding: 28px; overflow: auto; }
+  .tiroir.ouvert { transform: none; box-shadow: -20px 0 60px rgba(0, 0, 0, .3); }
+  .tiroir h3 { font-size: 22px; margin: 6px 0 8px; }
+  .tiroir ul { list-style: none; padding: 0; margin: 18px 0; display: flex; flex-direction: column; gap: 6px; }
+  .tiroir li { display: flex; justify-content: space-between; gap: 10px; padding: 9px 12px; border-radius: 10px; background: #f6f3ec; font-size: 14px; font-variant-numeric: tabular-nums; }
+  .tiroir .fermer { position: absolute; top: 18px; right: 18px; border: 0; background: #f0ece3; width: 34px; height: 34px; border-radius: 50%; font-size: 18px; cursor: pointer; }
+  .voile { position: fixed; inset: 0; background: rgba(0, 0, 0, .35); z-index: 30; display: none; }
+  .voile.ouvert { display: block; }
+  body.clair .barres span { background: rgba(0, 0, 0, .14); } body.clair .barres span i { background: #17141f; }
+  body.clair .outils a, body.clair .outils button { background: rgba(0, 0, 0, .08); color: #17141f; }
+  body.clair .marque-w { color: #17141f; }
+  .slide { cursor: pointer; } .slide a, .slide button, .slide .chiffre { cursor: pointer; }
+  .indice { position: fixed; bottom: 18px; left: 0; right: 0; text-align: center; color: rgba(255, 255, 255, .55); font-size: 13px; z-index: 15; pointer-events: none; }
+
+  @media (max-width: 760px) {
+    .stats { grid-template-columns: 1fr 1fr; }
+    .rang { grid-template-columns: 44px 1fr; } .rang .euros { grid-column: 2; text-align: left; }
+    .rang .n { font-size: 44px; }
+    .barre-h { grid-template-columns: 1fr 90px; } .barre-h .jauge { grid-column: 1 / -1; grid-row: 2; height: 18px; }
+    .classement .barre-h { grid-template-columns: 28px 1fr 90px; } .classement .barre-h .jauge { grid-column: 2 / -1; }
+    .cols { grid-template-columns: 1fr; }
+    .outils .opt { display: none; }
+    .slide { padding: 92px 16px 56px; }
+  }
+  @media print {
+    @page { size: A4 landscape; margin: 0; }
+    html, body { overflow: visible; height: auto; }
+    .barres, .outils, .indice, .marque-w, .tiroir, .voile { display: none !important; }
+    .slide { display: flex !important; position: relative; inset: auto; height: 100vh; page-break-after: always; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .apparait { opacity: 1 !important; transform: none !important; animation: none !important; }
+    .barre-h .jauge i { width: var(--w) !important; transition: none; }
+  }
+</style>
+</head>
+<body>
+<a class="marque-w" href="/" id="accueil"><i></i>Wrapped</a>
+<div class="barres" id="barres"></div>
+<div class="outils">
+  <a class="opt" id="lien-ia" href="#">Regrouper avec l'IA</a>
+  <button onclick="window.print()">PDF</button>
+</div>
+<main id="slides"></main>
+<div class="indice" id="indice">← → pour naviguer · cliquez un chiffre souligné pour voir sa preuve</div>
+<div class="voile" id="voile" onclick="fermer()"></div>
+<aside class="tiroir" id="tiroir"><button class="fermer" onclick="fermer()" aria-label="Fermer">×</button><div id="tiroir-contenu"></div></aside>
+
+<script>
+const params = new URLSearchParams(location.search);
+const campagne = params.get("campagne") === "equipe" ? "equipe" : "demo";
+const ia = params.get("ia") === "1";
+document.getElementById("accueil").href = "/?campagne=" + campagne;
+const lienIa = document.getElementById("lien-ia");
+lienIa.textContent = ia ? "Regroupement : IA" : "Regrouper avec l'IA";
+lienIa.href = `/wrapped?campagne=${campagne}${ia ? "" : "&ia=1"}`;
+
+const PALETTES = [
+  { f: "#5b3df5", t: "#ffffff", a: "#d4f53c" },
+  { f: "#0d0b12", t: "#f5f2ff", a: "#ff7ab6" },
+  { f: "#d4f53c", t: "#17141f", a: "#5b3df5", clair: true },
+  { f: "#ff5a3c", t: "#fff7f2", a: "#17141f" },
+  { f: "#11312a", t: "#eafff5", a: "#5ee6a8" },
+  { f: "#f6f3ec", t: "#17141f", a: "#5b3df5", clair: true },
+  { f: "#241a5c", t: "#f1edff", a: "#ffc65c" },
+  { f: "#0d0b12", t: "#ffffff", a: "#d4f53c" },
+  { f: "#ffd8e8", t: "#2a0f1d", a: "#c42a6a", clair: true },
+  { f: "#5b3df5", t: "#ffffff", a: "#d4f53c" },
+];
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const nb = (n, d = 0) => Number(n || 0).toLocaleString("fr-FR", { maximumFractionDigits: d, minimumFractionDigits: 0 }).replace(/\u202f/g, "\u00a0");
+const eur = n => nb(Math.round(n)) + " €";
+const heures = m => nb(m / 60, m < 600 ? 1 : 0) + " h";
+const dateCourte = s => s ? new Date(s).toLocaleDateString("fr-FR", { day: "numeric", month: "short" }) : "";
+const badge = statut => `<span class="badge ${statut === "observé" ? "observe" : "estime"}">${statut === "observé" ? "observé" : "estimé"}</span>`;
+const GOULOTS = {
+  switching: ["Allers-retours entre apps", "Recopier d'un outil à l'autre"],
+  rework: ["Travail refait", "Corriger après coup ce qui a cassé"],
+  waiting: ["Attente", "Chercher, attendre une réponse ou un fichier"],
+  handoff: ["Passage de relais", "Attendre la validation de quelqu'un d'autre"],
+};
+const TYPES = { action: "Action", input: "Entrée", output: "Sortie", decision: "Décision", check: "Vérification" };
+
+const PREUVES = [];
+function preuve(titre, explication, liste = [], statut = "observé") {
+  PREUVES.push({ titre, explication, liste, statut });
+  return `data-p="${PREUVES.length - 1}"`;
+}
+
+let I = null, courant = 0, total = 0;
+
+fetch(`/api/insights?campagne=${campagne}${ia ? "&ia=1" : ""}`).then(r => r.json()).then(d => { I = d; construire(); });
+
+function slide(contenu, k) {
+  const p = PALETTES[k % PALETTES.length];
+  return `<section class="slide ${p.clair ? "clair" : ""}" style="--f:${p.f};--t:${p.t};--a:${p.a}"><div class="dedans">${contenu}</div></section>`;
+}
+
+function construire() {
+  document.title = `${I.entreprise} · Wrapped`;
+  const s = [];
+  if (I.statut !== "ok") {
+    s.push(`<div class="sur apparait">${esc(I.entreprise)}</div>
+      <h1 class="gros apparait" style="--d:1">Pas encore <em>assez de monde.</em></h1>
+      <p class="sous apparait" style="--d:2">${esc(I.message)}</p>`);
+    return monter(s);
+  }
+  const c = I.chiffres, T = I.taches;
+
+  // 0. Couverture
+  s.push(`<div class="sur apparait">Wrapped · ${dateCourte(I.periode.debut)} → ${dateCourte(I.periode.fin)}</div>
+    <h1 class="gros apparait" style="--d:1">${esc(I.entreprise)},<br><em>votre semaine de travail.</em></h1>
+    <p class="sous apparait" style="--d:2">${I.participants} volontaires ont fait tourner screenpipe et relu leur résumé. ${I.non_valides ? `${I.non_valides} n'${I.non_valides > 1 ? "ont" : "a"} pas validé : ${I.non_valides > 1 ? "ils n'apparaissent" : "il n'apparaît"} nulle part.` : ""} Aucune capture n'a quitté leur machine.</p>`);
+
+  // 1. Chiffres
+  s.push(`<div class="sur apparait">Votre semaine en chiffres</div>
+    <h2 class="gros apparait" style="--d:1">On a regardé.<br><em>Voilà ce qu'on a vu.</em></h2>
+    <div class="stats">
+      <div class="stat apparait" style="--d:2"><b class="compte" data-v="${c.heures_captees}">0</b><span>heures de travail observées ${badge("observé")}</span></div>
+      <div class="stat apparait" style="--d:3"><b class="compte" data-v="${I.participants}">0</b><span>volontaires</span></div>
+      <div class="stat apparait" style="--d:4"><b class="compte" data-v="${c.apps}">0</b><span>apps utilisées</span></div>
+      <div class="stat apparait" style="--d:5"><b class="compte" data-v="${c.taches_repetees}">0</b><span>tâches qui se répètent</span></div>
+    </div>
+    <p class="sous apparait" style="--d:6;margin-top:28px;font-size:16px">screenpipe a pris ${nb(c.captures_regardees)} captures. On n'en a gardé que ${nb(c.captures_gardees)} (${nb(100 * c.captures_gardees / (c.captures_regardees || 1))} %) pour l'analyse : c'est ce qui rend l'IA abordable.</p>`);
+
+  // 2. Où part le temps
+  const cats = I.temps_par_categorie, maxc = Math.max(...cats.map(x => x.minutes), 1);
+  s.push(`<div class="sur apparait">Où part le temps</div>
+    <h2 class="gros apparait" style="--d:1">${esc(cats[0]?.categorie || "—")}<br><em>passe avant tout.</em></h2>
+    <div style="margin-top:30px">${cats.map((x, i) => `<div class="barre-h apparait ${x.regroupe ? "gris" : ""}" style="--d:${i + 2}">
+      <span>${esc(x.categorie)}${x.regroupe ? ` <span class="badge">moins de 3 pers. chacun</span>` : ""}</span>
+      <span class="jauge"><i style="--w:${100 * x.minutes / maxc}%"></i></span>
+      <span class="val">${heures(x.minutes)}</span></div>`).join("")}</div>
+    <p class="sous apparait" style="--d:${cats.length + 2};font-size:15px;margin-top:18px">Cumul des ${I.participants} volontaires sur la période. Une catégorie qui concerne moins de 3 personnes est fondue dans « Autres ».</p>`);
+
+  // 3. Top 3
+  s.push(`<div class="sur apparait">Votre top 3 des tâches répétées</div>
+    <h2 class="gros apparait" style="--d:1">${nb(c.heures_taches_par_semaine, 1)} h par semaine<br><em>à refaire les mêmes gestes.</em></h2>
+    <div class="top">${T.slice(0, 3).map((t, i) => `<div class="rang apparait" style="--d:${i + 2}">
+      <span class="n">${i + 1}</span>
+      <div><h3>${esc(t.titre)}</h3><p>${nb(t.frequence_par_semaine)} fois par semaine · ≈ ${t.duree_moyenne_min} min · ${esc(t.personnes)} personne${t.nb_personnes > 1 || t.personnes !== "1" ? "s" : ""} · ${t.apps.slice(0, 3).map(esc).join(", ")}</p></div>
+      <div class="euros"><a class="chiffre" ${preuve(t.titre, `${nb(t.frequence_par_semaine)} fois par semaine × ${t.duree_moyenne_min} min × ${nb(I.cout_horaire)} €/h × 4,33 semaines.`, t.preuves, t.statut)}><b>${eur(t.cout_par_mois)}</b></a><span>${nb(t.heures_par_mois, 1)} h par mois ${badge(t.statut)}</span></div>
+    </div>`).join("")}</div>`);
+
+  // 4. Zoom n°1
+  const t1 = T[0];
+  if (t1) s.push(`<div class="sur apparait">Zoom sur la tâche n°1</div>
+    <h2 class="gros apparait" style="--d:1;font-size:clamp(34px,4.8vw,68px)">${esc(t1.titre)}</h2>
+    <p class="sous apparait" style="--d:2">Vu <a class="chiffre" ${preuve(t1.titre, "Chaque ligne est un moment où la tâche a été vue à l'écran. La capture reste sur la machine de la personne : elle peut la retrouver dans son screenpipe à cet horaire.", t1.preuves, t1.statut)}>${t1.preuves.length} fois</a> pendant la campagne${t1.libelles.length > 1 ? `, sous ${t1.libelles.length} noms différents` : ""}.</p>
+    <div class="flux">${t1.etapes.map((e, i) => `<div class="pas apparait ${e.statut === "supposé" ? "suppose" : ""}" style="--d:${i + 3}">
+      <small>${i + 1} · ${esc(TYPES[e.type] || e.type)}${e.statut === "supposé" ? " · supposé" : ""}</small><p>${esc(e.texte)}</p><span class="app">${esc(e.app)}</span></div>`).join("")}</div>
+    <div class="cols apparait" style="--d:${t1.etapes.length + 3}">
+      <div><h4>Là où ça coince</h4><ul>${t1.goulots.map(g => `<li>${esc(g.detail)}</li>`).join("") || "<li>Rien de repéré</li>"}</ul></div>
+      <div><h4>Les exceptions</h4><ul>${t1.exceptions.map(x => `<li>${esc(x)}</li>`).join("") || "<li>Aucune vue</li>"}</ul></div>
+    </div>`);
+
+  // 5. Goulots
+  if (I.goulots.length) s.push(`<div class="sur apparait">Les goulots</div>
+    <h2 class="gros apparait" style="--d:1">Ce n'est pas le travail<br><em>qui prend du temps.</em></h2>
+    <div class="grille">${I.goulots.map((g, i) => `<div class="bloc apparait" style="--d:${i + 2}">
+      <h3>${esc((GOULOTS[g.type] || [g.type])[0])}</h3>
+      <b class="v">${nb(g.heures_par_semaine, 1)} h</b>
+      <p>par semaine, dans ${g.nb_taches} tâche${g.nb_taches > 1 ? "s" : ""}. ${esc(g.exemples[0] || (GOULOTS[g.type] || ["", ""])[1])}.</p></div>`).join("")}</div>
+    <p class="sous apparait" style="--d:${I.goulots.length + 2};font-size:15px;margin-top:18px">Heures des tâches où le goulot apparaît, pas le goulot seul.</p>`);
+
+  // 6. IA
+  const outils = I.usage_ia;
+  s.push(`<div class="sur apparait">L'IA chez vous aujourd'hui</div>
+    <h2 class="gros apparait" style="--d:1">${esc(c.utilisateurs_ia)} sur ${I.participants}<br><em>s'en servent déjà.</em></h2>
+    <p class="sous apparait" style="--d:2">Mais pour ${nb(100 * c.part_ia)} % du temps seulement, et surtout pour écrire. Les tâches répétées, elles, se font encore à la main.</p>
+    <div class="grille">${outils.map((o, i) => `<div class="bloc apparait" style="--d:${i + 3}">
+      <h3>${esc(o.outil)}</h3><b class="v">${heures(o.minutes)}</b>
+      <p>${esc(o.personnes)} personne${o.personnes === "1" ? "" : "s"} · ${o.usages.slice(0, 3).map(esc).join(", ")}</p></div>`).join("") || `<div class="bloc">Aucun outil d'IA repéré.</div>`}</div>`);
+
+  // 7. Ce qu'on automatise en premier
+  const A = [...T].sort((a, b) => b.gain_par_mois - a.gain_par_mois).slice(0, 5), maxg = Math.max(...A.map(x => x.gain_par_mois), 1);
+  s.push(`<div class="sur apparait">Ce qu'on automatise en premier</div>
+    <h2 class="gros apparait" style="--d:1">Commencez par<br><em>${esc(A[0]?.titre || "—")}.</em></h2>
+    <div class="gain apparait" style="--d:2">
+      <div><b>${eur(c.gain_top3_par_mois)}</b><span>par mois récupérables sur le top 3 ${badge("estimé")}</span></div>
+      <div><b>${nb(c.heures_gagnees_top3_par_mois)} h</b><span>rendues chaque mois aux équipes</span></div>
+    </div>
+    <div class="classement">${A.map((t, i) => `<div class="barre-h apparait" style="--d:${i + 3}">
+      <span class="num">${i + 1}</span>
+      <span>${esc(t.titre)}${t.automatisable.corrections.length ? `<span class="corrige">corrigé par un salarié</span>` : ""}</span>
+      <span class="jauge"><i style="--w:${100 * t.gain_par_mois / maxg}%"></i></span>
+      <span class="val"><a class="chiffre" ${preuve(t.titre, `Gain = coût (${eur(t.cout_par_mois)} par mois) × automatisable ${t.automatisable.score}/100. Note de l'IA : ${t.automatisable.score_ia}/100${t.automatisable.copier_coller ? ", +10 pour le copier-coller entre apps" : ""}${t.automatisable.part_decision ? `, −${Math.round(30 * t.automatisable.part_decision)} pour les décisions humaines` : ""}.${t.automatisable.corrections.length ? ` Corrigé par un salarié : « ${t.automatisable.corrections.join(", ")} ».` : ""} ${t.automatisable.pourquoi.join(" ")}`, t.preuves, "estimé")}>${eur(t.gain_par_mois)}</a></span>
+    </div>`).join("")}</div>`);
+
+  // 8. Ce qu'on ne sait pas
+  const inc = I.inconnues;
+  s.push(`<div class="sur apparait">Ce qu'on ne sait pas encore</div>
+    <h2 class="gros apparait" style="--d:1">On préfère<br><em>vous le dire.</em></h2>
+    <div class="grille">
+      <div class="bloc apparait" style="--d:2"><h3>Étapes supposées</h3><b class="v">${inc.etapes_supposees}</b><p>étapes déduites par l'IA, pas vues à l'écran. À confirmer avec les équipes.</p></div>
+      <div class="bloc apparait" style="--d:3"><h3>Peu sûres</h3><b class="v">${inc.taches_peu_sures.length}</b><p>${inc.taches_peu_sures.map(esc).join(", ") || "Aucune tâche sous 60 % de confiance."}</p></div>
+      <div class="bloc apparait" style="--d:4"><h3>Les limites</h3><p>${inc.limites.slice(0, 4).map(esc).join("<br>") || "—"}</p></div>
+    </div>`);
+
+  // 9. Passer à l'action
+  if (A[0]) s.push(`<div class="sur apparait">Et maintenant</div>
+    <h2 class="gros apparait" style="--d:1">On lance<br><em>l'automatisation n°1 ?</em></h2>
+    <p class="sous apparait" style="--d:2">« ${esc(A[0].titre)} » devient une compétence pour Claude ou Codex, écrite à partir des étapes observées, avec les décisions laissées à un humain.</p>
+    <div class="actions apparait" style="--d:3">
+      <button class="plein" onclick="telechargerSkill()">Créer la skill</button>
+      <button class="creux" onclick="supprimer()">Supprimer les données de la campagne</button>
+    </div>
+    <p class="sous apparait" id="recu" style="--d:4;font-size:15px;margin-top:22px"></p>`);
+
+  monter(s);
+}
+
+function monter(s) {
+  document.getElementById("slides").innerHTML = s.map(slide).join("");
+  total = s.length;
+  document.getElementById("barres").innerHTML = s.map((_, i) => `<span onclick="montrer(${i})"><i></i></span>`).join("");
+  document.querySelectorAll("[data-p]").forEach(el => el.addEventListener("click", e => { e.stopPropagation(); ouvrir(+el.dataset.p); }));
+  montrer(Math.min(+(location.hash.slice(1) || 0), total - 1));
+}
+
+function montrer(k) {
+  courant = Math.max(0, Math.min(total - 1, k));
+  history.replaceState(null, "", "#" + courant);
+  const sl = document.querySelectorAll(".slide");
+  sl.forEach((x, i) => x.classList.toggle("active", i === courant));
+  document.querySelectorAll("#barres span").forEach((x, i) => x.classList.toggle("fait", i <= courant));
+  const a = sl[courant];
+  document.body.classList.toggle("clair", a.classList.contains("clair"));
+  requestAnimationFrame(() => a.querySelectorAll(".jauge i").forEach(i => { i.style.width = "0"; requestAnimationFrame(() => i.style.width = i.style.getPropertyValue("--w")); }));
+  a.querySelectorAll(".compte").forEach(compter);
+  document.getElementById("indice").style.opacity = courant === 0 ? 1 : 0;
+}
+function aller(d) { montrer(courant + d); }
+addEventListener("hashchange", () => montrer(+location.hash.slice(1) || 0));
+document.addEventListener("click", e => {  // toucher à gauche = retour, ailleurs = suivant (comme des stories)
+  if (!e.target.closest(".slide") || e.target.closest("a, button, [data-p], .tiroir")) return;
+  aller(e.clientX < innerWidth * 0.3 ? -1 : 1);
+});
+
+function compter(el) {
+  const v = +el.dataset.v, dec = v % 1 ? 1 : 0, t0 = performance.now();
+  const pas = t => { const p = Math.min(1, (t - t0) / 900); el.textContent = nb(v * (1 - Math.pow(1 - p, 3)), dec); if (p < 1) requestAnimationFrame(pas); };
+  requestAnimationFrame(pas);
+}
+
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") return fermer();
+  if (["ArrowRight", " ", "PageDown"].includes(e.key)) { e.preventDefault(); aller(1); }
+  if (["ArrowLeft", "PageUp"].includes(e.key)) { e.preventDefault(); aller(-1); }
+});
+
+function ouvrir(k) {
+  const p = PREUVES[k];
+  const fmt = s => s ? new Date(s).toLocaleString("fr-FR", { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : "";
+  document.getElementById("tiroir-contenu").innerHTML = `
+    <span class="etiquette ${p.statut === "observé" ? "observe" : "suppose"}">${p.statut === "observé" ? "observé" : "estimé"}</span>
+    <h3>${esc(p.titre)}</h3><p class="discret">${esc(p.explication)}</p>
+    ${p.liste.length ? `<ul>${p.liste.map(x => `<li><span>${fmt(x.debut)}</span><span>${esc(x.app)}</span></li>`).join("")}</ul>
+    <p class="discret">Les captures restent sur la machine de chaque volontaire. Pour montrer l'une d'elles, la personne ouvre screenpipe à cet horaire : rien n'est envoyé sans elle.</p>` : ""}`;
+  document.getElementById("tiroir").classList.add("ouvert");
+  document.getElementById("voile").classList.add("ouvert");
+}
+function fermer() { document.getElementById("tiroir").classList.remove("ouvert"); document.getElementById("voile").classList.remove("ouvert"); }
+
+function telechargerSkill() {
+  const t = [...I.taches].sort((a, b) => b.gain_par_mois - a.gain_par_mois)[0];
+  const slug = t.titre.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 50);
+  const decisions = t.etapes.filter(e => e.type === "decision");
+  const md = `---
+name: ${slug}
+description: ${t.titre}. À utiliser quand quelqu'un chez ${I.entreprise} doit faire cette tâche (${t.apps.join(", ")}).
+---
+
+# ${t.titre}
+
+Observé chez ${I.entreprise} pendant la campagne Wrapped : environ ${nb(t.frequence_par_semaine)} fois par semaine, ${t.duree_moyenne_min} min à chaque fois, dans ${t.apps.join(", ")}.
+Noms donnés par les équipes : ${t.libelles.join(" ; ")}.
+
+## Étapes
+${t.etapes.map((e, i) => `${i + 1}. **${TYPES[e.type] || e.type}** (${e.app}) : ${e.texte}${e.statut === "supposé" ? " _(supposé : à confirmer avec l'équipe)_" : ""}`).join("\n")}
+
+## Exceptions
+${t.exceptions.map(x => `- ${x}`).join("\n") || "- Aucune vue pendant la campagne."}
+
+## Ce qui ralentit aujourd'hui
+${t.goulots.map(g => `- ${g.detail}`).join("\n") || "- Rien de repéré."}
+
+## Garde-fous
+- Ne rien envoyer à l'extérieur (mail, message, commande) sans la confirmation d'un humain.
+${decisions.map(e => `- Décision humaine : ${e.texte}. Présente les éléments, ne tranche pas.\n`).join("")}- En cas d'exception non listée ci-dessus, s'arrêter et demander.
+`;
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([md], { type: "text/markdown" }));
+  a.download = "SKILL.md"; a.click();
+}
+
+function supprimer() {
+  const quand = new Date().toLocaleString("fr-FR");
+  document.getElementById("recu").innerHTML = campagne === "demo"
+    ? `Reçu de suppression (démo) · ${quand} · ${I.participants} résumés et l'onboarding seraient effacés du serveur de campagne, puis chaque volontaire reçoit la commande pour effacer ses données locales de campagne.`
+    : `Pour l'équipe : chacun retire son résumé depuis sa page de relecture. Reçu · ${quand}.`;
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wrapped — campagne</title>
+<link rel="stylesheet" href="/commun.css">
+<style>
+  .titre { font-size: clamp(40px, 6vw, 68px); font-weight: 800; letter-spacing: -.04em; margin: 8px 0 14px; }
+  .titre em { font-family: var(--serif); font-weight: 400; font-style: italic; color: var(--violet); }
+  .chapo { font-size: 19px; color: var(--encre-2); max-width: 640px; margin: 0 0 36px; }
+  .etapes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .etape { display: flex; flex-direction: column; gap: 12px; }
+  .etape .num { font-family: var(--serif); font-size: 40px; line-height: 1; color: var(--violet); }
+  .etape h2 { font-size: 21px; }
+  .etape p { margin: 0; color: var(--encre-2); font-size: 15px; }
+  .etape .bas { margin-top: auto; padding-top: 6px; }
+  .liste { list-style: none; padding: 0; margin: 4px 0 0; display: flex; flex-direction: column; gap: 6px; }
+  .liste li { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 14px; padding: 7px 10px; border-radius: 10px; background: #f8f6f1; }
+  .liste a { font-weight: 600; text-decoration: none; }
+  .promesse { margin-top: 28px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .promesse div { font-size: 14px; color: var(--encre-2); }
+  .promesse b { display: block; color: var(--encre); font-size: 15px; margin-bottom: 2px; }
+  @media (max-width: 820px) { .etapes, .promesse { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<header class="haut">
+  <a class="marque" href="/"><i></i>Wrapped</a>
+  <div class="bascule" id="bascule">
+    <button data-c="demo">Démo · Maison Corvo</button>
+    <button data-c="equipe">Notre équipe</button>
+  </div>
+</header>
+<main class="page">
+  <span class="etiquette violet" id="sur-titre">Campagne</span>
+  <h1 class="titre">Une semaine observée.<br><em>Ce qu'on automatise en premier.</em></h1>
+  <p class="chapo" id="chapo">Des salariés volontaires font tourner screenpipe une semaine. Chacun relit et valide son propre résumé. L'entreprise reçoit son Wrapped : où part le temps, ce qui se répète, ce que ça coûte, par quoi commencer.</p>
+
+  <section class="etapes">
+    <article class="carte etape">
+      <div class="num">1</div>
+      <h2>Le dirigeant cadre</h2>
+      <p id="onb-resume">Cinq questions : l'activité, les priorités, le coût horaire, les outils, ce qui agace.</p>
+      <div class="bas"><a class="bouton second petit" id="lien-onb" href="/onboarding">Voir les réponses</a></div>
+    </article>
+    <article class="carte etape">
+      <div class="num">2</div>
+      <h2>Chacun relit sa semaine</h2>
+      <p>Rien ne part sans un clic. On corrige, on retire, on masque une app. Seul le résumé validé est partagé, sans nom.</p>
+      <ul class="liste" id="participants"></ul>
+    </article>
+    <article class="carte etape">
+      <div class="num">3</div>
+      <h2>Le Wrapped</h2>
+      <p id="wrapped-etat">Dès 3 résumés validés.</p>
+      <div class="bas"><a class="bouton violet" id="lien-wrapped" href="/wrapped">Ouvrir le Wrapped →</a></div>
+    </article>
+  </section>
+
+  <section class="promesse">
+    <div><b>Aucune capture ne sort</b>Les images et le texte capturé restent sur chaque Mac. Seul un résumé relu est partagé.</div>
+    <div><b>Jamais un chiffre par personne</b>Tout ce qui concerne moins de 3 personnes est fondu dans « Autres ».</div>
+    <div><b>Chaque chiffre a sa preuve</b>Un horaire et une app, que la personne peut retrouver dans son screenpipe.</div>
+  </section>
+</main>
+<script>
+const params = new URLSearchParams(location.search);
+const campagne = params.get("campagne") === "equipe" ? "equipe" : "demo";
+document.querySelectorAll("#bascule button").forEach(b => {
+  b.classList.toggle("actif", b.dataset.c === campagne);
+  b.onclick = () => { location.search = "?campagne=" + b.dataset.c; };
+});
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+fetch("/api/campagne?campagne=" + campagne).then(r => r.json()).then(c => {
+  const o = c.onboarding || {};
+  document.getElementById("sur-titre").textContent = campagne === "demo" ? "Démo · entreprise fictive" : "Campagne · notre équipe";
+  document.getElementById("lien-onb").href = "/onboarding?campagne=" + campagne;
+  document.getElementById("lien-wrapped").href = "/wrapped?campagne=" + campagne;
+  if (o.entreprise) document.getElementById("onb-resume").innerHTML =
+    `<b>${esc(o.entreprise)}</b>${o.activite ? " — " + esc(o.activite) : ""}. Coût horaire moyen : <b>${esc(o.cout_horaire)} €</b>.`;
+  const ul = document.getElementById("participants");
+  const lignes = c.participants.map(p => `<li>
+      <span>${esc(campagne === "demo" ? "Salarié·e " + p.id.split("-").pop() : p.id)}</span>
+      ${p.valide ? `<span class="etiquette observe">validé</span>` : `<span class="etiquette suppose">pas validé</span>`}
+      ${campagne === "demo" ? `<a href="/relecture?campagne=demo&personne=${encodeURIComponent(p.id)}">relire</a>` : ""}
+    </li>`);
+  if (campagne === "equipe") {
+    lignes.unshift(`<li><span><b>Moi (${esc(c.moi)})</b></span>
+      ${c.mon_resume_partage ? `<span class="etiquette observe">partagé</span>` : c.mon_resume_brut ? `<span class="etiquette suppose">à relire</span>` : `<span class="etiquette">pas encore de résumé</span>`}
+      ${c.mon_resume_brut || c.mon_resume_partage ? `<a href="/relecture?campagne=equipe">relire</a>` : ""}</li>`);
+  }
+  ul.innerHTML = lignes.join("") || `<li>Personne pour l'instant.</li>`;
+  const n = c.participants.filter(p => p.valide).length;
+  document.getElementById("wrapped-etat").textContent = n >= 3
+    ? `${n} résumés validés sur ${c.participants.length}. Le Wrapped est prêt.`
+    : `${n} résumé(s) validé(s). Il en faut 3 pour qu'aucun chiffre ne désigne quelqu'un.`;
+});
+</script>
+</body>
+</html>

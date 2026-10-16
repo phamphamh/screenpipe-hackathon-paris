@@ -1,0 +1,321 @@
+{
+ "campagne": "demo-maison-corvo",
+ "personne": "anonyme-1",
+ "periode": {
+  "debut": "2026-10-12T09:00:00+02:00",
+  "fin": "2026-10-16T18:00:00+02:00"
+ },
+ "heures_captees": 31.5,
+ "temps_par_app": [
+  {
+   "app": "Gmail",
+   "minutes": 640
+  },
+  {
+   "app": "HubSpot",
+   "minutes": 520
+  },
+  {
+   "app": "Sage",
+   "minutes": 160
+  },
+  {
+   "app": "Google Chrome",
+   "minutes": 330
+  },
+  {
+   "app": "Excel",
+   "minutes": 70
+  },
+  {
+   "app": "Google Meet",
+   "minutes": 170
+  }
+ ],
+ "temps_par_categorie": [
+  {
+   "categorie": "Relation client",
+   "minutes": 600
+  },
+  {
+   "categorie": "Commandes et devis",
+   "minutes": 520
+  },
+  {
+   "categorie": "Reporting",
+   "minutes": 50
+  },
+  {
+   "categorie": "Réunions",
+   "minutes": 410
+  },
+  {
+   "categorie": "Mails internes",
+   "minutes": 310
+  }
+ ],
+ "usage_ia": [
+  {
+   "outil": "ChatGPT",
+   "minutes": 70,
+   "usages": [
+    "reformuler des mails",
+    "traduire une fiche produit"
+   ]
+  }
+ ],
+ "taches": [
+  {
+   "titre": "Relancer les devis sans réponse",
+   "frequence_par_semaine": 10,
+   "duree_moyenne_min": 8,
+   "apps": [
+    "HubSpot",
+    "Gmail"
+   ],
+   "etapes": [
+    {
+     "type": "input",
+     "texte": "Filtrer les devis envoyés il y a plus de 7 jours",
+     "app": "HubSpot",
+     "statut": "observé"
+    },
+    {
+     "type": "action",
+     "texte": "Copier le contact et le numéro du devis",
+     "app": "HubSpot",
+     "statut": "observé"
+    },
+    {
+     "type": "output",
+     "texte": "Envoyer le mail de relance depuis un modèle",
+     "app": "Gmail",
+     "statut": "observé"
+    },
+    {
+     "type": "decision",
+     "texte": "Ne pas relancer si le client a déjà répondu",
+     "app": "Gmail",
+     "statut": "supposé"
+    }
+   ],
+   "exceptions": [
+    "client sans email → appel"
+   ],
+   "goulots": [
+    {
+     "type": "switching",
+     "detail": "copier-coller HubSpot → Gmail à chaque relance"
+    }
+   ],
+   "automatisable": {
+    "score": 82,
+    "pourquoi": "Mêmes étapes à chaque fois, une seule décision simple."
+   },
+   "confiance": 0.85,
+   "preuves": [
+    {
+     "debut": "2026-10-12T10:00:00+02:00",
+     "fin": "2026-10-12T10:08:00+02:00",
+     "app": "HubSpot"
+    },
+    {
+     "debut": "2026-10-13T12:17:00+02:00",
+     "fin": "2026-10-13T12:25:00+02:00",
+     "app": "Gmail"
+    },
+    {
+     "debut": "2026-10-14T14:34:00+02:00",
+     "fin": "2026-10-14T14:42:00+02:00",
+     "app": "HubSpot"
+    }
+   ]
+  },
+  {
+   "titre": "Saisir une commande reçue par mail dans l'ERP",
+   "frequence_par_semaine": 6,
+   "duree_moyenne_min": 12,
+   "apps": [
+    "Gmail",
+    "Sage"
+   ],
+   "etapes": [
+    {
+     "type": "input",
+     "texte": "Ouvrir le bon de commande PDF reçu par mail",
+     "app": "Gmail",
+     "statut": "observé"
+    },
+    {
+     "type": "action",
+     "texte": "Créer la commande et saisir les lignes article par article",
+     "app": "Sage",
+     "statut": "observé"
+    },
+    {
+     "type": "check",
+     "texte": "Vérifier le stock et le prix négocié",
+     "app": "Sage",
+     "statut": "observé"
+    },
+    {
+     "type": "output",
+     "texte": "Répondre au client avec le numéro de commande",
+     "app": "Gmail",
+     "statut": "observé"
+    }
+   ],
+   "exceptions": [
+    "référence inconnue → appel au commercial"
+   ],
+   "goulots": [
+    {
+     "type": "switching",
+     "detail": "recopier chaque ligne du PDF dans Sage"
+    },
+    {
+     "type": "rework",
+     "detail": "erreurs de référence corrigées après coup"
+    }
+   ],
+   "automatisable": {
+    "score": 78,
+    "pourquoi": "Le PDF a toujours la même structure ; la saisie ligne à ligne est mécanique."
+   },
+   "confiance": 0.8,
+   "preuves": [
+    {
+     "debut": "2026-10-13T09:00:00+02:00",
+     "fin": "2026-10-13T09:12:00+02:00",
+     "app": "Gmail"
+    },
+    {
+     "debut": "2026-10-14T11:17:00+02:00",
+     "fin": "2026-10-14T11:29:00+02:00",
+     "app": "Sage"
+    }
+   ]
+  },
+  {
+   "titre": "Chercher la fiche technique d'un produit",
+   "frequence_par_semaine": 15,
+   "duree_moyenne_min": 4,
+   "apps": [
+    "Google Drive",
+    "Google Chrome"
+   ],
+   "etapes": [
+    {
+     "type": "input",
+     "texte": "Recevoir une question client sur un produit",
+     "app": "Gmail",
+     "statut": "observé"
+    },
+    {
+     "type": "action",
+     "texte": "Chercher la fiche dans le Drive ou sur le site du fabricant",
+     "app": "Google Drive",
+     "statut": "observé"
+    },
+    {
+     "type": "output",
+     "texte": "Envoyer la fiche ou la réponse au client",
+     "app": "Gmail",
+     "statut": "observé"
+    }
+   ],
+   "exceptions": [],
+   "goulots": [
+    {
+     "type": "waiting",
+     "detail": "fiches rangées dans 3 dossiers différents"
+    }
+   ],
+   "automatisable": {
+    "score": 70,
+    "pourquoi": "Une base de fiches interrogeable répondrait à la place."
+   },
+   "confiance": 0.75,
+   "preuves": [
+    {
+     "debut": "2026-10-12T11:00:00+02:00",
+     "fin": "2026-10-12T11:04:00+02:00",
+     "app": "Google Drive"
+    },
+    {
+     "debut": "2026-10-13T13:17:00+02:00",
+     "fin": "2026-10-13T13:21:00+02:00",
+     "app": "Google Chrome"
+    },
+    {
+     "debut": "2026-10-14T15:34:00+02:00",
+     "fin": "2026-10-14T15:38:00+02:00",
+     "app": "Google Drive"
+    },
+    {
+     "debut": "2026-10-15T17:01:00+02:00",
+     "fin": "2026-10-15T17:05:00+02:00",
+     "app": "Google Chrome"
+    }
+   ]
+  },
+  {
+   "titre": "Préparer le reporting hebdo des ventes",
+   "frequence_par_semaine": 1,
+   "duree_moyenne_min": 50,
+   "apps": [
+    "HubSpot",
+    "Excel",
+    "Gmail"
+   ],
+   "etapes": [
+    {
+     "type": "input",
+     "texte": "Exporter les chiffres de la semaine",
+     "app": "HubSpot",
+     "statut": "observé"
+    },
+    {
+     "type": "action",
+     "texte": "Coller dans le tableau et recalculer les totaux",
+     "app": "Excel",
+     "statut": "observé"
+    },
+    {
+     "type": "output",
+     "texte": "Envoyer le tableau à la direction",
+     "app": "Gmail",
+     "statut": "observé"
+    }
+   ],
+   "exceptions": [],
+   "goulots": [
+    {
+     "type": "rework",
+     "detail": "formules cassées après le collage, refaites à la main"
+    }
+   ],
+   "automatisable": {
+    "score": 74,
+    "pourquoi": "Export et calculs identiques chaque semaine ; seul le commentaire est humain."
+   },
+   "confiance": 0.8,
+   "preuves": [
+    {
+     "debut": "2026-10-16T16:00:00+02:00",
+     "fin": "2026-10-16T16:50:00+02:00",
+     "app": "HubSpot"
+    }
+   ]
+  }
+ ],
+ "limites": [
+  "Données fictives : entreprise de démonstration."
+ ],
+ "tri_80_20": {
+  "captures_regardees": 11340,
+  "captures_gardees": 2721,
+  "part": 0.24
+ },
+ "valide_par_la_personne": true
+}

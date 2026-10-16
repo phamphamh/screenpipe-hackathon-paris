@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Relire ma semaine</title>
+<link rel="stylesheet" href="/commun.css">
+<style>
+  h1 { font-size: clamp(32px, 5vw, 48px); font-weight: 800; letter-spacing: -.035em; margin: 6px 0 10px; }
+  h1 em { font-family: var(--serif); font-style: italic; font-weight: 400; color: var(--violet); }
+  .chapo { color: var(--encre-2); font-size: 17px; max-width: 660px; margin: 0 0 8px; }
+  .regles { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 36px; }
+  section { margin-top: 40px; }
+  section > h2 { font-size: 22px; margin-bottom: 4px; }
+  section > p { margin: 0 0 16px; }
+  .taches { display: flex; flex-direction: column; gap: 14px; }
+  .tache { transition: opacity .2s; }
+  .tache.retiree { opacity: .45; }
+  .tache.retiree .corps { display: none; }
+  .tete { display: flex; gap: 12px; align-items: flex-start; }
+  .tete input.titre { flex: 1; font-size: 19px; font-weight: 700; border: 1px solid transparent; border-radius: 8px; padding: 4px 8px; margin: -4px -8px; background: none; min-width: 0; }
+  .tete input.titre:hover, .tete input.titre:focus { border-color: var(--trait); background: #fbfaf7; outline: none; }
+  .meta { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; margin: 10px 0 14px; font-size: 14px; color: var(--encre-2); }
+  .meta input { width: 56px; border: 1px solid var(--trait); border-radius: 8px; padding: 3px 6px; text-align: right; background: #fbfaf7; }
+  .apps { display: flex; flex-wrap: wrap; gap: 6px; }
+  ol.etapes { list-style: none; padding: 0; margin: 0 0 14px; display: flex; flex-direction: column; gap: 6px; counter-reset: e; }
+  ol.etapes li { display: grid; grid-template-columns: 26px 1fr auto auto auto; gap: 10px; align-items: center; padding: 8px 10px; border-radius: 10px; background: #f8f6f1; font-size: 14.5px; counter-increment: e; }
+  ol.etapes li::before { content: counter(e); font-weight: 700; color: var(--encre-3); text-align: center; }
+  ol.etapes input { border: 0; background: none; padding: 2px 4px; border-radius: 6px; min-width: 0; }
+  ol.etapes input:focus { background: #fff; outline: 1px solid var(--trait); }
+  .x { border: 0; background: none; color: var(--encre-3); cursor: pointer; font-size: 18px; line-height: 1; padding: 2px 6px; border-radius: 6px; }
+  .x:hover { background: var(--rouge-pale); color: var(--rouge); }
+  .avis { display: grid; grid-template-columns: 1fr auto; gap: 14px; align-items: center; padding: 14px; border-radius: 12px; background: var(--violet-pale); }
+  .avis .jauge { font-weight: 800; font-size: 26px; color: var(--violet); letter-spacing: -.03em; }
+  .avis p { margin: 2px 0 0; font-size: 14px; color: var(--encre-2); }
+  .avis select { border: 1px solid #cfc6ff; border-radius: 10px; padding: 8px 10px; background: #fff; font-weight: 600; }
+  .lignes { display: flex; flex-direction: column; gap: 6px; }
+  .ligne { display: grid; grid-template-columns: 1fr 90px auto; gap: 12px; align-items: center; padding: 10px 14px; border-radius: 12px; background: var(--carte); border: 1px solid var(--trait); font-size: 15px; }
+  .ligne.off { opacity: .45; text-decoration: line-through; }
+  .ligne .min { text-align: right; color: var(--encre-2); font-variant-numeric: tabular-nums; }
+  .ligne .usages { grid-column: 1 / -1; font-size: 13px; color: var(--encre-3); margin-top: -4px; }
+  .limites { margin: 0; padding-left: 20px; color: var(--encre-2); font-size: 15px; }
+  .pied { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(246, 243, 236, .94); backdrop-filter: blur(8px); border-top: 1px solid var(--trait); padding: 14px 24px; z-index: 10; }
+  .pied .dedans { max-width: 980px; margin: 0 auto; display: flex; gap: 16px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+  details.json { margin-top: 24px; }
+  details.json pre { max-height: 360px; overflow: auto; background: #1d1a24; color: #e8e4f4; padding: 16px; border-radius: 12px; font-size: 12px; }
+  .fini { text-align: center; padding: 60px 20px; }
+  .fini .rond { width: 74px; height: 74px; border-radius: 50%; background: var(--vert-pale); color: var(--vert); display: grid; place-items: center; font-size: 36px; margin: 0 auto 18px; }
+  @media (max-width: 640px) { ol.etapes li { grid-template-columns: 22px 1fr auto; } ol.etapes li .etiquette { display: none; } .avis { grid-template-columns: 1fr; } .pied { padding: 12px 16px; } }
+</style>
+</head>
+<body>
+<header class="haut">
+  <a class="marque" href="/" id="retour"><i></i>Wrapped</a>
+  <span class="etiquette" id="qui"></span>
+</header>
+<main class="page" id="page"><div class="vide">Chargement de votre semaine…</div></main>
+<div class="pied" id="pied" hidden>
+  <div class="dedans">
+    <span id="compte" class="discret"></span>
+    <span style="display:flex;gap:10px;flex-wrap:wrap">
+      <button class="bouton second" id="voir">Voir exactement ce qui part</button>
+      <button class="bouton violet" id="valider">Valider et partager</button>
+    </span>
+  </div>
+</div>
+<script>
+const params = new URLSearchParams(location.search);
+const campagne = params.get("campagne") === "equipe" ? "equipe" : "demo";
+const personne = params.get("personne") || "";
+const api = (chemin) => `${chemin}?campagne=${campagne}&personne=${encodeURIComponent(personne)}`;
+document.getElementById("retour").href = "/?campagne=" + campagne;
+document.getElementById("qui").textContent = campagne === "demo" ? `Démo · salarié·e ${personne.split("-").pop()}` : "Ma semaine";
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const h = m => m >= 60 ? `${Math.floor(m / 60)} h ${String(Math.round(m % 60)).padStart(2, "0")}` : `${Math.round(m)} min`;
+const AVIS = {
+  "": "L'IA a raison",
+  "Pas automatisable": "Non : ça demande du jugement",
+  "En partie": "En partie seulement",
+  "Très automatisable": "Oui, c'est 100 % mécanique",
+};
+const SCORE_AVIS = { "Pas automatisable": 10, "En partie": 45, "Très automatisable": 95 };
+let r = null;
+
+fetch(api("/api/resume")).then(x => x.ok ? x.json() : x.json().then(e => Promise.reject(e))).then(d => {
+  r = d;
+  (r.taches || []).forEach(t => { t.automatisable = t.automatisable || { score: 50 }; t._score_ia = t._score_ia ?? (t.automatisable.corrige_par_la_personne ? null : t.automatisable.score); });
+  rendre();
+}).catch(e => {
+  document.getElementById("page").innerHTML = `<div class="vide carte">${esc(e.erreur || "Impossible de charger le résumé.")}</div>`;
+});
+
+function rendre() {
+  const apps = r.temps_par_app || [];
+  const masquees = new Set(apps.filter(a => a.masquee).map(a => a.app));
+  document.getElementById("page").innerHTML = `
+    <span class="etiquette violet">Rien n'est encore parti</span>
+    <h1>Votre semaine, <em>avant de la partager.</em></h1>
+    <p class="chapo">Voici ce que l'IA a compris de votre travail, à partir de screenpipe, sur votre machine. Corrigez ce qui est faux, retirez ce que vous ne voulez pas montrer. Seul ce que vous validez sera partagé, sans votre nom, mélangé avec au moins deux collègues.</p>
+    <div class="regles">
+      <span class="etiquette">${esc(r.heures_captees)} h captées</span>
+      <span class="etiquette">Aucune capture, aucun texte d'écran ne part</span>
+      <span class="etiquette observe">observé = vu à l'écran</span>
+      <span class="etiquette suppose">supposé = déduit par l'IA</span>
+    </div>
+
+    <section>
+      <h2>Vos tâches répétées</h2>
+      <p class="discret">Ce qui revient plusieurs fois dans la semaine. Le titre et les étapes sont modifiables.</p>
+      <div class="taches">${(r.taches || []).map(rendreTache).join("") || `<div class="carte vide">Aucune tâche répétée trouvée. Rien n'est inventé.</div>`}</div>
+    </section>
+
+    <section>
+      <h2>Où part votre temps</h2>
+      <p class="discret">Retirez une catégorie, ou masquez une app : son nom disparaît aussi de vos tâches. Si elle est évoquée autrement dans un texte, corrigez-le à la main.</p>
+      <div class="lignes">${(r.temps_par_categorie || []).map((c, i) => `
+        <div class="ligne ${c.retiree ? "off" : ""}"><span>${esc(c.categorie)}</span><span class="min">${h(c.minutes)}</span>
+        <button class="bouton second petit" onclick="basculer('temps_par_categorie',${i},'retiree')">${c.retiree ? "Remettre" : "Retirer"}</button></div>`).join("")}</div>
+      <h3 style="margin:22px 0 10px;font-size:16px">Vos apps</h3>
+      <div class="lignes">${apps.map((a, i) => `
+        <div class="ligne ${a.masquee ? "off" : ""}"><span>${esc(a.app)}</span><span class="min">${h(a.minutes)}</span>
+        <button class="bouton second petit" onclick="basculer('temps_par_app',${i},'masquee')">${a.masquee ? "Montrer" : "Masquer"}</button></div>`).join("")}</div>
+    </section>
+
+    <section>
+      <h2>Votre usage de l'IA</h2>
+      <p class="discret">L'entreprise verra seulement combien de personnes utilisent chaque outil, et pour quoi.</p>
+      <div class="lignes">${(r.usage_ia || []).map((u, i) => `
+        <div class="ligne ${u.retiree ? "off" : ""}"><span>${esc(u.outil)}</span><span class="min">${h(u.minutes)}</span>
+        <button class="bouton second petit" onclick="basculer('usage_ia',${i},'retiree')">${u.retiree ? "Remettre" : "Retirer"}</button>
+        <span class="usages">${(u.usages || []).map(esc).join(" · ")}</span></div>`).join("") || `<div class="discret">Aucun outil d'IA repéré.</div>`}</div>
+    </section>
+
+    ${(r.limites || []).length ? `<section><h2>Ce que l'IA ne sait pas</h2><ul class="limites">${r.limites.map(l => `<li>${esc(l)}</li>`).join("")}</ul></section>` : ""}
+    <details class="json" id="json" hidden><summary class="discret">Le fichier exact qui sera partagé</summary><pre id="json-pre"></pre></details>`;
+  const n = (r.taches || []).filter(t => !t.retiree).length;
+  document.getElementById("compte").textContent = `${n} tâche${n > 1 ? "s" : ""} · ${apps.filter(a => !a.masquee).length} apps · ${masquees.size} masquée${masquees.size > 1 ? "s" : ""}`;
+  document.getElementById("pied").hidden = false;
+}
+
+function rendreTache(t, i) {
+  const a = t.automatisable;
+  const avis = a.corrige_par_la_personne || "";
+  return `<article class="carte tache ${t.retiree ? "retiree" : ""}">
+    <div class="tete">
+      <input class="titre" value="${esc(t.titre)}" onchange="r.taches[${i}].titre=this.value" aria-label="Titre de la tâche">
+      <button class="bouton second petit" onclick="basculer('taches',${i},'retiree')">${t.retiree ? "Remettre" : "Retirer"}</button>
+    </div>
+    <div class="corps">
+      <div class="meta">
+        <span><input type="number" min="0" step="1" value="${esc(t.frequence_par_semaine)}" onchange="r.taches[${i}].frequence_par_semaine=+this.value"> fois / semaine</span>
+        <span>≈ <input type="number" min="0" step="1" value="${esc(t.duree_moyenne_min)}" onchange="r.taches[${i}].duree_moyenne_min=+this.value"> min</span>
+        <span class="apps">${(t.apps || []).map(x => `<span class="etiquette">${esc(x)}</span>`).join("")}</span>
+        <span class="discret">${(t.preuves || []).length} preuve${(t.preuves || []).length > 1 ? "s" : ""} horodatée${(t.preuves || []).length > 1 ? "s" : ""}</span>
+      </div>
+      <ol class="etapes">${(t.etapes || []).map((e, j) => `<li>
+        <input value="${esc(e.texte)}" onchange="r.taches[${i}].etapes[${j}].texte=this.value" aria-label="Étape ${j + 1}">
+        <span class="etiquette">${esc(e.app)}</span>
+        <span class="etiquette ${e.statut === "supposé" ? "suppose" : "observe"}">${esc(e.statut || "observé")}</span>
+        <button class="x" title="Retirer cette étape" onclick="r.taches[${i}].etapes.splice(${j},1);rendre()">×</button></li>`).join("")}</ol>
+      <div class="avis">
+        <div><span class="jauge">${Math.round(a.score)}/100</span> <b>automatisable</b>
+          <p>${esc(a.pourquoi || "")}${avis ? ` <b>· corrigé par vous</b>` : ""}</p></div>
+        <select onchange="corriger(${i}, this.value)" aria-label="Votre avis">
+          ${Object.entries(AVIS).map(([k, v]) => `<option value="${esc(k)}" ${k === avis ? "selected" : ""}>${esc(v)}</option>`).join("")}
+        </select>
+      </div>
+    </div>
+  </article>`;
+}
+
+function basculer(liste, i, champ) { r[liste][i][champ] = !r[liste][i][champ]; rendre(); }
+
+function corriger(i, avis) {
+  const t = r.taches[i];
+  if (avis) { t.automatisable.score = SCORE_AVIS[avis]; t.automatisable.corrige_par_la_personne = avis; }
+  else { t.automatisable.score = t._score_ia ?? t.automatisable.score; delete t.automatisable.corrige_par_la_personne; }
+  rendre();
+}
+
+function preparer() {
+  // une app masquée disparaît partout, y compris dans les tâches et les preuves
+  const masquees = new Set((r.temps_par_app || []).filter(a => a.masquee).map(a => a.app));
+  const c = JSON.parse(JSON.stringify(r));
+  for (const t of c.taches || []) {
+    delete t._score_ia;
+    t.apps = (t.apps || []).filter(a => !masquees.has(a));
+    for (const e of t.etapes || []) if (masquees.has(e.app)) e.app = "app masquée";
+    t.preuves = (t.preuves || []).filter(p => !masquees.has(p.app));
+  }
+  // le nom exact d'une app masquée est aussi effacé des textes (titres, étapes, goulots…)
+  let texte = JSON.stringify(c);
+  for (const a of masquees) texte = texte.split(JSON.stringify(a).slice(1, -1)).join("app masquée");
+  return JSON.parse(texte);
+}
+
+document.getElementById("voir").onclick = () => {
+  const d = document.getElementById("json");
+  d.hidden = false; d.open = true;
+  document.getElementById("json-pre").textContent = JSON.stringify(preparer(), null, 1);
+  d.scrollIntoView({ behavior: "smooth" });
+};
+
+document.getElementById("valider").onclick = async () => {
+  const b = document.getElementById("valider");
+  b.disabled = true; b.textContent = "Envoi…";
+  const res = await fetch(api("/api/valider"), { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(preparer()) });
+  if (!res.ok) { b.disabled = false; b.textContent = "Réessayer"; return; }
+  const { partage } = await res.json();
+  document.getElementById("pied").hidden = true;
+  document.getElementById("page").innerHTML = `<div class="fini">
+    <div class="rond">✓</div>
+    <h1>C'est partagé.</h1>
+    <p class="chapo" style="margin:0 auto 26px">${partage.taches.length} tâche(s), sans votre nom. ${campagne === "equipe" ? "Le fichier part avec la prochaine sauvegarde de l'équipe." : ""} Vous pouvez le retirer à tout moment : il disparaît alors du Wrapped.</p>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+      <a class="bouton violet" href="/wrapped?campagne=${campagne}">Voir le Wrapped</a>
+      <button class="bouton second" id="retirer">Retirer mon résumé</button>
+    </div></div>`;
+  document.getElementById("retirer").onclick = async () => {
+    await fetch(api("/api/retirer"), { method: "POST" });
+    document.getElementById("page").innerHTML = `<div class="fini"><h1>Retiré.</h1><p class="chapo" style="margin:0 auto">Votre résumé ne compte plus dans le Wrapped.</p><p><a href="/?campagne=${campagne}">Retour</a></p></div>`;
+  };
+};
+</script>
+</body>
+</html>

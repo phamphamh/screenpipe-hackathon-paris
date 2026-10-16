@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Onboarding dirigeant</title>
+<link rel="stylesheet" href="/commun.css">
+<style>
+  h1 { font-size: clamp(32px, 5vw, 48px); font-weight: 800; letter-spacing: -.035em; margin: 6px 0 10px; }
+  h1 em { font-family: var(--serif); font-style: italic; font-weight: 400; color: var(--violet); }
+  form { display: flex; flex-direction: column; gap: 18px; margin-top: 28px; max-width: 680px; }
+  label { display: flex; flex-direction: column; gap: 6px; font-weight: 700; }
+  label span { font-weight: 400; color: var(--encre-3); font-size: 14px; }
+  input, textarea { border: 1px solid var(--trait); border-radius: 12px; padding: 12px 14px; background: #fff; font-weight: 400; }
+  textarea { min-height: 80px; resize: vertical; }
+  input:disabled, textarea:disabled { background: #f8f6f1; color: var(--encre-2); }
+</style>
+</head>
+<body>
+<header class="haut"><a class="marque" href="/" id="retour"><i></i>Wrapped</a><span class="etiquette" id="qui"></span></header>
+<main class="page">
+  <span class="etiquette violet">Étape 1 · le dirigeant</span>
+  <h1>Cinq questions <em>avant de commencer.</em></h1>
+  <p class="discret">Le coût horaire sert à traduire les heures en euros. Les priorités servent à classer ce qu'on automatise.</p>
+  <form id="f">
+    <label>Le nom de l'entreprise<input name="entreprise" required></label>
+    <label>Votre activité, en une phrase<span>Ce que vous vendez, à qui, combien vous êtes.</span><input name="activite"></label>
+    <label>Vos 3 priorités<span>Une par ligne.</span><textarea name="priorites"></textarea></label>
+    <label>Le coût horaire moyen d'un salarié (€, chargé)<input name="cout_horaire" type="number" min="10" step="1" required></label>
+    <label>Vos outils principaux<span>Séparés par des virgules.</span><input name="outils"></label>
+    <label>Ce qui vous agace le plus aujourd'hui<textarea name="irritants"></textarea></label>
+    <div><button class="bouton violet" id="ok">Enregistrer</button> <span class="discret" id="etat"></span></div>
+  </form>
+</main>
+<script>
+const campagne = new URLSearchParams(location.search).get("campagne") === "equipe" ? "equipe" : "demo";
+document.getElementById("retour").href = "/?campagne=" + campagne;
+document.getElementById("qui").textContent = campagne === "demo" ? "Démo · lecture seule" : "Notre équipe";
+const f = document.getElementById("f");
+fetch("/api/campagne?campagne=" + campagne).then(r => r.json()).then(c => {
+  const o = c.onboarding || {};
+  for (const [k, v] of Object.entries(o)) if (f.elements[k]) f.elements[k].value = Array.isArray(v) ? v.join(k === "priorites" ? "\n" : ", ") : v;
+  if (campagne === "demo") { [...f.elements].forEach(e => e.disabled = true); document.getElementById("ok").hidden = true; }
+});
+f.onsubmit = async e => {
+  e.preventDefault();
+  const d = Object.fromEntries(new FormData(f));
+  d.priorites = d.priorites.split("\n").map(s => s.trim()).filter(Boolean);
+  d.outils = d.outils.split(",").map(s => s.trim()).filter(Boolean);
+  d.cout_horaire = +d.cout_horaire;
+  const r = await fetch("/api/onboarding?campagne=equipe", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(d) });
+  document.getElementById("etat").textContent = r.ok ? "Enregistré." : "Échec de l'enregistrement.";
+};
+</script>
+</body>
+</html>

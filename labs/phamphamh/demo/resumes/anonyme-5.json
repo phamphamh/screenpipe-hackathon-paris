@@ -1,0 +1,263 @@
+{
+ "campagne": "demo-maison-corvo",
+ "personne": "anonyme-5",
+ "periode": {
+  "debut": "2026-10-12T09:00:00+02:00",
+  "fin": "2026-10-16T18:00:00+02:00"
+ },
+ "heures_captees": 30.0,
+ "temps_par_app": [
+  {
+   "app": "Zendesk",
+   "minutes": 820
+  },
+  {
+   "app": "Sage",
+   "minutes": 380
+  },
+  {
+   "app": "Gmail",
+   "minutes": 260
+  },
+  {
+   "app": "Site transporteur",
+   "minutes": 140
+  },
+  {
+   "app": "Google Drive",
+   "minutes": 90
+  }
+ ],
+ "temps_par_categorie": [
+  {
+   "categorie": "Relation client",
+   "minutes": 1050
+  },
+  {
+   "categorie": "Commandes et devis",
+   "minutes": 120
+  },
+  {
+   "categorie": "Réunions",
+   "minutes": 200
+  },
+  {
+   "categorie": "Mails internes",
+   "minutes": 250
+  }
+ ],
+ "usage_ia": [
+  {
+   "outil": "ChatGPT",
+   "minutes": 40,
+   "usages": [
+    "rédiger des réponses clients"
+   ]
+  }
+ ],
+ "taches": [
+  {
+   "titre": "Traiter une demande de retour produit",
+   "frequence_par_semaine": 12,
+   "duree_moyenne_min": 15,
+   "apps": [
+    "Zendesk",
+    "Sage",
+    "Gmail"
+   ],
+   "etapes": [
+    {
+     "type": "input",
+     "texte": "Lire le ticket et les photos du client",
+     "app": "Zendesk",
+     "statut": "observé"
+    },
+    {
+     "type": "check",
+     "texte": "Vérifier la garantie dans Sage",
+     "app": "Sage",
+     "statut": "observé"
+    },
+    {
+     "type": "decision",
+     "texte": "Accepter ou refuser le retour",
+     "app": "Zendesk",
+     "statut": "observé"
+    },
+    {
+     "type": "output",
+     "texte": "Créer le bon de retour et prévenir le client",
+     "app": "Gmail",
+     "statut": "observé"
+    }
+   ],
+   "exceptions": [
+    "produit hors garantie → devis de réparation"
+   ],
+   "goulots": [
+    {
+     "type": "handoff",
+     "detail": "validation du responsable pour les retours de plus de 500 €"
+    }
+   ],
+   "automatisable": {
+    "score": 45,
+    "pourquoi": "La décision d'accepter demande du jugement ; la préparation peut être automatisée."
+   },
+   "confiance": 0.7,
+   "preuves": [
+    {
+     "debut": "2026-10-12T10:00:00+02:00",
+     "fin": "2026-10-12T10:15:00+02:00",
+     "app": "Zendesk"
+    },
+    {
+     "debut": "2026-10-13T12:17:00+02:00",
+     "fin": "2026-10-13T12:32:00+02:00",
+     "app": "Sage"
+    },
+    {
+     "debut": "2026-10-14T14:34:00+02:00",
+     "fin": "2026-10-14T14:49:00+02:00",
+     "app": "Gmail"
+    },
+    {
+     "debut": "2026-10-15T16:01:00+02:00",
+     "fin": "2026-10-15T16:16:00+02:00",
+     "app": "Zendesk"
+    }
+   ]
+  },
+  {
+   "titre": "Répondre aux demandes de délai de livraison",
+   "frequence_par_semaine": 15,
+   "duree_moyenne_min": 6,
+   "apps": [
+    "Zendesk",
+    "Sage",
+    "Site transporteur"
+   ],
+   "etapes": [
+    {
+     "type": "input",
+     "texte": "Lire la demande du client",
+     "app": "Zendesk",
+     "statut": "observé"
+    },
+    {
+     "type": "action",
+     "texte": "Chercher la commande puis le suivi transporteur",
+     "app": "Sage",
+     "statut": "observé"
+    },
+    {
+     "type": "output",
+     "texte": "Répondre avec la date estimée",
+     "app": "Zendesk",
+     "statut": "observé"
+    }
+   ],
+   "exceptions": [],
+   "goulots": [
+    {
+     "type": "switching",
+     "detail": "Sage → site du transporteur → mail"
+    }
+   ],
+   "automatisable": {
+    "score": 68,
+    "pourquoi": "Le suivi transporteur est consultable automatiquement."
+   },
+   "confiance": 0.75,
+   "preuves": [
+    {
+     "debut": "2026-10-13T14:00:00+02:00",
+     "fin": "2026-10-13T14:06:00+02:00",
+     "app": "Zendesk"
+    },
+    {
+     "debut": "2026-10-14T16:17:00+02:00",
+     "fin": "2026-10-14T16:23:00+02:00",
+     "app": "Sage"
+    },
+    {
+     "debut": "2026-10-15T18:34:00+02:00",
+     "fin": "2026-10-15T18:40:00+02:00",
+     "app": "Site transporteur"
+    },
+    {
+     "debut": "2026-10-16T20:01:00+02:00",
+     "fin": "2026-10-16T20:07:00+02:00",
+     "app": "Zendesk"
+    }
+   ]
+  },
+  {
+   "titre": "Chercher la fiche technique d'un produit",
+   "frequence_par_semaine": 10,
+   "duree_moyenne_min": 4,
+   "apps": [
+    "Google Drive",
+    "Google Chrome"
+   ],
+   "etapes": [
+    {
+     "type": "input",
+     "texte": "Recevoir une question client sur un produit",
+     "app": "Gmail",
+     "statut": "observé"
+    },
+    {
+     "type": "action",
+     "texte": "Chercher la fiche dans le Drive ou sur le site du fabricant",
+     "app": "Google Drive",
+     "statut": "observé"
+    },
+    {
+     "type": "output",
+     "texte": "Envoyer la fiche ou la réponse au client",
+     "app": "Gmail",
+     "statut": "observé"
+    }
+   ],
+   "exceptions": [],
+   "goulots": [
+    {
+     "type": "waiting",
+     "detail": "fiches rangées dans 3 dossiers différents"
+    }
+   ],
+   "automatisable": {
+    "score": 70,
+    "pourquoi": "Une base de fiches interrogeable répondrait à la place."
+   },
+   "confiance": 0.75,
+   "preuves": [
+    {
+     "debut": "2026-10-15T11:00:00+02:00",
+     "fin": "2026-10-15T11:04:00+02:00",
+     "app": "Google Drive"
+    },
+    {
+     "debut": "2026-10-16T13:17:00+02:00",
+     "fin": "2026-10-16T13:21:00+02:00",
+     "app": "Google Chrome"
+    },
+    {
+     "debut": "2026-10-12T15:34:00+02:00",
+     "fin": "2026-10-12T15:38:00+02:00",
+     "app": "Google Drive"
+    }
+   ]
+  }
+ ],
+ "limites": [
+  "Données fictives : entreprise de démonstration."
+ ],
+ "tri_80_20": {
+  "captures_regardees": 10800,
+  "captures_gardees": 2592,
+  "part": 0.24
+ },
+ "valide_par_la_personne": true
+}

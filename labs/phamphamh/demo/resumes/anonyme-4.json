@@ -1,0 +1,245 @@
+{
+ "campagne": "demo-maison-corvo",
+ "personne": "anonyme-4",
+ "periode": {
+  "debut": "2026-10-12T09:00:00+02:00",
+  "fin": "2026-10-14T18:00:00+02:00"
+ },
+ "heures_captees": 19.5,
+ "temps_par_app": [
+  {
+   "app": "Pennylane",
+   "minutes": 610
+  },
+  {
+   "app": "Sage",
+   "minutes": 230
+  },
+  {
+   "app": "Excel",
+   "minutes": 160
+  },
+  {
+   "app": "Gmail",
+   "minutes": 170
+  }
+ ],
+ "temps_par_categorie": [
+  {
+   "categorie": "Comptabilité",
+   "minutes": 760
+  },
+  {
+   "categorie": "Reporting",
+   "minutes": 45
+  },
+  {
+   "categorie": "Réunions",
+   "minutes": 150
+  },
+  {
+   "categorie": "Mails internes",
+   "minutes": 210
+  }
+ ],
+ "usage_ia": [
+  {
+   "outil": "Copilot",
+   "minutes": 30,
+   "usages": [
+    "formules Excel"
+   ]
+  },
+  {
+   "outil": "ChatGPT",
+   "minutes": 15,
+   "usages": [
+    "rédiger une relance"
+   ]
+  }
+ ],
+ "taches": [
+  {
+   "titre": "Rapprocher les factures fournisseurs des bons de commande",
+   "frequence_par_semaine": 30,
+   "duree_moyenne_min": 6,
+   "apps": [
+    "Pennylane",
+    "Sage"
+   ],
+   "etapes": [
+    {
+     "type": "input",
+     "texte": "Ouvrir la facture fournisseur",
+     "app": "Pennylane",
+     "statut": "observé"
+    },
+    {
+     "type": "check",
+     "texte": "Retrouver le bon de commande et comparer les montants",
+     "app": "Sage",
+     "statut": "observé"
+    },
+    {
+     "type": "decision",
+     "texte": "Valider ou signaler un écart",
+     "app": "Pennylane",
+     "statut": "observé"
+    }
+   ],
+   "exceptions": [
+    "écart de prix → mail au fournisseur"
+   ],
+   "goulots": [
+    {
+     "type": "switching",
+     "detail": "Pennylane ↔ Sage pour chaque facture"
+    }
+   ],
+   "automatisable": {
+    "score": 72,
+    "pourquoi": "La comparaison des montants est mécanique ; seuls les écarts demandent un humain."
+   },
+   "confiance": 0.8,
+   "preuves": [
+    {
+     "debut": "2026-10-12T09:00:00+02:00",
+     "fin": "2026-10-12T09:06:00+02:00",
+     "app": "Pennylane"
+    },
+    {
+     "debut": "2026-10-13T11:17:00+02:00",
+     "fin": "2026-10-13T11:23:00+02:00",
+     "app": "Sage"
+    },
+    {
+     "debut": "2026-10-14T13:34:00+02:00",
+     "fin": "2026-10-14T13:40:00+02:00",
+     "app": "Pennylane"
+    },
+    {
+     "debut": "2026-10-15T15:01:00+02:00",
+     "fin": "2026-10-15T15:07:00+02:00",
+     "app": "Sage"
+    }
+   ]
+  },
+  {
+   "titre": "Relancer les factures impayées",
+   "frequence_par_semaine": 10,
+   "duree_moyenne_min": 10,
+   "apps": [
+    "Pennylane",
+    "Gmail"
+   ],
+   "etapes": [
+    {
+     "type": "input",
+     "texte": "Lister les factures échues",
+     "app": "Pennylane",
+     "statut": "observé"
+    },
+    {
+     "type": "output",
+     "texte": "Envoyer la relance",
+     "app": "Gmail",
+     "statut": "observé"
+    },
+    {
+     "type": "decision",
+     "texte": "Appeler les clients importants plutôt que d'écrire",
+     "app": "Gmail",
+     "statut": "supposé"
+    }
+   ],
+   "exceptions": [],
+   "goulots": [
+    {
+     "type": "waiting",
+     "detail": "attente des retours clients"
+    }
+   ],
+   "automatisable": {
+    "score": 65,
+    "pourquoi": "Relance écrite automatisable ; le choix d'appeler reste humain."
+   },
+   "confiance": 0.55,
+   "preuves": [
+    {
+     "debut": "2026-10-13T15:00:00+02:00",
+     "fin": "2026-10-13T15:10:00+02:00",
+     "app": "Pennylane"
+    },
+    {
+     "debut": "2026-10-14T17:17:00+02:00",
+     "fin": "2026-10-14T17:27:00+02:00",
+     "app": "Gmail"
+    },
+    {
+     "debut": "2026-10-15T19:34:00+02:00",
+     "fin": "2026-10-15T19:44:00+02:00",
+     "app": "Pennylane"
+    }
+   ]
+  },
+  {
+   "titre": "Préparer le reporting hebdo de trésorerie",
+   "frequence_par_semaine": 1,
+   "duree_moyenne_min": 45,
+   "apps": [
+    "Pennylane",
+    "Excel",
+    "Gmail"
+   ],
+   "etapes": [
+    {
+     "type": "input",
+     "texte": "Exporter les chiffres de la semaine",
+     "app": "Pennylane",
+     "statut": "observé"
+    },
+    {
+     "type": "action",
+     "texte": "Coller dans le tableau et recalculer les totaux",
+     "app": "Excel",
+     "statut": "observé"
+    },
+    {
+     "type": "output",
+     "texte": "Envoyer le tableau à la direction",
+     "app": "Gmail",
+     "statut": "observé"
+    }
+   ],
+   "exceptions": [],
+   "goulots": [
+    {
+     "type": "rework",
+     "detail": "formules cassées après le collage, refaites à la main"
+    }
+   ],
+   "automatisable": {
+    "score": 74,
+    "pourquoi": "Export et calculs identiques chaque semaine ; seul le commentaire est humain."
+   },
+   "confiance": 0.8,
+   "preuves": [
+    {
+     "debut": "2026-10-16T16:00:00+02:00",
+     "fin": "2026-10-16T16:45:00+02:00",
+     "app": "Pennylane"
+    }
+   ]
+  }
+ ],
+ "limites": [
+  "Seulement 3 jours captés : les fréquences hebdomadaires sont extrapolées.",
+  "Données fictives : entreprise de démonstration."
+ ],
+ "tri_80_20": {
+  "captures_regardees": 7020,
+  "captures_gardees": 1684,
+  "part": 0.24
+ },
+ "valide_par_la_personne": true
+}

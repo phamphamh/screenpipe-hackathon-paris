@@ -1,0 +1,81 @@
+{
+ "campagne": "demo-maison-corvo",
+ "personne": "anonyme-6",
+ "periode": {
+  "debut": "2026-10-12T09:00:00+02:00",
+  "fin": "2026-10-16T18:00:00+02:00"
+ },
+ "heures_captees": 28.0,
+ "temps_par_app": [
+  {
+   "app": "Excel",
+   "minutes": 500
+  },
+  {
+   "app": "Google Maps",
+   "minutes": 400
+  }
+ ],
+ "temps_par_categorie": [
+  {
+   "categorie": "Logistique",
+   "minutes": 900
+  }
+ ],
+ "usage_ia": [
+  {
+   "outil": "ChatGPT",
+   "minutes": 10,
+   "usages": [
+    "calcul"
+   ]
+  }
+ ],
+ "taches": [
+  {
+   "titre": "Préparer les tournées de livraison",
+   "frequence_par_semaine": 5,
+   "duree_moyenne_min": 40,
+   "apps": [
+    "Excel",
+    "Google Maps"
+   ],
+   "etapes": [
+    {
+     "type": "action",
+     "texte": "Placer les livraisons sur la carte",
+     "app": "Google Maps",
+     "statut": "observé"
+    }
+   ],
+   "exceptions": [],
+   "goulots": [],
+   "automatisable": {
+    "score": 80,
+    "pourquoi": "Optimisation de tournée classique."
+   },
+   "confiance": 0.7,
+   "preuves": [
+    {
+     "debut": "2026-10-12T09:00:00+02:00",
+     "fin": "2026-10-12T09:40:00+02:00",
+     "app": "Excel"
+    },
+    {
+     "debut": "2026-10-13T11:17:00+02:00",
+     "fin": "2026-10-13T11:57:00+02:00",
+     "app": "Google Maps"
+    }
+   ]
+  }
+ ],
+ "limites": [
+  "Données fictives : entreprise de démonstration."
+ ],
+ "tri_80_20": {
+  "captures_regardees": 10080,
+  "captures_gardees": 2419,
+  "part": 0.24
+ },
+ "valide_par_la_personne": false
+}

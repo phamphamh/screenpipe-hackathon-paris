@@ -1,0 +1,19 @@
+{
+ "entreprise": "Maison Corvo",
+ "activite": "Distribution de matériel de cuisine professionnelle, 48 salariés",
+ "priorites": [
+  "Répondre plus vite aux clients",
+  "Moins de saisie manuelle",
+  "Fiabiliser le reporting"
+ ],
+ "cout_horaire": 42,
+ "outils": [
+  "Gmail",
+  "HubSpot",
+  "Sage",
+  "Pennylane",
+  "Zendesk",
+  "Excel"
+ ],
+ "irritants": "On passe nos journées à recopier des commandes et à relancer des devis."
+}
