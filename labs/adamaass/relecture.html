@@ -169,11 +169,11 @@ function rendre() {
         </div>
         ${sens.length ? `<div class="alerte"><span>Cette tâche contient peut-être des infos sensibles : ${sens.map(s => `<mark>${esc(s.valeur)}</mark> (${s.type})`).join(', ')}.</span>
           <div class="actions"><button class="btn" data-anonymiser="${i}">Remplacer par [email], [montant]…</button><button class="btn" data-retirer="${i}">Retirer la tâche</button></div></div>` : ''}
-        <ol class="etapes">${t.etapes.map((e, k) => `<li><span><span class="type">${esc(e.type)} · ${esc(e.app)}</span>${esc(e.texte)} ${badge(e.statut)}</span><button data-etape="${i}:${k}" aria-label="Supprimer cette étape">supprimer</button></li>`).join('')}</ol>
+        <ol class="etapes">${t.etapes.map((e, k) => `<li><span><span class="type">${esc(e.type)}${e.app ? ' · ' + esc(e.app) : ''}</span>${esc(e.texte)} ${badge(e.statut)}</span><button data-etape="${i}:${k}" aria-label="Supprimer cette étape">supprimer</button></li>`).join('')}</ol>
         ${t.exceptions?.length ? `<p class="muted" style="font-size:.9rem">Exceptions : ${t.exceptions.map(esc).join(' · ')}</p>` : ''}
       </div>
     </article>`;
-  }).join('');
+  }).join('') || `<p class="muted">Aucune tâche répétée trouvée sur cette période. C'est normal sur une journée courte ou très variée : rien n'est inventé.</p>`;
 
   document.getElementById('ia').innerHTML = (R.usage_ia || []).filter(u => !etat.appsCachees.has(u.outil)).map(u =>
     `<div class="ligne"><span>${esc(u.outil)} <span class="muted">· ${u.usages.map(esc).join(', ')}</span></span><span class="mono">${fmtH(u.minutes)}</span></div>`).join('') || '<p class="muted">Aucun usage de l\'IA repéré.</p>';

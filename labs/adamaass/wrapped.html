@@ -105,7 +105,9 @@
 <script>
 // Le Wrapped lit un seul objet "insights" (sortie de la fusion, brique D).
 // Règles appliquées ici : pas de chiffre par personne, agrégat masqué sous 3 personnes, badge observé / estimé, chaque chiffre cliquable.
-const MIN_PERSONNES = 3;
+// Seuil d'anonymat : 3 par défaut. ?seuil=1 dans l'URL l'abaisse pour une démo, et un bandeau le signale.
+const SEUIL_URL = parseInt(new URLSearchParams(location.search).get('seuil'));
+const MIN_PERSONNES = SEUIL_URL >= 1 ? SEUIL_URL : 3;
 const SEMAINES_PAR_MOIS = 4.33;
 const fmt = (n, d = 0) => n.toLocaleString('fr-FR', { minimumFractionDigits: d, maximumFractionDigits: d });
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -172,7 +174,7 @@ function slidesDe(d) {
 
   s.push(`<div class="contenu">
     <span class="eyebrow">03 · Vos tâches répétées</span>
-    <h2>Le top 3 coûte ${chiffre('top3', fmt(top3.reduce((a, t) => a + t.euros_mois, 0)) + ' €', { titre: 'Coût du top 3', calcul: top3.map(t => `${t.titre} : ${fmt(t.euros_mois)} €`).join('\n'), note: 'Somme des coûts mensuels des 3 tâches.' })} par mois.</h2>
+    ${top3.length ? `<h2>${top3.length > 1 ? `Le top ${top3.length}` : 'Cette tâche'} coûte ${chiffre('top3', fmt(top3.reduce((a, t) => a + t.euros_mois, 0)) + ' €', { titre: 'Coût du top ' + top3.length, calcul: top3.map(t => `${t.titre} : ${fmt(t.euros_mois)} €`).join('\n'), note: 'Somme des coûts mensuels des tâches affichées.' })} par mois.</h2>` : aucuneVisible(d)}
     <div class="taches">${top3.map((t, i) => `<div class="tache">
       <span class="rang">${i + 1}</span>
       <div><h3>${esc(t.titre)} ${badge(t.statut)}</h3>
@@ -186,7 +188,7 @@ function slidesDe(d) {
     <h2>${esc(t1.titre)}</h2>
     <div class="deux">
       <div class="bloc"><span class="eyebrow">Les étapes</span>
-        <ol class="etapes">${t1.etapes.map(e => `<li><span class="type">${esc(e.type)} · ${esc(e.app)}</span><span>${esc(e.texte)} ${badge(e.statut)}</span></li>`).join('')}</ol></div>
+        <ol class="etapes">${t1.etapes.map(e => `<li><span class="type">${esc(e.type)}${e.app ? ' · ' + esc(e.app) : ''}</span><span>${esc(e.texte)} ${badge(e.statut)}</span></li>`).join('')}</ol></div>
       <div class="bloc">
         <span class="eyebrow">Les exceptions</span>
         <ul>${t1.exceptions.map(x => `<li>${esc(x)}</li>`).join('') || '<li class="muted">aucune vue</li>'}</ul>
@@ -196,10 +198,11 @@ function slidesDe(d) {
     </div>
   </div>`);
 
-  s.push(`<div class="contenu">
+  const goulots = d.goulots.filter(g => g.personnes === undefined || g.personnes >= MIN_PERSONNES);
+  if (goulots.length) s.push(`<div class="contenu">
     <span class="eyebrow">05 · Les goulots</span>
-    <h2>${fmt(d.goulots.reduce((a, g) => a + g.heures_semaine, 0), 1)} h par semaine perdues entre deux outils ou à attendre.</h2>
-    <div class="deux">${d.goulots.map((g, i) => `<div class="carte">
+    <h2>${fmt(goulots.reduce((a, g) => a + g.heures_semaine, 0), 1)} h par semaine perdues entre deux outils ou à attendre.</h2>
+    <div class="deux">${goulots.map((g, i) => `<div class="carte">
       <span class="eyebrow">${{ switching: 'allers-retours', waiting: 'attente', rework: 'reprises', handoff: 'passage de relais' }[g.type] || esc(g.type)}</span>
       <b class="mono" style="font-size:1.8rem">${chiffre('g' + i, fmt(g.heures_semaine, 1) + ' h', { titre: g.detail, calcul: `${fmt(g.heures_semaine, 1)} h par semaine pour l'équipe`, note: 'Somme des goulots de ce type repérés dans les tâches.' })}</b>
       <span>${esc(g.detail)}</span></div>`).join('')}</div>
@@ -215,7 +218,7 @@ function slidesDe(d) {
           <span>${u.personnes} personnes · ${u.usages.map(esc).join(', ')}</span></div>`).join('')}</div>
   </div>`);
 
-  s.push(`<div class="contenu">
+  if (prior.length) s.push(`<div class="contenu">
     <span class="eyebrow">07 · Ce qu'on automatise en premier</span>
     <h2>Commencer par « ${esc(prior[0].titre)} ».</h2>
     <div class="taches">${prior.map((t, i) => `<div class="tache">
@@ -236,7 +239,7 @@ function slidesDe(d) {
     </div>
   </div>`);
 
-  s.push(`<div class="contenu">
+  if (prior.length) s.push(`<div class="contenu">
     <span class="eyebrow">09 · Et maintenant</span>
     <h2>Lancer l'automatisation n°1.</h2>
     <p class="lede">La tâche « ${esc(prior[0].titre)} » devient une skill pour Claude Code ou Codex. Relisez-la avant de l'activer.</p>
@@ -248,6 +251,11 @@ function slidesDe(d) {
     <div id="recu"></div>
   </div>`);
   return s;
+}
+
+function aucuneVisible(d) {
+  return `<h2>Aucune tâche n'est encore partagée par ${MIN_PERSONNES} personnes ou plus.</h2>
+    <p class="lede">Pour protéger l'anonymat, une tâche n'apparaît que si au moins ${MIN_PERSONNES} personnes la font. ${d.masquees.length} tâche(s) sont repérées mais masquées (liste dans « Ce qu'on ne sait pas encore »). Invitez plus de volontaires pour les voir.</p>`;
 }
 
 function explicationCout(t, d) {
@@ -286,12 +294,14 @@ function afficher(data) {
   preuves = {};
   D = preparer(data);
   slides = slidesDe(D);
-  document.getElementById('bandeau').hidden = !data.fictif;
+  const bandeau = document.getElementById('bandeau');
+  bandeau.textContent = [data.fictif && 'Données inventées pour la démo', data.personnes.validees < MIN_PERSONNES && `Seulement ${data.personnes.validees} personne(s) : les totaux ne sont pas anonymes`, MIN_PERSONNES < 3 && `Mode démo : seuil d'anonymat abaissé à ${MIN_PERSONNES} personne(s)`].filter(Boolean).join(' · ');
+  bandeau.hidden = !bandeau.textContent;
   document.getElementById('titre-barre').textContent = `Wrapped · ${D.entreprise.nom}`;
   document.getElementById('slides').innerHTML = slides.map(h => `<section class="slide">${h}</section>`).join('');
   document.getElementById('progres').innerHTML = slides.map((_, i) => `<button aria-label="Aller à la slide ${i + 1}" data-i="${i}"></button>`).join('');
-  document.getElementById('copier').onclick = e => { navigator.clipboard?.writeText(document.getElementById('skill').textContent); e.target.textContent = 'Copiée'; };
-  document.getElementById('supprimer').onclick = () => {
+  if (document.getElementById('copier')) document.getElementById('copier').onclick = e => { navigator.clipboard?.writeText(document.getElementById('skill').textContent); e.target.textContent = 'Copiée'; };
+  if (document.getElementById('supprimer')) document.getElementById('supprimer').onclick = () => {
     if (!confirm('Supprimer toutes les données de la campagne ? (démo : rien n\'est réellement supprimé)')) return;
     document.getElementById('recu').innerHTML = `<div class="recu">Reçu de suppression · ${new Date().toLocaleString('fr-FR')}<br>Campagne « ${esc(D.campagne.nom)} » : ${D.personnes.validees} résumés supprimés. Les captures n'ont jamais quitté les ordinateurs. (simulation)</div>`;
   };

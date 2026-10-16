@@ -49,7 +49,26 @@ Ailleurs chez Lonestone, le même découpage sous forme d'offres : Explore (visi
   1. **outil pour les cabinets** (ils achètent le Wrapped pour remplacer le shadowing et vendre plus vite le POC) ;
   2. **concurrent direct** du shadowing pour les PME qui n'ont pas 5 000 € à mettre dans un audit.
 
-## 6. Non vérifié
+## 6. À quoi ressemble un rapport d'audit IA (exemples publics)
+Aucun cabinet français ne publie un vrai rapport client. Les exemples les plus proches :
+- **Sunco, « Sample AI Readiness Report »** (rapport complet pour une entreprise fictive, Northgate Millwork) :
+  score global (55 %, « grade B », « Moderate Risk ») → méthode (34 questions notées 0 à 3, normes ISO/IEC 42001) →
+  tableau par domaine (stratégie, données, sécurité, infra, équipes, gouvernance) → « en place » (3) → « à travailler » (29),
+  chaque lacune avec explication, « How Sunco closes this », référence et source. https://sunco.ca/Files/Assessment/AI_Readiness_Sample_Reportv2.html
+- **Hyperstack (agence FR)** : 6 livrables systématiques — note de cartographie des processus, matrice des opportunités,
+  périmètre V1 chiffré au jour, architecture cible, hypothèses et risques, note sécurité des données (RGPD, LLM).
+  Flash 1-2 j (800-2 400 €), Cadrage 2-4 j (2 400-6 400 €), Complet 5-10 j (6 400-24 000 €), TJM 800 € HT.
+  La cartographie se fait par **interviews et observation des écrans**. https://www.hyperstack.studio/blog/audit-ia-entreprise
+- **Structure qui revient partout** : cartographie → liste de cas d'usage (5 à 80) → priorisation impact × faisabilité × risque
+  (notes de 1 à 5) → feuille de route en 3 horizons (lancer / préparer / écarter) → note RGPD. Rapport de 15 à 25 pages.
+- **Task mining (UiPath, Power Automate)** : carte du processus, temps par variante, usage des apps, activités candidates à
+  l'automatisation ; UiPath exporte un squelette d'automatisation (PDD, XAML).
+
+**Pour le Wrapped** : nos slides couvrent déjà cartographie (2), cas d'usage (3-4), goulots (5), priorisation (7) et inconnues (8).
+Ce qui manque par rapport à un vrai rapport : la **faisabilité technique** (API disponibles), le **risque / RGPD par cas d'usage**
+et la **feuille de route en 3 horizons**. Avantage du Wrapped : chaque chiffre est mesuré, pas déclaré en interview.
+
+## 7. Non vérifié
 - Les méthodes des autres cabinets (seul Lonestone a été lu).
 - Si Lonestone utilise Claude Code pour ses audits (probable, pas confirmé).
 - Les prix réels payés (les prix publiés sont « à partir de »).

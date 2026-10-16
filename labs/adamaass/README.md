@@ -10,8 +10,16 @@ Deux pages, sans installation : **double-clique sur le fichier** pour l'ouvrir d
 Données inventées : `exemples/resume-exemple.js` (format de la brique B, repris de `labs/phamphamh/resume/exemple-resume.json`, avec une tâche sensible en plus) et `exemples/insights-exemple.js`.
 Pour tester de vraies données : bouton « Ouvrir un autre resume.json » ou « Charger un insights.json » en haut de la page.
 
+## Fusion minimale (brique D) : `fusion.py`
+```
+python3 fusion.py resume-valide-a.json resume-valide-b.json resume-valide-c.json --entreprise "Nom" --cout-horaire 45 --sortie insights.json
+```
+Refuse tout résumé non validé par la personne. Regroupe les tâches de personnes différentes par libellé (mots comparés sur leurs 5 premières lettres : « relance » = « relancer »). Puis ouvrir `wrapped.html` → « Charger un insights.json ».
+
+**Démo avec moins de 3 personnes** : `wrapped.html?seuil=1` abaisse le seuil d'anonymat, et un bandeau l'affiche. Sans ça, avec 2 personnes, toutes les tâches sont masquées (c'est voulu).
+
 ## Règles déjà appliquées dans le front
-- Pas de chiffre par personne. Une tâche ou un outil IA partagé par **moins de 3 personnes** est masqué (et listé comme tel slide 8).
+- Pas de chiffre par personne. Une tâche, un goulot ou un outil IA partagé par **moins de 3 personnes** est masqué (et listé comme tel dans « Ce qu'on ne sait pas encore »). Si la campagne entière a moins de 3 personnes, un bandeau le dit.
 - Badge **observé / supposé / estimé** sur les tâches et les étapes.
 - Coût d'une tâche = fréquence par semaine × durée × 4,33 × coût horaire. Gain estimé = coût × score d'automatisation.
 - En relecture, Spotify, Doctolib, WhatsApp, etc. sont proposés masqués par défaut ; la personne peut les réafficher.
@@ -43,7 +51,7 @@ Le front ne calcule que les coûts et les classements. Tout le reste vient de la
     "confiance": 0.8, "statut": "observé|estimé",
     "preuves": [{ "debut": "ISO", "fin": "ISO", "app": "…", "personne": "anonyme-1" }]
   }],
-  "goulots": [{ "type": "switching", "detail": "…", "heures_semaine": 6.5 }],
+  "goulots": [{ "type": "switching", "detail": "…", "personnes": 4, "heures_semaine": 6.5 }],
   "usage_ia": [{ "outil": "ChatGPT", "personnes": 4, "heures_semaine": 6, "usages": ["…"] }],
   "questions_ouvertes": ["…"]
 }

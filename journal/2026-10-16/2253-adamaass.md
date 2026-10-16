@@ -1,0 +1,5 @@
+# Front branché sur le format réel de la brique B + fusion minimale (D)
+- **Fait** : `labs/adamaass/fusion.py` (résumés validés → `insights.json`, refuse les non validés) ; la relecture et le Wrapped testés sur le format exact de `labs/phamphamh/resume/` et sur des variantes (champs absents, étape sans app, aucune tâche, 2 ou 3 personnes).
+- **Ce qui cassait, corrigé** : (1) le Wrapped plantait dès qu'aucune tâche n'atteignait 3 personnes — le cas normal à 2-4 dans l'équipe ; (2) les goulots de tâches masquées restaient visibles (fuite d'anonymat) ; (3) « Relancer » et « Relance » n'étaient pas regroupés ; (4) « top 3 » affiché avec 1 tâche ; (5) étape sans app affichée « INPUT · ».
+- **Démo** : `wrapped.html?seuil=1` abaisse le seuil d'anonymat pour montrer le Wrapped avec peu de personnes (un bandeau le signale).
+- **Pas vérifié** : sur un vrai résumé de ce Mac (la brique A demande la clé de l'API screenpipe, pas encore fournie) ; regroupement des tâches sur de vrais libellés variés.
