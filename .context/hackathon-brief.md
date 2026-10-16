@@ -685,3 +685,55 @@ Le pitch : chacun des 5 membres fait tourner screenpipe pendant les 48 h. À la 
 - si `screenpipe-team-memory` est utilisable aujourd'hui, et comment (le code n'a pas été lu) ;
 - si les 5 ont un ordi qui supporte screenpipe pendant 48 h (batterie, ticket #7364 ; Windows, section 11) ;
 - comment relier les 5 si les API locales ne sont pas joignables entre elles sur le wifi de 42 (exporter un fichier par personne est le plan B le plus simple).
+
+## 23. Storyboard vidéo (120 s), règles de tournage et rétroplanning (16/10, 22h15)
+**Format** : 2 min max, objectif **finie dimanche matin**. C'est le rendu principal : elle doit tenir debout toute seule (la finale de 3 min + 2 min de questions est un autre exercice).
+**Récit** : celui des sections 21 et 22 — le FDE en produit (« Wrapped » de l'entreprise), nos 5 machines jouent l'entreprise. Boucle montrée : dérush local (80/20) → résumé relu par la personne → fusion → Wrapped → une tâche en skill, avec cas d'échec.
+
+### Les chiffres à l'écran (relevé du 16/10 soir, 18h52–21h54, 1 Mac, 970 captures)
+| Chiffre | Valeur |
+|---|---|
+| Copies exactes jetables sans perte | 59 % des captures |
+| Captures sans nom d'app (écran non regardé, OCR seul) | 44 % |
+| Volume brut d'une machine en 3 h | 4,3 M caractères ≈ 1 M tokens |
+| 20 % des captures gardées → fenêtres couvertes | 75 % (1/5 au hasard : 58 %) — section 16, SigLIP ~4 ms |
+| Leur chaîne de workflows existante | ticke toutes les ~5 min, 0 octet de sortie ; `discover` en échec 3/3 |
+| Trous de capture | 63 min en 3 h (écran verrouillé — comportement voulu) |
+
+### Storyboard
+| Temps | Écran | Dit / montré |
+|---|---|---|
+| 0:00–0:12 | Les 5 machines qui tournent (plan réel de la salle) | « Les entreprises paient des ingénieurs pour regarder leurs salariés travailler. » (leur phrase, section 19) |
+| 0:12–0:22 | Surimpression de chiffres | 5 personnes, 48 h. Une seule machine en 3 h : 970 captures, ~1 M tokens — dont 59 % de copies exactes. |
+| 0:22–0:45 | L'outil (dérush) en vrai | Le tri 80/20 : doublons (59 %) et écran non regardé (44 %) écartés ; 20 % des captures suffisent à couvrir 75 % des fenêtres ; preuve à l'écran que leur chaîne existante tourne à vide. |
+| 0:45–1:00 | Page de relecture | Le salarié retire une ligne avant de partager. « Rien ne quitte la machine sans ce clic. » |
+| 1:00–1:25 | Le Wrapped | Top 3 des tâches communes, chaque chiffre cliquable vers sa preuve, badge observé / estimé, aucun chiffre par personne. |
+| 1:25–1:45 | Cas d'échec + 2e entrée | Une tâche classée à tort automatisable → corrigée en relecture → le classement change. Puis la skill tourne sur une 2e entrée (autre personne ou synthétique étiqueté). |
+| 1:45–2:00 | Fin | « Une semaine, sans consultant sur place. Données locales, supprimées à la fin. » + lien du repo. |
+
+- **Invariant** : ~100 s du storyboard tiennent quel que soit le thème. Les ~20 s flexibles : le « premier client » (autre équipe du hackathon) ou un clin d'œil métier (ex. foot) — seulement si un volontaire est recruté, sinon on s'en passe.
+
+### Règles de tournage
+1. **Tout ce qui s'affiche est réel** : écrans de l'outil sur nos vraies données ; synthétique uniquement si étiqueté. Aucun mockup présenté comme fini.
+2. **Observé vs estimé** distingués à l'écran (le jury y tient).
+3. **Aucun temps gagné annoncé non mesuré** : gain = fréquence × durée × personnes, preuve cliquable.
+4. **La boucle complète, le cas d'échec et la 2e entrée** sont dans le storyboard, pas en option (exigence du kit).
+5. **Confidentialité à l'image** : pas de messages d'autres équipes, pas de données de tiers ; chaque membre ne montre que ce qu'il accepte.
+6. **Style** : sobre, monochrome, sans emoji ; chiffres clés en surimpression ; musique discrète (les voix portent).
+7. **Tournage continu** : enregistreur prêt pendant qu'on code (le B-roll de l'outil en marche vaut mieux que des slides). Déclencher exprès une prise « ligne retirée en relecture ».
+
+### Rétroplanning du film
+| Porte | Quand | Fini | Responsable |
+|---|---|---|---|
+| 1 | Sam. 10h | Take 1 sur écrans réels : dérush visible sur ≥ 2 machines, premières images du Wrapped (moche accepté). B-roll continu dès ce soir. | pilote vidéo + builders |
+| — | Sam. 18h | Office hours : montrer la boucle. Si Louis recadre le récit, c'est la dernière fenêtre avant montage. | tous |
+| 2 | Sam. 23h | Vidéo v1 montée, **voix off gelée** (le produit peut encore bouger, le texte non). | pilote vidéo |
+| 3 | Dim. 10h | Vidéo finale exportée + README + description. Dimanche matin, l'équipe ne fait plus que ça. | tous |
+| — | Dim. 14h30 | Rendu | — |
+
+**Rôles** : la ligne « Pitch / produit » de `produit/decoupage.md` (§7) porte le script ; un pilote vidéo unique (script + montage + export) et un présentateur ; les autres ne s'arrêtent pas de builder avant samedi soir.
+
+**Non vérifié** :
+- langue de la vidéo (FR, ou EN sous-titré) selon le public du jury — à trancher samedi ;
+- si une autre équipe accepte d'être le « premier client » (sinon les 20 s flexibles tombent) ;
+- ce que Louis répondra sur l'intégration — ça peut réordonner le récit avant la porte 2.
