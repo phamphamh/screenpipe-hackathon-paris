@@ -620,3 +620,12 @@ Le pitch : la découverte et la construction se font à distance, plus besoin d'
 - Ils ont rappelé le mois gratuit de Business et la possibilité d'arrêter l'enregistrement.
 - Idée entendue dans la salle : quand on accompagne une entreprise sur l'IA, screenpipe montre « des trucs qu'ils ne m'ont pas dit ». Et quelques jours de capture suffisent, puisque les process ne changent pas tous les jours (même intuition que le volet 2 de Youssef).
 - **Le briefing de 19h (critères du jury) n'est pas encore transcrit.** Le son est enregistré, mais screenpipe le transcrit par paquets, plus tard. Les conversations privées de la salle n'ont pas été recopiées ici.
+
+## 20. Bug trouvé en direct : l'audio a 2 h de retard alors que l'app dit « ok » (16/10, 21h)
+- Le son de 20h–21h (une discussion d'équipe) **n'est ni transcrit ni même écrit sur le disque**. Le dernier fichier audio date de 18h48.
+- Le journal de l'app montre que chaque extrait de 30 s est bien « mis en file », mais l'écriture sur disque suit avec environ 2 h de retard : à 20h54, elle écrivait le son de 18h48. Côté micro, 592 extraits ont été mis en file et 374 écrits, soit environ 109 min en attente, uniquement en mémoire.
+- Pendant ce temps, `/health` répond `audio_status: ok` et une « dernière capture audio » récente. C'est le même genre de problème que le ticket #5090 (« healthy » alors que la capture est arrêtée).
+- Le retard s'était déjà produit et résorbé dans la matinée (141 min de retard à 12h47, puis rattrapé d'un coup).
+- Moteur de transcription : Whisper local configuré au démarrage, mais les journaux du soir parlent de « Deepgram batch ». **Non vérifié** : si le son part alors dans le cloud.
+- **Non vérifié** : si l'audio en attente est perdu quand on quitte l'app. Prudence : ne pas quitter ni redémarrer screenpipe avant qu'il ait rattrapé son retard.
+- Intérêt pour le pitch : une mesure de fiabilité concrète (« l'app dit ok, mais 2 h de son n'existent que dans la RAM »).
