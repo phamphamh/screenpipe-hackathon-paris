@@ -9,3 +9,6 @@ dist/
 .env
 .env.*
 .claude/settings.local.json
+
+# Données personnelles produites par le collecteur : ne jamais commiter
+donnees/
