@@ -620,3 +620,28 @@ Le pitch : la découverte et la construction se font à distance, plus besoin d'
 - Ils ont rappelé le mois gratuit de Business et la possibilité d'arrêter l'enregistrement.
 - Idée entendue dans la salle : quand on accompagne une entreprise sur l'IA, screenpipe montre « des trucs qu'ils ne m'ont pas dit ». Et quelques jours de capture suffisent, puisque les process ne changent pas tous les jours (même intuition que le volet 2 de Youssef).
 - **Le briefing de 19h (critères du jury) n'est pas encore transcrit.** Le son est enregistré, mais screenpipe le transcrit par paquets, plus tard. Les conversations privées de la salle n'ont pas été recopiées ici.
+
+## 20. Idée de l'équipe : connecter les 5 screenpipe de l'équipe pour la démo (16/10 soir)
+Le pitch : chacun des 5 membres fait tourner screenpipe pendant les 48 h. À la fin, on relie les 5 historiques et on montre en démo ce qu'une équipe fait vraiment, pas une seule personne.
+**Avis**
+- C'est la meilleure source de données qu'on ait : de vraies journées, avec accord de chacun (section 7f), au lieu de données fictives.
+- Ça vise le track 3 (« le faire marcher pour une équipe »), justement ce que l'offre Business n'a pas : « pas de contexte partagé entre collègues » (sections 2 et 3).
+- Ça montre ce qu'aucun écran seul ne voit : la même tâche faite par plusieurs personnes, de façons différentes, et les passages de relais entre elles (qui attend qui, qui refait quoi).
+- Ça donne aussi la « 2e entrée » et l'« autre personne qui refait la tâche » que le kit demande comme preuves (section 9).
+- **Le risque** : fusionner les captures brutes de 5 personnes, c'est le scénario surveillance que la CNIL sanctionne (section 11), et ça contredit « tout reste en local ». En plus, nos écrans de hackathon contiennent les messages d'autres équipes.
+
+**Version qui passe** : chaque machine garde ses captures. Ce qui circule, c'est seulement ce que chacun a relu.
+1. Chaque membre lance le dérush **en local** sur sa machine (son API 3030, sa clé).
+2. Il relit le résultat : tâches, étapes, apps, exceptions. Il retire ce qu'il veut. Jamais de captures, seulement du texte relu.
+3. On met en commun ces 5 fichiers relus (la « team memory » en markdown de `crates/screenpipe-team-memory` est le canal naturel, ou un dossier partagé si elle ne marche pas).
+4. La vue d'équipe compare : tâches faites par plusieurs personnes, écarts entre façons de faire, relais. Chaque ligne renvoie à la personne et au moment, mais sans montrer son écran.
+5. L'équipe choisit une tâche commune à automatiser → elle devient une skill partagée (le lien avec la marketplace de la section 15 et le FDE de la section 18).
+
+**Pour la démo (3 min)** : « 5 personnes, 48 h, voici les 3 tâches qu'on a toutes faites, et voici celle qu'on a automatisée pour toute l'équipe ». Montrer le moment où quelqu'un retire une ligne avant de partager : c'est l'argument confiance.
+
+**À faire dès maintenant** : que les 5 lancent screenpipe ce soir (sinon il n'y aura pas 48 h à relier), avec l'heure de début notée, et la même version de l'app.
+
+**Non vérifié** :
+- si `screenpipe-team-memory` est utilisable aujourd'hui, et comment (le code n'a pas été lu) ;
+- si les 5 ont un ordi qui supporte screenpipe pendant 48 h (batterie, ticket #7364 ; Windows, section 11) ;
+- comment relier les 5 si les API locales ne sont pas joignables entre elles sur le wifi de 42 (exporter un fichier par personne est le plan B le plus simple).
