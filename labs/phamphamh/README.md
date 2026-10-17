@@ -22,3 +22,5 @@
 **Le moment démo** : relire la salariée 3, dire « Non : ça demande du jugement » sur la saisie de commandes, valider → dans le Wrapped, la tâche n°1 à automatiser change.
 
 **Avec le site d'adamaass** (`labs/adamaass/wrapped.html`) : `python3 fusion/fusion.py <résumés> --onboarding <fichier> --format adamaass -o insights.json`, puis « Charger un insights.json » dans sa page (testé : la démo Maison Corvo s'y affiche sans erreur). Le serveur le sert aussi : `/api/insights?campagne=demo&format=adamaass`.
+
+**Le rapport de fin d'audit** (17/10) : ouvrir `labs/phamphamh/audit/rapport.html` dans un navigateur (double-clic). Story en 10 chapitres sur la soirée du 16/10 de 3 postes (phamphamh, mickael, 09125o) : apps et horaires seulement, aucun titre de fenêtre ni texte d'écran. Pour l'actualiser avec de nouveaux exports : `python3 labs/phamphamh/audit/construire.py`, puis recopier `donnees/audit/audit.html` ici.

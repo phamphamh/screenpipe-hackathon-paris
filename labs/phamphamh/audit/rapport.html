@@ -1,0 +1,491 @@
+<title>Audit IA de l'équipe</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+/* Layout : une story de fin d'audit, un chapitre par écran (scène à gauche, lecture à droite), barres de progression en haut. Charte « salle de commandement » en clair : gris calmes, traits fins, le bleu-vert réservé à l'IA, l'orange aux pertes. */
+:root {
+  --fond: #f4f5f7;
+  --plan: #ffffff;
+  --plan-2: #eef0f3;
+  --trait: #e2e5ea;
+  --trait-fort: #c8ced6;
+  --encre: #0e141b;
+  --doux: #5a6472;
+  --faible: #8a93a0;
+  --ia: #0b8db0;
+  --ia-pale: #d7eef5;
+  --projet: #2f3b4b;
+  --comm: #6e7b8c;
+  --reunion: #4d6079;
+  --veille: #a9b3bf;
+  --admin: #cbd2db;
+  --systeme: #dde1e7;
+  --pause: #e8ebef;
+  --perte: #e0701c;
+  --f-texte: "Geist", "Inter Tight", system-ui, sans-serif;
+  --f-mono: "Geist Mono", ui-monospace, Menlo, monospace;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { background: var(--fond); color: var(--encre); font-family: var(--f-texte); font-size: 15px; line-height: 1.5; margin: 0; }
+.cadre { min-height: 100%; display: grid; grid-template-rows: auto 1fr auto; gap: 14px; max-width: 1320px; margin: 0 auto; padding-block: 18px 18px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.mono { font-family: var(--f-mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--doux); }
+.haut { display: grid; gap: 12px; }
+.ligne-haut { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: center; }
+.marque { display: flex; align-items: center; gap: 10px; font-weight: 600; letter-spacing: -.01em; }
+.marque i { width: 10px; height: 10px; border: 1.5px solid var(--encre); display: inline-block; transform: rotate(45deg); }
+.progres { display: flex; gap: 4px; }
+.progres button { flex: 1; height: 14px; padding: 6px 0; border: 0; background: transparent; cursor: pointer; }
+.progres button span { display: block; height: 2px; background: var(--trait-fort); overflow: hidden; }
+.progres button span b { display: block; height: 100%; width: 0; background: var(--encre); }
+.progres button:focus-visible { outline: 1px solid var(--ia); }
+
+.scene-story { position: relative; background: var(--plan); border: 1px solid var(--trait); min-height: 560px; overflow: hidden; }
+.chap { position: absolute; inset: 0; display: grid; grid-template-columns: minmax(0, 1.75fr) minmax(0, 1fr); visibility: hidden; }
+.chap.actif { visibility: visible; }
+@media (max-width: 900px) {
+  .scene-story { min-height: 0; }
+  .chap { position: relative; inset: auto; grid-template-columns: minmax(0, 1fr); display: none; }
+  .chap.actif { display: grid; }
+}
+.viz { position: relative; min-width: 0; min-height: 420px; border-right: 1px solid var(--trait); }
+@media (max-width: 900px) { .viz { border-right: 0; border-bottom: 1px solid var(--trait); min-height: 340px; } }
+.viz canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.viz .pad { position: absolute; inset: 0; padding: 26px 28px; display: grid; }
+.lecture { padding: 28px 28px 32px; display: grid; align-content: space-between; gap: 22px; min-width: 0; }
+.numero { display: flex; align-items: center; gap: 10px; font-weight: 500; font-size: 15px; letter-spacing: -.01em; color: var(--encre); }
+.numero span { font-weight: 600; font-size: 13px; color: var(--plan); background: var(--ia); padding: 3px 8px; font-variant-numeric: tabular-nums; }
+.lecture h2 { font-weight: 400; font-size: clamp(24px, 2.5vw, 32px); line-height: 1.12; letter-spacing: -.025em; margin: 8px 0 0; text-wrap: balance; }
+.chiffre { font-weight: 300; font-size: clamp(54px, 6.4vw, 92px); line-height: .92; letter-spacing: -.045em; font-variant-numeric: tabular-nums; }
+.chiffre.ia { color: var(--ia); }
+.chiffre small { font-size: .32em; letter-spacing: -.01em; color: var(--doux); font-weight: 400; margin-left: 6px; }
+.lecture p { margin: 0; color: var(--doux); max-width: 46ch; }
+.lecture p b { color: var(--encre); font-weight: 500; }
+.source { border-top: 1px solid var(--trait); padding-top: 10px; display: grid; gap: 4px; }
+.source span { font-family: var(--f-mono); font-size: 10.5px; color: var(--faible); letter-spacing: .04em; }
+.badge { display: inline-block; font-family: var(--f-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; padding: 2px 6px; border: 1px solid var(--trait-fort); color: var(--doux); margin-right: 6px; }
+.badge.mesure { border-color: var(--ia); color: var(--ia); }
+
+.bas { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: center; }
+.nav { display: flex; gap: 8px; }
+.nav button, .bouton { font: 500 12px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--encre); background: var(--plan); border: 1px solid var(--trait-fort); padding: 8px 14px; cursor: pointer; }
+.nav button:hover, .bouton:hover { border-color: var(--encre); }
+.nav button:focus-visible, .bouton:focus-visible { outline: 1px solid var(--ia); outline-offset: 2px; }
+.bouton.plein { background: var(--encre); color: var(--plan); border-color: var(--encre); }
+.legende { display: flex; flex-wrap: wrap; gap: 6px 14px; }
+.legende span { display: inline-flex; gap: 6px; align-items: center; font-family: var(--f-mono); font-size: 10.5px; color: var(--doux); letter-spacing: .04em; }
+.legende i { width: 9px; height: 9px; display: inline-block; border: 1px solid rgba(14,20,27,.08); }
+
+/* étiquettes 3D */
+.etq { position: absolute; pointer-events: none; font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .07em; text-transform: uppercase; background: rgba(255,255,255,.94); border: 1px solid var(--trait-fort); padding: 5px 8px 6px; white-space: nowrap; line-height: 1.35; color: var(--encre); }
+.etq small { display: block; color: var(--doux); font-size: 10px; }
+.etq.vive { border-color: var(--ia); }
+.etq.vive b { color: var(--ia); font-weight: 500; }
+svg.fils { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.frise3d { position: absolute; left: 20px; right: 20px; bottom: 16px; display: grid; gap: 6px; }
+.frise3d canvas { position: relative; height: 54px; cursor: ew-resize; touch-action: none; }
+.horloge { position: absolute; left: 22px; top: 18px; font-family: var(--f-mono); font-size: 12px; letter-spacing: .06em; }
+
+/* listes */
+.barres { display: grid; align-content: center; gap: 18px; }
+.barre-l { display: grid; gap: 6px; }
+.barre-l .tete { display: flex; justify-content: space-between; gap: 10px; font-size: 13px; }
+.barre-l .tete b { font-weight: 500; }
+.barre-l .tete span { font-family: var(--f-mono); font-size: 11px; color: var(--doux); }
+.pile { display: flex; height: 26px; background: var(--plan-2); overflow: hidden; }
+.pile i { display: block; height: 100%; width: 0; }
+.taches { display: grid; align-content: center; gap: 12px; }
+.tache { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 14px; align-items: center; }
+.tache .t { font-size: 14px; }
+.tache .h { font-family: var(--f-mono); font-size: 12px; color: var(--doux); text-align: right; }
+.tache .rail { grid-column: 1 / -1; height: 8px; background: var(--plan-2); }
+.tache .rail i { display: block; height: 100%; width: 0; }
+.tache .etat { font-family: var(--f-mono); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; }
+.course { display: grid; align-content: center; gap: 26px; }
+.piste { display: grid; gap: 8px; }
+.piste .tete { display: flex; justify-content: space-between; gap: 10px; }
+.piste .tete b { font-weight: 500; }
+.piste .chrono { font-family: var(--f-mono); font-size: 13px; font-variant-numeric: tabular-nums; }
+.rangee { display: flex; gap: 3px; height: 40px; }
+.rangee div { position: relative; height: 100%; background: var(--plan-2); overflow: hidden; }
+.rangee div i { position: absolute; inset: 0 auto 0 0; width: 0; }
+.rangee div span { position: absolute; left: 6px; bottom: 4px; font-family: var(--f-mono); font-size: 10px; color: var(--doux); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; right: 4px; }
+.plan { display: grid; align-content: center; gap: 0; }
+.reco { display: grid; grid-template-columns: 78px minmax(0, 1fr); gap: 16px; padding: 18px 0; border-top: 1px solid var(--trait); }
+.reco:last-child { border-bottom: 1px solid var(--trait); }
+.reco .quand { font-family: var(--f-mono); font-size: 11px; letter-spacing: .08em; color: var(--ia); text-transform: uppercase; padding-top: 3px; }
+.reco h3 { margin: 0 0 4px; font-weight: 500; font-size: 17px; letter-spacing: -.01em; }
+.reco p { margin: 0; color: var(--doux); font-size: 14px; }
+.inconnu { display: grid; gap: 6px; }
+.inconnu div { font-size: 13px; color: var(--doux); padding-left: 14px; position: relative; }
+.inconnu div::before { content: ""; position: absolute; left: 0; top: .6em; width: 6px; height: 1px; background: var(--faible); }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="cadre">
+  <div class="haut">
+    <div class="ligne-haut">
+      <div class="marque"><i></i>Audit IA · Équipe hackathon screenpipe</div>
+    </div>
+    <div class="progres" id="progres" role="tablist" aria-label="Chapitres"></div>
+  </div>
+  <main class="scene-story" id="story"></main>
+  <div class="bas">
+    <div class="legende" id="legende"></div>
+    <div class="nav">
+      <button type="button" id="prec" aria-label="Chapitre précédent">←</button>
+      <button type="button" id="auto">Pause</button>
+      <button type="button" id="suiv" aria-label="Chapitre suivant">→</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script type="module">
+import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js";
+const A = {"genere_le": "2026-10-17T12:42:52+02:00", "periode": {"debut": "2026-10-16T18:00", "fin": "2026-10-16T23:00", "debut_min": 1080, "fin_min": 1380}, "regles": {"fusion_s": 60, "eclair_s": 5, "note": "écran regardé seulement ; aucun titre de fenêtre conservé"}, "postes": [{"source": "export complet", "segments": [[1086.45, 1086.82, "systeme", null, null, "eaptlstrust"], [1103.83, 1104.27, "systeme", null, null, "eaptlstrust"], [1115.7, 1115.85, "ia", "agent", null, "Orca"], [1116.1, 1116.2, "comm", null, "Discord", "Discord"], [1116.5, 1116.6, "comm", null, "Discord", "Discord"], [1117.05, 1119.03, "veille", null, null, "Google Chrome"], [1119.25, 1119.65, "comm", null, "Discord", "Discord"], [1121.45, 1122.28, "ia", "agent", null, "Orca"], [1127.3, 1128.92, "ia", "agent", null, "Orca"], [1132.42, 1133.18, "ia", "agent", null, "Orca"], [1133.57, 1133.85, "systeme", null, null, "meetily"], [1136.12, 1136.7, "ia", "agent", null, "Orca"], [1137.33, 1138.72, "veille", null, null, "Google Chrome"], [1138.85, 1138.95, "veille", null, null, "Google Chrome"], [1138.98, 1139.58, "veille", null, null, "Google Chrome"], [1139.68, 1140.03, "veille", null, "screenpipe", "Google Chrome"], [1140.13, 1141.02, "ia", "agent", null, "Orca"], [1142.03, 1143.2, "ia", "agent", null, "Orca"], [1151.13, 1151.68, "ia", "agent", null, "Orca"], [1155.78, 1157.87, "ia", "agent", null, "Orca"], [1174.82, 1187.92, "admin", null, null, "Google Chrome"], [1188.95, 1189.12, "admin", null, null, "Google Chrome"], [1196.72, 1197.18, "veille", null, null, "Google Chrome"], [1198.45, 1200.53, "ia", "agent", null, "Orca"], [1201.17, 1201.8, "ia", "agent", null, "Orca"], [1213.37, 1214.02, "ia", "agent", null, "Orca"], [1216.18, 1217.72, "ia", "agent", null, "Orca"], [1218.28, 1246.75, "ia", "agent", null, "Orca"], [1249.3, 1273.73, "ia", "agent", null, "Orca"], [1274.05, 1274.18, "comm", null, null, "Google Chrome"], [1274.88, 1276.2, "veille", null, null, "Google Chrome"], [1298.82, 1322.07, "ia", "agent", null, "Orca"], [1322.12, 1329.38, "projet", null, "le dépôt du projet", "Google Chrome"], [1329.92, 1330.13, "veille", null, null, "Google Chrome"], [1330.97, 1331.12, "veille", null, null, "Google Chrome"], [1331.53, 1331.78, "projet", null, null, "Google Chrome"], [1332.22, 1332.33, "comm", null, null, "WhatsApp"], [1333.97, 1344.07, "ia", "agent", null, "Orca"], [1344.08, 1344.37, "projet", null, "le dépôt du projet", "Google Chrome"], [1344.38, 1359.73, "ia", "agent", null, "Orca"], [1361.75, 1368.27, "veille", null, "les concurrents", "Google Chrome"], [1368.37, 1368.88, "veille", null, null, "Google Chrome"], [1369.22, 1369.33, "projet", null, "le dépôt du projet", "Google Chrome"], [1369.7, 1370.55, "admin", null, null, "Google Chrome"]], "id": "P01", "mesures": {"actif_min": 152.7, "par_categorie_min": {"ia": 115.1, "admin": 14.1, "veille": 13.6, "projet": 7.9, "systeme": 1.1, "comm": 0.8}, "ia_agent_min": 115.1, "ia_chat_min": 0, "part_ia": 0.754, "bascules": 19, "bascules_par_heure": 7.5, "ecran_median_s": 38, "plongee": {"minutes": 30.6, "debut": 1216.18, "categorie": "ia"}, "paires": [["Orca", "Google Chrome", 6], ["Google Chrome", "Orca", 4], ["eaptlstrust", "Orca", 1], ["Orca", "Discord", 1], ["Discord", "Google Chrome", 1], ["Google Chrome", "Discord", 1]]}, "qui": "youssef"}, {"source": "export par blocs", "segments": [[1156.63, 1156.88, "comm", null, "Discord", "Firefox"], [1157.12, 1157.27, "comm", null, "Discord", "Firefox"], [1157.42, 1157.67, "comm", null, "Discord", "Firefox"], [1169.05, 1170.8, "comm", null, "Discord", "Firefox"], [1172.05, 1172.55, "comm", null, "Discord", "Firefox"], [1182.17, 1182.55, "veille", null, "screenpipe", "Firefox"], [1184.08, 1184.78, "comm", null, "Discord", "Firefox"], [1186.95, 1187.55, "veille", null, "les concurrents", "Firefox"], [1187.87, 1188.08, "veille", null, null, "Firefox"], [1189.9, 1190.12, "projet", null, null, "Firefox"], [1191.53, 1192.43, "projet", null, "le dépôt du projet", "Firefox"], [1192.45, 1192.93, "projet", null, "le dépôt du projet", "Firefox"], [1192.97, 1193.18, "projet", null, "le dépôt du projet", "Firefox"], [1195.9, 1197.15, "veille", null, "screenpipe", "Firefox"], [1197.85, 1199.27, "comm", null, "Discord", "Firefox"], [1199.8, 1199.88, "ia", "agent", "les concurrents", "Firefox"], [1199.92, 1200.12, "ia", "agent", "les concurrents", "Firefox"], [1200.25, 1200.5, "ia", "agent", "les concurrents", "Firefox"], [1215.23, 1215.33, "veille", null, null, "Firefox"], [1217.38, 1217.63, "admin", null, null, "Firefox"], [1217.73, 1218.55, "veille", null, "screenpipe", "Firefox"], [1218.73, 1218.85, "projet", null, null, "Firefox"], [1219.0, 1219.2, "projet", null, "le dépôt du projet", "Firefox"], [1220.43, 1221.42, "ia", "chat", null, "Firefox"], [1221.92, 1222.93, "veille", null, "screenpipe", "Firefox"], [1225.1, 1225.38, "projet", null, "le dépôt du projet", "Firefox"], [1225.5, 1226.43, "veille", null, "screenpipe", "Firefox"], [1226.87, 1226.95, "projet", null, "le dépôt du projet", "Firefox"], [1226.97, 1235.53, "projet", null, "le dépôt du projet", "Firefox"], [1235.77, 1237.85, "veille", null, "screenpipe", "Edge"], [1238.35, 1238.85, "veille", null, "screenpipe", "Firefox"], [1239.32, 1240.43, "ia", "agent", "les concurrents", "Firefox"], [1241.63, 1242.27, "projet", null, "le dépôt du projet", "Firefox"], [1242.67, 1242.78, "veille", null, null, "Firefox"], [1242.82, 1248.62, "veille", null, null, "Firefox"], [1251.12, 1255.78, "projet", null, "le dépôt du projet", "Firefox"], [1258.27, 1258.43, "veille", null, null, "Firefox"], [1258.48, 1259.07, "comm", null, "Discord", "Firefox"], [1259.15, 1259.25, "projet", null, "le dépôt du projet", "Firefox"], [1259.35, 1261.07, "ia", "agent", null, "Terminal"], [1261.1, 1262.65, "projet", null, "le dépôt du projet", "Firefox"], [1263.83, 1264.07, "projet", null, "le dépôt du projet", "Firefox"], [1268.18, 1268.4, "projet", null, "le dépôt du projet", "Firefox"], [1268.45, 1269.57, "veille", null, null, "Firefox"], [1269.75, 1275.92, "ia", "agent", null, "Terminal"], [1299.92, 1304.7, "ia", "chat", null, "Claude"], [1306.83, 1309.5, "ia", "chat", null, "Claude"], [1309.58, 1309.68, "ia", "agent", null, "Terminal"], [1309.72, 1309.87, "comm", null, "Discord", "Firefox"], [1309.95, 1310.47, "projet", null, "le dépôt du projet", "Firefox"], [1312.82, 1314.37, "projet", null, "le dépôt du projet", "Firefox"], [1314.4, 1315.38, "comm", null, "Discord", "Firefox"], [1315.62, 1320.1, "veille", null, "screenpipe", "Firefox"], [1320.62, 1321.23, "veille", null, null, "Firefox"], [1321.25, 1323.02, "comm", null, "Discord", "Firefox"], [1324.38, 1326.03, "veille", null, "screenpipe", "Firefox"], [1326.37, 1329.32, "ia", "agent", null, "Terminal"], [1329.43, 1336.22, "comm", null, "Discord", "Firefox"], [1336.3, 1346.12, "ia", "agent", null, "Terminal"], [1346.43, 1346.52, "comm", null, "Discord", "Firefox"], [1346.6, 1351.58, "veille", null, "screenpipe", "Firefox"], [1352.78, 1355.0, "ia", "agent", null, "Terminal"], [1355.38, 1362.93, "ia", "agent", null, "Terminal"], [1363.45, 1363.62, "veille", null, null, "Firefox"], [1363.78, 1364.83, "veille", null, "les concurrents", "Firefox"], [1364.85, 1371.37, "ia", "agent", null, "Terminal"], [1371.87, 1372.0, "veille", null, "les concurrents", "Firefox"], [1372.02, 1373.45, "ia", "agent", null, "Terminal"]], "id": "P02", "mesures": {"actif_min": 112.9, "par_categorie_min": {"ia": 48.6, "veille": 28.1, "projet": 20.5, "comm": 15.4, "admin": 0.2}, "ia_agent_min": 40.1, "ia_chat_min": 8.4, "part_ia": 0.43, "bascules": 17, "bascules_par_heure": 9.0, "ecran_median_s": 42, "plongee": {"minutes": 10.2, "debut": 1352.78, "categorie": "ia"}, "paires": [["Firefox", "Terminal", 7], ["Terminal", "Firefox", 6], ["Firefox", "Edge", 1], ["Edge", "Firefox", 1], ["Terminal", "Claude", 1], ["Claude", "Terminal", 1]]}, "qui": "mickael"}, {"source": "résumé validé", "segments": [], "agregats_min": {"ia": 145.0, "veille": 37.0, "systeme": 6.0}, "id": "P03", "mesures": null, "qui": "09125o"}], "parallele": {"ensemble_min": [["P01", "P02", 97]], "meme_sujet_min": [["P01", "P02", "les concurrents", 1]]}, "outils": {"Orca": {"P01": 115.1, "P03": 142.0}, "Firefox": {"P02": 64.9}, "Google Chrome": {"P01": 35.8, "P03": 11.0}, "Terminal": {"P02": 38.4}, "Safari": {"P03": 26.0}, "Claude": {"P02": 7.5, "P03": 3.0}, "UserNotificationCenter": {"P03": 5.0}}, "taches": [{"poste": "09125o", "titre": "Piloter un agent IA sur le dépôt du projet", "frequence_par_semaine": 25.0, "duree_moyenne_min": 12.0, "apps": ["Orca", "Claude"], "etapes": [{"type": "input", "texte": "Lire le brief ou l'état du projet dans l'espace de travail", "app": "Orca", "statut": "observé"}, {"type": "action", "texte": "Écrire la demande à l'agent", "app": "Orca", "statut": "observé"}, {"type": "check", "texte": "Relire le résultat produit (diff, message, commit)", "app": "Orca", "statut": "observé"}, {"type": "action", "texte": "Corriger ou relancer l'agent", "app": "Orca", "statut": "supposé"}, {"type": "output", "texte": "Faire avancer le dépôt (commit, push)", "app": "Orca", "statut": "supposé"}], "goulots": ["waiting", "switching"], "confiance": 0.8}, {"poste": "09125o", "titre": "Traiter les e-mails et leurs pièces jointes", "frequence_par_semaine": 35.0, "duree_moyenne_min": 3.0, "apps": ["Safari"], "etapes": [{"type": "input", "texte": "Parcourir les nouveaux messages", "app": "Safari", "statut": "observé"}, {"type": "action", "texte": "Ouvrir et prévisualiser les pièces jointes", "app": "Safari", "statut": "observé"}, {"type": "output", "texte": "Répondre, transférer ou archiver", "app": "Safari", "statut": "supposé"}], "goulots": ["switching"], "confiance": 0.85}, {"poste": "09125o", "titre": "Surveiller et actualiser le dépôt du projet en ligne", "frequence_par_semaine": 25.0, "duree_moyenne_min": 2.5, "apps": ["Google Chrome", "Safari"], "etapes": [{"type": "check", "texte": "Vérifier l'état du dépôt et les notifications", "app": "Google Chrome", "statut": "observé"}, {"type": "action", "texte": "Créer, ranger ou mettre à jour le dépôt", "app": "Google Chrome", "statut": "observé"}, {"type": "check", "texte": "Relire la documentation du projet en ligne", "app": "Safari", "statut": "observé"}], "goulots": ["switching"], "confiance": 0.75}, {"poste": "09125o", "titre": "Installer et régler l'outillage IA de l'atelier", "frequence_par_semaine": 20.0, "duree_moyenne_min": 6.0, "apps": ["Google Chrome", "Orca", "Finder", "App Store"], "etapes": [{"type": "action", "texte": "Télécharger ou copier l'application", "app": "Finder", "statut": "observé"}, {"type": "action", "texte": "Payer ou activer l'abonnement", "app": "Google Chrome", "statut": "observé"}, {"type": "check", "texte": "Vérifier les intégrations et la checklist de configuration", "app": "Orca", "statut": "observé"}], "goulots": ["unclear"], "confiance": 0.6}, {"poste": "09125o", "titre": "Explorer un outil d'IA de création vidéo", "frequence_par_semaine": 15.0, "duree_moyenne_min": 4.0, "apps": ["Safari"], "etapes": [{"type": "action", "texte": "Parcourir les exemples et les modèles proposés", "app": "Safari", "statut": "observé"}, {"type": "check", "texte": "Comparer avec ce qui est déjà fait", "app": "Safari", "statut": "supposé"}], "goulots": ["unclear"], "confiance": 0.5}]};
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const reduit = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const G = window.gsap;
+const CATS = { ia: "Avec l'IA", projet: "Projet et code", reunion: "Réunions", comm: "Messages", veille: "Web et veille", admin: "Administratif", systeme: "Système", pause: "Pause" };
+const ORDRE = ["ia", "projet", "reunion", "comm", "veille", "admin", "systeme", "pause"];
+const coul = c => css("--" + (CATS[c] ? c : "systeme"));
+const D0 = A.periode.debut_min, D1 = A.periode.fin_min;
+const hm = m => String(Math.floor(m / 60)).padStart(2, "0") + ":" + String(Math.floor(m % 60)).padStart(2, "0");
+const hmin = m => m >= 60 ? `${Math.floor(m / 60)} h ${String(Math.round(m % 60)).padStart(2, "0")}` : `${Math.round(m)} min`;
+const pct = x => Math.round(x * 100) + " %";
+
+/* ---------- Données dérivées ---------- */
+const postes = A.postes;
+const frises = postes.filter(p => p.segments.length);
+const parCat = p => p.mesures ? p.mesures.par_categorie_min : p.agregats_min;
+const actif = p => Object.values(parCat(p)).reduce((a, b) => a + b, 0);
+const equipe = {}; postes.forEach(p => Object.entries(parCat(p)).forEach(([c, m]) => equipe[c] = (equipe[c] || 0) + m));
+const totalEquipe = Object.values(equipe).reduce((a, b) => a + b, 0);
+const partIA = (equipe.ia || 0) / totalEquipe;
+const ensemble = A.parallele.ensemble_min.reduce((a, x) => a + x[2], 0);
+const memeSujet = A.parallele.meme_sujet_min.reduce((a, x) => a + x[3], 0);
+const nomPoste = p => p.id;
+const segA = (p, m) => p.segments.find(s => s[0] <= m && m < s[1]);
+document.getElementById("legende").innerHTML = ORDRE.filter(c => equipe[c]).map(c => `<span><i style="background:${coul(c)}"></i>${CATS[c]}</span>`).join("");
+
+const exposition = t => {
+  const apps = t.apps.join(" ").toLowerCase(), types = t.etapes.map(e => e.type);
+  if (/orca|claude|chatgpt|codex/.test(apps)) return { etat: "Déjà avec l'IA", c: "--ia", gain: 0 };
+  if (t.goulots.includes("unclear")) return { etat: "À observer", c: "--faible", gain: 0 };
+  if (!types.includes("decision") && t.goulots.some(g => g === "switching" || g === "waiting")) return { etat: "L'IA peut le faire", c: "--perte", gain: .8 };
+  return { etat: "L'IA aide", c: "--projet", gain: .4 };
+};
+const taches = A.taches.map(t => ({ ...t, heures: (t.frequence_par_semaine || 0) * (t.duree_moyenne_min || 0) / 60, expo: exposition(t) })).sort((a, b) => b.heures - a.heures);
+const cible = taches.filter(t => t.expo.gain > 0).sort((a, b) => b.heures * b.expo.gain - a.heures * a.expo.gain)[0];
+
+/* ---------- Outils communs ---------- */
+function toile(c) { const r = c.getBoundingClientRect(), d = Math.min(devicePixelRatio || 1, 2); if (c.width !== Math.round(r.width * d) || c.height !== Math.round(r.height * d)) { c.width = Math.round(r.width * d); c.height = Math.round(r.height * d); } const x = c.getContext("2d"); x.setTransform(d, 0, 0, d, 0, 0); x.clearRect(0, 0, r.width, r.height); return { x, w: r.width, h: r.height }; }
+const lecture = ({ num, titre, chiffre, ia, texte, sources, extra = "" }) => `
+  <div class="lecture"><div><div class="numero"><span>${num.split(" · ")[0]}</span>${num.split(" · ")[1]}</div><h2>${titre}</h2></div>
+  <div style="display:grid;gap:14px"><div class="chiffre${ia ? " ia" : ""}">${chiffre}</div><p>${texte}</p>${extra}</div></div>`;
+function monter3d(canvas, construire) {
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+  renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  const scene = new THREE.Scene(); scene.background = new THREE.Color(css("--plan"));
+  const cam = new THREE.OrthographicCamera(-1, 1, 1, -1, .1, 200); cam.position.set(22, 19, 22); cam.lookAt(0, 0, 0);
+  scene.add(new THREE.HemisphereLight(0xffffff, 0xc9ced6, 2.1));
+  const s = new THREE.DirectionalLight(0xffffff, 1.6); s.position.set(-8, 20, 12); s.castShadow = true; s.shadow.mapSize.set(2048, 2048);
+  Object.assign(s.shadow.camera, { left: -16, right: 16, top: 16, bottom: -16 }); s.shadow.radius = 6; scene.add(s);
+  const maj = construire(scene, cam);
+  let largeur = 0, hauteur = 0, prec = null, vivant = false;
+  function rendu(t) {
+    const r = canvas.getBoundingClientRect();
+    if (r.width && (r.width !== largeur || r.height !== hauteur)) { largeur = r.width; hauteur = r.height; renderer.setSize(r.width, r.height, false);
+      const a = r.width / r.height, v = maj.vue(a); cam.left = -v * a; cam.right = v * a; cam.top = v; cam.bottom = -v; cam.updateProjectionMatrix(); }
+    const dt = prec === null ? 0 : Math.min(.05, (t - prec) / 1000); prec = t;
+    maj(t, dt, r); renderer.render(scene, cam); maj.apres?.(r);
+    if (vivant) requestAnimationFrame(rendu);
+  }
+  return { demarrer() { if (!vivant) { vivant = true; prec = null; requestAnimationFrame(rendu); } }, arreter() { vivant = false; }, cam };
+}
+const mat = c => new THREE.MeshStandardMaterial({ color: c, roughness: .9, metalness: 0 });
+const aretes = (m, op = .28) => { m.add(new THREE.LineSegments(new THREE.EdgesGeometry(m.geometry), new THREE.LineBasicMaterial({ color: 0x5a6472, transparent: true, opacity: op }))); return m; };
+
+/* ---------- Chapitres ---------- */
+const chapitres = [];
+
+// 0. Le bureau
+chapitres.push({ nom: "Le bureau", html: () => `
+  <div class="viz"><canvas id="c-bureau" aria-label="Maquette 3D du bureau animée sur la soirée"></canvas><svg class="fils" id="fils"></svg><div id="etqs"></div>
+    <div class="horloge" id="horloge"></div>
+    <div class="frise3d"><canvas id="c-frise" tabindex="0" aria-label="Frise de la soirée, glisser pour remonter le temps"></canvas></div></div>
+  ${lecture({ num: "01 · Couverture", titre: "Une soirée de travail, mesurée poste par poste.", chiffre: hmin(totalEquipe), texte: `de travail à l'écran sur ${postes.length} postes, entre ${hm(D0)} et ${hm(D1)}. Chaque écran s'allume de la couleur de ce que la personne fait. <b>Glisse la frise</b> pour remonter le temps.`, sources: [`<span class="badge mesure">mesuré</span>screenpipe · écran regardé seulement`, `P03 : résumé validé, sans frise minute par minute`] })}`,
+  init(el) {
+    const frise = el.querySelector("#c-frise"), fils = el.querySelector("#fils"), etqs = el.querySelector("#etqs"), horloge = el.querySelector("#horloge");
+    let temps = D0 + 60, glisse = false;
+    const p3 = monter3d(el.querySelector("#c-bureau"), (scene) => {
+      const sol = aretes(new THREE.Mesh(new THREE.BoxGeometry(22, .3, 15), mat(0xf0f2f5)), .35); sol.position.y = -.15; sol.receiveShadow = true; scene.add(sol);
+      const grille = new THREE.GridHelper(22, 44, 0xdfe3e8, 0xe9ecf0); grille.position.y = .01; grille.scale.z = 15 / 22; scene.add(grille);
+      [[0, 1, -7.5, 22, 2, .12], [-11, 1, 0, .12, 2, 15]].forEach(([x, y, z, w, h, d]) => { const m = aretes(new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat(0xe6e9ed)), .25); m.position.set(x, y, z); m.receiveShadow = true; scene.add(m); });
+      const table = aretes(new THREE.Mesh(new THREE.CylinderGeometry(1.6, 1.6, .1, 48), mat(0xffffff))); table.position.set(6.5, .78, 3); table.castShadow = true; scene.add(table);
+      const pied = new THREE.Mesh(new THREE.CylinderGeometry(.1, .18, .74, 12), mat(0xc8ced6)); pied.position.set(6.5, .37, 3); scene.add(pied);
+      for (let k = 0; k < 6; k++) { const a = k / 6 * Math.PI * 2, c = aretes(new THREE.Mesh(new THREE.BoxGeometry(.5, .45, .5), mat(0xf4f5f7)), .2); c.position.set(6.5 + Math.cos(a) * 2.3, .23, 3 + Math.sin(a) * 2.3); c.castShadow = true; scene.add(c); }
+      const places = [[-7.6, -4.4], [-3.8, -4.4], [0, -4.4], [-7.6, .8], [-3.8, .8]];
+      const objets = places.map(([x, z], i) => {
+        const g = new THREE.Group(); g.position.set(x, 0, z); scene.add(g);
+        const b = aretes(new THREE.Mesh(new THREE.BoxGeometry(2.8, .1, 1.45), mat(0xffffff))); b.position.y = .86; b.castShadow = b.receiveShadow = true; g.add(b);
+        [[-1.25, -.58], [1.25, -.58], [-1.25, .58], [1.25, .58]].forEach(([a, c]) => { const l = new THREE.Mesh(new THREE.BoxGeometry(.05, .86, .05), mat(0xc8ced6)); l.position.set(a, .43, c); g.add(l); });
+        const em = new THREE.MeshStandardMaterial({ color: 0xe9ecf0, emissive: 0x000000, emissiveIntensity: .9, roughness: .4 });
+        const ecran = aretes(new THREE.Mesh(new THREE.BoxGeometry(1.45, .85, .05), em), .4); ecran.position.set(0, 1.4, -.45); ecran.castShadow = true; g.add(ecran);
+        const p = postes[i];
+        const corps = aretes(new THREE.Mesh(new THREE.CapsuleGeometry(.24, .48, 6, 14), mat(p ? 0x3a4656 : 0xe6e9ed)), .15); corps.position.set(0, .86, .98); corps.castShadow = true; g.add(corps);
+        const tete = aretes(new THREE.Mesh(new THREE.SphereGeometry(.21, 20, 14), mat(p ? 0x3a4656 : 0xe6e9ed)), .1); tete.position.set(0, 1.45, .98); tete.castShadow = true; g.add(tete);
+        return { em, corps, tete, ancre: new THREE.Vector3(x, 2, z - .45), poste: p };
+      });
+      const etiquettes = objets.map((o, i) => { const d = document.createElement("div"); d.className = "etq"; etqs.appendChild(d);
+        const l = document.createElementNS("http://www.w3.org/2000/svg", "polyline"); l.setAttribute("fill", "none"); l.setAttribute("stroke-width", "1"); fils.appendChild(l);
+        const pt = document.createElementNS("http://www.w3.org/2000/svg", "circle"); pt.setAttribute("r", "2.2"); fils.appendChild(pt);
+        return { o, d, l, pt, dx: [-60, 20, 70, -80, -10][i], dy: [-55, -85, -40, 55, 85][i] }; });
+      const maj = (t, dt, r) => {
+        if (!glisse && !reduit) { temps += dt * 9; if (temps >= D1) temps = D0; }
+        objets.forEach(o => { const p = o.poste;
+          if (!p) { o.em.emissive.setHex(0); o.em.color.setHex(0xe9ecf0); return; }
+          if (p.segments.length) { const s = segA(p, temps); const c = new THREE.Color(s ? coul(s[2]) : "#e9ecf0"); o.em.color.copy(c); o.em.emissive.copy(c).multiplyScalar(s && s[2] === "ia" ? .55 : .15); o.corps.visible = o.tete.visible = !!s; }
+          else { const c = new THREE.Color(coul("ia")); o.em.color.copy(c).lerp(new THREE.Color("#ffffff"), .55); o.em.emissive.setHex(0); } });
+        horloge.textContent = "16.10 · " + hm(temps);
+        dessinerFrise();
+      };
+      maj.vue = a => a > 1.4 ? 9 : 11.5;
+      maj.apres = r => { etiquettes.forEach(e => { const v = e.o.ancre.clone().project(p3.cam), x = (v.x + 1) / 2 * r.width, y = (1 - v.y) / 2 * r.height;
+        const p = e.o.poste; let html, vive = false;
+        if (!p) html = `Poste libre<small>pas encore audité</small>`;
+        else if (!p.segments.length) html = `${p.id} · ${p.qui}<small>résumé validé · ${pct((p.agregats_min.ia || 0) / actif(p))} avec l'IA</small>`;
+        else { const s = segA(p, temps); vive = s && s[2] === "ia"; html = s ? `${p.id} · ${p.qui} · <b>${CATS[s[2]]}</b><small>${s[5]}${s[3] === "agent" ? " · agent" : ""}</small>` : `${p.id} · ${p.qui}<small>hors écran</small>`; }
+        if (e.d.innerHTML !== html) e.d.innerHTML = html; e.d.classList.toggle("vive", !!vive);
+        const w = e.d.offsetWidth, h = e.d.offsetHeight, lx = x + e.dx, ly = y + e.dy;
+        const gx = Math.min(Math.max(8, lx - (e.dx < 0 ? w : 0)), r.width - w - 8), gy = Math.min(Math.max(44, e.dy < 0 ? ly - h : ly), r.height - h - 90);
+        e.d.style.left = gx + "px"; e.d.style.top = gy + "px";
+        const bx = e.dx < 0 ? gx + w : gx, by = e.dy < 0 ? gy + h : gy;
+        e.l.setAttribute("points", `${x},${y} ${x + e.dx * .45},${by} ${bx},${by}`); e.l.setAttribute("stroke", vive ? css("--ia") : css("--trait-fort"));
+        e.pt.setAttribute("cx", x); e.pt.setAttribute("cy", y); e.pt.setAttribute("fill", vive ? css("--ia") : css("--faible")); }); };
+      return maj;
+    });
+    function dessinerFrise() {
+      const { x, w, h } = toile(frise), X = m => (m - D0) / (D1 - D0) * w, lanes = frises.length, hl = (h - 16) / lanes;
+      frises.forEach((p, k) => { const y = k * hl; x.fillStyle = css("--plan-2"); x.fillRect(0, y, w, hl - 3);
+        p.segments.forEach(s => { x.fillStyle = coul(s[2]); x.globalAlpha = s[0] <= temps ? 1 : .3; x.fillRect(X(s[0]), y, Math.max(1, X(s[1]) - X(s[0]) - .4), hl - 3); });
+        x.globalAlpha = 1; x.fillStyle = css("--doux"); x.font = "9.5px Geist Mono, monospace"; });
+      x.fillStyle = css("--faible"); x.font = "10px Geist Mono, monospace";
+      for (let m = Math.ceil(D0 / 60) * 60; m <= D1; m += 60) x.fillText(hm(m), Math.min(X(m) + 2, w - 34), h - 2);
+      const px = X(temps); x.fillStyle = css("--encre"); x.fillRect(px - .5, 0, 1, h - 12);
+    }
+    const versT = e => { const r = frise.getBoundingClientRect(); temps = D0 + Math.min(1, Math.max(0, (e.clientX - r.left) / r.width)) * (D1 - D0); };
+    frise.addEventListener("pointerdown", e => { glisse = true; frise.setPointerCapture(e.pointerId); versT(e); });
+    frise.addEventListener("pointermove", e => { if (glisse) versT(e); });
+    frise.addEventListener("pointerup", () => glisse = false);
+    frise.addEventListener("keydown", e => { if (e.key === "ArrowRight" || e.key === "ArrowLeft") { e.preventDefault(); e.stopPropagation(); temps = Math.min(D1 - .1, Math.max(D0, temps + (e.key === "ArrowRight" ? 5 : -5))); } });
+    return { entrer: () => p3.demarrer(), sortir: () => p3.arreter() };
+  } });
+
+// 1. Où part le temps
+chapitres.push({ nom: "Le temps", html: () => `
+  <div class="viz"><div class="pad"><div class="barres" id="barres"></div></div></div>
+  ${lecture({ num: "02 · Où part le temps", titre: "L'IA est déjà le premier poste de travail de l'équipe.", chiffre: pct(partIA), ia: true, texte: `du temps à l'écran se passe dans un outil d'IA. Repère publié : chez ActivTrak, les utilisateurs d'IA les plus avancés y passent <b>7 à 10 %</b> de leur journée.`, sources: [`<span class="badge mesure">mesuré</span>P01, P02 : frise · P03 : résumé validé`, `Repère : ActivTrak (éditeur), cité dans notre recherche`] })}`,
+  init(el) {
+    const lignes = [{ nom: "Équipe", sous: hmin(totalEquipe), cats: equipe, tot: totalEquipe }, ...postes.map(p => ({ nom: p.id + " · " + p.qui, sous: hmin(actif(p)) + (p.segments.length ? "" : " · résumé"), cats: parCat(p), tot: actif(p) }))];
+    el.querySelector("#barres").innerHTML = lignes.map((l, k) => `<div class="barre-l"><div class="tete"><b>${l.nom}</b><span>${l.sous} · ${pct((l.cats.ia || 0) / l.tot)} IA</span></div>
+      <div class="pile" style="${k === 0 ? "height:38px" : ""}">${ORDRE.filter(c => l.cats[c]).map(c => `<i data-w="${l.cats[c] / l.tot * 100}" style="background:${coul(c)}" title="${CATS[c]} · ${hmin(l.cats[c])}"></i>`).join("")}</div></div>`).join("");
+    const is = [...el.querySelectorAll(".pile i")];
+    return { entrer() { is.forEach(i => i.style.width = "0%"); if (G && !reduit) G.to(is, { width: (k, i) => i.dataset.w + "%", duration: .9, ease: "power3.out", stagger: .03 }); else is.forEach(i => i.style.width = i.dataset.w + "%"); } };
+  } });
+
+// 2. En parallèle
+chapitres.push({ nom: "En parallèle", html: () => `
+  <div class="viz"><canvas id="c-par" aria-label="Frises superposées des postes"></canvas></div>
+  ${lecture({ num: "03 · Travailler ensemble", titre: "Côte à côte, mais rarement sur la même chose.", chiffre: `${ensemble}<small>min ensemble</small>`, texte: `P01 et P02 étaient à l'écran en même temps pendant ${hmin(ensemble)}. Sur le même sujet : <b>${memeSujet} min</b>. La bande grise marque les minutes partagées, le trait bleu-vert le même sujet.`, sources: [`<span class="badge mesure">mesuré</span>minute par minute, sujets reconnus dans les titres de fenêtre`, `P03 absent : pas de frise dans un résumé validé`] })}`,
+  init(el) {
+    const c = el.querySelector("#c-par");
+    let p = 0;
+    const dessiner = () => {
+      const { x, w, h } = toile(c), g = 90, X = m => g + (m - D0) / (D1 - D0) * (w - g - 28), lim = D0 + (D1 - D0) * p;
+      const lanes = postes.length, hl = Math.min(92, (h - 130) / lanes), top = Math.max(40, (h - lanes * hl) / 2);
+      // minutes partagées
+      for (let m = D0; m < Math.min(D1, lim); m++) { const act = frises.filter(f => segA(f, m + .5)); if (act.length >= 2) { x.fillStyle = css("--plan-2"); x.fillRect(X(m), top - 8, X(m + 1) - X(m) + .5, lanes * hl + 8); const [a, b] = act.map(f => segA(f, m + .5)); if (a[4] && a[4] === b[4]) { x.fillStyle = css("--ia"); x.fillRect(X(m), top - 14, X(m + 1) - X(m) + .5, 4); } } }
+      postes.forEach((pp, k) => { const y = top + k * hl;
+        x.fillStyle = css("--encre"); x.font = "500 12px Geist, sans-serif"; x.fillText(pp.id, 0, y + hl / 2); x.fillStyle = css("--doux"); x.font = "10px Geist Mono, monospace"; x.fillText(pp.qui, 0, y + hl / 2 + 14);
+        if (!pp.segments.length) { x.strokeStyle = css("--trait-fort"); x.setLineDash([4, 4]); x.strokeRect(g, y + 6, w - g - 28, hl - 18); x.setLineDash([]); x.fillStyle = css("--faible"); x.fillText("résumé validé · pas de frise minute par minute", g + 10, y + hl / 2 + 2); return; }
+        pp.segments.forEach(s => { if (s[0] > lim) return; x.fillStyle = coul(s[2]); x.fillRect(X(s[0]), y + 6, Math.max(1, X(Math.min(s[1], lim)) - X(s[0]) - .4), hl - 18); }); });
+      x.fillStyle = css("--faible"); x.font = "10px Geist Mono, monospace";
+      for (let m = Math.ceil(D0 / 60) * 60; m <= D1; m += 30) { const xx = X(m); x.fillRect(xx, top + lanes * hl - 6, 1, 5); if (m % 60 === 0) x.fillText(hm(m), xx - 14, top + lanes * hl + 12); }
+    };
+    addEventListener("resize", dessiner);
+    return { entrer() { p = 0; if (G && !reduit) G.to({ v: 0 }, { v: 1, duration: 2.2, ease: "power2.inOut", onUpdate() { p = this.targets()[0].v; dessiner(); } }); else { p = 1; dessiner(); } } };
+  } });
+
+// 3. Le rythme (ville)
+chapitres.push({ nom: "Le rythme", html: () => {
+  const top1 = frises.slice().sort((a, b) => b.mesures.plongee.minutes - a.mesures.plongee.minutes)[0];
+  const pics = frises.map(p => { let best = [0, 0]; for (let m = D0; m < D1; m += 10) { const a = p.segments.reduce((s, x) => s + Math.max(0, Math.min(m + 10, x[1]) - Math.max(m, x[0])), 0); if (a > best[1]) best = [m, a]; } return [p.id, best]; });
+  return `<div class="viz"><canvas id="c-ville" aria-label="Ville 3D : une tour par tranche de 10 minutes et par poste"></canvas><svg class="fils" id="fils-v"></svg><div id="etq-v"></div></div>
+  ${lecture({ num: "04 · Le rythme", titre: "Les plongées et les creux de la soirée, tranche par tranche.", chiffre: `${Math.round(top1.mesures.plongee.minutes)}<small>min d'affilée</small>`, texte: `la plus longue plongée sans décrocher, chez ${top1.id}, ${CATS[top1.mesures.plongee.categorie].toLowerCase()}, à partir de ${hm(top1.mesures.plongee.debut)}. Une tour = 10 minutes ; sa hauteur = le temps à l'écran ; sa couleur = l'activité dominante. ${hm(D0)} au fond, ${hm(D1)} devant.`, sources: [`<span class="badge mesure">mesuré</span>tranches de 10 min, activité dominante`] })}`; },
+  init(el) {
+    const etqBox = el.querySelector("#etq-v"), fils = el.querySelector("#fils-v");
+    const tours = [], N = Math.ceil((D1 - D0) / 10), marques = [];
+    let p3maj;
+    const p3 = monter3d(el.querySelector("#c-ville"), (scene) => {
+      const larg = frises.length * 2.4 + 1, long = N * .62 + 1;
+      const sol = aretes(new THREE.Mesh(new THREE.BoxGeometry(larg, .2, long), mat(0xf0f2f5)), .3); sol.position.y = -.1; sol.receiveShadow = true; scene.add(sol);
+      frises.forEach((p, r) => { for (let k = 0; k < N; k++) { const a = D0 + k * 10, b = a + 10, pc = {};
+        p.segments.forEach(s => { const d = Math.min(b, s[1]) - Math.max(a, s[0]); if (d > 0) pc[s[2]] = (pc[s[2]] || 0) + d; });
+        const tot = Object.values(pc).reduce((x, y) => x + y, 0), dom = Object.entries(pc).sort((x, y) => y[1] - x[1])[0];
+        const m = aretes(new THREE.Mesh(new THREE.BoxGeometry(1.7, 1, .5), mat(dom ? coul(dom[0]) : "#eef0f3")), .22);
+        m.position.set((r - (frises.length - 1) / 2) * 2.4, 0, (k - (N - 1) / 2) * .62); m.castShadow = m.receiveShadow = true; m.scale.y = .001; scene.add(m);
+        tours.push({ m, h: Math.max(.04, tot / 10 * 3.2), retard: (r * N + k) * 14 }); }
+        marques.push({ txt: `${p.id} · ${p.qui}`, v: new THREE.Vector3((r - (frises.length - 1) / 2) * 2.4, .1, ((N - 1) / 2) * .62 + 1.1) }); });
+      for (let k = 0; k <= N; k += 6) marques.push({ txt: hm(D0 + k * 10), v: new THREE.Vector3(-larg / 2 - .4, 0, (k - (N - 1) / 2) * .62 - .31), heure: true });
+      let t0 = null;
+      const maj = t => { if (t0 === null) t0 = t; tours.forEach(o => { const p = reduit ? 1 : Math.min(1, Math.max(0, (t - t0 - o.retard) / 600)), e = 1 - Math.pow(1 - p, 3); o.m.scale.y = Math.max(.001, o.h * e); o.m.position.y = o.m.scale.y / 2; }); };
+      maj.reset = () => { t0 = null; };
+      maj.vue = a => a > 1.4 ? 10.5 : 13;
+      const divs = marques.map(m => { const d = document.createElement("div"); d.className = "etq"; d.textContent = m.txt; if (m.heure) d.style.cssText = "border:0;background:transparent;color:var(--doux)"; etqBox.appendChild(d); return d; });
+      maj.apres = r => marques.forEach((m, i) => { const v = m.v.clone().project(p3.cam); divs[i].style.left = ((v.x + 1) / 2 * r.width - divs[i].offsetWidth / 2) + "px"; divs[i].style.top = ((1 - v.y) / 2 * r.height - (m.heure ? 6 : -8)) + "px"; });
+      p3maj = maj; return maj;
+    });
+    return { entrer() { p3maj?.reset(); p3.demarrer(); }, sortir: () => p3.arreter() };
+  } });
+
+// 4. L'IA : agent ou conversation
+chapitres.push({ nom: "L'IA", html: () => {
+  const ag = frises.reduce((s, p) => s + p.mesures.ia_agent_min, 0), ch = frises.reduce((s, p) => s + p.mesures.ia_chat_min, 0);
+  return `<div class="viz"><div class="pad"><div class="barres" id="ia-barres"></div></div></div>
+  ${lecture({ num: "05 · Comment l'IA est utilisée", titre: "On délègue à des agents plus qu'on ne discute avec un chatbot.", chiffre: pct(ag / (ag + ch)), ia: true, texte: `du temps d'IA mesuré passe par des <b>agents</b> qui agissent seuls (Orca, Claude Code), plutôt que par une conversation. C'est le signe d'une équipe déjà au stade « déléguer », pas « demander ».`, sources: [`<span class="badge mesure">mesuré</span>agent : Orca, Claude Code, Codex · conversation : Claude, ChatGPT`, `Grille : Anthropic Economic Index (automatiser / augmenter)`] })}`; },
+  init(el) {
+    const box = el.querySelector("#ia-barres"), max = Math.max(...frises.map(p => p.mesures.actif_min));
+    box.innerHTML = frises.map(p => { const m = p.mesures; return `<div class="barre-l"><div class="tete"><b>${p.id} · ${p.qui}</b><span>${hmin(m.ia_agent_min)} agent · ${hmin(m.ia_chat_min)} conversation · ${hmin(m.actif_min)} au total</span></div>
+      <div class="pile" style="height:34px">${[["ia", m.ia_agent_min], ["ia-pale", m.ia_chat_min], ["plan-2", m.actif_min - m.ia_agent_min - m.ia_chat_min]].map(([c, v]) => `<i data-w="${v / max * 100}" style="background:var(--${c})"></i>`).join("")}</div></div>`; }).join("") +
+      `<div class="legende" style="margin-top:6px"><span><i style="background:var(--ia)"></i>Agent qui agit</span><span><i style="background:var(--ia-pale)"></i>Conversation</span><span><i style="background:var(--plan-2)"></i>Sans IA</span></div>`;
+    const is = [...box.querySelectorAll(".pile i")];
+    return { entrer() { is.forEach(i => i.style.width = "0%"); if (G && !reduit) G.to(is, { width: (k, i) => i.dataset.w + "%", duration: 1, ease: "power3.out", stagger: .05 }); else is.forEach(i => i.style.width = i.dataset.w + "%"); } };
+  } });
+
+// 5. L'attention
+chapitres.push({ nom: "L'attention", html: () => {
+  const med = frises.map(p => p.mesures.ecran_median_s).sort((a, b) => a - b), mediane = med[Math.floor(med.length / 2)];
+  return `<div class="viz"><canvas id="c-att" aria-label="Chaque point est un changement d'écran"></canvas></div>
+  ${lecture({ num: "06 · L'attention", titre: "On change d'écran toutes les quarante secondes.", chiffre: `${mediane}<small>s par écran</small>`, texte: `en médiane avant de passer à une autre fenêtre. La recherche de Gloria Mark (UC Irvine) mesure <b>47 s</b> en moyenne. Chaque point est un changement d'écran ; les points orange sont ceux qui n'impliquent pas l'IA.`, sources: [`<span class="badge mesure">mesuré</span>médiane des blocs d'écran, blocs de moins de 5 s exclus`, `Repère : G. Mark, UC Irvine (études 2016-2020)`] })}`; },
+  init(el) {
+    const c = el.querySelector("#c-att"); let p = 1;
+    const dessiner = () => { const { x, w, h } = toile(c), g = 90, X = m => g + (m - D0) / (D1 - D0) * (w - g - 28), hl = Math.min(150, (h - 130) / frises.length), top = Math.max(50, (h - frises.length * hl) / 2), lim = D0 + (D1 - D0) * p;
+      frises.forEach((pp, k) => { const y = top + k * hl + hl / 2;
+        x.fillStyle = css("--encre"); x.font = "500 12px Geist, sans-serif"; x.fillText(pp.id, 0, y - 2); x.fillStyle = css("--doux"); x.font = "10px Geist Mono, monospace"; x.fillText(`${pp.mesures.ecran_median_s} s · ${pp.mesures.bascules_par_heure}/h`, 0, y + 12);
+        x.fillStyle = css("--trait"); x.fillRect(g, y, w - g - 28, 1);
+        pp.segments.forEach((s, i) => { if (!i || s[0] > lim) return; const pr = pp.segments[i - 1], ia = s[2] === "ia" || pr[2] === "ia", r = Math.min(9, 2 + Math.sqrt(s[1] - s[0]) * 1.4);
+          x.fillStyle = ia ? css("--ia") : css("--perte"); x.globalAlpha = .85; x.beginPath(); x.arc(X(s[0]), y + (i % 2 ? -1 : 1) * (r * .6), r, 0, 7); x.fill(); x.globalAlpha = 1; }); });
+      x.fillStyle = css("--faible"); x.font = "10px Geist Mono, monospace"; for (let m = Math.ceil(D0 / 60) * 60; m <= D1; m += 60) x.fillText(hm(m), X(m) - 14, h - 14);
+      x.fillText("taille du point = durée passée sur le nouvel écran", g, 24); };
+    addEventListener("resize", dessiner);
+    return { entrer() { if (G && !reduit) G.fromTo({ v: 0 }, { v: 0 }, { v: 1, duration: 2, ease: "power1.inOut", onUpdate() { p = this.targets()[0].v; dessiner(); } }); else dessiner(); } };
+  } });
+
+// 6. Le réseau
+chapitres.push({ nom: "Le réseau", html: () => {
+  const communs = Object.entries(A.outils).filter(([, v]) => Object.keys(v).length >= 2).map(([k]) => k);
+  return `<div class="viz"><canvas id="c-res" aria-label="Réseau des postes et des outils qu'ils utilisent"></canvas></div>
+  ${lecture({ num: "07 · Les outils en commun", titre: "Deux façons de travailler avec des agents, qui ne se croisent pas.", chiffre: `${communs.length}<small>outils partagés</small>`, texte: `sur ${Object.keys(A.outils).length} : ${communs.join(", ")}. P01 et P03 pilotent leurs agents dans Orca, P02 dans un terminal avec Claude Code. <b>Même métier, deux outillages</b> : c'est là qu'une méthode commune fait gagner du temps.`, sources: [`<span class="badge mesure">mesuré</span>épaisseur du lien = minutes dans l'outil`, `Outils de moins de 3 min écartés`] })}`; },
+  init(el) {
+    const c = el.querySelector("#c-res"); let p = 1, t0 = 0;
+    const outils = Object.entries(A.outils).map(([n, v]) => ({ n, v, tot: Object.values(v).reduce((a, b) => a + b, 0) }));
+    const dessiner = t => { const { x, w, h } = toile(c), cx = w / 2, cy = h / 2;
+      const P = postes.map((pp, i) => ({ id: pp.id, qui: pp.qui, x: w * .14, y: h * (.22 + i * .56 / Math.max(1, postes.length - 1)) }));
+      const O = outils.map((o, i) => ({ ...o, x: w * .72, y: h * (.12 + i * .76 / Math.max(1, outils.length - 1)) }));
+      O.forEach(o => { if (Object.keys(o.v).length >= 2) o.x = w * .5; });
+      const maxV = Math.max(...outils.flatMap(o => Object.values(o.v)));
+      O.forEach(o => Object.entries(o.v).forEach(([pid, m]) => { const a = P.find(q => q.id === pid); if (!a) return; const commun = Object.keys(o.v).length >= 2;
+        x.strokeStyle = commun ? css("--ia") : css("--trait-fort"); x.globalAlpha = .25 + .75 * p; x.lineWidth = 1 + 9 * m / maxV * p;
+        x.beginPath(); x.moveTo(a.x + 8, a.y); x.bezierCurveTo((a.x + o.x) / 2, a.y, (a.x + o.x) / 2, o.y, o.x - 8, o.y); x.stroke(); x.globalAlpha = 1; }));
+      P.forEach(a => { x.fillStyle = css("--encre"); x.fillRect(a.x - 7, a.y - 7, 14, 14); x.font = "500 13px Geist, sans-serif"; x.textAlign = "right"; x.fillText(a.id, a.x - 16, a.y - 2); x.fillStyle = css("--doux"); x.font = "10px Geist Mono, monospace"; x.fillText(a.qui, a.x - 16, a.y + 12); x.textAlign = "start"; });
+      O.forEach(o => { const commun = Object.keys(o.v).length >= 2, r = 5 + Math.sqrt(o.tot) * .9;
+        x.fillStyle = css("--plan"); x.strokeStyle = commun ? css("--ia") : css("--trait-fort"); x.lineWidth = 1.5; x.beginPath(); x.arc(o.x, o.y, r, 0, 7); x.fill(); x.stroke();
+        if (commun) { x.fillStyle = css("--ia"); x.beginPath(); x.arc(o.x, o.y, r * .45, 0, 7); x.fill(); }
+        x.fillStyle = css("--encre"); x.font = "500 12px Geist, sans-serif"; x.fillText(o.n, o.x + r + 8, o.y - 1); x.fillStyle = css("--doux"); x.font = "10px Geist Mono, monospace"; x.fillText(hmin(o.tot) + " · " + Object.keys(o.v).length + " poste" + (Object.keys(o.v).length > 1 ? "s" : ""), o.x + r + 8, o.y + 12); }); };
+    addEventListener("resize", () => dessiner());
+    return { entrer() { if (G && !reduit) G.fromTo({ v: 0 }, { v: 0 }, { v: 1, duration: 1.4, ease: "power2.out", onUpdate() { p = this.targets()[0].v; dessiner(); } }); else dessiner(); } };
+  } });
+
+// 7. Les tâches répétées
+chapitres.push({ nom: "Les tâches", html: () => `
+  <div class="viz"><div class="pad"><div class="taches" id="taches"></div></div></div>
+  ${lecture({ num: "08 · Les tâches répétées", titre: "Ce qui revient chaque semaine, et ce que l'IA peut en prendre.", chiffre: `${hmin(taches.reduce((s, t) => s + t.heures, 0) * 60)}<small>par semaine</small>`, texte: `de tâches répétées repérées chez P03, extrapolées à la semaine depuis la soirée observée. Chaque tâche est classée : déjà avec l'IA, l'IA peut le faire, l'IA aide, ou à observer.`, sources: [`<span class="badge">estimé</span>fréquence × durée, d'après 1 résumé validé sur ${postes.length}`, `Classement : étapes et goulots du résumé (règle simple, à valider)`] })}`,
+  init(el) {
+    const box = el.querySelector("#taches"), max = Math.max(...taches.map(t => t.heures));
+    box.innerHTML = taches.map(t => `<div class="tache"><div class="t">${t.titre}</div><div class="h">${hmin(t.heures * 60)}/sem.</div>
+      <div class="rail"><i data-w="${t.heures / max * 100}" style="background:var(${t.expo.c})"></i></div><div class="etat" style="color:var(${t.expo.c})">${t.expo.etat}</div><div class="h">${t.frequence_par_semaine}× · ${t.duree_moyenne_min} min</div></div>`).join("");
+    const is = [...box.querySelectorAll(".rail i")];
+    return { entrer() { is.forEach(i => i.style.width = "0%"); if (G && !reduit) G.to(is, { width: (k, i) => i.dataset.w + "%", duration: .9, ease: "power3.out", stagger: .07 }); else is.forEach(i => i.style.width = i.dataset.w + "%"); } };
+  } });
+
+// 8. La course
+chapitres.push({ nom: "La course", html: () => {
+  const avant = cible.heures * 60, apres = avant * (1 - cible.expo.gain);
+  return `<div class="viz"><div class="pad"><div class="course" id="course"></div></div></div>
+  ${lecture({ num: "09 · Avant / après", titre: `« ${cible.titre} », rejouée avec l'IA.`, chiffre: `−${hmin(avant - apres)}<small>par semaine</small>`, ia: true, texte: `La même tâche, deux fois : aujourd'hui, puis avec une automatisation qui prend en charge les étapes de ressaisie et d'aller-retour. Sur une année de 47 semaines : <b>${Math.round((avant - apres) * 47 / 60)} heures</b> rendues.`, sources: [`<span class="badge">estimé</span>gain de ${pct(cible.expo.gain)} sur la tâche, à mesurer la semaine suivante`, `Étapes : résumé validé de ${cible.poste}`],
+    extra: `<button type="button" class="bouton plein" id="rejouer">Rejouer la course</button>` })}`; },
+  init(el) {
+    const box = el.querySelector("#course"), n = cible.etapes.length, dur = cible.duree_moyenne_min;
+    const etapes = cible.etapes.map(e => { const auto = ["action", "input", "output"].includes(e.type); return { ...e, avant: dur / n, apres: auto ? dur / n * (1 - cible.expo.gain) : dur / n }; });
+    const piste = (nom, cle) => `<div class="piste"><div class="tete"><b>${nom}</b><span class="chrono" data-c="${cle}">0:00</span></div><div class="rangee">${etapes.map(e => `<div style="flex:${e.avant}"><i data-c="${cle}" data-f="${e[cle] / e.avant}" style="background:var(${cle === "apres" && e.apres < e.avant ? "--ia" : (["action", "input", "output"].includes(e.type) && cle === "avant" ? "--perte" : "--projet")})"></i><span>${e.texte}</span></div>`).join("")}</div></div>`;
+    box.innerHTML = piste("Aujourd'hui", "avant") + piste("Avec l'IA", "apres") +
+      `<div class="legende"><span><i style="background:var(--perte)"></i>Saisie et allers-retours</span><span><i style="background:var(--projet)"></i>Jugement humain</span><span><i style="background:var(--ia)"></i>Pris en charge par l'IA</span></div>`;
+    const jouer = () => {
+      const segs = { avant: [...box.querySelectorAll('i[data-c="avant"]')], apres: [...box.querySelectorAll('i[data-c="apres"]')] };
+      Object.values(segs).flat().forEach(i => i.style.width = "0%");
+      ["avant", "apres"].forEach(cle => { const chrono = box.querySelector(`.chrono[data-c="${cle}"]`), total = etapes.reduce((s, e) => s + e[cle], 0);
+        if (!G || reduit) { segs[cle].forEach(i => i.style.width = i.dataset.f * 100 + "%"); chrono.textContent = total.toFixed(1).replace(".", ",") + " min"; return; }
+        const tl = G.timeline(); let t = 0;
+        segs[cle].forEach((i, k) => { const d = etapes[k][cle] * .5; tl.to(i, { width: i.dataset.f * 100 + "%", duration: Math.max(.05, d), ease: "none" }, t); t += Math.max(.05, d); });
+        G.fromTo({ v: 0 }, { v: 0 }, { v: total, duration: t, ease: "none", onUpdate() { const v = this.targets()[0].v; chrono.textContent = v.toFixed(1).replace(".", ",") + " min"; } }); });
+    };
+    el.querySelector("#rejouer").addEventListener("click", jouer);
+    return { entrer: jouer };
+  } });
+
+// 9. Le plan
+chapitres.push({ nom: "Le plan", html: () => `
+  <div class="viz"><div class="pad"><div class="plan">
+    <div class="reco"><div class="quand">30 jours</div><div><h3>Une seule méthode pour piloter les agents</h3><p>Deux outillages coexistent (Orca et Claude Code en terminal). Écrire les consignes communes une fois, en « skills » partagées, et les brancher dans les deux.</p></div></div>
+    <div class="reco"><div class="quand">60 jours</div><div><h3>Automatiser « ${cible.titre.toLowerCase()} »</h3><p>La tâche la plus coûteuse que l'IA peut prendre en charge : ${hmin(cible.heures * 60)} par semaine aujourd'hui. Générer la skill depuis les étapes observées, puis remesurer une semaine.</p></div></div>
+    <div class="reco"><div class="quand">90 jours</div><div><h3>Protéger les plongées</h3><p>Un écran toutes les 40 secondes en médiane. Regrouper les messages et la veille sur des créneaux, et suivre la durée des plus longues plongées chaque semaine.</p></div></div>
+  </div></div></div>
+  ${lecture({ num: "10 · Le plan", titre: "Trois actions, dans l'ordre où elles rapportent.", chiffre: `3<small>actions</small>`, texte: `Chacune vient d'une mesure de ce rapport. Le même outil remesure la semaine suivante : c'est ce qui manque à un audit classique.`,
+    extra: `<div class="inconnu"><div class="mono" style="margin-bottom:4px">Ce qu'on ne sait pas encore</div><div>2 postes sur 5 ne sont pas encore audités.</div><div>Une soirée observée, pas une semaine.</div><div>P03 n'a pas de frise minute par minute.</div><div>La qualité du travail n'est pas mesurée, seulement le temps.</div></div>`,
+    sources: [`<span class="badge">recommandation</span>tirée des chapitres 05 à 09`] })}`,
+  init() { return {}; } });
+
+/* ---------- Mécanique de story ---------- */
+const story = document.getElementById("story"), prog = document.getElementById("progres");
+chapitres.forEach((c, k) => { const s = document.createElement("section"); s.className = "chap"; s.setAttribute("aria-label", c.nom); s.innerHTML = c.html(); story.appendChild(s); c.el = s;
+  const b = document.createElement("button"); b.type = "button"; b.setAttribute("aria-label", `Chapitre ${k + 1} : ${c.nom}`); b.innerHTML = "<span><b></b></span>"; b.addEventListener("click", () => aller(k)); prog.appendChild(b); });
+let i = -1, auto = !reduit, minuteur = null;
+const DUREE = 11;
+function aller(k) {
+  k = (k + chapitres.length) % chapitres.length;
+  if (i >= 0) { chapitres[i].el.classList.remove("actif"); chapitres[i].api?.sortir?.(); }
+  i = k; const c = chapitres[i];
+  c.el.classList.add("actif");
+  if (!c.api) c.api = c.init(c.el);
+  c.api.entrer?.();
+  [...prog.querySelectorAll("b")].forEach((b, j) => { if (G) G.killTweensOf(b); b.style.width = j < i ? "100%" : "0%"; });
+  const barre = prog.querySelectorAll("b")[i];
+  if (G && !reduit) { const lec = c.el.querySelectorAll(".lecture > *"); G.fromTo(lec, { y: 14, opacity: 0 }, { y: 0, opacity: 1, duration: .55, stagger: .08, ease: "power3.out" }); }
+  clearTimeout(minuteur);
+  if (auto && G) { G.fromTo(barre, { width: "0%" }, { width: "100%", duration: DUREE, ease: "none" }); minuteur = setTimeout(() => aller(i + 1), DUREE * 1000); }
+  else barre.style.width = "100%";
+  try { history.replaceState(null, "", "#c" + (i + 1)); } catch (e) {}
+}
+document.getElementById("suiv").addEventListener("click", () => aller(i + 1));
+document.getElementById("prec").addEventListener("click", () => aller(i - 1));
+const bAuto = document.getElementById("auto");
+bAuto.textContent = auto ? "Pause" : "Lecture";
+bAuto.addEventListener("click", () => { auto = !auto; bAuto.textContent = auto ? "Pause" : "Lecture"; aller(i); });
+addEventListener("keydown", e => { if (e.target.closest("canvas")) return; if (e.key === "ArrowRight") aller(i + 1); if (e.key === "ArrowLeft") aller(i - 1); if (e.key === " ") { e.preventDefault(); bAuto.click(); } });
+const depart = Math.max(0, (parseInt((location.hash.match(/^#c(\d+)$/) || [])[1]) || 1) - 1);
+(document.fonts?.ready || Promise.resolve()).then(() => aller(Math.min(depart, chapitres.length - 1)));
+</script>
