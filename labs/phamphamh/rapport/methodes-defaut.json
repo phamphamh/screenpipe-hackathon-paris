@@ -6,16 +6,95 @@
   "promesse": "La réponse d'abord, puis la démonstration, branche par branche.",
   "ton": "Affirmatif. Chaque titre est une phrase qui dit la conclusion de l'écran (titre d'action). Situation, Complication, Question, Réponse.",
   "chapitres": [
-   {"id": "reponse", "titre": "L'équipe travaille déjà avec l'IA. Le prochain gain est dans « {cible} ».", "question": "La réponse, en une phrase", "viz": "chiffre-cle", "metriques": ["heures_an", "part_ia", "heures_automatisables", "gains_rapides"], "lecture": "La conclusion vient en premier ; tout le reste du rapport la démontre. {part_ia} du temps d'écran passe déjà par un outil d'IA, et {heures_automatisables} par semaine de tâches répétées peuvent encore être reprises."},
-   {"id": "situation", "titre": "{postes} postes, une soirée, {temps_total} de travail à l'écran.", "question": "Situation : ce que l'on observe", "viz": "bureau-3d", "metriques": ["temps_total", "postes_frise"], "lecture": "Le point de départ, que personne ne conteste. Chaque écran s'allume de la couleur de ce que la personne fait, sur la fenêtre {periode}. <b>Glisse la frise</b> pour remonter le temps."},
-   {"id": "complication", "titre": "Côte à côte pendant {minutes_ensemble}, sur le même sujet pendant {meme_sujet_min}.", "question": "Complication : ce qui coince", "viz": "frise", "metriques": ["minutes_ensemble", "ecran_median_s", "bascules_heure"], "lecture": "Les postes travaillent en parallèle sans se croiser, et chacun change d'écran toutes les {ecran_median_s} en médiane. La bande grise marque les minutes partagées ; le trait bleu-vert, le même sujet."},
-   {"id": "decomposition", "titre": "La branche « {cat_1} » pèse à elle seule {cat_1_part} du temps.", "question": "Question : où part vraiment le temps ?", "viz": "arbre", "metriques": ["cat_1_part", "temps_total"], "lecture": "Un arbre MECE : chaque minute est rangée dans une seule branche, et les branches s'additionnent jusqu'au total. Catégorie d'abord, application ensuite."},
-   {"id": "taches", "titre": "{taches} tâches reviennent chaque semaine, pour {heures_taches} au total.", "question": "Argument 1 : ce qui se répète", "viz": "liste-classee", "metriques": ["heures_taches", "taches_deja_ia"], "lecture": "Classées par heures par semaine, fréquence multipliée par la durée observée. Chaque tâche porte son verdict : déjà avec l'IA, l'IA peut le faire, l'IA aide, ou à observer."},
-   {"id": "preuve", "titre": "« {cible} », rejouée avec l'IA : {cible_gain} de moins par semaine.", "question": "Argument 2 : le gain est-il réel ?", "viz": "course", "metriques": ["cible_gain", "heures_an"], "lecture": "La même tâche, deux fois : aujourd'hui, puis avec l'IA sur les étapes de saisie, d'action et de sortie. Hypothèse : l'IA en reprend 80 %, à remesurer la semaine suivante."},
-   {"id": "recommandation", "titre": "Trois actions, dans l'ordre où elles rapportent.", "question": "Ce qu'il faut faire", "viz": "plan", "metriques": ["actions"], "lecture": "Chaque action découle d'un écran de ce rapport. Le même outil remesure la semaine suivante : la pyramide se vérifie au lieu de se croire."}
+   {
+    "id": "reponse",
+    "titre": "L'équipe travaille déjà avec l'IA. Le prochain gain est dans « {cible} ».",
+    "question": "La réponse, en une phrase",
+    "viz": "chiffre-cle",
+    "metriques": [
+     "heures_an",
+     "part_ia",
+     "heures_automatisables",
+     "gains_rapides"
+    ],
+    "lecture": "La conclusion vient en premier ; tout le reste du rapport la démontre. {part_ia} du temps d'écran passe déjà par un outil d'IA, et {heures_automatisables} par semaine de tâches répétées peuvent encore être reprises."
+   },
+   {
+    "id": "situation",
+    "titre": "{postes} postes, une soirée, {temps_total} de travail à l'écran.",
+    "question": "Situation : ce que l'on observe",
+    "viz": "bureau-3d",
+    "metriques": [
+     "temps_total",
+     "postes_frise"
+    ],
+    "lecture": "Le point de départ, que personne ne conteste. Chaque écran s'allume de la couleur de ce que la personne fait, sur la fenêtre {periode}. <b>Glisse la frise</b> pour remonter le temps."
+   },
+   {
+    "id": "complication",
+    "titre": "Côte à côte pendant {minutes_ensemble}, sur le même sujet pendant {meme_sujet_min}.",
+    "question": "Complication : ce qui coince",
+    "viz": "frise",
+    "metriques": [
+     "minutes_ensemble",
+     "ecran_median_s",
+     "bascules_heure"
+    ],
+    "lecture": "Les postes travaillent en parallèle sans se croiser, et chacun change d'écran toutes les {ecran_median_s} en médiane. La bande grise marque les minutes partagées ; le trait bleu-vert, le même sujet."
+   },
+   {
+    "id": "decomposition",
+    "titre": "La branche « {cat_1} » pèse à elle seule {cat_1_part} du temps.",
+    "question": "Question : où part vraiment le temps ?",
+    "viz": "arbre",
+    "metriques": [
+     "cat_1_part",
+     "temps_total"
+    ],
+    "lecture": "Un arbre MECE : chaque minute est rangée dans une seule branche, et les branches s'additionnent jusqu'au total. Catégorie d'abord, application ensuite."
+   },
+   {
+    "id": "taches",
+    "titre": "{taches} tâches reviennent chaque semaine, pour {heures_taches} au total.",
+    "question": "Argument 1 : ce qui se répète",
+    "viz": "liste-classee",
+    "metriques": [
+     "heures_taches",
+     "taches_deja_ia"
+    ],
+    "lecture": "Classées par heures par semaine, fréquence multipliée par la durée observée. Chaque tâche porte son verdict : déjà avec l'IA, l'IA peut le faire, l'IA aide, ou à observer."
+   },
+   {
+    "id": "preuve",
+    "titre": "« {cible} », rejouée avec l'IA : {cible_gain} de moins par semaine.",
+    "question": "Argument 2 : le gain est-il réel ?",
+    "viz": "course",
+    "metriques": [
+     "cible_gain",
+     "heures_an"
+    ],
+    "lecture": "La même tâche, deux fois : aujourd'hui, puis avec l'IA sur les étapes de saisie, d'action et de sortie. Hypothèse : l'IA en reprend 80 %, à remesurer la semaine suivante."
+   },
+   {
+    "id": "recommandation",
+    "titre": "Trois actions, dans l'ordre où elles rapportent.",
+    "question": "Ce qu'il faut faire",
+    "viz": "plan",
+    "metriques": [
+     "actions"
+    ],
+    "lecture": "Chaque action découle d'un écran de ce rapport. Le même outil remesure la semaine suivante : la pyramide se vérifie au lieu de se croire."
+   }
   ],
-  "visuels_signature": ["chiffre-cle en ouverture (la réponse d'abord)", "arbre MECE horizontal", "titres d'action"],
-  "sources": ["Barbara Minto, The Pyramid Principle (1987)", "Structure SCQA : Situation, Complication, Question, Answer"]
+  "visuels_signature": [
+   "chiffre-cle en ouverture (la réponse d'abord)",
+   "arbre MECE horizontal",
+   "titres d'action"
+  ],
+  "sources": [
+   "Barbara Minto, The Pyramid Principle (1987)",
+   "Structure SCQA : Situation, Complication, Question, Answer"
+  ]
  },
  {
   "id": "matrice",
@@ -24,14 +103,71 @@
   "promesse": "Un portefeuille de tâches, quatre cases, des arbitrages.",
   "ton": "Stratégique. On classe, on compare, on arbitre. Les titres parlent de portefeuille, de positions et d'écarts.",
   "chapitres": [
-   {"id": "portefeuille", "titre": "Le portefeuille de tâches, en quatre cases.", "question": "Où investir l'effort ?", "viz": "matrice-2x2", "metriques": ["gains_rapides", "heures_taches"], "lecture": "En haut, les tâches qui coûtent le plus d'heures par semaine ; à droite, celles que l'IA peut reprendre, d'après leurs étapes et leurs goulots. Les gains rapides d'abord, les pièges jamais."},
-   {"id": "effort", "titre": "{part_ia} du temps passe déjà par un outil d'IA.", "question": "Où va le temps aujourd'hui ?", "viz": "anneau", "metriques": ["part_ia", "part_agent"], "lecture": "Répartition du temps d'écran de toute l'équipe. L'IA n'est plus un pilote : c'est la première ligne du portefeuille, dont {part_agent} par des agents qui agissent seuls."},
-   {"id": "positions", "titre": "D'un poste à l'autre, l'usage de l'IA va {ecart_ia}.", "question": "Qui en est où ?", "viz": "barres-empilees", "metriques": ["ecart_ia", "postes"], "lecture": "Même équipe, même soirée, des positions très différentes. L'écart entre postes dit où la diffusion des pratiques rapportera le plus."},
-   {"id": "outillage", "titre": "{outils_partages} outil(s) partagé(s) sur {outils} : la technologie diverge.", "question": "Les 20 % de technologie sont-ils communs ?", "viz": "reseau", "metriques": ["outils_partages", "outils"], "lecture": "La règle 10/20/70 : 10 % d'algorithmes, 20 % de technologie, 70 % de personnes et de processus. Ici la technologie est là ; ce qui manque, c'est une façon commune de s'en servir."},
-   {"id": "arbitrages", "titre": "Les 70 % : trois arbitrages sur les personnes et les processus.", "question": "Quels arbitrages faire ?", "viz": "plan", "metriques": ["actions", "heures_automatisables"], "lecture": "Chaque arbitrage sort d'une case de la matrice ou d'un écart mesuré. On remesure dans 30 jours pour voir les tâches changer de case."}
+   {
+    "id": "portefeuille",
+    "titre": "Le portefeuille de tâches, en quatre cases.",
+    "question": "Où investir l'effort ?",
+    "viz": "matrice-2x2",
+    "metriques": [
+     "gains_rapides",
+     "heures_taches"
+    ],
+    "lecture": "En haut, les tâches qui coûtent le plus d'heures par semaine ; à droite, celles que l'IA peut reprendre, d'après leurs étapes et leurs goulots. Les gains rapides d'abord, les pièges jamais."
+   },
+   {
+    "id": "effort",
+    "titre": "{part_ia} du temps passe déjà par un outil d'IA.",
+    "question": "Où va le temps aujourd'hui ?",
+    "viz": "anneau",
+    "metriques": [
+     "part_ia",
+     "part_agent"
+    ],
+    "lecture": "Répartition du temps d'écran de toute l'équipe. L'IA n'est plus un pilote : c'est la première ligne du portefeuille, dont {part_agent} par des agents qui agissent seuls."
+   },
+   {
+    "id": "positions",
+    "titre": "D'un poste à l'autre, l'usage de l'IA va {ecart_ia}.",
+    "question": "Qui en est où ?",
+    "viz": "barres-empilees",
+    "metriques": [
+     "ecart_ia",
+     "postes"
+    ],
+    "lecture": "Même équipe, même soirée, des positions très différentes. L'écart entre postes dit où la diffusion des pratiques rapportera le plus."
+   },
+   {
+    "id": "outillage",
+    "titre": "{outils_partages} outil(s) partagé(s) sur {outils} : la technologie diverge.",
+    "question": "Les 20 % de technologie sont-ils communs ?",
+    "viz": "reseau",
+    "metriques": [
+     "outils_partages",
+     "outils"
+    ],
+    "lecture": "La règle 10/20/70 : 10 % d'algorithmes, 20 % de technologie, 70 % de personnes et de processus. Ici la technologie est là ; ce qui manque, c'est une façon commune de s'en servir."
+   },
+   {
+    "id": "arbitrages",
+    "titre": "Les 70 % : trois arbitrages sur les personnes et les processus.",
+    "question": "Quels arbitrages faire ?",
+    "viz": "plan",
+    "metriques": [
+     "actions",
+     "heures_automatisables"
+    ],
+    "lecture": "Chaque arbitrage sort d'une case de la matrice ou d'un écart mesuré. On remesure dans 30 jours pour voir les tâches changer de case."
+   }
   ],
-  "visuels_signature": ["matrice 2×2 en ouverture", "anneau de répartition", "règle 10/20/70"],
-  "sources": ["BCG, The Leader's Guide to Transforming with AI (règle 10/20/70) : https://www.bcg.com/featured-insights/the-leaders-guide-to-transforming-with-ai", "Matrice valeur × faisabilité, usage courant des cabinets de stratégie"]
+  "visuels_signature": [
+   "matrice 2×2 en ouverture",
+   "anneau de répartition",
+   "règle 10/20/70"
+  ],
+  "sources": [
+   "BCG, The Leader's Guide to Transforming with AI (règle 10/20/70) : https://www.bcg.com/featured-insights/the-leaders-guide-to-transforming-with-ai",
+   "Matrice valeur × faisabilité, usage courant des cabinets de stratégie"
+  ]
  },
  {
   "id": "flux",
@@ -40,14 +176,73 @@
   "promesse": "Aller voir le travail réel, cartographier le flux, chasser les gaspillages.",
   "ton": "Terrain, concret, verbes d'action. On parle de flux, de valeur ajoutée, de gaspillage et de kaizen.",
   "chapitres": [
-   {"id": "gemba", "titre": "Aller voir sur place : le gemba, poste par poste.", "question": "Qu'a-t-on vu sur le terrain ?", "viz": "bureau-3d", "metriques": ["temps_total", "postes"], "lecture": "Le Lean commence par le terrain, pas par les entretiens. screenpipe a regardé le travail réel sur la fenêtre {periode}. <b>Glisse la frise</b> pour remonter le temps."},
-   {"id": "flux", "titre": "Le flux se hache toutes les {ecran_median_s}.", "question": "Comment le travail s'écoule-t-il ?", "viz": "frise", "metriques": ["ecran_median_s", "bascules_heure", "plongee_max"], "lecture": "Chaque changement d'écran est un mouvement au sens du Lean : {bascules_heure}. La plus longue plongée sans rupture dure {plongee_max}."},
-   {"id": "vsm", "titre": "« {tache_1} » : {pce} du temps ajoute de la valeur.", "question": "Où est la valeur dans la tâche n°1 ?", "viz": "vsm", "metriques": ["pce", "tache_1_heures"], "lecture": "La carte de la chaîne de valeur sépare ce qui transforme le travail, ce qui est nécessaire sans valeur, et le gaspillage. Le PCE est la part du temps de traversée qui ajoute de la valeur."},
-   {"id": "kaizen", "titre": "Kaizen : « {cible} », sans les allers-retours.", "question": "À quoi ressemble le flux amélioré ?", "viz": "course", "metriques": ["cible_gain", "heures_an"], "lecture": "Le même enchaînement, deux fois. Les étapes de saisie, d'action et de sortie passent à l'IA (hypothèse : 80 % de leur durée) ; le jugement humain reste en place."},
-   {"id": "standard", "titre": "Standardiser, puis remesurer : trois chantiers kaizen.", "question": "Comment tenir le gain ?", "viz": "plan", "metriques": ["actions", "plongee_max"], "lecture": "Un gain ne tient que s'il devient le standard. Chaque chantier sort d'une mesure ; la remesure de la semaine suivante dit s'il a tenu."}
+   {
+    "id": "gemba",
+    "titre": "Aller voir sur place : le gemba, poste par poste.",
+    "question": "Qu'a-t-on vu sur le terrain ?",
+    "viz": "bureau-3d",
+    "metriques": [
+     "temps_total",
+     "postes"
+    ],
+    "lecture": "Le Lean commence par le terrain, pas par les entretiens. screenpipe a regardé le travail réel sur la fenêtre {periode}. <b>Glisse la frise</b> pour remonter le temps."
+   },
+   {
+    "id": "flux",
+    "titre": "Le flux se hache toutes les {ecran_median_s}.",
+    "question": "Comment le travail s'écoule-t-il ?",
+    "viz": "frise",
+    "metriques": [
+     "ecran_median_s",
+     "bascules_heure",
+     "plongee_max"
+    ],
+    "lecture": "Chaque changement d'écran est un mouvement au sens du Lean : {bascules_heure}. La plus longue plongée sans rupture dure {plongee_max}."
+   },
+   {
+    "id": "vsm",
+    "titre": "« {tache_flux} » : {pce} du temps ajoute de la valeur.",
+    "question": "Où est la valeur dans le flux à améliorer ?",
+    "viz": "vsm",
+    "metriques": [
+     "pce",
+     "heures"
+    ],
+    "lecture": "La carte de la chaîne de valeur sépare ce qui transforme le travail, ce qui est nécessaire sans valeur, et le gaspillage. Le PCE est la part du temps de traversée qui ajoute de la valeur."
+   },
+   {
+    "id": "kaizen",
+    "titre": "Kaizen : « {cible} », sans les allers-retours.",
+    "question": "À quoi ressemble le flux amélioré ?",
+    "viz": "course",
+    "metriques": [
+     "cible_gain",
+     "heures_an"
+    ],
+    "lecture": "Le même enchaînement, deux fois. Les étapes de saisie, d'action et de sortie passent à l'IA (hypothèse : 80 % de leur durée) ; le jugement humain reste en place."
+   },
+   {
+    "id": "standard",
+    "titre": "Standardiser, puis remesurer : trois chantiers kaizen.",
+    "question": "Comment tenir le gain ?",
+    "viz": "plan",
+    "metriques": [
+     "actions",
+     "plongee_max"
+    ],
+    "lecture": "Un gain ne tient que s'il devient le standard. Chaque chantier sort d'une mesure ; la remesure de la semaine suivante dit s'il a tenu."
+   }
   ],
-  "visuels_signature": ["value stream map avec échelle de temps et PCE", "frise du flux minute par minute", "course avant / après (kaizen)"],
-  "sources": ["Taiichi Ohno, Toyota Production System (1988)", "Mike Rother et John Shook, Learning to See (1999), cartographie de la chaîne de valeur", "Les 8 gaspillages du Lean (DOWNTIME)"]
+  "visuels_signature": [
+   "value stream map avec échelle de temps et PCE",
+   "frise du flux minute par minute",
+   "course avant / après (kaizen)"
+  ],
+  "sources": [
+   "Taiichi Ohno, Toyota Production System (1988)",
+   "Mike Rother et John Shook, Learning to See (1999), cartographie de la chaîne de valeur",
+   "Les 8 gaspillages du Lean (DOWNTIME)"
+  ]
  },
  {
   "id": "confiance",
@@ -56,15 +251,83 @@
   "promesse": "Un périmètre clair, un inventaire constaté, des risques notés, des contrôles.",
   "ton": "Sobre et factuel. On parle de périmètre, de constat, d'exposition, de risque et de contrôle. Pas d'adjectif.",
   "chapitres": [
-   {"id": "perimetre", "titre": "Périmètre : {postes} postes, fenêtre {periode}, {taches} tâches décrites.", "question": "Quel est le périmètre de la mission ?", "viz": "chiffre-cle", "metriques": ["postes", "temps_total", "taches", "postes_frise"], "lecture": "Observation de l'écran regardé uniquement. Aucun titre de fenêtre ni texte capturé n'est conservé : seulement des catégories, des noms d'applications et des horaires. Les limites sont rappelées en fin de rapport."},
-   {"id": "inventaire", "titre": "{outils_ia} outil(s) d'IA en usage, sur {outils} outils recensés.", "question": "Quels outils sont réellement utilisés ?", "viz": "reseau", "metriques": ["outils_ia", "outils"], "lecture": "Inventaire constaté à l'écran, pas déclaré en entretien. L'épaisseur du lien correspond aux minutes passées dans l'outil ; les outils de moins de 3 minutes sont écartés."},
-   {"id": "exposition", "titre": "{part_ia} du temps d'écran passe par un outil d'IA.", "question": "Quelle part de l'activité est exposée ?", "viz": "anneau", "metriques": ["part_ia", "part_agent"], "lecture": "Dont {part_agent} par des agents qui agissent seuls. Plus l'agent agit seul, plus la revue humaine en sortie devient le point de contrôle."},
-   {"id": "risques", "titre": "{taches_sensibles} tâche(s) touchent des données sensibles.", "question": "Où sont les risques ?", "viz": "carte-chaleur", "metriques": ["taches_sensibles", "taches"], "lecture": "Chaque tâche est notée de 0 à 3 sur cinq critères, à partir de ses étapes, de ses applications et de ses goulots. Plus la case est foncée, plus le critère pèse."},
-   {"id": "homogeneite", "titre": "D'un poste à l'autre, l'usage de l'IA va {ecart_ia}.", "question": "Les pratiques sont-elles homogènes ?", "viz": "barres-empilees", "metriques": ["ecart_ia", "postes"], "lecture": "Un écart fort signale des pratiques non harmonisées. C'est un point de contrôle, pas un reproche."},
-   {"id": "controles", "titre": "Trois contrôles à installer, une remesure à 30 jours.", "question": "Quels contrôles recommander ?", "viz": "plan", "metriques": ["actions"], "lecture": "Chaque contrôle répond à un constat de ce rapport. La remesure automatique tient lieu de test d'efficacité."}
+   {
+    "id": "perimetre",
+    "titre": "Périmètre : {postes} postes, fenêtre {periode}, {taches} tâches décrites.",
+    "question": "Quel est le périmètre de la mission ?",
+    "viz": "chiffre-cle",
+    "metriques": [
+     "postes",
+     "temps_total",
+     "taches",
+     "postes_frise"
+    ],
+    "lecture": "Observation de l'écran regardé uniquement. Aucun titre de fenêtre ni texte capturé n'est conservé : seulement des catégories, des noms d'applications et des horaires. Les limites sont rappelées en fin de rapport."
+   },
+   {
+    "id": "inventaire",
+    "titre": "{outils_ia} outil(s) d'IA en usage, sur {outils} outils recensés.",
+    "question": "Quels outils sont réellement utilisés ?",
+    "viz": "reseau",
+    "metriques": [
+     "outils_ia",
+     "outils"
+    ],
+    "lecture": "Inventaire constaté à l'écran, pas déclaré en entretien. L'épaisseur du lien correspond aux minutes passées dans l'outil ; les outils de moins de 3 minutes sont écartés."
+   },
+   {
+    "id": "exposition",
+    "titre": "{part_ia} du temps d'écran passe par un outil d'IA.",
+    "question": "Quelle part de l'activité est exposée ?",
+    "viz": "anneau",
+    "metriques": [
+     "part_ia",
+     "part_agent"
+    ],
+    "lecture": "Dont {part_agent} par des agents qui agissent seuls. Plus l'agent agit seul, plus la revue humaine en sortie devient le point de contrôle."
+   },
+   {
+    "id": "risques",
+    "titre": "{taches_sensibles} tâche(s) touchent des données sensibles.",
+    "question": "Où sont les risques ?",
+    "viz": "carte-chaleur",
+    "metriques": [
+     "taches_sensibles",
+     "taches"
+    ],
+    "lecture": "Chaque tâche est notée de 0 à 3 sur cinq critères, à partir de ses étapes, de ses applications et de ses goulots. Plus la case est foncée, plus le critère pèse."
+   },
+   {
+    "id": "homogeneite",
+    "titre": "D'un poste à l'autre, l'usage de l'IA va {ecart_ia}.",
+    "question": "Les pratiques sont-elles homogènes ?",
+    "viz": "barres-empilees",
+    "metriques": [
+     "ecart_ia",
+     "postes"
+    ],
+    "lecture": "Un écart fort signale des pratiques non harmonisées. C'est un point de contrôle, pas un reproche."
+   },
+   {
+    "id": "controles",
+    "titre": "Trois contrôles à installer, une remesure à 30 jours.",
+    "question": "Quels contrôles recommander ?",
+    "viz": "plan",
+    "metriques": [
+     "actions"
+    ],
+    "lecture": "Chaque contrôle répond à un constat de ce rapport. La remesure automatique tient lieu de test d'efficacité."
+   }
   ],
-  "visuels_signature": ["carte de chaleur des risques", "inventaire des outils", "périmètre et limites explicites"],
-  "sources": ["Cadres de contrôle interne de type COSO", "Deloitte, State of Generative AI in the Enterprise : https://www.deloitte.com/global/en/issues/ai/state-of-generative-ai-in-enterprise.html"]
+  "visuels_signature": [
+   "carte de chaleur des risques",
+   "inventaire des outils",
+   "périmètre et limites explicites"
+  ],
+  "sources": [
+   "Cadres de contrôle interne de type COSO",
+   "Deloitte, State of Generative AI in the Enterprise : https://www.deloitte.com/global/en/issues/ai/state-of-generative-ai-in-enterprise.html"
+  ]
  },
  {
   "id": "resultats",
@@ -73,13 +336,71 @@
   "promesse": "Combien on gagne, d'où vient chaque heure, et les décisions à prendre.",
   "ton": "Chiffré, direct, orienté décision. Chaque titre porte un nombre ou un verbe de décision.",
   "chapitres": [
-   {"id": "impact", "titre": "{heures_an} rendues par an, sans recruter.", "question": "Combien ça rapporte ?", "viz": "chiffre-cle", "metriques": ["heures_an", "heures_automatisables", "jours_an"], "lecture": "Calculé tâche par tâche, sur 47 semaines. Seules les étapes de saisie, d'action et de sortie sont comptées ; le jugement humain reste humain."},
-   {"id": "cascade", "titre": "De {heures_taches} à {heures_restantes} par semaine.", "question": "D'où vient chaque heure ?", "viz": "cascade", "metriques": ["heures_automatisables", "heures_taches"], "lecture": "Chaque marche est une tâche que l'IA reprend en partie. Les tâches déjà outillées ou trop floues comptent pour zéro : on ne promet pas ce qu'on n'a pas vu."},
-   {"id": "priorites", "titre": "{taches} tâches classées par heures par semaine.", "question": "Par quoi commencer ?", "viz": "liste-classee", "metriques": ["heures_taches", "taches_deja_ia"], "lecture": "Le classement suit la valeur : fréquence multipliée par durée. La couleur dit ce que l'IA peut en faire."},
-   {"id": "preuve", "titre": "« {cible} » : {cible_gain} de moins par semaine.", "question": "Le gain tient-il sur une vraie tâche ?", "viz": "course", "metriques": ["cible_gain", "heures_an"], "lecture": "La même tâche, chronométrée deux fois. Hypothèse : l'IA reprend 80 % des étapes de saisie, d'action et de sortie, à vérifier par la remesure."},
-   {"id": "decisions", "titre": "Trois décisions à prendre cette semaine.", "question": "Que décide-t-on ?", "viz": "plan", "metriques": ["actions", "heures_an"], "lecture": "Une décision, un responsable, une date. Le même outil remesure dans 30 jours : le résultat se constate, il ne se déclare pas."}
+   {
+    "id": "impact",
+    "titre": "{heures_an} rendues par an, sans recruter.",
+    "question": "Combien ça rapporte ?",
+    "viz": "chiffre-cle",
+    "metriques": [
+     "heures_an",
+     "heures_automatisables",
+     "jours_an"
+    ],
+    "lecture": "Calculé tâche par tâche, sur 47 semaines. Seules les étapes de saisie, d'action et de sortie sont comptées ; le jugement humain reste humain."
+   },
+   {
+    "id": "cascade",
+    "titre": "De {heures_taches} à {heures_restantes} par semaine.",
+    "question": "D'où vient chaque heure ?",
+    "viz": "cascade",
+    "metriques": [
+     "heures_automatisables",
+     "heures_taches"
+    ],
+    "lecture": "Chaque marche est une tâche que l'IA reprend en partie. Les tâches déjà outillées ou trop floues comptent pour zéro : on ne promet pas ce qu'on n'a pas vu."
+   },
+   {
+    "id": "priorites",
+    "titre": "{taches} tâches classées par heures par semaine.",
+    "question": "Par quoi commencer ?",
+    "viz": "liste-classee",
+    "metriques": [
+     "heures_taches",
+     "taches_deja_ia"
+    ],
+    "lecture": "Le classement suit la valeur : fréquence multipliée par durée. La couleur dit ce que l'IA peut en faire."
+   },
+   {
+    "id": "preuve",
+    "titre": "« {cible} » : {cible_gain} de moins par semaine.",
+    "question": "Le gain tient-il sur une vraie tâche ?",
+    "viz": "course",
+    "metriques": [
+     "cible_gain",
+     "heures_an"
+    ],
+    "lecture": "La même tâche, chronométrée deux fois. Hypothèse : l'IA reprend 80 % des étapes de saisie, d'action et de sortie, à vérifier par la remesure."
+   },
+   {
+    "id": "decisions",
+    "titre": "Trois décisions à prendre cette semaine.",
+    "question": "Que décide-t-on ?",
+    "viz": "plan",
+    "metriques": [
+     "actions",
+     "heures_an"
+    ],
+    "lecture": "Une décision, un responsable, une date. Le même outil remesure dans 30 jours : le résultat se constate, il ne se déclare pas."
+   }
   ],
-  "visuels_signature": ["chiffre d'impact en ouverture", "cascade des heures", "liste de décisions"],
-  "sources": ["Marcia Blenko, Michael Mankins, Paul Rogers, Decide & Deliver (2010)", "Graphique en cascade (waterfall), usage courant des cabinets"]
+  "visuels_signature": [
+   "chiffre d'impact en ouverture",
+   "cascade des heures",
+   "liste de décisions"
+  ],
+  "sources": [
+   "Marcia Blenko, Michael Mankins, Paul Rogers, Decide & Deliver (2010)",
+   "Graphique en cascade (waterfall), usage courant des cabinets"
+  ]
  }
 ]
