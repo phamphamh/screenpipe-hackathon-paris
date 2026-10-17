@@ -210,7 +210,8 @@ function slidesDe(d) {
 
   s.push(`<div class="contenu">
     <span class="eyebrow">06 · L'IA chez vous aujourd'hui</span>
-    <h2>L'IA sert surtout à écrire, pas encore à faire.</h2>
+    <h2>${d.usage_ia.length ? "L'IA sert surtout à écrire, pas encore à faire." : "Aucun outil d'IA n'apparaît dans le travail observé."}</h2>
+    ${d.usage_ia.length ? '' : `<p class="lede">Tout le temps observé se passe dans les outils métier. C'est là que l'automatisation a le plus de marge.</p>`}
     <div class="deux">${d.usage_ia.map((u, i) => (u.personnes || 0) < MIN_PERSONNES
       ? `<div class="carte masque-carte"><span class="eyebrow">${esc(u.outil)}</span><span class="badge masque">masqué</span><span>Moins de ${MIN_PERSONNES} personnes : chiffre masqué pour protéger l'anonymat.</span></div>`
       : `<div class="carte"><span class="eyebrow">${esc(u.outil)}</span>
@@ -329,7 +330,10 @@ document.getElementById('fichier').onchange = async e => {
   try { afficher(JSON.parse(await f.text())); } catch (err) { alert('Fichier illisible : ' + err.message); }
 };
 
-afficher(window.INSIGHTS);
+// ?donnees=chemin/vers/insights.json (servi par un serveur local) remplace les données d'exemple
+const SOURCE = new URLSearchParams(location.search).get('donnees');
+if (SOURCE) fetch(SOURCE).then(r => r.json()).then(afficher).catch(err => { alert('Données illisibles : ' + err.message); afficher(window.INSIGHTS); });
+else afficher(window.INSIGHTS);
 </script>
 </body>
 </html>

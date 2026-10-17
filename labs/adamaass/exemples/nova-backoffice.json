@@ -1,0 +1,4626 @@
+{
+ "fictif": true,
+ "entreprise": {
+  "nom": "Atelier Nova (fictive)",
+  "secteur": "",
+  "cout_horaire_eur": 38.0
+ },
+ "campagne": {
+  "nom": "Campagne",
+  "debut": "2026-10-13",
+  "fin": "2026-10-19"
+ },
+ "personnes": {
+  "invitees": 7,
+  "participantes": 6,
+  "validees": 6
+ },
+ "heures_captees": 5.4,
+ "nb_apps": 1,
+ "tri_80_20": {
+  "captures_regardees": 5551,
+  "captures_gardees": 5048
+ },
+ "temps_par_categorie": [
+  {
+   "categorie": "Suivi des commandes annulées",
+   "heures_semaine": 0.7
+  },
+  {
+   "categorie": "Rapports de ventes par période",
+   "heures_semaine": 0.6
+  },
+  {
+   "categorie": "Consultation des avis par produit",
+   "heures_semaine": 0.5
+  },
+  {
+   "categorie": "Mise à jour de prix ou valeurs sur les fiches produits",
+   "heures_semaine": 0.5
+  },
+  {
+   "categorie": "Création de produits",
+   "heures_semaine": 0.5
+  },
+  {
+   "categorie": "Mise à jour du catalogue (prix, stock, libellés)",
+   "heures_semaine": 0.4
+  },
+  {
+   "categorie": "Recherche et modération d'avis clients",
+   "heures_semaine": 0.3
+  },
+  {
+   "categorie": "Traitement des commandes (annulation, adresse, commentaire, expédition, filtre)",
+   "heures_semaine": 0.2
+  },
+  {
+   "categorie": "Rapports de ventes et de recherche (back-office)",
+   "heures_semaine": 0.1
+  },
+  {
+   "categorie": "Promotions (règles de prix panier)",
+   "heures_semaine": 0.1
+  },
+  {
+   "categorie": "Modification d'adresse de commande",
+   "heures_semaine": 0.1
+  },
+  {
+   "categorie": "Pages de contenu (CMS)",
+   "heures_semaine": 0.1
+  },
+  {
+   "categorie": "Filtrage de la liste des produits",
+   "heures_semaine": 0.1
+  },
+  {
+   "categorie": "Consultation de commandes",
+   "heures_semaine": 0.0
+  },
+  {
+   "categorie": "Catalogue produits",
+   "heures_semaine": 0.0
+  },
+  {
+   "categorie": "Disponibilité produit (en stock)",
+   "heures_semaine": 0.0
+  },
+  {
+   "categorie": "Apparence du site",
+   "heures_semaine": 0.0
+  }
+ ],
+ "temps_par_app": [
+  {
+   "app": "Magento (back-office)",
+   "heures_semaine": 5.4
+  }
+ ],
+ "taches": [
+  {
+   "id": "t2",
+   "titre": "Générer des rapports de ventes sur une période",
+   "personnes": 6,
+   "frequence_par_semaine": 79,
+   "duree_moyenne_min": 0.5,
+   "apps": [
+    "Magento (back-office)"
+   ],
+   "etapes": [
+    {
+     "type": "action",
+     "texte": "Ouvrir un rapport (Bestsellers, Orders ou Order Count) dans le menu Reports",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "input",
+     "texte": "Saisir les dates de début et de fin de la période et choisir la granularité (jour)",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "input",
+     "texte": "Pour le rapport Orders, choisir un statut de commande (ex. Payment Review)",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "action",
+     "texte": "Lancer le rapport (Show Report ou Refresh)",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "check",
+     "texte": "Faire défiler les résultats pour les lire",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "decision",
+     "texte": "Relancer avec une autre période ou un autre rapport selon le résultat",
+     "app": "Magento (back-office)",
+     "statut": "supposé"
+    }
+   ],
+   "exceptions": [
+    "Certaines fois la granularité n'est pas modifiée (#1, #4, #5)",
+    "Dates mal saisies (ex. années à 5 chiffres, jour invalide) dans plusieurs moments",
+    "Le rapport Order Count est lancé sur une très longue période (2015 à 2024)",
+    "Le rapport Order Total n'a pas de clic « Show Report » visible",
+    "Le rapport Orders est filtré sur un statut précis (Payment Review)",
+    "Le type de rapport et la plage de dates changent à chaque fois",
+    "Les formats de date varient (2/15/2023, 08/05/2022)",
+    "Les périodes varient (trimestre, mois, année, plage très large depuis 2010)",
+    "Plages variables : année complète, trimestre, mois",
+    "Périodes variables : année entière, trimestre, mois"
+   ],
+   "goulots": [
+    {
+     "type": "rework",
+     "detail": "Dates mal saisies (années ou jours aberrants, retour arrière au clavier) qui obligent à ressaisir la période"
+    },
+    {
+     "type": "rework",
+     "detail": "Même rapport relancé plusieurs fois avec des périodes légèrement différentes"
+    }
+   ],
+   "score_automatisation": 74,
+   "pourquoi": "Séquence quasi identique à chaque fois : seuls les dates et le statut changent. Un rapport planifié ou un export par API remplacerait la saisie manuelle.",
+   "confiance": 0.83,
+   "statut": "estimé",
+   "preuves": [
+    {
+     "debut": "2026-10-13T09:00:10.936184+02:00",
+     "fin": "2026-10-13T09:00:31.365668+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-13T09:26:13.572952+02:00",
+     "fin": "2026-10-13T09:26:33.926455+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-13T13:18:59.883350+02:00",
+     "fin": "2026-10-13T13:20:18.896685+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-13T13:41:36.110713+02:00",
+     "fin": "2026-10-13T13:42:16.683164+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-13T14:00:01.338544+02:00",
+     "fin": "2026-10-13T14:00:40.204506+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-13T14:14:02.186798+02:00",
+     "fin": "2026-10-13T14:14:27.005441+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-13T14:32:58.536944+02:00",
+     "fin": "2026-10-13T14:33:32.257907+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-13T17:27:16.344289+02:00",
+     "fin": "2026-10-13T17:27:50.040865+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-14T09:08:28.910475+02:00",
+     "fin": "2026-10-14T09:08:57.567442+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-14T09:23:22.648351+02:00",
+     "fin": "2026-10-14T09:23:53.730025+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-14T09:53:56.859727+02:00",
+     "fin": "2026-10-14T09:54:23.142934+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-14T11:29:31.354390+02:00",
+     "fin": "2026-10-14T11:30:02.361712+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-14T11:48:33.068589+02:00",
+     "fin": "2026-10-14T11:48:58.420511+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-14T12:19:12.633714+02:00",
+     "fin": "2026-10-14T12:19:39.804236+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-14T12:39:55.627448+02:00",
+     "fin": "2026-10-14T12:40:17.848139+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-14T12:58:03.453093+02:00",
+     "fin": "2026-10-14T12:58:24.698226+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-14T17:01:07.184399+02:00",
+     "fin": "2026-10-14T17:01:36.871681+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-14T17:26:54.938807+02:00",
+     "fin": "2026-10-14T17:27:16.678051+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-15T09:05:33.803234+02:00",
+     "fin": "2026-10-15T09:05:56.539576+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-15T09:29:06.348082+02:00",
+     "fin": "2026-10-15T09:29:28.257482+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-16T16:14:45.554568+02:00",
+     "fin": "2026-10-16T16:15:11.054140+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-16T16:41:52.953162+02:00",
+     "fin": "2026-10-16T16:42:17.703201+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-13T09:00:06.584214+02:00",
+     "fin": "2026-10-13T09:00:34.466087+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-13T09:18:25.588833+02:00",
+     "fin": "2026-10-13T09:18:51.582895+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-13T09:45:36.895831+02:00",
+     "fin": "2026-10-13T09:46:03.781475+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-13T10:11:24.413221+02:00",
+     "fin": "2026-10-13T10:11:45.738209+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-13T10:44:19.825138+02:00",
+     "fin": "2026-10-13T10:44:40.043705+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-13T11:13:47.451038+02:00",
+     "fin": "2026-10-13T11:14:06.053383+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-13T11:31:58.517567+02:00",
+     "fin": "2026-10-13T11:32:20.817475+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-15T17:01:28.924124+02:00",
+     "fin": "2026-10-15T17:01:55.127856+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-16T09:14:32.823772+02:00",
+     "fin": "2026-10-16T09:14:47.661720+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-16T09:34:41.339576+02:00",
+     "fin": "2026-10-16T09:34:55.254380+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-16T09:59:31.572904+02:00",
+     "fin": "2026-10-16T09:59:45.748033+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-16T10:28:51.294687+02:00",
+     "fin": "2026-10-16T10:29:08.570526+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-16T10:52:39.575842+02:00",
+     "fin": "2026-10-16T10:53:01.950487+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-16T11:14:12.116689+02:00",
+     "fin": "2026-10-16T11:14:34.716658+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-16T11:35:50.312884+02:00",
+     "fin": "2026-10-16T11:36:10.787157+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-16T12:01:11.348240+02:00",
+     "fin": "2026-10-16T12:01:32.135318+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-16T12:19:57.446388+02:00",
+     "fin": "2026-10-16T12:20:15.196965+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-13T09:00:07.839611+02:00",
+     "fin": "2026-10-13T09:00:39.854890+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-13T09:22:25.354032+02:00",
+     "fin": "2026-10-13T09:23:00.084745+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-13T09:48:36.770984+02:00",
+     "fin": "2026-10-13T09:49:02.335027+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-13T10:07:04.672154+02:00",
+     "fin": "2026-10-13T10:07:30.459924+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-13T10:32:38.737321+02:00",
+     "fin": "2026-10-13T10:33:05.711774+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-13T10:57:32.225955+02:00",
+     "fin": "2026-10-13T10:58:06.626657+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-13T11:24:49.771684+02:00",
+     "fin": "2026-10-13T11:25:15.921392+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-15T09:18:39.752573+02:00",
+     "fin": "2026-10-15T09:19:09.503170+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-15T09:51:55.615030+02:00",
+     "fin": "2026-10-15T09:52:25.507015+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-15T10:19:24.368663+02:00",
+     "fin": "2026-10-15T10:19:52.418528+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-15T10:54:07.320622+02:00",
+     "fin": "2026-10-15T10:54:33.187239+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-15T11:16:06.760018+02:00",
+     "fin": "2026-10-15T11:16:31.412342+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-15T11:29:50.178133+02:00",
+     "fin": "2026-10-15T11:30:24.319132+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-15T11:52:56.421146+02:00",
+     "fin": "2026-10-15T11:53:25.562690+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-15T12:18:48.391971+02:00",
+     "fin": "2026-10-15T12:19:20.849993+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-13T09:00:06.123525+02:00",
+     "fin": "2026-10-13T09:00:35.664490+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-13T09:15:31.907401+02:00",
+     "fin": "2026-10-13T09:16:02.421165+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-13T09:49:26.134537+02:00",
+     "fin": "2026-10-13T09:49:57.067345+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-13T10:10:13.942644+02:00",
+     "fin": "2026-10-13T10:10:33.010450+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-13T10:27:44.458277+02:00",
+     "fin": "2026-10-13T10:28:04.468718+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-13T10:47:31.430780+02:00",
+     "fin": "2026-10-13T10:47:54.093302+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-13T11:02:01.048059+02:00",
+     "fin": "2026-10-13T11:02:19.160766+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-13T14:26:40.631127+02:00",
+     "fin": "2026-10-13T14:27:18.002499+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-13T14:50:41.878767+02:00",
+     "fin": "2026-10-13T14:51:12.940891+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-13T15:13:33.290235+02:00",
+     "fin": "2026-10-13T15:13:59.016038+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-13T15:50:14.598568+02:00",
+     "fin": "2026-10-13T15:50:45.082479+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-14T09:54:21.411615+02:00",
+     "fin": "2026-10-14T09:55:01.693471+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-14T10:11:06.850796+02:00",
+     "fin": "2026-10-14T10:11:41.121593+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-14T10:33:31.134370+02:00",
+     "fin": "2026-10-14T10:33:55.765163+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-14T10:51:08.013951+02:00",
+     "fin": "2026-10-14T10:51:36.840639+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-14T11:21:17.713438+02:00",
+     "fin": "2026-10-14T11:21:48.832536+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-15T09:42:23.068094+02:00",
+     "fin": "2026-10-15T09:42:51.253410+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-15T10:10:29.255788+02:00",
+     "fin": "2026-10-15T10:11:00.224531+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-15T10:50:47.279275+02:00",
+     "fin": "2026-10-15T10:51:08.814228+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-15T11:26:40.569859+02:00",
+     "fin": "2026-10-15T11:27:04.350993+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-15T12:04:32.851478+02:00",
+     "fin": "2026-10-15T12:05:01.303525+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-15T12:43:49.009893+02:00",
+     "fin": "2026-10-15T12:44:13.412606+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-15T13:01:22.113476+02:00",
+     "fin": "2026-10-15T13:02:02.790274+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-15T13:28:50.007449+02:00",
+     "fin": "2026-10-15T13:29:26.843392+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-15T14:10:35.004453+02:00",
+     "fin": "2026-10-15T14:11:05.661800+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    }
+   ]
+  },
+  {
+   "id": "t5",
+   "titre": "Passer en revue les commandes annulées",
+   "personnes": 6,
+   "frequence_par_semaine": 71,
+   "duree_moyenne_min": 0.5,
+   "apps": [
+    "Magento (back-office)"
+   ],
+   "etapes": [
+    {
+     "type": "action",
+     "texte": "Ouvrir Sales > Orders",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "action",
+     "texte": "Ouvrir Filters et sélectionner le statut Canceled",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "action",
+     "texte": "Appliquer les filtres",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "action",
+     "texte": "Trier par Purchase Date",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "check",
+     "texte": "Parcourir la liste des commandes annulées (défilement)",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "decision",
+     "texte": "Ouvrir le détail d'une commande ou passer à la fiche client",
+     "app": "Magento (back-office)",
+     "statut": "supposé"
+    }
+   ],
+   "exceptions": [
+    "Le filtre est parfois réappliqué deux fois dans le même moment (#40)",
+    "Le tri est parfois fait sans ouvrir de commande (#41 à #45)",
+    "Ouverture du détail d'une commande à la suite (#56 puis #57)",
+    "Passage vers Customers à la suite (#54 puis #55)",
+    "Plusieurs commandes sont ouvertes à la suite (#30, #31 ; #27, #28)",
+    "Seulement deux commandes ouvertes en détail (#107, #142)",
+    "Une fois la liste est consultée sans filtre, juste avec défilement",
+    "Une recherche par nom de client a été combinée au filtre (#141, #143)",
+    "Va-et-vient de 1 à 3 commandes selon le moment"
+   ],
+   "goulots": [
+    {
+     "type": "rework",
+     "detail": "Le filtre Canceled est reconfiguré à chaque visite : il n'est pas conservé"
+    },
+    {
+     "type": "switching",
+     "detail": "Va-et-vient entre la liste des commandes et la liste des clients (#54, #55)"
+    }
+   ],
+   "score_automatisation": 66,
+   "pourquoi": "Filtre fixe réappliqué à chaque fois ; une vue enregistrée ou une alerte sur les annulations couvrirait l'essentiel. L'analyse des causes reste humaine.",
+   "confiance": 0.78,
+   "statut": "estimé",
+   "preuves": [
+    {
+     "debut": "2026-10-15T11:19:30.718756+02:00",
+     "fin": "2026-10-15T11:20:10.446070+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-15T11:49:55.004453+02:00",
+     "fin": "2026-10-15T11:50:23.008570+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-15T12:16:02.624868+02:00",
+     "fin": "2026-10-15T12:16:34.540530+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-15T12:39:03.229217+02:00",
+     "fin": "2026-10-15T12:39:57.030694+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-15T12:52:33.018429+02:00",
+     "fin": "2026-10-15T12:53:01.234392+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-15T13:11:22.616778+02:00",
+     "fin": "2026-10-15T13:11:53.238311+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-15T13:34:42.018629+02:00",
+     "fin": "2026-10-15T13:35:05.782634+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-15T13:46:11.966354+02:00",
+     "fin": "2026-10-15T13:46:35.748461+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-15T14:11:28.593750+02:00",
+     "fin": "2026-10-15T14:11:49.650577+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-15T14:41:46.940266+02:00",
+     "fin": "2026-10-15T14:42:08.012585+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-15T15:11:42.571786+02:00",
+     "fin": "2026-10-15T15:12:00.429380+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-15T15:12:00.429380+02:00",
+     "fin": "2026-10-15T15:12:14.258194+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-16T12:02:49.289585+02:00",
+     "fin": "2026-10-16T12:05:31.520418+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-16T12:21:07.326763+02:00",
+     "fin": "2026-10-16T12:23:28.269709+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-19T09:05:02.279464+02:00",
+     "fin": "2026-10-19T09:06:49.152327+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-19T09:06:49.152327+02:00",
+     "fin": "2026-10-19T09:07:01.640761+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-19T09:34:34.255734+02:00",
+     "fin": "2026-10-19T09:36:05.016060+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-19T10:02:34.305714+02:00",
+     "fin": "2026-10-19T10:03:47.579747+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-15T10:54:40.851328+02:00",
+     "fin": "2026-10-15T10:54:55.051600+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-15T11:18:37.181125+02:00",
+     "fin": "2026-10-15T11:18:53.555367+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-15T11:49:36.239494+02:00",
+     "fin": "2026-10-15T11:49:50.260425+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-15T12:05:17.841763+02:00",
+     "fin": "2026-10-15T12:05:34.637261+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-15T12:21:12.655360+02:00",
+     "fin": "2026-10-15T12:21:27.407027+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-15T12:47:29.253823+02:00",
+     "fin": "2026-10-15T12:47:42.692548+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-15T13:00:01.105781+02:00",
+     "fin": "2026-10-15T13:00:13.724740+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-14T15:56:51.068988+02:00",
+     "fin": "2026-10-14T15:57:04.386355+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-14T16:29:39.376855+02:00",
+     "fin": "2026-10-14T16:29:51.847457+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-14T17:00:23.878557+02:00",
+     "fin": "2026-10-14T17:00:41.432943+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-14T17:14:30.113840+02:00",
+     "fin": "2026-10-14T17:14:59.753112+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-15T11:55:42.383306+02:00",
+     "fin": "2026-10-15T11:56:02.213359+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-15T12:10:37.100026+02:00",
+     "fin": "2026-10-15T12:10:59.321664+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-15T12:23:11.765883+02:00",
+     "fin": "2026-10-15T12:23:45.415254+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-16T13:00:55.906420+02:00",
+     "fin": "2026-10-16T13:01:49.839425+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-16T13:32:12.094325+02:00",
+     "fin": "2026-10-16T13:32:57.066569+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-16T13:54:03.184728+02:00",
+     "fin": "2026-10-16T13:55:50.093681+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-16T14:26:39.325431+02:00",
+     "fin": "2026-10-16T14:28:39.550748+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-16T14:59:14.149358+02:00",
+     "fin": "2026-10-16T15:00:16.717157+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-14T17:08:40.409827+02:00",
+     "fin": "2026-10-14T17:08:54.237685+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-15T09:03:08.123802+02:00",
+     "fin": "2026-10-15T09:03:20.064153+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-15T09:03:43.748823+02:00",
+     "fin": "2026-10-15T09:03:55.693597+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-15T09:31:35.257837+02:00",
+     "fin": "2026-10-15T09:31:47.091976+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-15T09:32:18.174614+02:00",
+     "fin": "2026-10-15T09:32:30.744619+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-15T09:32:53.995243+02:00",
+     "fin": "2026-10-15T09:33:07.761628+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-15T09:51:34.115586+02:00",
+     "fin": "2026-10-15T09:51:46.686056+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-15T09:53:25.540563+02:00",
+     "fin": "2026-10-15T09:53:40.018762+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-15T12:56:50.068579+02:00",
+     "fin": "2026-10-15T12:57:06.986935+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-15T13:30:10.472143+02:00",
+     "fin": "2026-10-15T13:30:22.659497+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-15T13:44:02.757529+02:00",
+     "fin": "2026-10-15T13:44:15.596236+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-15T14:34:33.347138+02:00",
+     "fin": "2026-10-15T14:34:48.352635+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-15T15:04:01.478505+02:00",
+     "fin": "2026-10-15T15:04:13.859312+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-16T13:55:50.093681+02:00",
+     "fin": "2026-10-16T13:56:11.333252+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-15T12:40:01.952387+02:00",
+     "fin": "2026-10-15T12:40:20.707561+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-15T12:53:48.887847+02:00",
+     "fin": "2026-10-15T12:54:07.412597+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-15T13:25:09.394636+02:00",
+     "fin": "2026-10-15T13:25:28.048376+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-15T13:58:20.477832+02:00",
+     "fin": "2026-10-15T13:58:42.372105+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-15T14:18:21.324899+02:00",
+     "fin": "2026-10-15T14:18:38.345208+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-15T11:32:49.840312+02:00",
+     "fin": "2026-10-15T11:33:12.235750+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-15T11:58:20.172691+02:00",
+     "fin": "2026-10-15T11:58:43.394427+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-15T12:30:38.004983+02:00",
+     "fin": "2026-10-15T12:30:56.352866+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-15T12:47:34.359235+02:00",
+     "fin": "2026-10-15T12:48:01.120814+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-15T13:16:38.740420+02:00",
+     "fin": "2026-10-15T13:16:54.849726+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-15T13:33:30.661369+02:00",
+     "fin": "2026-10-15T13:33:47.160663+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-15T13:50:25.408779+02:00",
+     "fin": "2026-10-15T13:50:47.115812+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-16T10:12:09.767761+02:00",
+     "fin": "2026-10-16T10:12:32.081906+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-16T10:38:47.903769+02:00",
+     "fin": "2026-10-16T10:39:07.815585+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-16T11:04:16.664398+02:00",
+     "fin": "2026-10-16T11:04:36.094960+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-16T11:18:09.132086+02:00",
+     "fin": "2026-10-16T11:18:26.223205+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-16T12:43:46.903132+02:00",
+     "fin": "2026-10-16T12:44:33.316484+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-16T13:03:50.085106+02:00",
+     "fin": "2026-10-16T13:04:13.837718+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-16T13:19:27.588973+02:00",
+     "fin": "2026-10-16T13:19:50.739296+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-16T13:48:21.333816+02:00",
+     "fin": "2026-10-16T13:48:44.415307+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-16T14:16:55.456233+02:00",
+     "fin": "2026-10-16T14:17:18.845613+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-15T17:11:59.439801+02:00",
+     "fin": "2026-10-15T17:12:18.734994+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-15T17:27:10.521929+02:00",
+     "fin": "2026-10-15T17:27:32.190497+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-16T09:06:56.529370+02:00",
+     "fin": "2026-10-16T09:07:12.766005+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-16T09:39:37.468702+02:00",
+     "fin": "2026-10-16T09:39:57.772693+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-16T10:13:33.891431+02:00",
+     "fin": "2026-10-16T10:13:51.876342+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    }
+   ]
+  },
+  {
+   "id": "t1",
+   "titre": "Mettre à jour une valeur sur toutes les variantes d'un produit",
+   "personnes": 5,
+   "frequence_par_semaine": 41,
+   "duree_moyenne_min": 0.8,
+   "apps": [
+    "Magento (back-office)"
+   ],
+   "etapes": [
+    {
+     "type": "action",
+     "texte": "Ouvrir le catalogue Produits et chercher le produit par mot-clé",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "decision",
+     "texte": "Choisir la variante à modifier dans la liste de résultats (taille/couleur)",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "input",
+     "texte": "Saisir la nouvelle valeur (prix ou quantité) dans le champ de la fiche",
+     "app": "Magento (back-office)",
+     "statut": "supposé"
+    },
+    {
+     "type": "action",
+     "texte": "Enregistrer la fiche",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "action",
+     "texte": "Revenir à la liste et répéter pour chaque variante avec la même valeur",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "check",
+     "texte": "Vérifier que toutes les variantes sont enregistrées",
+     "app": "Magento (back-office)",
+     "statut": "supposé"
+    }
+   ],
+   "exceptions": [
+    "Certains produits n'ont que 1 à 3 variantes, d'autres jusqu'à 6",
+    "Deux mises à jour de prix enchaînées sur la même recherche",
+    "Le même produit est modifié plusieurs fois dans la journée avec des prix différents",
+    "Parfois la valeur diffère selon la variante (#14-#15)",
+    "Parfois édition d'une seule fiche produit via Edit au lieu de la mise à jour groupée",
+    "Un moment montre un clic sur Add Product en cours de recherche",
+    "Un produit avec plusieurs variantes oblige à répéter la même saisie variante par variante (tailles XS à XL)",
+    "Un produit est modifié directement depuis sa fiche au lieu de la mise à jour en masse",
+    "Une mise à jour groupée via « Update attributes » a été utilisée une fois (#134-#135)"
+   ],
+   "goulots": [
+    {
+     "type": "rework",
+     "detail": "La même valeur est ressaisie une par une sur chaque variante, avec retour à la liste entre chaque (#5-#12, #17-#24, #30-#35)"
+    },
+    {
+     "type": "switching",
+     "detail": "Alternance liste produits / fiche variante à chaque enregistrement"
+    }
+   ],
+   "score_automatisation": 81,
+   "pourquoi": "Séquence très régulière (recherche, ouverture, saisie, enregistrement) répétée sur les variantes ; une mise à jour en masse ou un import CSV éviterait les allers-retours.",
+   "confiance": 0.79,
+   "statut": "estimé",
+   "preuves": [
+    {
+     "debut": "2026-10-13T09:44:49.903382+02:00",
+     "fin": "2026-10-13T09:45:10.292406+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-13T09:45:10.292406+02:00",
+     "fin": "2026-10-13T09:45:35.011404+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-13T10:09:44.292547+02:00",
+     "fin": "2026-10-13T10:10:02.031769+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-13T10:10:02.031769+02:00",
+     "fin": "2026-10-13T10:10:14.927183+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-13T10:10:24.083344+02:00",
+     "fin": "2026-10-13T10:10:38.370015+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-13T10:10:47.510755+02:00",
+     "fin": "2026-10-13T10:11:01.882348+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-13T10:11:15.383149+02:00",
+     "fin": "2026-10-13T10:11:29.637726+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-13T10:11:44.892325+02:00",
+     "fin": "2026-10-13T10:11:59.268815+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-13T10:38:25.037863+02:00",
+     "fin": "2026-10-13T10:38:45.929539+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-13T10:38:45.929539+02:00",
+     "fin": "2026-10-13T10:39:02.605339+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-13T10:39:10.679981+02:00",
+     "fin": "2026-10-13T10:39:31.976509+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-13T10:59:00.981240+02:00",
+     "fin": "2026-10-13T10:59:31.826635+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-13T10:59:31.826635+02:00",
+     "fin": "2026-10-13T10:59:48.343436+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-13T10:59:56.364248+02:00",
+     "fin": "2026-10-13T11:00:12.304054+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-13T11:00:21.921458+02:00",
+     "fin": "2026-10-13T11:00:38.067510+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-13T11:00:52.051250+02:00",
+     "fin": "2026-10-13T11:01:08.114324+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-13T11:01:23.099162+02:00",
+     "fin": "2026-10-13T11:01:38.851936+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-13T11:28:39.212607+02:00",
+     "fin": "2026-10-13T11:28:58.543372+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-13T11:28:58.543372+02:00",
+     "fin": "2026-10-13T11:29:16.034496+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-13T11:29:24.383068+02:00",
+     "fin": "2026-10-13T11:29:40.123773+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-13T11:29:48.345463+02:00",
+     "fin": "2026-10-13T11:30:05.646868+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-13T11:59:57.903824+02:00",
+     "fin": "2026-10-13T12:00:17.499095+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-13T12:00:17.499095+02:00",
+     "fin": "2026-10-13T12:00:35.656519+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-13T12:00:48.391970+02:00",
+     "fin": "2026-10-13T12:01:07.099832+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-13T12:01:22.759979+02:00",
+     "fin": "2026-10-13T12:01:41.130953+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-13T12:23:41.487437+02:00",
+     "fin": "2026-10-13T12:24:16.138257+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-13T12:24:16.138257+02:00",
+     "fin": "2026-10-13T12:24:38.478740+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-13T12:44:59.612213+02:00",
+     "fin": "2026-10-13T12:45:31.293286+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-13T12:45:31.293286+02:00",
+     "fin": "2026-10-13T12:45:48.504229+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-13T12:46:06.188728+02:00",
+     "fin": "2026-10-13T12:46:24.360852+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-13T12:46:51.493331+02:00",
+     "fin": "2026-10-13T12:47:07.670028+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-13T12:47:34.839021+02:00",
+     "fin": "2026-10-13T12:47:52.355911+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-16T15:30:37.178376+02:00",
+     "fin": "2026-10-16T15:31:16.311758+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-16T15:31:16.311758+02:00",
+     "fin": "2026-10-16T15:31:46.990405+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-16T12:50:00.056224+02:00",
+     "fin": "2026-10-16T12:50:30.495876+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-16T12:50:30.495876+02:00",
+     "fin": "2026-10-16T12:51:04.804945+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-16T13:08:32.392885+02:00",
+     "fin": "2026-10-16T13:08:52.651704+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-16T13:08:52.651704+02:00",
+     "fin": "2026-10-16T13:09:06.149628+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-16T13:21:46.155764+02:00",
+     "fin": "2026-10-16T13:22:28.317960+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-16T13:22:28.317960+02:00",
+     "fin": "2026-10-16T13:22:45.094354+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-16T15:40:07.715870+02:00",
+     "fin": "2026-10-16T15:40:26.372245+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-16T15:40:32.475624+02:00",
+     "fin": "2026-10-16T15:40:44.802682+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-16T16:05:22.797341+02:00",
+     "fin": "2026-10-16T16:05:51.874436+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-16T16:05:58.666053+02:00",
+     "fin": "2026-10-16T16:06:11.701476+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-16T16:25:46.155841+02:00",
+     "fin": "2026-10-16T16:26:20.165575+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-16T16:55:51.950842+02:00",
+     "fin": "2026-10-16T16:56:11.528984+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-16T16:56:16.196581+02:00",
+     "fin": "2026-10-16T16:56:29.164822+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-19T09:06:01.658590+02:00",
+     "fin": "2026-10-19T09:06:29.259570+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-19T09:06:38.142329+02:00",
+     "fin": "2026-10-19T09:06:52.804908+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-13T10:08:42.291201+02:00",
+     "fin": "2026-10-13T10:08:58.511681+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-13T10:43:53.014110+02:00",
+     "fin": "2026-10-13T10:44:09.075871+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-13T11:14:18.703723+02:00",
+     "fin": "2026-10-13T11:14:36.143593+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-13T11:42:28.472038+02:00",
+     "fin": "2026-10-13T11:42:40.813480+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-13T12:01:55.132804+02:00",
+     "fin": "2026-10-13T12:02:08.977486+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-13T12:14:49.047308+02:00",
+     "fin": "2026-10-13T12:15:03.681462+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-16T09:00:48.984700+02:00",
+     "fin": "2026-10-16T09:01:07.924581+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-16T09:01:19.290665+02:00",
+     "fin": "2026-10-16T09:01:32.083122+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-16T09:01:46.012615+02:00",
+     "fin": "2026-10-16T09:01:58.134077+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-16T09:02:14.862700+02:00",
+     "fin": "2026-10-16T09:02:28.904128+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-16T09:02:40.316639+02:00",
+     "fin": "2026-10-16T09:03:00.127153+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-16T09:21:17.736017+02:00",
+     "fin": "2026-10-16T09:22:21.004459+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-16T09:22:21.004459+02:00",
+     "fin": "2026-10-16T09:22:42.573659+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-16T10:34:26.331509+02:00",
+     "fin": "2026-10-16T10:34:46.018180+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-16T14:26:37.012135+02:00",
+     "fin": "2026-10-16T14:26:51.037832+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-16T14:26:59.082623+02:00",
+     "fin": "2026-10-16T14:27:12.481579+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-16T14:27:20.429506+02:00",
+     "fin": "2026-10-16T14:27:32.795297+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-16T14:27:40.658741+02:00",
+     "fin": "2026-10-16T14:27:56.163172+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-16T14:28:04.937923+02:00",
+     "fin": "2026-10-16T14:28:23.215029+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-16T10:17:50.450117+02:00",
+     "fin": "2026-10-16T10:18:33.211346+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-16T10:18:33.211346+02:00",
+     "fin": "2026-10-16T10:18:47.848911+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-16T10:18:47.848911+02:00",
+     "fin": "2026-10-16T10:19:05.735233+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-16T14:48:47.653080+02:00",
+     "fin": "2026-10-16T14:49:09.116529+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-16T14:49:09.116529+02:00",
+     "fin": "2026-10-16T14:49:26.143169+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-16T14:49:26.143169+02:00",
+     "fin": "2026-10-16T14:49:42.982139+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-16T15:15:11.593959+02:00",
+     "fin": "2026-10-16T15:15:33.876119+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-16T15:15:33.876119+02:00",
+     "fin": "2026-10-16T15:15:55.548105+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-16T15:15:55.548105+02:00",
+     "fin": "2026-10-16T15:16:11.588424+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-16T15:29:39.342326+02:00",
+     "fin": "2026-10-16T15:30:33.372282+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-16T12:58:12.041142+02:00",
+     "fin": "2026-10-16T12:58:32.432826+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-16T12:58:32.432826+02:00",
+     "fin": "2026-10-16T12:58:55.312318+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-16T13:15:43.823148+02:00",
+     "fin": "2026-10-16T13:16:12.403097+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-16T13:16:12.403097+02:00",
+     "fin": "2026-10-16T13:16:37.603330+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-16T13:52:48.709998+02:00",
+     "fin": "2026-10-16T13:53:44.796250+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-16T13:53:44.796250+02:00",
+     "fin": "2026-10-16T13:54:09.571775+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-16T14:29:56.712512+02:00",
+     "fin": "2026-10-16T14:30:12.475503+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-16T14:30:12.475503+02:00",
+     "fin": "2026-10-16T14:30:33.612071+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-16T15:03:46.427683+02:00",
+     "fin": "2026-10-16T15:04:07.635121+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-16T15:04:07.635121+02:00",
+     "fin": "2026-10-16T15:04:24.992606+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-16T15:04:24.992606+02:00",
+     "fin": "2026-10-16T15:04:42.132311+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-16T15:04:42.132311+02:00",
+     "fin": "2026-10-16T15:05:02.420400+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-16T15:20:59.008345+02:00",
+     "fin": "2026-10-16T15:21:22.759340+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-16T15:21:22.759340+02:00",
+     "fin": "2026-10-16T15:21:39.702636+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-13T09:00:13.250334+02:00",
+     "fin": "2026-10-13T09:00:41.507213+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-13T09:32:10.501406+02:00",
+     "fin": "2026-10-13T09:32:44.142797+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-13T09:55:13.426513+02:00",
+     "fin": "2026-10-13T09:55:35.295098+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-13T10:25:14.460005+02:00",
+     "fin": "2026-10-13T10:25:40.667140+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    }
+   ]
+  },
+  {
+   "id": "t3",
+   "titre": "Consulter les avis d'un produit depuis sa fiche",
+   "personnes": 3,
+   "frequence_par_semaine": 26,
+   "duree_moyenne_min": 1.1,
+   "apps": [
+    "Magento (back-office)"
+   ],
+   "etapes": [
+    {
+     "type": "action",
+     "texte": "Chercher le produit par nom dans le catalogue",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "action",
+     "texte": "Ouvrir la fiche produit",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "action",
+     "texte": "Ouvrir la section « Product Reviews » de la fiche",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "output",
+     "texte": "Lire les avis en faisant défiler",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "decision",
+     "texte": "Passer au produit suivant ou revenir en arrière",
+     "app": "Magento (back-office)",
+     "statut": "supposé"
+    }
+   ],
+   "exceptions": [
+    "Des caractères parasites apparaissent dans le texte saisi (« c », guillemets)",
+    "Recherche parfois corrigée plusieurs fois avant de trouver le bon produit (touches effacer répétées)",
+    "Sur une fiche, l'étape passe par l'onglet Content seul sans Product Reviews"
+   ],
+   "goulots": [
+    {
+     "type": "rework",
+     "detail": "Les mêmes produits reviennent plusieurs fois (Antonia Racer Tank, Circe Hooded Ice Fleece, Olivia Zip Jacket, Chloe Compete Tank)"
+    },
+    {
+     "type": "unclear",
+     "detail": "Pas de trace de ce qui est fait des avis lus"
+    }
+   ],
+   "score_automatisation": 48,
+   "pourquoi": "Le parcours est identique à chaque fois et la lecture pourrait être remplacée par une vue ou un export des avis par produit ; l'objectif de la lecture reste inconnu.",
+   "confiance": 0.62,
+   "statut": "estimé",
+   "preuves": [
+    {
+     "debut": "2026-10-14T13:20:55.037224+02:00",
+     "fin": "2026-10-14T13:21:14.780716+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-14T13:21:14.780716+02:00",
+     "fin": "2026-10-14T13:21:47.864837+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-14T13:43:32.609576+02:00",
+     "fin": "2026-10-14T13:43:57.271560+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-14T13:43:57.271560+02:00",
+     "fin": "2026-10-14T13:44:26.295061+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-14T14:03:43.505578+02:00",
+     "fin": "2026-10-14T14:03:57.595020+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-14T14:03:57.595020+02:00",
+     "fin": "2026-10-14T14:04:27.482121+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-14T14:04:33.321594+02:00",
+     "fin": "2026-10-14T14:05:02.605165+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-14T14:25:43.056262+02:00",
+     "fin": "2026-10-14T14:26:02.889691+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-14T14:26:02.889691+02:00",
+     "fin": "2026-10-14T14:26:38.270965+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-14T14:52:58.928651+02:00",
+     "fin": "2026-10-14T14:53:13.126364+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-14T14:53:13.126364+02:00",
+     "fin": "2026-10-14T14:53:38.856503+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-14T15:17:05.208152+02:00",
+     "fin": "2026-10-14T15:17:18.277140+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-14T15:17:18.277140+02:00",
+     "fin": "2026-10-14T15:17:39.311997+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-14T15:42:47.635642+02:00",
+     "fin": "2026-10-14T15:43:08.268340+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-14T15:43:08.268340+02:00",
+     "fin": "2026-10-14T15:43:35.740602+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-14T16:09:09.808755+02:00",
+     "fin": "2026-10-14T16:09:32.853164+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-14T16:09:32.853164+02:00",
+     "fin": "2026-10-14T16:09:59.337742+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-14T16:31:01.057911+02:00",
+     "fin": "2026-10-14T16:31:13.161815+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-14T16:31:13.161815+02:00",
+     "fin": "2026-10-14T16:31:33.807392+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-14T16:31:33.807392+02:00",
+     "fin": "2026-10-14T16:31:50.099395+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-16T09:18:50.773385+02:00",
+     "fin": "2026-10-16T09:19:07.838550+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-16T09:19:07.838550+02:00",
+     "fin": "2026-10-16T09:19:34.802555+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-16T09:48:27.634860+02:00",
+     "fin": "2026-10-16T09:48:43.755839+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-16T09:48:43.755839+02:00",
+     "fin": "2026-10-16T09:49:03.125527+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-16T10:13:13.090993+02:00",
+     "fin": "2026-10-16T10:13:37.867712+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-16T10:13:37.867712+02:00",
+     "fin": "2026-10-16T10:14:01.744294+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-16T10:31:19.419559+02:00",
+     "fin": "2026-10-16T10:31:37.644017+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-16T10:31:37.644017+02:00",
+     "fin": "2026-10-16T10:32:08.910112+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-16T11:02:43.169647+02:00",
+     "fin": "2026-10-16T11:03:21.350432+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-16T11:03:21.350432+02:00",
+     "fin": "2026-10-16T11:03:39.556245+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-16T11:23:08.830256+02:00",
+     "fin": "2026-10-16T11:23:27.462531+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-16T11:23:27.462531+02:00",
+     "fin": "2026-10-16T11:23:52.460869+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-16T11:50:56.415532+02:00",
+     "fin": "2026-10-16T11:51:19.068332+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-16T11:51:19.068332+02:00",
+     "fin": "2026-10-16T11:51:42.963710+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-13T12:34:30.952219+02:00",
+     "fin": "2026-10-13T12:34:49.572700+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-13T12:34:49.572700+02:00",
+     "fin": "2026-10-13T12:36:25.301676+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-15T17:05:02.152192+02:00",
+     "fin": "2026-10-15T17:05:16.692624+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-15T17:05:16.692624+02:00",
+     "fin": "2026-10-15T17:06:26.885809+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-16T13:05:09.316526+02:00",
+     "fin": "2026-10-16T13:05:28.225008+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-16T13:05:28.225008+02:00",
+     "fin": "2026-10-16T13:07:03.050346+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-16T13:34:43.332640+02:00",
+     "fin": "2026-10-16T13:34:58.966464+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-16T13:34:58.966464+02:00",
+     "fin": "2026-10-16T13:36:26.165578+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-16T13:58:23.387252+02:00",
+     "fin": "2026-10-16T13:58:40.798750+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-16T13:58:40.798750+02:00",
+     "fin": "2026-10-16T13:59:57.559894+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-14T12:24:39.405704+02:00",
+     "fin": "2026-10-14T12:25:25.094845+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-14T13:03:43.169963+02:00",
+     "fin": "2026-10-14T13:04:01.329731+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-14T13:04:01.329731+02:00",
+     "fin": "2026-10-14T13:04:59.620417+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-14T13:36:53.506655+02:00",
+     "fin": "2026-10-14T13:37:14.088833+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-14T13:37:14.088833+02:00",
+     "fin": "2026-10-14T13:38:25.918574+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-16T10:45:43.393629+02:00",
+     "fin": "2026-10-16T10:46:17.530953+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-16T10:46:17.530953+02:00",
+     "fin": "2026-10-16T10:47:38.630096+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-16T17:05:08.441787+02:00",
+     "fin": "2026-10-16T17:05:20.467478+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-16T17:05:20.467478+02:00",
+     "fin": "2026-10-16T17:05:53.094473+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    }
+   ]
+  },
+  {
+   "id": "t9",
+   "titre": "Création d'un produit configurable",
+   "personnes": 3,
+   "frequence_par_semaine": 19,
+   "duree_moyenne_min": 1.4,
+   "apps": [
+    "Magento (back-office)"
+   ],
+   "etapes": [
+    {
+     "type": "action",
+     "texte": "Cliquer sur Add Product",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "input",
+     "texte": "Saisir le nom et le prix",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "action",
+     "texte": "Cliquer sur Create Configurations",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "decision",
+     "texte": "Choisir les attributs de variantes (couleur, taille) et valeurs",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "input",
+     "texte": "Appliquer une quantité unique à chaque SKU",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "output",
+     "texte": "Produit enregistré avec ses variantes",
+     "app": "Magento (back-office)",
+     "statut": "supposé"
+    }
+   ],
+   "exceptions": [
+    "Sur un produit existant, des déclinaisons générées sont retirées ensuite (#72, #74)",
+    "Un moment n'affiche pas Create Configurations dans le texte capté"
+   ],
+   "goulots": [
+    {
+     "type": "switching",
+     "detail": "Assistant en plusieurs étapes (Next) avec nombreux champs"
+    },
+    {
+     "type": "unclear",
+     "detail": "Le texte capté est tronqué, la fin du parcours n'est pas visible"
+    }
+   ],
+   "score_automatisation": 63,
+   "pourquoi": "Même assistant à chaque produit, seules les valeurs changent ; import produit possible.",
+   "confiance": 0.77,
+   "statut": "estimé",
+   "preuves": [
+    {
+     "debut": "2026-10-15T13:16:12.181972+02:00",
+     "fin": "2026-10-15T13:17:59.635757+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-15T13:41:08.171256+02:00",
+     "fin": "2026-10-15T13:42:16.743148+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-15T14:01:05.282525+02:00",
+     "fin": "2026-10-15T14:02:02.243247+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-15T14:30:36.263061+02:00",
+     "fin": "2026-10-15T14:31:32.987198+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-15T14:47:21.818918+02:00",
+     "fin": "2026-10-15T14:48:06.498588+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-14T13:21:01.599195+02:00",
+     "fin": "2026-10-14T13:21:47.144284+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-14T13:35:53.654982+02:00",
+     "fin": "2026-10-14T13:37:03.254495+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-14T14:04:30.918354+02:00",
+     "fin": "2026-10-14T14:05:35.467500+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-14T14:34:18.739878+02:00",
+     "fin": "2026-10-14T14:35:12.978937+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-14T14:55:48.184599+02:00",
+     "fin": "2026-10-14T14:56:52.198888+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-14T14:03:44.607321+02:00",
+     "fin": "2026-10-14T14:04:20.084680+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-14T14:22:27.634241+02:00",
+     "fin": "2026-10-14T14:23:51.743727+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-14T14:38:49.772403+02:00",
+     "fin": "2026-10-14T14:40:11.104461+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-14T14:57:24.235587+02:00",
+     "fin": "2026-10-14T14:59:19.770856+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-16T11:28:25.017161+02:00",
+     "fin": "2026-10-16T11:29:30.717864+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-16T12:07:48.955824+02:00",
+     "fin": "2026-10-16T12:08:01.183360+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-16T12:08:01.183360+02:00",
+     "fin": "2026-10-16T12:09:06.664085+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-16T15:18:08.704371+02:00",
+     "fin": "2026-10-16T15:20:03.101208+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-16T15:46:22.942483+02:00",
+     "fin": "2026-10-16T15:48:56.527497+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-16T16:26:01.231815+02:00",
+     "fin": "2026-10-16T16:26:21.763162+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-16T16:26:21.763162+02:00",
+     "fin": "2026-10-16T16:29:41.876593+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    }
+   ]
+  },
+  {
+   "id": "t4",
+   "titre": "Modération des avis en attente",
+   "personnes": 5,
+   "frequence_par_semaine": 53,
+   "duree_moyenne_min": 0.3,
+   "apps": [
+    "Magento (back-office)"
+   ],
+   "etapes": [
+    {
+     "type": "action",
+     "texte": "Ouvrir Pending Reviews ou All Reviews",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "input",
+     "texte": "Rechercher les avis d'un auteur par nom",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "action",
+     "texte": "Cocher les avis concernés",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "decision",
+     "texte": "Choisir l'action de masse (statut Approved)",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "action",
+     "texte": "Valider avec Submit puis OK",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "check",
+     "texte": "Vérifier les avis approuvés",
+     "app": "Magento (back-office)",
+     "statut": "supposé"
+    }
+   ],
+   "exceptions": [
+    "Filtre par plage de dates (#60 à #62)",
+    "Filtre par statut Approved (#17, #18)",
+    "L'enregistrement d'un avis n'apparaît que deux fois (#131-#132)",
+    "Le filtre peut porter sur un mot, un produit ou un auteur",
+    "Parfois sans recherche préalable (#65, #67)",
+    "Plusieurs consultations sans recherche (liste simplement parcourue)",
+    "Recherches par mots d'opinion (disappointed, satisfied, decent, best) aux moments #7 à #11",
+    "Recherches par nom ou fragment de nom (#24, #25, #51)",
+    "Un filtre sur le statut Approved est utilisé une fois à la place d'un mot-clé",
+    "Une seule recherche aboutit à une action de masse (sélection, Actions, Submit, OK)",
+    "Variante « Save and Next » pour enchaîner les avis"
+   ],
+   "goulots": [
+    {
+     "type": "rework",
+     "detail": "Traitement auteur par auteur au lieu d'un traitement global"
+    }
+   ],
+   "score_automatisation": 52,
+   "pourquoi": "Action de masse répétée ; règles d'approbation applicables si les critères sont définis.",
+   "confiance": 0.63,
+   "statut": "estimé",
+   "preuves": [
+    {
+     "debut": "2026-10-13T14:45:04.277622+02:00",
+     "fin": "2026-10-13T14:45:24.099817+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-13T15:08:33.744480+02:00",
+     "fin": "2026-10-13T15:08:50.406680+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-13T15:28:09.463590+02:00",
+     "fin": "2026-10-13T15:28:21.531400+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-13T15:46:16.361243+02:00",
+     "fin": "2026-10-13T15:46:30.859511+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-13T16:04:48.553868+02:00",
+     "fin": "2026-10-13T16:05:01.379313+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-14T10:15:03.070814+02:00",
+     "fin": "2026-10-14T10:15:18.158563+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-14T10:27:20.164559+02:00",
+     "fin": "2026-10-14T10:27:40.851452+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-16T12:42:03.125018+02:00",
+     "fin": "2026-10-16T12:42:15.992016+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-16T13:12:11.994265+02:00",
+     "fin": "2026-10-16T13:12:26.075985+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-16T13:12:33.928267+02:00",
+     "fin": "2026-10-16T13:12:49.426910+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-16T14:37:41.219669+02:00",
+     "fin": "2026-10-16T14:38:14.875363+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-16T15:46:46.600153+02:00",
+     "fin": "2026-10-16T15:47:00.020790+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-16T17:15:09.172276+02:00",
+     "fin": "2026-10-16T17:15:23.974928+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-16T13:50:12.903133+02:00",
+     "fin": "2026-10-16T13:50:37.034161+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-16T14:17:19.741036+02:00",
+     "fin": "2026-10-16T14:17:42.115436+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-16T14:46:32.911864+02:00",
+     "fin": "2026-10-16T14:46:49.824635+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-16T15:03:55.994803+02:00",
+     "fin": "2026-10-16T15:04:14.802556+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-16T15:23:34.865996+02:00",
+     "fin": "2026-10-16T15:23:56.869501+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-16T17:17:03.749178+02:00",
+     "fin": "2026-10-16T17:17:15.912804+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-13T11:56:30.597396+02:00",
+     "fin": "2026-10-13T11:56:45.495710+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-13T12:08:44.145652+02:00",
+     "fin": "2026-10-13T12:08:56.095387+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-14T12:06:00.504637+02:00",
+     "fin": "2026-10-14T12:06:13.634143+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-14T12:33:29.541922+02:00",
+     "fin": "2026-10-14T12:33:43.055607+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-14T12:46:51.104006+02:00",
+     "fin": "2026-10-14T12:47:08.740956+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-14T13:06:48.574789+02:00",
+     "fin": "2026-10-14T13:07:04.887996+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-14T13:33:07.138901+02:00",
+     "fin": "2026-10-14T13:33:20.515624+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-16T17:17:03.749178+02:00",
+     "fin": "2026-10-16T17:17:15.912804+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-13T11:55:46.251698+02:00",
+     "fin": "2026-10-13T11:56:03.910379+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-13T12:26:12.444642+02:00",
+     "fin": "2026-10-13T12:26:28.692760+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-13T12:46:35.246404+02:00",
+     "fin": "2026-10-13T12:46:50.310574+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-13T13:06:30.517705+02:00",
+     "fin": "2026-10-13T13:06:43.916617+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-13T13:24:09.704164+02:00",
+     "fin": "2026-10-13T13:24:21.947528+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-13T17:26:29.408080+02:00",
+     "fin": "2026-10-13T17:26:42.304450+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-14T09:13:04.315083+02:00",
+     "fin": "2026-10-14T09:13:16.896249+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-14T14:16:20.930637+02:00",
+     "fin": "2026-10-14T14:16:44.237402+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-14T15:06:18.111082+02:00",
+     "fin": "2026-10-14T15:06:38.882672+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-16T10:50:04.030214+02:00",
+     "fin": "2026-10-16T10:50:15.952510+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-16T15:49:52.987135+02:00",
+     "fin": "2026-10-16T15:50:08.523456+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-16T16:14:43.171964+02:00",
+     "fin": "2026-10-16T16:14:58.288431+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-16T17:00:23.020803+02:00",
+     "fin": "2026-10-16T17:00:42.080622+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-16T09:42:41.522522+02:00",
+     "fin": "2026-10-16T09:43:19.717409+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-16T11:19:46.809697+02:00",
+     "fin": "2026-10-16T11:20:05.584467+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-16T11:38:05.858543+02:00",
+     "fin": "2026-10-16T11:38:19.630875+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-16T11:53:35.078961+02:00",
+     "fin": "2026-10-16T11:54:01.725279+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-13T11:36:16.532442+02:00",
+     "fin": "2026-10-13T11:36:30.363818+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-13T11:53:32.863502+02:00",
+     "fin": "2026-10-13T11:53:46.292156+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-13T12:18:39.187652+02:00",
+     "fin": "2026-10-13T12:18:51.160148+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-13T16:46:28.956228+02:00",
+     "fin": "2026-10-13T16:46:40.954536+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-14T12:54:22.370599+02:00",
+     "fin": "2026-10-14T12:54:51.203134+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-14T13:53:12.564863+02:00",
+     "fin": "2026-10-14T13:53:29.769302+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-16T09:12:35.526713+02:00",
+     "fin": "2026-10-16T09:12:51.117132+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-16T09:36:21.878506+02:00",
+     "fin": "2026-10-16T09:36:36.240661+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-16T11:44:01.190156+02:00",
+     "fin": "2026-10-16T11:44:13.699387+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-16T12:44:30.278233+02:00",
+     "fin": "2026-10-16T12:44:52.793545+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    }
+   ]
+  },
+  {
+   "id": "t13",
+   "titre": "Corriger l'adresse d'une commande",
+   "personnes": 2,
+   "frequence_par_semaine": 10,
+   "duree_moyenne_min": 1.1,
+   "apps": [
+    "Magento (back-office)"
+   ],
+   "etapes": [
+    {
+     "type": "input",
+     "texte": "Chercher la commande par son numéro",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "action",
+     "texte": "Ouvrir l'édition de l'adresse",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "input",
+     "texte": "Saisir rue, pays ou région et ville",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "action",
+     "texte": "Enregistrer l'adresse",
+     "app": "Magento (back-office)",
+     "statut": "supposé"
+    }
+   ],
+   "exceptions": [
+    "Les listes « Please select » imposent défilement et choix manuel",
+    "Un code postal comporte une faute de frappe (#23)"
+   ],
+   "goulots": [
+    {
+     "type": "switching",
+     "detail": "Plusieurs champs et listes à remplir un par un, avec défilement"
+    }
+   ],
+   "score_automatisation": 60,
+   "pourquoi": "Formulaire structuré mais les nouvelles valeurs viennent d'une source externe non observée",
+   "confiance": 0.72,
+   "statut": "estimé",
+   "preuves": [
+    {
+     "debut": "2026-10-14T10:41:25.009266+02:00",
+     "fin": "2026-10-14T10:42:06.968013+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-14T11:12:32.494864+02:00",
+     "fin": "2026-10-14T11:12:45.185040+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-14T11:12:50.328113+02:00",
+     "fin": "2026-10-14T11:13:42.220512+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-14T11:27:58.830802+02:00",
+     "fin": "2026-10-14T11:28:12.144967+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-14T11:28:16.632584+02:00",
+     "fin": "2026-10-14T11:29:01.619432+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-14T11:53:23.419517+02:00",
+     "fin": "2026-10-14T11:53:38.090967+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-14T11:53:42.384626+02:00",
+     "fin": "2026-10-14T11:54:31.061566+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-14T12:16:01.553015+02:00",
+     "fin": "2026-10-14T12:16:15.401891+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-14T12:16:18.907426+02:00",
+     "fin": "2026-10-14T12:17:02.141184+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-14T10:09:23.029835+02:00",
+     "fin": "2026-10-14T10:09:36.425096+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-14T10:09:36.425096+02:00",
+     "fin": "2026-10-14T10:09:49.749695+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-14T10:09:49.749695+02:00",
+     "fin": "2026-10-14T10:10:52.736295+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-14T10:41:34.601859+02:00",
+     "fin": "2026-10-14T10:42:20.950194+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-14T11:01:13.931966+02:00",
+     "fin": "2026-10-14T11:01:27.447793+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-14T11:01:30.766119+02:00",
+     "fin": "2026-10-14T11:02:35.554329+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-14T11:28:50.661364+02:00",
+     "fin": "2026-10-14T11:29:11.312375+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-14T11:29:15.321695+02:00",
+     "fin": "2026-10-14T11:30:18.391254+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-14T12:04:14.394072+02:00",
+     "fin": "2026-10-14T12:04:30.162312+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-14T12:04:34.066420+02:00",
+     "fin": "2026-10-14T12:05:26.514077+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    }
+   ]
+  },
+  {
+   "id": "t8",
+   "titre": "Rapport du nombre de commandes clients",
+   "personnes": 2,
+   "frequence_par_semaine": 18,
+   "duree_moyenne_min": 0.5,
+   "apps": [
+    "Magento (back-office)"
+   ],
+   "etapes": [
+    {
+     "type": "action",
+     "texte": "Ouvrir Rapports > Clients > Order Count",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "input",
+     "texte": "Saisir ou sélectionner la plage de dates",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "decision",
+     "texte": "Choisir le regroupement Day",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "action",
+     "texte": "Cliquer sur Refresh",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "check",
+     "texte": "Faire défiler le résultat",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    }
+   ],
+   "exceptions": [
+    "Date erronée dans un cas (31 mai 32023)",
+    "Deux modes de saisie : calendrier (mois, année) ou champs de date",
+    "Order Total est toujours lancé sur une plage très large (01/01/1923 au 12/27/2023) aux moments #13 à #16",
+    "Une saisie de date est tombée dans un autre champ (#21)"
+   ],
+   "goulots": [
+    {
+     "type": "switching",
+     "detail": "Navigation dans le sélecteur de calendrier pour retrouver mois et année"
+    },
+    {
+     "type": "rework",
+     "detail": "Plages quasi identiques relancées plusieurs fois (2022, 2023)"
+    }
+   ],
+   "score_automatisation": 74,
+   "pourquoi": "Même rapport avec des paramètres de dates seulement ; réutilisable par un export ou une requête.",
+   "confiance": 0.82,
+   "statut": "observé",
+   "preuves": [
+    {
+     "debut": "2026-10-13T14:46:03.901362+02:00",
+     "fin": "2026-10-13T14:46:39.788724+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-13T15:17:51.245505+02:00",
+     "fin": "2026-10-13T15:18:19.081837+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-13T15:35:40.396474+02:00",
+     "fin": "2026-10-13T15:36:07.423221+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-13T16:00:45.733007+02:00",
+     "fin": "2026-10-13T16:01:12.179305+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-14T09:49:40.318432+02:00",
+     "fin": "2026-10-14T09:50:11.248648+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-14T10:03:27.468191+02:00",
+     "fin": "2026-10-14T10:03:58.751271+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-14T10:30:24.317406+02:00",
+     "fin": "2026-10-14T10:30:57.637903+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-14T10:45:50.272039+02:00",
+     "fin": "2026-10-14T10:46:17.102886+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-14T11:15:58.728555+02:00",
+     "fin": "2026-10-14T11:16:25.145360+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-13T15:38:26.235687+02:00",
+     "fin": "2026-10-13T15:39:13.424704+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-13T16:01:04.701983+02:00",
+     "fin": "2026-10-13T16:01:43.460561+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-13T16:18:43.160766+02:00",
+     "fin": "2026-10-13T16:19:19.789164+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-13T16:48:04.145807+02:00",
+     "fin": "2026-10-13T16:48:38.928435+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-14T10:55:44.815519+02:00",
+     "fin": "2026-10-14T10:56:14.902694+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-14T11:11:48.811733+02:00",
+     "fin": "2026-10-14T11:12:13.634762+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-14T11:43:11.345418+02:00",
+     "fin": "2026-10-14T11:43:43.698572+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-14T11:58:08.784755+02:00",
+     "fin": "2026-10-14T11:58:37.955357+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-14T12:19:40.694908+02:00",
+     "fin": "2026-10-14T12:20:09.087738+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    }
+   ]
+  },
+  {
+   "id": "t11",
+   "titre": "Modifier un libellé de produit",
+   "personnes": 2,
+   "frequence_par_semaine": 17,
+   "duree_moyenne_min": 0.5,
+   "apps": [
+    "Magento (back-office)"
+   ],
+   "etapes": [
+    {
+     "type": "action",
+     "texte": "Rechercher le produit par mot-clé",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "action",
+     "texte": "Ouvrir la fiche avec Edit",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "action",
+     "texte": "Cliquer sur une option de type libellé ou case",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "action",
+     "texte": "Enregistrer",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    }
+   ],
+   "exceptions": [
+    "Pour une variante précise, trois clics d'accès supplémentaires avant le changement de stock",
+    "Un double clic sur Enregistrer apparaît une fois"
+   ],
+   "goulots": [
+    {
+     "type": "unclear",
+     "detail": "Le contenu exact de la modification n'est pas visible, seul le clic sur un « label » est capté"
+    }
+   ],
+   "score_automatisation": 75,
+   "pourquoi": "Séquence répétitive mais la nature précise du changement n'est pas observée",
+   "confiance": 0.7,
+   "statut": "observé",
+   "preuves": [
+    {
+     "debut": "2026-10-13T09:00:03.124799+02:00",
+     "fin": "2026-10-13T09:00:19.413964+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-13T09:00:19.413964+02:00",
+     "fin": "2026-10-13T09:00:38.456801+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-13T09:30:53.521523+02:00",
+     "fin": "2026-10-13T09:31:08.799038+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-13T09:31:08.799038+02:00",
+     "fin": "2026-10-13T09:31:25.105577+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-13T09:53:47.902688+02:00",
+     "fin": "2026-10-13T09:54:03.821615+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-13T09:54:03.821615+02:00",
+     "fin": "2026-10-13T09:54:25.492520+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-16T12:25:45.072904+02:00",
+     "fin": "2026-10-16T12:26:03.783300+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-16T12:26:03.783300+02:00",
+     "fin": "2026-10-16T12:26:21.057094+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-16T12:43:53.000215+02:00",
+     "fin": "2026-10-16T12:44:15.546499+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-16T12:44:15.546499+02:00",
+     "fin": "2026-10-16T12:44:34.193907+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-16T16:11:13.295026+02:00",
+     "fin": "2026-10-16T16:11:25.866715+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-16T16:11:25.866715+02:00",
+     "fin": "2026-10-16T16:11:51.274035+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-13T17:27:15.759040+02:00",
+     "fin": "2026-10-13T17:27:35.446299+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-13T17:27:35.446299+02:00",
+     "fin": "2026-10-13T17:27:54.578144+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-14T09:07:57.617801+02:00",
+     "fin": "2026-10-14T09:08:10.666805+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-14T09:08:10.666805+02:00",
+     "fin": "2026-10-14T09:08:27.064136+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-14T09:30:00.432694+02:00",
+     "fin": "2026-10-14T09:30:15.657144+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-14T09:30:15.657144+02:00",
+     "fin": "2026-10-14T09:30:33.802223+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-14T09:57:19.990014+02:00",
+     "fin": "2026-10-14T09:57:32.393618+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-14T09:57:32.393618+02:00",
+     "fin": "2026-10-14T09:57:49.264501+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-14T10:22:05.438759+02:00",
+     "fin": "2026-10-14T10:22:19.754413+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-14T10:22:19.754413+02:00",
+     "fin": "2026-10-14T10:22:38.140152+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-15T17:26:27.256911+02:00",
+     "fin": "2026-10-15T17:26:45.691569+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-15T17:26:45.691569+02:00",
+     "fin": "2026-10-15T17:27:06.313251+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-13T16:17:44.671944+02:00",
+     "fin": "2026-10-13T16:18:00.159968+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-13T16:18:00.159968+02:00",
+     "fin": "2026-10-13T16:18:19.360561+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-13T16:34:49.357468+02:00",
+     "fin": "2026-10-13T16:35:06.290094+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-13T17:08:41.316763+02:00",
+     "fin": "2026-10-13T17:08:57.252507+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-14T09:19:38.688721+02:00",
+     "fin": "2026-10-14T09:19:51.581577+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-14T09:19:51.581577+02:00",
+     "fin": "2026-10-14T09:20:11.410106+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-14T09:48:26.247316+02:00",
+     "fin": "2026-10-14T09:48:44.160495+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    }
+   ]
+  },
+  {
+   "id": "t7",
+   "titre": "Filtrage du catalogue produits",
+   "personnes": 4,
+   "frequence_par_semaine": 16,
+   "duree_moyenne_min": 0.5,
+   "apps": [
+    "Magento (back-office)"
+   ],
+   "etapes": [
+    {
+     "type": "action",
+     "texte": "Ouvrir Products",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "action",
+     "texte": "Ouvrir Filters",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "input",
+     "texte": "Renseigner des champs de filtre (valeurs numériques)",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "action",
+     "texte": "Appliquer les filtres",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "check",
+     "texte": "Parcourir les produits filtrés",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    }
+   ],
+   "exceptions": [
+    "Critères de filtre non visibles dans les moments 28 et 31",
+    "Seul le premier moment contient un défilement (#34)"
+   ],
+   "goulots": [
+    {
+     "type": "unclear",
+     "detail": "But du filtrage non identifiable à partir du texte capté"
+    }
+   ],
+   "score_automatisation": 52,
+   "pourquoi": "Filtres répétables en vue enregistrée, mais critères inconnus.",
+   "confiance": 0.51,
+   "statut": "observé",
+   "preuves": [
+    {
+     "debut": "2026-10-15T09:49:31.486407+02:00",
+     "fin": "2026-10-15T09:52:02.471327+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-15T10:04:03.669305+02:00",
+     "fin": "2026-10-15T10:04:27.029293+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-15T10:27:20.860639+02:00",
+     "fin": "2026-10-15T10:27:41.230973+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-15T10:53:42.378156+02:00",
+     "fin": "2026-10-15T10:54:02.175899+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-15T09:36:49.423948+02:00",
+     "fin": "2026-10-15T09:37:05.715537+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-15T09:58:33.698084+02:00",
+     "fin": "2026-10-15T09:58:48.618818+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-15T10:10:14.763295+02:00",
+     "fin": "2026-10-15T10:10:28.677733+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-15T10:30:28.163299+02:00",
+     "fin": "2026-10-15T10:30:42.759637+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-15T10:09:51.423836+02:00",
+     "fin": "2026-10-15T10:11:15.107653+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-15T10:30:17.130488+02:00",
+     "fin": "2026-10-15T10:30:43.802211+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-15T11:01:35.309682+02:00",
+     "fin": "2026-10-15T11:01:57.491160+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-15T11:34:42.522976+02:00",
+     "fin": "2026-10-15T11:35:01.426893+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-15T09:40:23.404481+02:00",
+     "fin": "2026-10-15T09:41:07.269594+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-15T10:09:55.010656+02:00",
+     "fin": "2026-10-15T10:10:09.664383+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-15T10:42:12.078073+02:00",
+     "fin": "2026-10-15T10:42:31.488741+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-15T11:07:30.961500+02:00",
+     "fin": "2026-10-15T11:07:47.299429+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    }
+   ]
+  },
+  {
+   "id": "t12",
+   "titre": "Expédier une commande avec numéro de suivi",
+   "personnes": 1,
+   "frequence_par_semaine": 9,
+   "duree_moyenne_min": 0.7,
+   "apps": [
+    "Magento (back-office)"
+   ],
+   "etapes": [
+    {
+     "type": "input",
+     "texte": "Chercher la commande par son numéro",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "action",
+     "texte": "Cliquer sur Ship",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "action",
+     "texte": "Ajouter un suivi avec valeur personnalisée",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "input",
+     "texte": "Saisir le numéro de suivi",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "output",
+     "texte": "Valider avec Submit Shipment",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    }
+   ],
+   "exceptions": [],
+   "goulots": [
+    {
+     "type": "handoff",
+     "detail": "Le numéro de suivi vient d'une source extérieure non visible, saisi à la main"
+    }
+   ],
+   "score_automatisation": 75,
+   "pourquoi": "Même séquence à chaque expédition ; dépend de l'accès à la source des numéros de suivi",
+   "confiance": 0.82,
+   "statut": "observé",
+   "preuves": [
+    {
+     "debut": "2026-10-13T12:52:46.216488+02:00",
+     "fin": "2026-10-13T12:53:13.146114+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-13T13:19:41.782444+02:00",
+     "fin": "2026-10-13T13:20:07.380846+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-13T13:41:02.613795+02:00",
+     "fin": "2026-10-13T13:41:27.643442+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-13T14:14:58.398793+02:00",
+     "fin": "2026-10-13T14:15:19.829138+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-13T14:31:44.318431+02:00",
+     "fin": "2026-10-13T14:32:06.205758+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-15T15:15:18.108320+02:00",
+     "fin": "2026-10-15T15:16:10.997128+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-15T15:16:10.997128+02:00",
+     "fin": "2026-10-15T15:16:25.811096+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-15T15:43:27.689702+02:00",
+     "fin": "2026-10-15T15:43:39.752655+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-15T15:43:44.449014+02:00",
+     "fin": "2026-10-15T15:44:33.919788+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-15T16:07:46.223837+02:00",
+     "fin": "2026-10-15T16:08:00.617856+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-15T16:08:03.747974+02:00",
+     "fin": "2026-10-15T16:08:45.965273+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-15T16:33:24.223264+02:00",
+     "fin": "2026-10-15T16:33:36.612648+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-15T16:33:39.496502+02:00",
+     "fin": "2026-10-15T16:34:16.997118+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    }
+   ]
+  },
+  {
+   "id": "t6",
+   "titre": "Retrouver un client par son téléphone ou son identifiant",
+   "personnes": 3,
+   "frequence_par_semaine": 19,
+   "duree_moyenne_min": 0.3,
+   "apps": [
+    "Magento (back-office)"
+   ],
+   "etapes": [
+    {
+     "type": "action",
+     "texte": "Ouvrir Customers > All Customers",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "action",
+     "texte": "Ouvrir Filters",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "input",
+     "texte": "Saisir un numéro de téléphone ou un identifiant dans un champ",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "action",
+     "texte": "Appliquer le filtre",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "check",
+     "texte": "Vérifier la fiche trouvée",
+     "app": "Magento (back-office)",
+     "statut": "supposé"
+    }
+   ],
+   "exceptions": [
+    "Formats de numéro variables (avec parenthèses, tirets ou chiffres collés)",
+    "La recherche sur #112 a été retapée plusieurs fois",
+    "Recherche par nom via filtre plutôt que par mot-clé (#137)",
+    "Un moment affiche seulement un défilement de la liste, sans filtre (#50)",
+    "Un moment se termine sans clic sur Apply Filters"
+   ],
+   "goulots": [
+    {
+     "type": "switching",
+     "detail": "Les recherches sont faites une par une, sans passage par un fichier de référence visible"
+    }
+   ],
+   "score_automatisation": 50,
+   "pourquoi": "Recherche simple par champ, automatisable si la liste des identifiants est disponible ; la finalité n'est pas visible.",
+   "confiance": 0.65,
+   "statut": "estimé",
+   "preuves": [
+    {
+     "debut": "2026-10-15T15:29:10.358710+02:00",
+     "fin": "2026-10-15T15:29:31.668982+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-15T15:58:07.382081+02:00",
+     "fin": "2026-10-15T15:58:29.672500+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-15T16:23:54.803983+02:00",
+     "fin": "2026-10-15T16:24:13.047080+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-15T16:52:57.484721+02:00",
+     "fin": "2026-10-15T16:53:18.386837+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-15T17:20:39.184130+02:00",
+     "fin": "2026-10-15T17:21:34.751934+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-16T12:23:28.269709+02:00",
+     "fin": "2026-10-16T12:23:43.724229+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-16T15:47:00.020790+02:00",
+     "fin": "2026-10-16T15:47:19.519153+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-lea"
+    },
+    {
+     "debut": "2026-10-15T15:49:24.720250+02:00",
+     "fin": "2026-10-15T15:49:42.733000+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-15T16:04:48.278957+02:00",
+     "fin": "2026-10-15T16:05:06.320734+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-15T16:35:24.453334+02:00",
+     "fin": "2026-10-15T16:35:44.055282+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-15T16:54:12.898256+02:00",
+     "fin": "2026-10-15T16:54:30.236714+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-15T17:28:12.726943+02:00",
+     "fin": "2026-10-15T17:28:35.046288+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-16T11:19:16.773526+02:00",
+     "fin": "2026-10-16T11:19:31.766051+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-16T13:32:57.066569+02:00",
+     "fin": "2026-10-16T13:33:16.512698+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-sophie"
+    },
+    {
+     "debut": "2026-10-15T14:11:52.922359+02:00",
+     "fin": "2026-10-15T14:12:14.307543+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-15T14:41:08.526129+02:00",
+     "fin": "2026-10-15T14:41:28.743543+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-15T15:06:40.626478+02:00",
+     "fin": "2026-10-15T15:06:58.364293+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-15T15:36:38.829522+02:00",
+     "fin": "2026-10-15T15:36:55.728293+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-15T16:08:47.254553+02:00",
+     "fin": "2026-10-15T16:09:06.899441+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    }
+   ]
+  },
+  {
+   "id": "t10",
+   "titre": "Création d'une règle de prix panier",
+   "personnes": 2,
+   "frequence_par_semaine": 10,
+   "duree_moyenne_min": 0.5,
+   "apps": [
+    "Magento (back-office)"
+   ],
+   "etapes": [
+    {
+     "type": "action",
+     "texte": "Cliquer sur Add New Rule",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "input",
+     "texte": "Saisir le nom de la règle",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "decision",
+     "texte": "Choisir site web et groupes de clients (ex. non connecté)",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "input",
+     "texte": "Onglet Actions : type de remise en pourcentage et valeur",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "output",
+     "texte": "Règle de promotion enregistrée",
+     "app": "Magento (back-office)",
+     "statut": "supposé"
+    }
+   ],
+   "exceptions": [
+    "La valeur du pourcentage n'est pas visible dans tous les cas",
+    "Un nom de règle contient des artefacts de touches (Key.space) dans la saisie captée"
+   ],
+   "goulots": [
+    {
+     "type": "switching",
+     "detail": "Plusieurs sections et onglets à parcourir pour une règle simple"
+    }
+   ],
+   "score_automatisation": 60,
+   "pourquoi": "Formulaire identique d'une règle à l'autre ; seuls nom et pourcentage varient.",
+   "confiance": 0.72,
+   "statut": "estimé",
+   "preuves": [
+    {
+     "debut": "2026-10-15T15:03:14.446402+02:00",
+     "fin": "2026-10-15T15:04:06.360026+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-15T15:31:58.994290+02:00",
+     "fin": "2026-10-15T15:32:43.545850+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-15T15:55:19.712769+02:00",
+     "fin": "2026-10-15T15:55:47.433766+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-15T16:18:47.534610+02:00",
+     "fin": "2026-10-15T16:19:16.278569+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-15T16:38:34.218528+02:00",
+     "fin": "2026-10-15T16:38:50.775771+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-karim"
+    },
+    {
+     "debut": "2026-10-14T15:30:14.526444+02:00",
+     "fin": "2026-10-14T15:30:35.089762+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-14T15:52:41.056626+02:00",
+     "fin": "2026-10-14T15:53:14.686045+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-14T16:06:56.681578+02:00",
+     "fin": "2026-10-14T16:07:24.718334+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-14T16:32:02.098473+02:00",
+     "fin": "2026-10-14T16:32:31.164192+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-14T17:06:20.895877+02:00",
+     "fin": "2026-10-14T17:06:55.070838+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    }
+   ]
+  },
+  {
+   "id": "t16",
+   "titre": "Modifier le contenu d'une page CMS",
+   "personnes": 2,
+   "frequence_par_semaine": 9,
+   "duree_moyenne_min": 0.5,
+   "apps": [
+    "Magento (back-office)"
+   ],
+   "etapes": [
+    {
+     "type": "action",
+     "texte": "Ouvrir une page avec Edit",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "input",
+     "texte": "Saisir un nouveau texte dans le champ de contenu",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "action",
+     "texte": "Enregistrer",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    }
+   ],
+   "exceptions": [
+    "L'enregistrement n'est observé que sur une des pages"
+   ],
+   "goulots": [
+    {
+     "type": "unclear",
+     "detail": "Le texte saisi n'est pas un contenu de site réel, ce qui laisse douter de l'intention"
+    }
+   ],
+   "score_automatisation": 48,
+   "pourquoi": "Séquence simple, mais le contenu change à chaque fois",
+   "confiance": 0.62,
+   "statut": "observé",
+   "preuves": [
+    {
+     "debut": "2026-10-13T15:03:47.534709+02:00",
+     "fin": "2026-10-13T15:04:17.034854+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-13T15:26:20.940700+02:00",
+     "fin": "2026-10-13T15:26:41.510332+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-13T15:51:35.176822+02:00",
+     "fin": "2026-10-13T15:51:58.580965+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-13T16:26:21.200358+02:00",
+     "fin": "2026-10-13T16:26:50.403215+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-13T16:26:50.403215+02:00",
+     "fin": "2026-10-13T16:27:02.125997+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-13T11:06:22.345964+02:00",
+     "fin": "2026-10-13T11:07:10.758256+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-13T11:22:31.187787+02:00",
+     "fin": "2026-10-13T11:23:02.954649+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-13T11:57:22.037944+02:00",
+     "fin": "2026-10-13T11:57:51.574514+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-13T12:26:19.671195+02:00",
+     "fin": "2026-10-13T12:27:03.828524+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-13T13:02:15.883240+02:00",
+     "fin": "2026-10-13T13:02:33.386669+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    }
+   ]
+  },
+  {
+   "id": "t14",
+   "titre": "Répondre à un client par commentaire sur sa commande",
+   "personnes": 2,
+   "frequence_par_semaine": 4,
+   "duree_moyenne_min": 1.0,
+   "apps": [
+    "Magento (back-office)"
+   ],
+   "etapes": [
+    {
+     "type": "action",
+     "texte": "Rechercher la commande dans la liste",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "action",
+     "texte": "Ouvrir la commande",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "input",
+     "texte": "Saisir un message d'expédition dans le commentaire",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "decision",
+     "texte": "Cocher la notification du client par email",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "output",
+     "texte": "Envoyer le commentaire",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    }
+   ],
+   "exceptions": [
+    "La case de notification par email n'apparaît cochée que dans un des deux cas"
+   ],
+   "goulots": [
+    {
+     "type": "switching",
+     "detail": "Recherche puis ouverture de la commande avant de pouvoir commenter (#11 et #12 sont des recherches sans suite visible)"
+    }
+   ],
+   "score_automatisation": 65,
+   "pourquoi": "Messages de statut très similaires ; modèle de message envoyé selon le statut de la commande.",
+   "confiance": 0.6,
+   "statut": "observé",
+   "preuves": [
+    {
+     "debut": "2026-10-15T14:36:55.863996+02:00",
+     "fin": "2026-10-15T14:37:10.216262+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-15T14:37:10.216262+02:00",
+     "fin": "2026-10-15T14:37:42.751227+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-15T14:58:58.202431+02:00",
+     "fin": "2026-10-15T14:59:18.225208+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-15T14:59:18.225208+02:00",
+     "fin": "2026-10-15T14:59:48.531979+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-13T13:25:39.949419+02:00",
+     "fin": "2026-10-13T13:25:52.400519+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-13T13:25:52.400519+02:00",
+     "fin": "2026-10-13T13:27:19.382959+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-16T14:46:08.722410+02:00",
+     "fin": "2026-10-16T14:46:51.420076+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    }
+   ]
+  },
+  {
+   "id": "t15",
+   "titre": "Régénérer les variantes d'un produit configurable existant",
+   "personnes": 1,
+   "frequence_par_semaine": 3,
+   "duree_moyenne_min": 1.2,
+   "apps": [
+    "Magento (back-office)"
+   ],
+   "etapes": [
+    {
+     "type": "action",
+     "texte": "Rechercher le produit puis ouvrir sa fiche",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "action",
+     "texte": "Ouvrir Edit Configurations",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "decision",
+     "texte": "Sélectionner les attributs et valeurs (parfois Select All)",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "action",
+     "texte": "Avancer dans l'assistant puis Generate Products",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "action",
+     "texte": "Enregistrer",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    }
+   ],
+   "exceptions": [
+    "Select All utilisé dans un cas seulement"
+   ],
+   "goulots": [
+    {
+     "type": "switching",
+     "detail": "Assistant en plusieurs écrans avec clics répétitifs"
+    }
+   ],
+   "score_automatisation": 60,
+   "pourquoi": "Parcours très régulier, mais le choix des attributs est une décision métier",
+   "confiance": 0.75,
+   "statut": "estimé",
+   "preuves": [
+    {
+     "debut": "2026-10-14T12:29:50.375364+02:00",
+     "fin": "2026-10-14T12:30:15.039369+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-14T12:30:15.039369+02:00",
+     "fin": "2026-10-14T12:31:07.869846+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-14T12:46:48.611229+02:00",
+     "fin": "2026-10-14T12:47:07.610579+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-14T12:47:07.610579+02:00",
+     "fin": "2026-10-14T12:47:55.239802+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-14T13:02:55.741228+02:00",
+     "fin": "2026-10-14T13:03:10.249015+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    },
+    {
+     "debut": "2026-10-14T13:03:10.249015+02:00",
+     "fin": "2026-10-14T13:04:05.609106+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-nadia"
+    }
+   ]
+  },
+  {
+   "id": "t20",
+   "titre": "Créer ou modifier une règle de prix catalogue",
+   "personnes": 1,
+   "frequence_par_semaine": 5,
+   "duree_moyenne_min": 0.4,
+   "apps": [
+    "Magento (back-office)"
+   ],
+   "etapes": [
+    {
+     "type": "action",
+     "texte": "Ajouter une règle ou ouvrir une règle existante",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "input",
+     "texte": "Saisir le nom de la règle",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "decision",
+     "texte": "Choisir le site web et les groupes de clients",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "input",
+     "texte": "Choisir l'action en pourcentage et saisir le montant de remise",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "action",
+     "texte": "Enregistrer",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    }
+   ],
+   "exceptions": [],
+   "goulots": [],
+   "score_automatisation": 65,
+   "pourquoi": "Même structure de règle ; seuls le nom, le groupe et le pourcentage changent.",
+   "confiance": 0.75,
+   "statut": "estimé",
+   "preuves": [
+    {
+     "debut": "2026-10-14T15:37:08.997365+02:00",
+     "fin": "2026-10-14T15:37:25.754699+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-14T16:17:04.746433+02:00",
+     "fin": "2026-10-14T16:17:20.625772+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-14T16:56:49.013979+02:00",
+     "fin": "2026-10-14T16:57:21.707833+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-14T17:19:10.865064+02:00",
+     "fin": "2026-10-14T17:19:36.706497+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-15T09:12:24.700885+02:00",
+     "fin": "2026-10-15T09:12:55.832593+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    }
+   ]
+  },
+  {
+   "id": "t18",
+   "titre": "Mettre à jour la quantité en stock des déclinaisons",
+   "personnes": 1,
+   "frequence_par_semaine": 2,
+   "duree_moyenne_min": 0.5,
+   "apps": [
+    "Magento (back-office)"
+   ],
+   "etapes": [
+    {
+     "type": "action",
+     "texte": "Rechercher le produit par nom",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "action",
+     "texte": "Ouvrir chaque déclinaison (taille, couleur)",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "input",
+     "texte": "Saisir la quantité",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "action",
+     "texte": "Enregistrer",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    }
+   ],
+   "exceptions": [],
+   "goulots": [
+    {
+     "type": "rework",
+     "detail": "La même quantité est saisie séparément pour chaque taille (#57, #59, #61, #62, #63)"
+    }
+   ],
+   "score_automatisation": 85,
+   "pourquoi": "Même valeur répétée sur plusieurs variantes ; mise à jour en masse possible.",
+   "confiance": 0.8,
+   "statut": "estimé",
+   "preuves": [
+    {
+     "debut": "2026-10-15T14:35:16.710450+02:00",
+     "fin": "2026-10-15T14:35:40.192692+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-15T14:35:40.192692+02:00",
+     "fin": "2026-10-15T14:35:58.135726+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-15T15:07:29.415212+02:00",
+     "fin": "2026-10-15T15:07:51.009118+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-15T15:07:51.009118+02:00",
+     "fin": "2026-10-15T15:08:13.366477+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-15T15:08:13.366477+02:00",
+     "fin": "2026-10-15T15:08:35.382406+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-15T15:08:35.382406+02:00",
+     "fin": "2026-10-15T15:08:52.245416+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-15T15:08:52.245416+02:00",
+     "fin": "2026-10-15T15:09:07.994534+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-15T15:09:07.994534+02:00",
+     "fin": "2026-10-15T15:09:20.245422+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-15T15:09:26.746173+02:00",
+     "fin": "2026-10-15T15:09:42.415051+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-15T15:09:51.617182+02:00",
+     "fin": "2026-10-15T15:10:07.680341+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    }
+   ]
+  },
+  {
+   "id": "t19",
+   "titre": "Consulter les avis en attente",
+   "personnes": 1,
+   "frequence_par_semaine": 2,
+   "duree_moyenne_min": 0.5,
+   "apps": [
+    "Magento (back-office)"
+   ],
+   "etapes": [
+    {
+     "type": "action",
+     "texte": "Ouvrir la liste des avis en attente",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "input",
+     "texte": "Filtrer sur un nom de produit",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "check",
+     "texte": "Examiner les avis",
+     "app": "Magento (back-office)",
+     "statut": "supposé"
+    }
+   ],
+   "exceptions": [],
+   "goulots": [],
+   "score_automatisation": 40,
+   "pourquoi": "La consultation est simple mais la décision de modération reste humaine.",
+   "confiance": 0.4,
+   "statut": "estimé",
+   "preuves": [
+    {
+     "debut": "2026-10-15T15:39:49.330044+02:00",
+     "fin": "2026-10-15T15:40:08.434795+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    },
+    {
+     "debut": "2026-10-16T16:47:40.432091+02:00",
+     "fin": "2026-10-16T16:48:23.373317+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-emma"
+    }
+   ]
+  },
+  {
+   "id": "t17",
+   "titre": "Consulter les termes de recherche par nombre de résultats",
+   "personnes": 1,
+   "frequence_par_semaine": 2,
+   "duree_moyenne_min": 0.2,
+   "apps": [
+    "Magento (back-office)"
+   ],
+   "etapes": [
+    {
+     "type": "action",
+     "texte": "Ouvrir le rapport Search Terms",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "action",
+     "texte": "Trier la liste par colonne Hits",
+     "app": "Magento (back-office)",
+     "statut": "observé"
+    },
+    {
+     "type": "check",
+     "texte": "Lire les termes les plus recherchés",
+     "app": "Magento (back-office)",
+     "statut": "supposé"
+    }
+   ],
+   "exceptions": [],
+   "goulots": [],
+   "score_automatisation": 70,
+   "pourquoi": "Lecture d'un rapport trié de la même façon à chaque fois. Un rapport planifié ou un export suffirait.",
+   "confiance": 0.5,
+   "statut": "estimé",
+   "preuves": [
+    {
+     "debut": "2026-10-13T13:03:50.494502+02:00",
+     "fin": "2026-10-13T13:04:02.506808+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    },
+    {
+     "debut": "2026-10-13T14:05:54.092763+02:00",
+     "fin": "2026-10-13T14:06:10.203580+02:00",
+     "app": "Magento (back-office)",
+     "personne": "nova-julien"
+    }
+   ]
+  }
+ ],
+ "goulots": [
+  {
+   "type": "rework",
+   "detail": "Suppression de déclinaisons après génération (#72, #74)",
+   "personnes": 1,
+   "heures_semaine": 0.3
+  },
+  {
+   "type": "rework",
+   "detail": "Un texte quasi identique est saisi sur plusieurs produits",
+   "personnes": 1,
+   "heures_semaine": 0.1
+  },
+  {
+   "type": "rework",
+   "detail": "La même valeur est ressaisie une par une sur chaque variante, avec retour à la liste entre chaque (#5-#12, #17-#24, #30-#35)",
+   "personnes": 1,
+   "heures_semaine": 0.1
+  },
+  {
+   "type": "switching",
+   "detail": "Alternance liste produits / fiche variante à chaque enregistrement",
+   "personnes": 1,
+   "heures_semaine": 0.1
+  },
+  {
+   "type": "rework",
+   "detail": "Même filtre « Canceled » réappliqué à chaque séance (une quinzaine de fois)",
+   "personnes": 1,
+   "heures_semaine": 0.1
+  },
+  {
+   "type": "unclear",
+   "detail": "Ce qui est conclu de cette revue n'est pas visible",
+   "personnes": 1,
+   "heures_semaine": 0.1
+  }
+ ],
+ "usage_ia": [],
+ "questions_ouvertes": [
+  "Aucun texte d'écran n'est fourni : on ne voit pas les résultats, la nature exacte des valeurs saisies (prix ou stock) ni ce qui est fait des informations lues.",
+  "Aucun usage d'outil d'IA n'apparaît dans les moments fournis.",
+  "Aucun usage d'outil d'IA n'apparaît dans les moments.",
+  "Aucun usage d'outil d'IA observé : la liste usage_ia est vide.",
+  "Aucun usage d'outil d'IA observé, donc usage_ia est vide.",
+  "Aucune utilisation d'outil d'IA observée.",
+  "Fréquence = nombre de fois où la tâche a été observée sur la semaine (preuves), recalculée : la brique B ne voit que l'heure des moments, pas la date.",
+  "La période couvre environ 5 jours de travail déduits des remises à zéro des heures ; elle fait moins d'une semaine, donc les fréquences par semaine sont extrapolées et approximatives.",
+  "La période exacte n'est pas connue : les horodatages ne portent pas de date. Les numéros de moment (#0-#26, #27-#50, #51-#62) suggèrent environ 3 journées, d'où une extrapolation à 5 jours ouvrés par semaine pour frequence_par_semaine, à vérifier.",
+  "Le texte saisi est tronqué ou parasité par endroits ; certaines étapes (enregistrement, notification) sont supposées.",
+  "Les catégories de temps viennent de regroupements par page et la durée de chaque moment est celle fournie, sans temps mort entre moments.",
+  "Les durées sont celles de moments très courts (moins d'une minute) ; la durée réelle de lecture des résultats n'est pas captée.",
+  "Les durées sont celles des moments captés, pas le temps réel total passé sur chaque tâche.",
+  "Les libellés de produits, les textes et les montants captés ne sont pas repris ; certains textes saisis sont tronqués et le contenu exact des modifications de libellé n'est pas visible.",
+  "Les moments n'ont pas de date, seulement des heures ; la période couverte est inconnue, donc la fréquence par semaine est un simple décompte des occurrences observées et n'est pas une extrapolation fiable.",
+  "Les moments ne portent pas de date : quatre séries horaires distinctes laissent penser à quatre jours, non confirmé. Les fréquences par semaine sont une extrapolation (occurrences × 5 / 4 jours), donc supposées.",
+  "Les moments semblent couvrir environ 4 jours distincts (les heures repartent à 09:00 aux moments #18, #44 et #67) ; les fréquences par semaine sont extrapolées à 5 jours ouvrés et sont approximatives.",
+  "Les moments semblent échantillonnés (écarts de 20 à 30 minutes) : les durées et décomptes sont des minima.",
+  "Les noms de champs sont tous « input » : les filtres précis (produits, avis, clients) ne sont pas lisibles.",
+  "Les temps d'attente entre moments ne sont pas mesurés : les durées ne couvrent que l'activité captée.",
+  "Les temps par catégorie sont additionnés à partir des durées des moments retenus et sont approximatifs.",
+  "Les étapes de lecture ou de vérification sont des déductions (statut supposé) quand seul un défilement est visible.",
+  "Plusieurs textes de moments sont tronqués (ex. #39 à #48) : la fin des parcours de création n'est pas visible.",
+  "Période observée très courte (environ quatre jours, 62 moments) : les fréquences par semaine sont extrapolées sur une base de cinq jours ouvrés et restent indicatives.",
+  "Salarié fictif construit à partir de WONDERBREAD (Stanford, CC-BY-4.0).",
+  "Une seule application (back-office Magento) : aucune information sur les outils externes, la source des valeurs saisies ou le but métier.",
+  "Une seule application (back-office Magento) : le texte à l'écran n'est pas fourni, seulement les clics et saisies, donc les résultats consultés et les objectifs restent supposés.",
+  "Une seule application (back-office Magento) et aucun usage d'IA ou d'autre outil dans les données.",
+  "Une seule application (back-office Magento) sur un seul site : aucune tâche multi-apps observée.",
+  "Une seule application, Magento back-office : les chaînages entre apps ne sont pas observables.",
+  "Une seule application, Magento en back-office : le profil ressemble à une série de manipulations d'administration plus qu'à un travail varié."
+ ]
+}

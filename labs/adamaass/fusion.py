@@ -15,8 +15,14 @@ def mots(titre):
     # 5 premières lettres : « relance », « relancer », « relances » comptent comme le même mot
     return {m[:5] for m in re.findall(r"[a-z0-9]+", t) if m not in MOTS_VIDES and len(m) > 2}
 
-def proches(a, b):
-    return len(a & b) / max(1, len(a | b)) >= 0.5
+def jaccard(a, b):
+    return len(a & b) / max(1, len(a | b))
+
+def proches(g, m, ecrans):
+    """Même tâche si les libellés se ressemblent, ou si elles passent par les mêmes écrans principaux
+    (champ facultatif « ecrans » : routes d'URL sans identifiants) avec quelques mots en commun."""
+    j = jaccard(g["mots"], m)
+    return j >= 0.5 or (bool(set(ecrans[:2]) & g["ecrans"]) and j >= 0.2)
 
 def main():
     p = argparse.ArgumentParser()
@@ -37,15 +43,18 @@ def main():
     cat, app, ia = defaultdict(float), defaultdict(float), defaultdict(lambda: {"minutes": 0, "personnes": set(), "usages": set()})
     groupes = []  # [{mots, taches:[(personne, tache)]}]
     for r in rs:
-        for c in r.get("temps_par_categorie", []): cat[c["categorie"]] += c["minutes"]
+        for c in r.get("temps_par_categorie", []):  # catégories proches (mots communs) regroupées sous le 1er libellé vu
+            m = mots(c["categorie"])
+            k = next((k for k in cat if jaccard(mots(k), m) >= 0.34), c["categorie"])
+            cat[k] += c["minutes"]
         for x in r.get("temps_par_app", []): app[x["app"]] += x["minutes"]
         for u in r.get("usage_ia", []):
             ia[u["outil"]]["minutes"] += u["minutes"]; ia[u["outil"]]["personnes"].add(r["personne"]); ia[u["outil"]]["usages"].update(u.get("usages", []))
         for t in r.get("taches", []):
-            m = mots(t["titre"])
-            g = next((g for g in groupes if proches(g["mots"], m)), None)
-            if g: g["taches"].append((r["personne"], t)); g["mots"] |= m
-            else: groupes.append({"mots": m, "taches": [(r["personne"], t)]})
+            m, ec = mots(t["titre"]), t.get("ecrans", [])
+            g = next((g for g in groupes if proches(g, m, ec)), None)
+            if g: g["taches"].append((r["personne"], t)); g["mots"] |= m; g["ecrans"] |= set(ec[:2])
+            else: groupes.append({"mots": m, "ecrans": set(ec[:2]), "taches": [(r["personne"], t)]})
 
     taches, goulots, qui_goulot = [], defaultdict(float), defaultdict(set)
     for i, g in enumerate(groupes):
@@ -75,7 +84,7 @@ def main():
     tri = [r.get("tri_80_20") for r in rs if r.get("tri_80_20")]
     limites = sorted({l for r in rs for l in r.get("limites", [])})
     insights = {
-        "fictif": any(re.search(r"fictiv", l, re.I) for l in limites),
+        "fictif": any(re.search(r"fictiv|fictif", l, re.I) for l in limites),
         "entreprise": {"nom": a.entreprise, "secteur": "", "cout_horaire_eur": a.cout_horaire},
         "campagne": {"nom": "Campagne", "debut": debuts[0][:10], "fin": fins[-1][:10]},
         "personnes": {"invitees": max(a.invitees, len(personnes)), "participantes": len(personnes), "validees": len(personnes)},

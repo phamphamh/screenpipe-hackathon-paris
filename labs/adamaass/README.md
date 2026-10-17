@@ -57,3 +57,27 @@ Le front ne calcule que les coûts et les classements. Tout le reste vient de la
 }
 ```
 Différences avec un résumé individuel : `personnes` sur chaque tâche et chaque outil IA, `heures_semaine` au lieu de `minutes`, et `automatisable.score` devient `score_automatisation`.
+
+## Test sur WONDERBREAD : « Atelier Nova », back-office e-commerce (dossier `wonderbread/`)
+Données publiques de Stanford ([WONDERBREAD](https://hazyresearch.stanford.edu/wonderbread-website), NeurIPS 2024, CC-BY-4.0) : 2 928 démonstrations humaines de tâches web, chacune avec sa trace d'actions et un **SOP écrit à la main** (la vérité terrain).
+
+**Ce qu'on en fait** : 6 salariés fictifs d'« Atelier Nova », tous sur le back-office Magento. Chacun = les démos d'**un annotateur réel différent**, posées sur la semaine du 13/10, avec des prénoms inventés. La brique B ne voit que ce que screenpipe verrait (titre d'onglet, route d'URL, clics, saisies) ; l'intention et le SOP restent à part (`verite.json`) pour mesurer ensuite.
+
+**Le résultat** : `exemples/nova-backoffice.json` (sortie de la fusion). Pour le voir : servir `labs/adamaass/` (`python3 -m http.server 8790 --directory labs/adamaass`) puis ouvrir `http://localhost:8790/wrapped.html?donnees=exemples/nova-backoffice.json`, ou bouton « Charger un insights.json ».
+- 8 tâches visibles (≥ 3 personnes) sur 20 ; n°1 « Générer des rapports de ventes sur une période » (6 personnes, 79 fois/sem.) ; ses étapes (Reports → Bestsellers/Orders → dates → Show Report → lecture) sont celles du SOP humain.
+
+**Rejouer** (données brutes dans `donnees/`, jamais commitées) :
+```
+python3 -I labs/adamaass/wonderbread/wb_index.py donnees/wonderbread          # démo → annotateur (après téléchargement Zenodo 14094162)
+python3 -I labs/adamaass/wonderbread/wb_salaries.py donnees/wonderbread donnees/nova lea,karim,sophie,nadia,julien,emma
+python3 labs/adamaass/wonderbread/wb_brique_b.py prompt donnees/nova/<pseudo>/moments.json   # consigne exacte de la brique B
+#   → le modèle répond dans donnees/nova/<pseudo>/reponse.json (ici : un agent Claude, `claude -p` n'avait plus de crédit)
+python3 labs/adamaass/wonderbread/wb_brique_b.py finir donnees/nova/<pseudo>/moments.json donnees/nova/<pseudo>/reponse.json nova-<pseudo>
+python3 -I labs/adamaass/wonderbread/wb_post.py donnees/nova lea,karim,sophie,nadia,julien,emma
+python3 labs/adamaass/fusion.py donnees/nova/*/resume-valide.json --entreprise "Atelier Nova (fictive)" --cout-horaire 38 --sortie insights.json
+python3 -I labs/adamaass/wonderbread/wb_mesure.py donnees/nova lea,karim,sophie,nadia,julien,emma
+```
+
+**Limites (à dire au jury)** : tâches WONDERBREAD courtes (0,3 à 1,4 min), donc des coûts faibles (top 3 ≈ 296 €/mois) ; résumés « validés pour la démo » sans relecture humaine (salariés fictifs) ; mesure grossière : 16 % des éléments d'interface cités dans les SOP humains se retrouvent dans nos étapes (109/703), et 23 tâches sur 47 sont bien isolées (≥ 80 % de leurs démos ont la même intention). Une mesure par juge IA, comme dans le papier (88 % des étapes retrouvées), reste à faire.
+
+**Fusion** : regroupe maintenant aussi par **écrans visités** (champ facultatif `ecrans` = routes d'URL sans identifiants) et fusionne les catégories de temps proches. Sans ça, « Générer un rapport de ventes », « Rapport ventes/produits » et « Sortir le rapport des meilleures ventes » restaient 3 tâches à 1-2 personnes.
