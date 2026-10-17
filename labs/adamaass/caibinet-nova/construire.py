@@ -7,7 +7,7 @@ Sortie : labs/adamaass/caibinet-nova/data.js (chiffres agrégés par équipe de 
 Ce que Nova ne mesure pas (attentes entre équipes, copier-coller, autres applis) est affiché « non mesuré », jamais inventé.
 Usage : python3 labs/adamaass/caibinet-nova/construire.py
 """
-import json, os, re
+import argparse, json, os, re
 from collections import Counter, defaultdict
 from datetime import datetime
 
@@ -36,10 +36,25 @@ def hm(h):
 def euros(x):
     return f"{round(x):,} €".replace(",", " ")
 
+# --echelle N : simulation, tous les volumes (heures, €, fréquences, postes, allers-retours) multipliés par N.
+# Restent tels quels : le nombre de types de tâches, les pourcentages, les scores et la durée de chaque occurrence.
+ARGS = argparse.ArgumentParser(); ARGS.add_argument("--echelle", type=float, default=1); E = ARGS.parse_args().echelle
+NB = lambda n: int(round(n * E))  # un effectif ou un compte, mis à l'échelle
 ins = json.load(open(os.path.join(NOVA, "insights-officiel.json")))
+if E != 1:
+    for t in ins["taches"]:
+        for k in ("heures_par_semaine", "heures_par_mois", "cout_par_mois", "gain_par_mois", "heures_gagnees_par_mois"):
+            t[k] = round(t[k] * E, 2)
+        t["frequence_par_semaine"] = int(round(t["frequence_par_semaine"] * E))  # un compte reste un entier
+    for g in ins["goulots"]:
+        g["heures_par_semaine"] = round(g["heures_par_semaine"] * E, 2)
+    ins["chiffres"]["heures_captees"] = round(ins["chiffres"]["heures_captees"] * E, 1)
 cout_h = ins["cout_horaire"]
 resumes = {p: json.load(open(os.path.join(NOVA, p, "resume-valide.json"))) for p in EQUIPE_DE}
 moments = {p: json.load(open(os.path.join(NOVA, p, "moments.json")))["moments"] for p in EQUIPE_DE}
+for ms in moments.values():
+    for m in ms:
+        m["minutes"] *= E
 
 # ---------- temps : par jour, par heure, par écran, enchaînements ----------
 DATES = sorted({datetime.fromisoformat(m["debut"]).date() for ms in moments.values() for m in ms})  # les vrais jours travaillés
@@ -58,11 +73,11 @@ for p, ms in moments.items():
         par_equipe_section[EQUIPE_DE[p]][s] += m["minutes"]
         if not prec or prec[-1] != s:
             if prec:
-                paires[f"{prec[-1]} → {s}"] += 1
-                bascules += 1
+                paires[f"{prec[-1]} → {s}"] += E
+                bascules += E
             prec.append(s)
             if len(prec) >= 3:
-                seq3[" → ".join(prec[-3:])] += 1
+                seq3[" → ".join(prec[-3:])] += E
 
 noms_sections = [n for n, _ in SECTIONS] + ["Accueil"]
 tot_eq = {e: sum(c.values()) for e, c in par_equipe_section.items()}
@@ -99,7 +114,7 @@ for i, t in enumerate(visibles, 1):
             "description": (t["automatisable"].get("pourquoi") or [""])[0],
             "lostPerWeek": hm(h), "confidence": "Élevée" if (t.get("confiance") or 0) >= 0.7 else "Moyenne",
             "observed": [f"{t['frequence_par_semaine']} occurrences sur la semaine observée",
-                         f"{t['nb_personnes']} personnes concernées ({', '.join(equipes)})",
+                         f"{NB(t['nb_personnes'])} personnes concernées ({', '.join(equipes)})",
                          f"{len(t.get('exceptions', []))} exception(s) relevée(s) : {(t.get('exceptions') or ['aucune'])[0][:90]}",
                          f"{len(t.get('libelles') or [])} façons de la nommer chez les salariés"],
             "sequence": [re.sub(r"\s*\(.*?\)", "", e)[:28] for e in etapes[:3]] or ["Magento"],
@@ -109,9 +124,16 @@ for i, t in enumerate(visibles, 1):
 masquees = [t for t in ins["taches"] if (t.get("nb_personnes") or 0) < 3]
 
 # ---------- business case ----------
+# Un seul calendrier pour le coût et le gain : 46 semaines travaillées. La fusion donne le gain « par mois »
+# (12 mois = 52 semaines) alors que le coût compte 46 semaines : le gain dépassait parfois le coût.
+# Le gain d'une tâche = son coût × la part de son temps que la skill rend (heures gagnées / heures passées).
+def part_rendue(t):
+    return min(t["heures_gagnees_par_mois"] / t["heures_par_mois"], 1) if t.get("heures_par_mois") else t["automatisable"]["score"] / 100
+h_gagnee = lambda t: t["heures_par_semaine"] * part_rendue(t)
+gain_tache = lambda t: h_gagnee(t) * SEMAINES_AN * cout_h
 h_total = sum(t["heures_par_semaine"] for t in ins["taches"])
-gain_an = sum(t["gain_par_mois"] for t in ins["taches"]) * 12
-h_gagnees_sem = sum(t["heures_gagnees_par_mois"] for t in ins["taches"]) * 12 / SEMAINES_AN
+gain_an = sum(gain_tache(t) for t in ins["taches"])
+h_gagnees_sem = sum(h_gagnee(t) for t in ins["taches"])
 modules = []
 for k, titre in enumerate(ins["a_automatiser"][:5], 1):
     t = next(x for x in ins["taches"] if x["titre"] == titre)
@@ -119,14 +141,18 @@ for k, titre in enumerate(ins["a_automatiser"][:5], 1):
     sc = t["automatisable"]["score"]
     modules.append({"order": k, "name": f"Skill · {titre}", "tag": "Gain rapide" if sc >= 80 else None,
                     "problems": f"n° {pid:02d}" if pid else "moins de 3 pers.",
-                    "recovered": f"{hm(t['heures_gagnees_par_mois'] * 12 / SEMAINES_AN)} / sem.",
-                    "gain": round(t["gain_par_mois"] * 12), "delay": "1 sem." if sc >= 80 else "2 sem."})
+                    "recovered": f"{hm(h_gagnee(t))} / sem.",
+                    "gain": round(gain_tache(t)), "delay": "1 sem." if sc >= 80 else "2 sem."})
+
+modules.sort(key=lambda m: -m["gain"])  # le plan suit l'ordre du gain recalculé
+for k, m in enumerate(modules, 1):
+    m["order"] = k
 
 # ---------- signaux, interactions ----------
 communes = [t for t in visibles if len({EQUIPE_DE[p] for p in qui_fait(t)}) == 2]
 top_section = max(((s, sum(par_equipe_section[e][s] for e in EQUIPES)) for s in noms_sections), key=lambda x: x[1])[0]
-nodes = [{"id": "ecom", "label": "E-commerce", "sub": f"3 pers. · {hm(tot_eq['E-commerce'] / 60)}", "x": 14, "y": 30},
-         {"id": "ops", "label": "Opérations", "sub": f"3 pers. · {hm(tot_eq['Opérations'] / 60)}", "x": 14, "y": 72}]
+nodes = [{"id": "ecom", "label": "E-commerce", "sub": f"{NB(3)} pers. · {hm(tot_eq['E-commerce'] / 60)}", "x": 14, "y": 30},
+         {"id": "ops", "label": "Opérations", "sub": f"{NB(3)} pers. · {hm(tot_eq['Opérations'] / 60)}", "x": 14, "y": 72}]
 pos = {s: (80, 8 + 17 * k) for k, s in enumerate(["Catalogue", "Commandes", "Rapports", "Avis", "Clients", "Marketing"])}  # une colonne d'écrans
 edges = []
 for s, (x, y) in pos.items():
@@ -161,7 +187,7 @@ pic = max(chaleur, key=chaleur.get)
 top3 = visibles[:3]
 part_top3 = sum(t["heures_par_semaine"] for t in top3) / max(sum(t["heures_par_semaine"] for t in visibles), 0.01)
 VERDICTS = {
-    "overview": f"Observation terminée. <b>{visibles[0]['titre']}</b> revient {visibles[0]['frequence_par_semaine']} fois par semaine chez les 6 postes : c'est la première tâche à regarder.",
+    "overview": f"Observation terminée. <b>{visibles[0]['titre']}</b> revient {visibles[0]['frequence_par_semaine']} fois par semaine chez les {NB(6)} postes : c'est la première tâche à regarder.",
     "problems": f"<b>{len(problemes)} problèmes</b> à valider avec vous. Les 3 premiers pèsent {round(part_top3 * 100)} % du temps perdu.",
     "interactions": f"Les 2 équipes font <b>les mêmes {len(communes)} tâches</b>. C'est l'écran <b>{top_section}</b> qui concentre le plus de temps.",
     "tools": f"Tout le travail observé se passe dans Magento, avec <b>{round(bascules / (len(DATES) * 6))} changements d'écran</b> par jour et par poste.",
@@ -173,10 +199,10 @@ DATA = {
     "verdicts": VERDICTS,
     "maxKpi": 3,
     "firm": "CAIbinet",
-    "client": {"name": "Atelier Nova", "postes": 6, "equipes": 2, "abonnement": "Pas encore d'abonnement (projection)"},
+    "client": {"name": "Atelier Nova", "postes": NB(6), "equipes": 2, "abonnement": "Pas encore d'abonnement (projection)"},
     "consultant": "Équipe hackathon",
     "studyLabel": "Étude d'efficacité opérationnelle",
-    "demoTag": "Données WONDERBREAD · salariés fictifs",
+    "demoTag": f"Simulation ×{E:g} · base mesurée : 6 salariés WONDERBREAD" if E != 1 else "Données WONDERBREAD · salariés fictifs",
     "steps": [
         {"n": 1, "label": "Installation", "date": "lun. 12 oct.", "status": "done", "sub": "Terminé"},
         {"n": 2, "label": "Observation", "date": f"{DATES[0].day} → {DATES[-1].day} oct.", "status": "done", "sub": f"{len(DATES)} jours"},
@@ -189,19 +215,19 @@ DATA = {
         "dayLabel": "Observation terminée · restitution en cours",
         "stats": [
             {"label": "Gain annuel récupérable", "value": euros(gain_an), "sub": f"en automatisant {len(ins['a_automatiser'])} tâches", "accent": "good"},
-            {"label": "Postes observés", "value": "6 / 6", "sub": "2 équipes de 3 · back-office Magento"},
+            {"label": "Postes observés", "value": f"{NB(6)} / {NB(6)}", "sub": f"2 équipes de {NB(3)} · back-office Magento"},
             {"label": "Heures de travail observées", "value": f"{ins['chiffres']['heures_captees']:.1f} h".replace(".", ","), "sub": f"temps actif dans l'outil, sur {len(DATES)} jours"},
             {"label": "Workflows identifiés", "value": str(ins["chiffres"]["taches_repetees"]), "sub": f"dont {len(visibles)} communs à 3 personnes ou plus"},
             {"label": "Problèmes détectés", "value": str(len(problemes)), "sub": f"{len(masquees)} autres non détaillés (moins de 3 pers.)"},
         ],
         "dailyHours": [{"day": JOURS[j], "value": round(par_jour[j] / 60, 2), "known": True} for j in range(len(DATES))],
-        "teamCoverage": [{"team": e, "have": 3, "total": 3} for e in EQUIPES],
+        "teamCoverage": [{"team": e, "have": NB(3), "total": NB(3)} for e in EQUIPES],
         "signals": [{"tag": p["cat"], "path": p["path"], "text": p["title"], "meta": " · ".join(p["metaBits"][:2]),
                      "confidence": "Confiance élevée" if p["detail"]["confidence"] == "Élevée" else "Confiance moyenne · à confirmer"} for p in problemes[:3]],
         "signalsUpdated": "à la fin de l'observation",
         "toRelaunch": [],
-        "toRelaunchEmpty": "Aucun : les 6 postes ont validé leur résumé (validation de démo, sans relecture humaine).",
-        "compliance": [
+        "toRelaunchEmpty": f"Aucun : les {NB(6)} postes ont validé leur résumé (validation de démo, sans relecture humaine).",
+        "compliance": ([f"Simulation : volumes multipliés par {E:g} à partir de 6 postes réellement observés"] if E != 1 else []) + [
             "Données publiques WONDERBREAD (Stanford, CC-BY-4.0)",
             "Salariés fictifs : prénoms inventés, un annotateur réel différent par poste",
             "Aucune capture ni texte d'écran dans ce portail",
@@ -240,7 +266,7 @@ DATA = {
         "stats": [
             {"label": "Temps dans votre outil métier", "value": "100 %", "sub": "Magento (seul outil observé)"},
             {"label": "Changements d'écran", "value": str(round(bascules / (len(DATES) * 6))), "sub": "par jour et par poste"},
-            {"label": "Allers-retours entre écrans", "value": str(bascules), "sub": "sur la semaine"},
+            {"label": "Allers-retours entre écrans", "value": f"{round(bascules):,}".replace(",", " "), "sub": "sur la semaine"},
             {"label": "Temps en messagerie et tableurs", "value": "Non mesuré", "sub": "absent de ces données"},
         ],
         "appCategories": noms_sections, "byTeam": by_team,
@@ -248,9 +274,9 @@ DATA = {
         "callout": f"Le catalogue et les commandes concentrent l'essentiel du temps. {problemes[0]['title']} revient {visibles[0]['frequence_par_semaine']} fois par semaine chez les 2 équipes.",
         "heatmapHours": [f"{h}h" for h in range(8, 19)], "heatmapDays": JOURS, "heatmapMatrix": heat,
         "heatmapPeakNote": f"Pic : {NOMS_JL[DATES[pic[0]].weekday()]} {DATES[pic[0]].day} oct., {pic[1]} h–{pic[1] + 1} h",
-        "sequences": [{"path": k, "count": v} for k, v in seq3.most_common(4)],
+        "sequences": [{"path": k, "count": round(v)} for k, v in seq3.most_common(4)],
         "copyPasteTitle": "Allers-retours les plus fréquents",
-        "copyPaste": [{"path": k, "count": v} for k, v in paires.most_common(4)],
+        "copyPaste": [{"path": k, "count": round(v)} for k, v in paires.most_common(4)],
     },
     "businessCase": {
         "stats": [
@@ -260,10 +286,10 @@ DATA = {
         ],
         "modules": modules,
         "modulesNote": "Tâches WONDERBREAD courtes (moins d'1 min 30) : les montants sont faibles, mais chaque chiffre vient d'une tâche observée et cliquable.",
-        "beforeAfter": {"before": hm(h_total), "after": hm(h_total - h_gagnees_sem), "beforeH": round(h_total, 3), "afterH": round(h_total - h_gagnees_sem, 3), "note": f"{hm(h_gagnees_sem)} rendues chaque semaine aux 6 postes observés."},
+        "beforeAfter": {"before": hm(h_total), "after": hm(h_total - h_gagnees_sem), "beforeH": round(h_total, 3), "afterH": round(h_total - h_gagnees_sem, 3), "note": f"{hm(h_gagnees_sem)} rendues chaque semaine aux {NB(6)} postes."},
         "investment": [{"label": "Étude (une fois)", "value": "[À COMPLÉTER]"}, {"label": "Abonnement logiciel", "value": "[À COMPLÉTER]"},
                        {"label": "Gain net la première année", "value": "[À COMPLÉTER]"}, {"label": "Retour sur investissement", "value": "[À COMPLÉTER]"}],
-        "assumptions": [f"Coût horaire chargé : {cout_h:.0f} €/h", f"Semaines travaillées : {SEMAINES_AN} / an", f"Base : {len(DATES)} jours d'observation, 6 postes",
+        "assumptions": [f"Coût horaire chargé : {cout_h:.0f} €/h", f"Semaines travaillées : {SEMAINES_AN} / an", f"Base : {len(DATES)} jours d'observation, 6 postes" + (f", volumes ×{E:g} (simulation)" if E != 1 else ""),
                         "Fréquences = occurrences observées sur la semaine", "Gain = coût × score d'automatisation (fusion officielle)", "Résumés non relus par des humains : à confirmer"],
     },
     "piloting": {
@@ -285,6 +311,55 @@ DATA = {
         "nextImpact": {"dateRange": "Après le module n° 1", "text": "3 jours d'observation pour mesurer le gain réel de la première skill.", "note": "Hors de ces campagnes, aucune capture d'écran : seuls les journaux des skills."},
         "requests": [],
     },
+}
+# ---------- chiffres bruts pour le dashboard graphique (labs/adamaass/nova-dashboard) ----------
+par_jour_eq = defaultdict(Counter)
+ecran_jour = {e: [[0.0] * len(noms_sections) for _ in DATES] for e in EQUIPES}  # minutes par équipe, jour et écran
+chaleur_eq = {e: [[0.0] * 11 for _ in DATES] for e in EQUIPES}                  # minutes par équipe, jour et heure (8 h–18 h)
+for p, ms in moments.items():
+    for m in ms:
+        t0 = datetime.fromisoformat(m["debut"]); j = DATES.index(t0.date()); e = EQUIPE_DE[p]
+        par_jour_eq[e][j] += m["minutes"]
+        ecran_jour[e][j][noms_sections.index(section(m["url"]))] += m["minutes"]
+        if 8 <= t0.hour <= 18:
+            chaleur_eq[e][j][t0.hour - 8] += m["minutes"]
+NOMS_COURTS = [  # libellé court pour les graphes ; le titre complet reste dans le panneau de détail
+    ("rapport ventes", "Rapport ventes"), ("rapport du nombre de commandes", "Rapport commandes"), ("consultation des commandes annul", "Commandes annulées"),
+    ("filtrer la liste des commandes annul", "Liste annulées"), ("filtrer les commandes annul", "Filtre annulées"), ("modifier le prix", "Prix produit"),
+    ("consulter les avis", "Avis produit"), ("rechercher et filtrer les avis", "Recherche avis"), ("modération des avis", "Modération avis"),
+    ("régénérer les variantes", "Variantes produit"), ("corriger l'adresse", "Adresse commande"), ("création d'une règle de prix", "Règle prix panier"),
+    ("retrouver une fiche client", "Fiche client"), ("remettre un produit en stock", "Remise en stock"), ("mettre à jour la quantité", "Stock déclinaisons"),
+    ("créer un nouveau produit", "Nouveau produit"), ("modifier le contenu d'une page", "Page CMS"), ("expédier une commande", "Expédition"),
+    ("consulter les termes de recherche", "Termes recherche")]
+def nom_court(titre):
+    t = titre.lower()
+    return next((c for k, c in NOMS_COURTS if t.startswith(k)), " ".join(titre.split()[:3]))
+def tache_num(t):
+    eqs = sorted({EQUIPE_DE[p] for p in qui_fait(t)})
+    return {"titre": t["titre"], "court": nom_court(t["titre"]), "personnes": NB(t["nb_personnes"] or 0), "equipes": eqs, "frequence": t["frequence_par_semaine"],
+            "heures_semaine": round(t["heures_par_semaine"], 2), "cout_an": round(t["heures_par_semaine"] * SEMAINES_AN * cout_h),
+            "gain_an": round(gain_tache(t)), "heures_gagnees": round(h_gagnee(t), 2), "score": t["automatisable"]["score"], "categorie": categorie(t),
+            "visible": (t.get("nb_personnes") or 0) >= 3,
+            "etapes": [e["texte"] for e in t.get("etapes", [])][:6] if (t.get("nb_personnes") or 0) >= 3 else []}
+DATA["dash"] = {
+    "echelle": E, "postes": NB(6), "equipes": {e: NB(3) for e in EQUIPES}, "cout_horaire": cout_h,
+    "heures_observees": ins["chiffres"]["heures_captees"], "jours": JOURS,
+    "heures_par_jour": {e: [round(par_jour_eq[e][j] / 60, 2) for j in range(len(DATES))] for e in EQUIPES},
+    "ecrans": noms_sections,
+    "minutes_ecran_jour": {e: [[round(v) for v in jour] for jour in ecran_jour[e]] for e in EQUIPES},
+    "chaleur": {e: [[round(v) for v in jour] for jour in chaleur_eq[e]] for e in EQUIPES},
+    "minutes_ecran": {e: [round(par_equipe_section[e][s_]) for s_ in noms_sections] for e in EQUIPES},
+    "taches": [tache_num(t) for t in sorted(ins["taches"], key=lambda t: -t["heures_par_semaine"])],
+    "a_automatiser": ins["a_automatiser"][:5],
+    "goulots": [{"type": goulots_txt.get(g["type"], g["type"]), "heures_semaine": g["heures_par_semaine"], "taches": g["nb_taches"]} for g in ins["goulots"]],
+    "cout_an": round(h_total * SEMAINES_AN * cout_h), "gain_an": round(gain_an), "heures_semaine": round(h_total, 2),
+    "heures_gagnees_semaine": round(h_gagnees_sem, 2),
+    "chaine": {  # de l'écran au rapport : ce qui reste à chaque étape (comptes mis à l'échelle comme le reste)
+        "captures": NB(sum(json.load(open(os.path.join(NOVA, p_, "moments.json")))["stats"]["captures_regardees"] for p_ in EQUIPE_DE)),
+        "gardees": NB(sum(json.load(open(os.path.join(NOVA, p_, "moments.json")))["stats"]["captures_cles"] for p_ in EQUIPE_DE)),
+        "moments": NB(sum(len(ms) for ms in moments.values())),
+        "taches": len(ins["taches"]), "problemes": len(visibles), "skills": len(modules)}, "bascules": round(bascules), "avancement": DATA["advancementPct"],
+    "etapes": [{"label": s_["label"], "statut": s_["status"]} for s_ in DATA["steps"]],
 }
 open(os.path.join(ICI, "data.js"), "w").write(
     "// Généré par construire.py à partir des données Atelier Nova (WONDERBREAD, salariés fictifs) : ne pas éditer à la main.\n"

@@ -1,24 +1,24 @@
 // Généré par construire.py à partir des données Atelier Nova (WONDERBREAD, salariés fictifs) : ne pas éditer à la main.
 const DATA = {
  "verdicts": {
-  "overview": "Observation terminée. <b>Rapport ventes/produits sur une période</b> revient 79 fois par semaine chez les 6 postes : c'est la première tâche à regarder.",
+  "overview": "Observation terminée. <b>Rapport ventes/produits sur une période</b> revient 790 fois par semaine chez les 60 postes : c'est la première tâche à regarder.",
   "problems": "<b>11 problèmes</b> à valider avec vous. Les 3 premiers pèsent 48 % du temps perdu.",
   "interactions": "Les 2 équipes font <b>les mêmes 11 tâches</b>. C'est l'écran <b>Catalogue</b> qui concentre le plus de temps.",
-  "tools": "Tout le travail observé se passe dans Magento, avec <b>33 changements d'écran</b> par jour et par poste.",
-  "business": "<b>5 skills</b> récupèrent 5 700 € par an. La première se construit en 1 sem.",
+  "tools": "Tout le travail observé se passe dans Magento, avec <b>326 changements d'écran</b> par jour et par poste.",
+  "business": "<b>5 skills</b> récupèrent 49 320 € par an. La première se construit en 1 sem.",
   "piloting": "Rien n'est encore en production. Cet écran prendra le relais une fois la première skill déployée."
  },
  "maxKpi": 3,
  "firm": "CAIbinet",
  "client": {
   "name": "Atelier Nova",
-  "postes": 6,
+  "postes": 60,
   "equipes": 2,
   "abonnement": "Pas encore d'abonnement (projection)"
  },
  "consultant": "Équipe hackathon",
  "studyLabel": "Étude d'efficacité opérationnelle",
- "demoTag": "Données WONDERBREAD · salariés fictifs",
+ "demoTag": "Simulation ×10 · base mesurée : 6 salariés WONDERBREAD",
  "steps": [
   {
    "n": 1,
@@ -62,18 +62,18 @@ const DATA = {
   "stats": [
    {
     "label": "Gain annuel récupérable",
-    "value": "5 700 €",
+    "value": "49 320 €",
     "sub": "en automatisant 5 tâches",
     "accent": "good"
    },
    {
     "label": "Postes observés",
-    "value": "6 / 6",
-    "sub": "2 équipes de 3 · back-office Magento"
+    "value": "60 / 60",
+    "sub": "2 équipes de 30 · back-office Magento"
    },
    {
     "label": "Heures de travail observées",
-    "value": "5,4 h",
+    "value": "54,0 h",
     "sub": "temps actif dans l'outil, sur 5 jours"
    },
    {
@@ -90,40 +90,40 @@ const DATA = {
   "dailyHours": [
    {
     "day": "Mar 13",
-    "value": 1.14,
+    "value": 11.43,
     "known": true
    },
    {
     "day": "Mer 14",
-    "value": 1.37,
+    "value": 13.7,
     "known": true
    },
    {
     "day": "Jeu 15",
-    "value": 1.21,
+    "value": 12.1,
     "known": true
    },
    {
     "day": "Ven 16",
-    "value": 1.56,
+    "value": 15.58,
     "known": true
    },
    {
     "day": "Lun 19",
-    "value": 0.1,
+    "value": 0.99,
     "known": true
    }
   ],
   "teamCoverage": [
    {
     "team": "E-commerce",
-    "have": 3,
-    "total": 3
+    "have": 30,
+    "total": 30
    },
    {
     "team": "Opérations",
-    "have": 3,
-    "total": 3
+    "have": 30,
+    "total": 30
    }
   ],
   "signals": [
@@ -131,28 +131,29 @@ const DATA = {
     "tag": "Ressaisie",
     "path": "E-commerce, Opérations",
     "text": "Rapport ventes/produits sur une période",
-    "meta": "79 fois / sem. · 36 min / sem.",
+    "meta": "790 fois / sem. · 6 h 00 / sem.",
     "confidence": "Confiance élevée"
    },
    {
     "tag": "Recherche",
     "path": "E-commerce, Opérations",
     "text": "Consultation des commandes annulées",
-    "meta": "52 fois / sem. · 30 min / sem.",
+    "meta": "520 fois / sem. · 5 h 00 / sem.",
     "confidence": "Confiance élevée"
    },
    {
     "tag": "Ressaisie",
     "path": "E-commerce, Opérations",
     "text": "Modifier le prix d'un produit ou d'une variante",
-    "meta": "37 fois / sem. · 30 min / sem.",
+    "meta": "370 fois / sem. · 5 h 00 / sem.",
     "confidence": "Confiance élevée"
    }
   ],
   "signalsUpdated": "à la fin de l'observation",
   "toRelaunch": [],
-  "toRelaunchEmpty": "Aucun : les 6 postes ont validé leur résumé (validation de démo, sans relecture humaine).",
+  "toRelaunchEmpty": "Aucun : les 60 postes ont validé leur résumé (validation de démo, sans relecture humaine).",
   "compliance": [
+   "Simulation : volumes multipliés par 10 à partir de 6 postes réellement observés",
    "Données publiques WONDERBREAD (Stanford, CC-BY-4.0)",
    "Salariés fictifs : prénoms inventés, un annotateur réel différent par poste",
    "Aucune capture ni texte d'écran dans ce portail",
@@ -177,8 +178,8 @@ const DATA = {
  },
  "problemsMeta": {
   "total": 11,
-  "hoursPerWeek": "3 h 18",
-  "annualCost": 5770,
+  "hoursPerWeek": "33 h 00",
+  "annualCost": 57684,
   "validated": 0,
   "categories": [
    "Tous",
@@ -194,19 +195,19 @@ const DATA = {
    "path": "E-commerce, Opérations",
    "title": "Rapport ventes/produits sur une période",
    "metaBits": [
-    "79 fois / sem.",
-    "36 min / sem.",
+    "790 fois / sem.",
+    "6 h 00 / sem.",
     "Automatisable : partiel"
    ],
-   "annualCost": 1049,
+   "annualCost": 10488,
    "status": "À valider",
    "detail": {
     "description": "Les paramètres sont connus et répétitifs ; un export planifié ou un appel API éviterait la saisie manuelle, mais la finalité de la lecture n'est pas observée.",
-    "lostPerWeek": "36 min",
+    "lostPerWeek": "6 h 00",
     "confidence": "Élevée",
     "observed": [
-     "79 occurrences sur la semaine observée",
-     "6 personnes concernées (E-commerce, Opérations)",
+     "790 occurrences sur la semaine observée",
+     "60 personnes concernées (E-commerce, Opérations)",
      "5 exception(s) relevée(s) : Les périodes varient (trimestre, mois, année, plage très large depuis 2010)",
      "5 façons de la nommer chez les salariés"
     ],
@@ -224,19 +225,19 @@ const DATA = {
    "path": "E-commerce, Opérations",
    "title": "Consultation des commandes annulées",
    "metaBits": [
-    "52 fois / sem.",
-    "30 min / sem.",
+    "520 fois / sem.",
+    "5 h 00 / sem.",
     "Automatisable : oui"
    ],
-   "annualCost": 874,
+   "annualCost": 8740,
    "status": "À valider",
    "detail": {
     "description": "Le filtre et le tri sont toujours identiques ; une vue enregistrée ou un rapport automatique des annulations suffirait.",
-    "lostPerWeek": "30 min",
+    "lostPerWeek": "5 h 00",
     "confidence": "Élevée",
     "observed": [
-     "52 occurrences sur la semaine observée",
-     "6 personnes concernées (E-commerce, Opérations)",
+     "520 occurrences sur la semaine observée",
+     "60 personnes concernées (E-commerce, Opérations)",
      "5 exception(s) relevée(s) : Seulement deux commandes ouvertes en détail (#107, #142)",
      "5 façons de la nommer chez les salariés"
     ],
@@ -254,19 +255,19 @@ const DATA = {
    "path": "E-commerce, Opérations",
    "title": "Modifier le prix d'un produit ou d'une variante",
    "metaBits": [
-    "37 fois / sem.",
-    "30 min / sem.",
+    "370 fois / sem.",
+    "5 h 00 / sem.",
     "Automatisable : oui"
    ],
-   "annualCost": 874,
+   "annualCost": 8740,
    "status": "À valider",
    "detail": {
     "description": "Séquence très régulière (recherche, ouverture, saisie, enregistrement) répétée sur les variantes ; une mise à jour en masse ou un import CSV éviterait les allers-retours.",
-    "lostPerWeek": "30 min",
+    "lostPerWeek": "5 h 00",
     "confidence": "Élevée",
     "observed": [
-     "37 occurrences sur la semaine observée",
-     "5 personnes concernées (E-commerce, Opérations)",
+     "370 occurrences sur la semaine observée",
+     "50 personnes concernées (E-commerce, Opérations)",
      "5 exception(s) relevée(s) : Certains produits n'ont que 1 à 3 variantes, d'autres jusqu'à 6",
      "5 façons de la nommer chez les salariés"
     ],
@@ -284,19 +285,19 @@ const DATA = {
    "path": "E-commerce, Opérations",
    "title": "Consulter les avis d'un produit depuis sa fiche",
    "metaBits": [
-    "26 fois / sem.",
-    "30 min / sem.",
+    "260 fois / sem.",
+    "5 h 00 / sem.",
     "Automatisable : partiel"
    ],
-   "annualCost": 874,
+   "annualCost": 8740,
    "status": "À valider",
    "detail": {
     "description": "Le parcours est identique à chaque fois et la lecture pourrait être remplacée par une vue ou un export des avis par produit ; l'objectif de la lecture reste inconnu.",
-    "lostPerWeek": "30 min",
+    "lostPerWeek": "5 h 00",
     "confidence": "Moyenne",
     "observed": [
-     "26 occurrences sur la semaine observée",
-     "3 personnes concernées (E-commerce, Opérations)",
+     "260 occurrences sur la semaine observée",
+     "30 personnes concernées (E-commerce, Opérations)",
      "3 exception(s) relevée(s) : Recherche parfois corrigée plusieurs fois avant de trouver le bon produit (touches effacer",
      "3 façons de la nommer chez les salariés"
     ],
@@ -314,19 +315,19 @@ const DATA = {
    "path": "E-commerce, Opérations",
    "title": "Filtrer les commandes annulées",
    "metaBits": [
-    "28 fois / sem.",
-    "18 min / sem.",
+    "280 fois / sem.",
+    "3 h 00 / sem.",
     "Automatisable : partiel"
    ],
-   "annualCost": 524,
+   "annualCost": 5244,
    "status": "À valider",
    "detail": {
     "description": "Filtres identiques à chaque fois ; une vue enregistrée suffirait. Valeurs saisies non captées, donc incertain.",
-    "lostPerWeek": "18 min",
+    "lostPerWeek": "3 h 00",
     "confidence": "Moyenne",
     "observed": [
-     "28 occurrences sur la semaine observée",
-     "6 personnes concernées (E-commerce, Opérations)",
+     "280 occurrences sur la semaine observée",
+     "60 personnes concernées (E-commerce, Opérations)",
      "3 exception(s) relevée(s) : Un moment n'affiche pas Create Configurations dans le texte capté",
      "5 façons de la nommer chez les salariés"
     ],
@@ -344,19 +345,19 @@ const DATA = {
    "path": "E-commerce, Opérations",
    "title": "Corriger l'adresse d'une commande",
    "metaBits": [
-    "24 fois / sem.",
-    "12 min / sem.",
+    "240 fois / sem.",
+    "2 h 00 / sem.",
     "Automatisable : partiel"
    ],
-   "annualCost": 350,
+   "annualCost": 3496,
    "status": "À valider",
    "detail": {
     "description": "Lecture d'information pour décision humaine ; un export des détails pourrait remplacer l'ouverture une à une.",
-    "lostPerWeek": "12 min",
+    "lostPerWeek": "2 h 00",
     "confidence": "Moyenne",
     "observed": [
-     "24 occurrences sur la semaine observée",
-     "4 personnes concernées (E-commerce, Opérations)",
+     "240 occurrences sur la semaine observée",
+     "40 personnes concernées (E-commerce, Opérations)",
      "5 exception(s) relevée(s) : Va-et-vient de 1 à 3 commandes selon le moment",
      "3 façons de la nommer chez les salariés"
     ],
@@ -374,19 +375,19 @@ const DATA = {
    "path": "E-commerce, Opérations",
    "title": "Rapport du nombre de commandes clients",
    "metaBits": [
-    "22 fois / sem.",
-    "12 min / sem.",
+    "220 fois / sem.",
+    "2 h 00 / sem.",
     "Automatisable : oui"
    ],
-   "annualCost": 350,
+   "annualCost": 3496,
    "status": "À valider",
    "detail": {
     "description": "Même rapport avec des paramètres de dates seulement ; réutilisable par un export ou une requête.",
-    "lostPerWeek": "12 min",
+    "lostPerWeek": "2 h 00",
     "confidence": "Élevée",
     "observed": [
-     "22 occurrences sur la semaine observée",
-     "4 personnes concernées (E-commerce, Opérations)",
+     "220 occurrences sur la semaine observée",
+     "40 personnes concernées (E-commerce, Opérations)",
      "5 exception(s) relevée(s) : Deux modes de saisie : calendrier (mois, année) ou champs de date",
      "4 façons de la nommer chez les salariés"
     ],
@@ -404,19 +405,19 @@ const DATA = {
    "path": "E-commerce, Opérations",
    "title": "Rechercher et filtrer les avis clients",
    "metaBits": [
-    "47 fois / sem.",
-    "12 min / sem.",
+    "470 fois / sem.",
+    "2 h 00 / sem.",
     "Automatisable : partiel"
    ],
-   "annualCost": 350,
+   "annualCost": 3496,
    "status": "À valider",
    "detail": {
     "description": "Les recherches par mots-clés d'opinion pourraient être faites par un tri automatique ; la modération elle-même demande un jugement.",
-    "lostPerWeek": "12 min",
+    "lostPerWeek": "2 h 00",
     "confidence": "Moyenne",
     "observed": [
-     "47 occurrences sur la semaine observée",
-     "5 personnes concernées (E-commerce, Opérations)",
+     "470 occurrences sur la semaine observée",
+     "50 personnes concernées (E-commerce, Opérations)",
      "5 exception(s) relevée(s) : L'enregistrement d'un avis n'apparaît que deux fois (#131-#132)",
      "5 façons de la nommer chez les salariés"
     ],
@@ -434,19 +435,19 @@ const DATA = {
    "path": "E-commerce, Opérations",
    "title": "Création d'une règle de prix panier",
    "metaBits": [
-    "15 fois / sem.",
-    "6 min / sem.",
+    "150 fois / sem.",
+    "1 h 00 / sem.",
     "Automatisable : partiel"
    ],
-   "annualCost": 175,
+   "annualCost": 1748,
    "status": "À valider",
    "detail": {
     "description": "Formulaire identique d'une règle à l'autre ; seuls nom et pourcentage varient.",
-    "lostPerWeek": "6 min",
+    "lostPerWeek": "1 h 00",
     "confidence": "Élevée",
     "observed": [
-     "15 occurrences sur la semaine observée",
-     "3 personnes concernées (E-commerce, Opérations)",
+     "150 occurrences sur la semaine observée",
+     "30 personnes concernées (E-commerce, Opérations)",
      "2 exception(s) relevée(s) : Un nom de règle contient des artefacts de touches (Key.space) dans la saisie captée",
      "3 façons de la nommer chez les salariés"
     ],
@@ -464,19 +465,19 @@ const DATA = {
    "path": "E-commerce, Opérations",
    "title": "Retrouver une fiche client par numéro de téléphone",
    "metaBits": [
-    "19 fois / sem.",
-    "6 min / sem.",
+    "190 fois / sem.",
+    "1 h 00 / sem.",
     "Automatisable : partiel"
    ],
-   "annualCost": 175,
+   "annualCost": 1748,
    "status": "À valider",
    "detail": {
     "description": "Recherche simple, mais l'origine des identifiants n'est pas visible ; automatisable surtout si une liste est fournie.",
-    "lostPerWeek": "6 min",
+    "lostPerWeek": "1 h 00",
     "confidence": "Moyenne",
     "observed": [
-     "19 occurrences sur la semaine observée",
-     "3 personnes concernées (E-commerce, Opérations)",
+     "190 occurrences sur la semaine observée",
+     "30 personnes concernées (E-commerce, Opérations)",
      "5 exception(s) relevée(s) : Recherche par nom via filtre plutôt que par mot-clé (#137)",
      "3 façons de la nommer chez les salariés"
     ],
@@ -494,19 +495,19 @@ const DATA = {
    "path": "E-commerce, Opérations",
    "title": "Remettre un produit en stock",
    "metaBits": [
-    "15 fois / sem.",
-    "6 min / sem.",
+    "150 fois / sem.",
+    "1 h 00 / sem.",
     "Automatisable : oui"
    ],
-   "annualCost": 175,
+   "annualCost": 1748,
    "status": "À valider",
    "detail": {
     "description": "Filtres répétables en vue enregistrée, mais critères inconnus.",
-    "lostPerWeek": "6 min",
+    "lostPerWeek": "1 h 00",
     "confidence": "Élevée",
     "observed": [
-     "15 occurrences sur la semaine observée",
-     "3 personnes concernées (E-commerce, Opérations)",
+     "150 occurrences sur la semaine observée",
+     "30 personnes concernées (E-commerce, Opérations)",
      "2 exception(s) relevée(s) : Critères de filtre non visibles dans les moments 28 et 31",
      "3 façons de la nommer chez les salariés"
     ],
@@ -520,7 +521,7 @@ const DATA = {
   }
  ],
  "extraProblemsCount": 8,
- "extraProblemsHoursSupplement": "48 min / sem.",
+ "extraProblemsHoursSupplement": "8 h 00 / sem.",
  "interactions": {
   "stats": [
    {
@@ -549,21 +550,21 @@ const DATA = {
    {
     "id": "ecom",
     "label": "E-commerce",
-    "sub": "3 pers. · 2 h 37",
+    "sub": "30 pers. · 26 h 12",
     "x": 14,
     "y": 30
    },
    {
     "id": "ops",
     "label": "Opérations",
-    "sub": "3 pers. · 2 h 46",
+    "sub": "30 pers. · 27 h 35",
     "x": 14,
     "y": 72
    },
    {
     "id": "catalogue",
     "label": "Catalogue",
-    "sub": "128 min observées",
+    "sub": "1276 min observées",
     "x": 80,
     "y": 8,
     "highlight": "goulot"
@@ -571,35 +572,35 @@ const DATA = {
    {
     "id": "commandes",
     "label": "Commandes",
-    "sub": "78 min observées",
+    "sub": "777 min observées",
     "x": 80,
     "y": 25
    },
    {
     "id": "rapports",
     "label": "Rapports",
-    "sub": "47 min observées",
+    "sub": "474 min observées",
     "x": 80,
     "y": 42
    },
    {
     "id": "avis",
     "label": "Avis",
-    "sub": "30 min observées",
+    "sub": "302 min observées",
     "x": 80,
     "y": 59
    },
    {
     "id": "clients",
     "label": "Clients",
-    "sub": "7 min observées",
+    "sub": "72 min observées",
     "x": 80,
     "y": 76
    },
    {
     "id": "marketing",
     "label": "Marketing",
-    "sub": "15 min observées",
+    "sub": "147 min observées",
     "x": 80,
     "y": 93
    }
@@ -666,21 +667,21 @@ const DATA = {
   "bottlenecks": [
    {
     "tag": "Travail refait",
-    "title": "3 h 42 par semaine, dans 14 tâches",
+    "title": "37 h 00 par semaine, dans 14 tâches",
     "text": "Mêmes plages de dates ressaisies à plusieurs reprises (1/1/10-1/13/24 sur #57-#60, 1/1/23-1/13/24 sur #88-#91)",
     "link": "Voir le problème n° 01",
     "problemId": 1
    },
    {
     "tag": "Allers-retours",
-    "title": "2 h 36 par semaine, dans 11 tâches",
+    "title": "26 h 00 par semaine, dans 11 tâches",
     "text": "Va-et-vient entre la liste des commandes et la liste des clients (#54, #55)",
     "link": "Voir le problème n° 02",
     "problemId": 2
    },
    {
     "tag": "Passage de relais",
-    "title": "6 min par semaine, dans 1 tâches",
+    "title": "1 h 00 par semaine, dans 1 tâches",
     "text": "Le numéro de suivi vient d'une source extérieure non visible, saisi à la main",
     "link": null,
     "problemId": null
@@ -699,12 +700,12 @@ const DATA = {
    },
    {
     "label": "Changements d'écran",
-    "value": "33",
+    "value": "326",
     "sub": "par jour et par poste"
    },
    {
     "label": "Allers-retours entre écrans",
-    "value": "978",
+    "value": "9 780",
     "sub": "sur la semaine"
    },
    {
@@ -749,7 +750,7 @@ const DATA = {
    }
   ],
   "byTeamTitle": "Répartition du temps par écran du back-office",
-  "callout": "Le catalogue et les commandes concentrent l'essentiel du temps. Rapport ventes/produits sur une période revient 79 fois par semaine chez les 2 équipes.",
+  "callout": "Le catalogue et les commandes concentrent l'essentiel du temps. Rapport ventes/produits sur une période revient 790 fois par semaine chez les 2 équipes.",
   "heatmapHours": [
    "8h",
    "9h",
@@ -841,38 +842,38 @@ const DATA = {
   "sequences": [
    {
     "path": "Accueil → Commandes → Accueil",
-    "count": 110
+    "count": 1100
    },
    {
     "path": "Accueil → Catalogue → Accueil",
-    "count": 108
+    "count": 1080
    },
    {
     "path": "Accueil → Rapports → Accueil",
-    "count": 97
+    "count": 970
    },
    {
     "path": "Accueil → Avis → Accueil",
-    "count": 91
+    "count": 910
    }
   ],
   "copyPasteTitle": "Allers-retours les plus fréquents",
   "copyPaste": [
    {
     "path": "Accueil → Catalogue",
-    "count": 115
+    "count": 1150
    },
    {
     "path": "Accueil → Commandes",
-    "count": 113
+    "count": 1130
    },
    {
     "path": "Accueil → Rapports",
-    "count": 110
+    "count": 1100
    },
    {
     "path": "Catalogue → Accueil",
-    "count": 110
+    "count": 1100
    }
   ]
  },
@@ -880,18 +881,18 @@ const DATA = {
   "stats": [
    {
     "label": "Coût annuel des tâches répétées observées",
-    "value": "7 167 €",
-    "sub": "4 h 06 par semaine, sur 19 tâches"
+    "value": "71 668 €",
+    "sub": "41 h 00 par semaine, sur 19 tâches"
    },
    {
     "label": "Gain annuel récupérable",
-    "value": "5 700 €",
-    "sub": "80 % du temps de ces tâches",
+    "value": "49 320 €",
+    "sub": "69 % du temps de ces tâches",
     "accent": "good"
    },
    {
     "label": "Capacité libérée",
-    "value": "0,09 ETP",
+    "value": "0,81 ETP",
     "sub": "base 35 h / semaine"
    }
   ],
@@ -901,35 +902,35 @@ const DATA = {
     "name": "Skill · Modifier le prix d'un produit ou d'une variante",
     "tag": "Gain rapide",
     "problems": "n° 03",
-    "recovered": "33 min / sem.",
-    "gain": 948,
+    "recovered": "4 h 46 / sem.",
+    "gain": 8343,
     "delay": "1 sem."
    },
    {
     "order": 2,
-    "name": "Skill · Consultation des commandes annulées",
-    "tag": "Gain rapide",
-    "problems": "n° 02",
-    "recovered": "30 min / sem.",
-    "gain": 876,
-    "delay": "1 sem."
-   },
-   {
-    "order": 3,
     "name": "Skill · Rapport ventes/produits sur une période",
     "tag": null,
     "problems": "n° 01",
-    "recovered": "28 min / sem.",
-    "gain": 816,
+    "recovered": "4 h 09 / sem.",
+    "gain": 7261,
     "delay": "2 sem."
+   },
+   {
+    "order": 3,
+    "name": "Skill · Consultation des commandes annulées",
+    "tag": "Gain rapide",
+    "problems": "n° 02",
+    "recovered": "4 h 08 / sem.",
+    "gain": 7220,
+    "delay": "1 sem."
    },
    {
     "order": 4,
     "name": "Skill · Consulter les avis d'un produit depuis sa fiche",
     "tag": null,
     "problems": "n° 04",
-    "recovered": "14 min / sem.",
-    "gain": 408,
+    "recovered": "2 h 15 / sem.",
+    "gain": 3933,
     "delay": "2 sem."
    },
    {
@@ -937,18 +938,18 @@ const DATA = {
     "name": "Skill · Régénérer les variantes d'un produit configurable existant",
     "tag": null,
     "problems": "moins de 3 pers.",
-    "recovered": "14 min / sem.",
-    "gain": 408,
+    "recovered": "1 h 56 / sem.",
+    "gain": 3371,
     "delay": "2 sem."
    }
   ],
   "modulesNote": "Tâches WONDERBREAD courtes (moins d'1 min 30) : les montants sont faibles, mais chaque chiffre vient d'une tâche observée et cliquable.",
   "beforeAfter": {
-   "before": "4 h 06",
-   "after": "50 min",
-   "beforeH": 4.1,
-   "afterH": 0.839,
-   "note": "3 h 16 rendues chaque semaine aux 6 postes observés."
+   "before": "41 h 00",
+   "after": "12 h 47",
+   "beforeH": 41.0,
+   "afterH": 12.785,
+   "note": "28 h 13 rendues chaque semaine aux 60 postes."
   },
   "investment": [
    {
@@ -971,7 +972,7 @@ const DATA = {
   "assumptions": [
    "Coût horaire chargé : 38 €/h",
    "Semaines travaillées : 46 / an",
-   "Base : 5 jours d'observation, 6 postes",
+   "Base : 5 jours d'observation, 6 postes, volumes ×10 (simulation)",
    "Fréquences = occurrences observées sur la semaine",
    "Gain = coût × score d'automatisation (fusion officielle)",
    "Résumés non relus par des humains : à confirmer"
@@ -982,13 +983,13 @@ const DATA = {
   "stats": [
    {
     "label": "Heures récupérables par mois",
-    "value": "12 h 30",
+    "value": "108 h 09",
     "sub": "si les 5 skills sont déployées",
     "progress": 0
    },
    {
     "label": "Valeur annuelle visée",
-    "value": "5 700 €",
+    "value": "49 320 €",
     "sub": "pas encore générée"
    },
    {
@@ -1008,11 +1009,11 @@ const DATA = {
     "Aujourd'hui"
    ],
    "measured": [
-    4.1,
-    4.1
+    41.0,
+    41.0
    ],
-   "objective": 0.84,
-   "objectiveLabel": "50 min",
+   "objective": 12.78,
+   "objectiveLabel": "12 h 47",
    "annotations": []
   },
   "modules": [
@@ -1021,11 +1022,11 @@ const DATA = {
     "status": "Planifié"
    },
    {
-    "name": "Skill · Consultation des commandes annulées",
+    "name": "Skill · Rapport ventes/produits sur une période",
     "status": "Planifié"
    },
    {
-    "name": "Skill · Rapport ventes/produits sur une période",
+    "name": "Skill · Consultation des commandes annulées",
     "status": "Planifié"
    },
    {
@@ -1046,7 +1047,7 @@ const DATA = {
    },
    {
     "icon": "info",
-    "title": "5,4 h observées sur 10 h demandées",
+    "title": "54,0 h observées sur 10 h demandées",
     "text": "Les tâches WONDERBREAD sont courtes : le seuil du cabinet n'est pas atteint.",
     "link": "Voir les limites"
    },
@@ -1063,5 +1064,757 @@ const DATA = {
    "note": "Hors de ces campagnes, aucune capture d'écran : seuls les journaux des skills."
   },
   "requests": []
+ },
+ "dash": {
+  "echelle": 10.0,
+  "postes": 60,
+  "equipes": {
+   "E-commerce": 30,
+   "Opérations": 30
+  },
+  "cout_horaire": 38.0,
+  "heures_observees": 54.0,
+  "jours": [
+   "Mar 13",
+   "Mer 14",
+   "Jeu 15",
+   "Ven 16",
+   "Lun 19"
+  ],
+  "heures_par_jour": {
+   "E-commerce": [
+    6.57,
+    5.23,
+    6.59,
+    6.82,
+    0.99
+   ],
+   "Opérations": [
+    4.86,
+    8.47,
+    5.5,
+    8.75,
+    0.0
+   ]
+  },
+  "ecrans": [
+   "Rapports",
+   "Catalogue",
+   "Commandes",
+   "Avis",
+   "Clients",
+   "Marketing",
+   "Accueil"
+  ],
+  "minutes_ecran_jour": {
+   "E-commerce": [
+    [
+     156,
+     153,
+     0,
+     42,
+     0,
+     5,
+     37
+    ],
+    [
+     107,
+     76,
+     47,
+     52,
+     1,
+     3,
+     27
+    ],
+    [
+     12,
+     133,
+     150,
+     0,
+     40,
+     36,
+     24
+    ],
+    [
+     36,
+     124,
+     119,
+     92,
+     13,
+     0,
+     27
+    ],
+    [
+     0,
+     8,
+     47,
+     0,
+     0,
+     0,
+     3
+    ]
+   ],
+   "Opérations": [
+    [
+     49,
+     91,
+     58,
+     12,
+     0,
+     68,
+     13
+    ],
+    [
+     31,
+     240,
+     167,
+     22,
+     0,
+     35,
+     14
+    ],
+    [
+     83,
+     76,
+     111,
+     25,
+     17,
+     0,
+     17
+    ],
+    [
+     0,
+     375,
+     77,
+     57,
+     0,
+     0,
+     16
+    ],
+    [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ]
+   ]
+  },
+  "chaleur": {
+   "E-commerce": [
+    [
+     0,
+     48,
+     74,
+     56,
+     73,
+     34,
+     32,
+     32,
+     32,
+     13,
+     0
+    ],
+    [
+     0,
+     29,
+     35,
+     34,
+     32,
+     35,
+     47,
+     35,
+     31,
+     36,
+     0
+    ],
+    [
+     0,
+     91,
+     39,
+     29,
+     42,
+     55,
+     43,
+     51,
+     28,
+     18,
+     0
+    ],
+    [
+     0,
+     29,
+     29,
+     41,
+     87,
+     81,
+     46,
+     39,
+     39,
+     19,
+     0
+    ],
+    [
+     0,
+     46,
+     13,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ]
+   ],
+   "Opérations": [
+    [
+     0,
+     48,
+     21,
+     32,
+     41,
+     33,
+     37,
+     38,
+     29,
+     13,
+     0
+    ],
+    [
+     0,
+     35,
+     59,
+     77,
+     69,
+     69,
+     100,
+     22,
+     50,
+     27,
+     0
+    ],
+    [
+     0,
+     32,
+     27,
+     31,
+     30,
+     30,
+     40,
+     65,
+     40,
+     35,
+     0
+    ],
+    [
+     0,
+     64,
+     52,
+     46,
+     49,
+     89,
+     73,
+     89,
+     55,
+     8,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ]
+   ]
+  },
+  "minutes_ecran": {
+   "E-commerce": [
+    310,
+    494,
+    364,
+    186,
+    54,
+    45,
+    119
+   ],
+   "Opérations": [
+    164,
+    782,
+    413,
+    116,
+    17,
+    102,
+    61
+   ]
+  },
+  "taches": [
+   {
+    "titre": "Rapport ventes/produits sur une période",
+    "court": "Rapport ventes",
+    "personnes": 60,
+    "equipes": [
+     "E-commerce",
+     "Opérations"
+    ],
+    "frequence": 790,
+    "heures_semaine": 6.0,
+    "cout_an": 10488,
+    "gain_an": 7261,
+    "heures_gagnees": 4.15,
+    "score": 68,
+    "categorie": "Ressaisie",
+    "visible": true,
+    "etapes": [
+     "Ouvrir un rapport (Bestsellers, Orders, Tax, Shipping, Coupons, Refunds, Product Views)",
+     "Saisir la date de début et la date de fin",
+     "Choisir le regroupement (Day) pour certains rapports",
+     "Cliquer sur Show Report",
+     "Faire défiler et lire les résultats"
+    ]
+   },
+   {
+    "titre": "Consultation des commandes annulées",
+    "court": "Commandes annulées",
+    "personnes": 60,
+    "equipes": [
+     "E-commerce",
+     "Opérations"
+    ],
+    "frequence": 520,
+    "heures_semaine": 5.0,
+    "cout_an": 8740,
+    "gain_an": 7220,
+    "heures_gagnees": 4.13,
+    "score": 83,
+    "categorie": "Recherche",
+    "visible": true,
+    "etapes": [
+     "Ouvrir la liste Orders",
+     "Ouvrir Filters et choisir le statut Canceled",
+     "Appliquer les filtres",
+     "Lire la liste filtrée"
+    ]
+   },
+   {
+    "titre": "Modifier le prix d'un produit ou d'une variante",
+    "court": "Prix produit",
+    "personnes": 50,
+    "equipes": [
+     "E-commerce",
+     "Opérations"
+    ],
+    "frequence": 370,
+    "heures_semaine": 5.0,
+    "cout_an": 8740,
+    "gain_an": 8343,
+    "heures_gagnees": 4.77,
+    "score": 93,
+    "categorie": "Ressaisie",
+    "visible": true,
+    "etapes": [
+     "Rechercher le produit par mot-clé dans le catalogue",
+     "Ouvrir la fiche produit ou variante",
+     "Saisir le nouveau prix dans le champ prix",
+     "Enregistrer",
+     "Vérifier que la modification est bien prise en compte"
+    ]
+   },
+   {
+    "titre": "Consulter les avis d'un produit depuis sa fiche",
+    "court": "Avis produit",
+    "personnes": 30,
+    "equipes": [
+     "E-commerce",
+     "Opérations"
+    ],
+    "frequence": 260,
+    "heures_semaine": 5.0,
+    "cout_an": 8740,
+    "gain_an": 3933,
+    "heures_gagnees": 2.25,
+    "score": 45,
+    "categorie": "Recherche",
+    "visible": true,
+    "etapes": [
+     "Chercher le produit par nom dans le catalogue",
+     "Ouvrir la fiche produit",
+     "Ouvrir la section « Product Reviews » de la fiche",
+     "Lire les avis en faisant défiler",
+     "Passer au produit suivant ou revenir en arrière"
+    ]
+   },
+   {
+    "titre": "Régénérer les variantes d'un produit configurable existant",
+    "court": "Variantes produit",
+    "personnes": 0,
+    "equipes": [
+     "Opérations"
+    ],
+    "frequence": 120,
+    "heures_semaine": 3.0,
+    "cout_an": 5244,
+    "gain_an": 3371,
+    "heures_gagnees": 1.93,
+    "score": 64,
+    "categorie": "Ressaisie",
+    "visible": false,
+    "etapes": []
+   },
+   {
+    "titre": "Filtrer les commandes annulées",
+    "court": "Filtre annulées",
+    "personnes": 60,
+    "equipes": [
+     "E-commerce",
+     "Opérations"
+    ],
+    "frequence": 280,
+    "heures_semaine": 3.0,
+    "cout_an": 5244,
+    "gain_an": 3227,
+    "heures_gagnees": 1.85,
+    "score": 62,
+    "categorie": "Recherche",
+    "visible": true,
+    "etapes": [
+     "Ouvrir la liste des commandes",
+     "Ouvrir les filtres",
+     "Choisir le statut Annulée",
+     "Appliquer les filtres et consulter le résultat"
+    ]
+   },
+   {
+    "titre": "Corriger l'adresse d'une commande",
+    "court": "Adresse commande",
+    "personnes": 40,
+    "equipes": [
+     "E-commerce",
+     "Opérations"
+    ],
+    "frequence": 240,
+    "heures_semaine": 2.0,
+    "cout_an": 3496,
+    "gain_an": 2447,
+    "heures_gagnees": 1.4,
+    "score": 64,
+    "categorie": "Ressaisie",
+    "visible": true,
+    "etapes": [
+     "Rechercher la commande par numéro",
+     "Ouvrir l'adresse de livraison en édition",
+     "Saisir la rue, sélectionner l'état, saisir la ville et le code postal",
+     "Enregistrer l'adresse"
+    ]
+   },
+   {
+    "titre": "Rapport du nombre de commandes clients",
+    "court": "Rapport commandes",
+    "personnes": 40,
+    "equipes": [
+     "E-commerce",
+     "Opérations"
+    ],
+    "frequence": 220,
+    "heures_semaine": 2.0,
+    "cout_an": 3496,
+    "gain_an": 2447,
+    "heures_gagnees": 1.4,
+    "score": 75,
+    "categorie": "Ressaisie",
+    "visible": true,
+    "etapes": [
+     "Ouvrir Rapports > Clients > Order Count",
+     "Saisir ou sélectionner la plage de dates",
+     "Choisir le regroupement Day",
+     "Cliquer sur Refresh",
+     "Faire défiler le résultat"
+    ]
+   },
+   {
+    "titre": "Rechercher et filtrer les avis clients",
+    "court": "Recherche avis",
+    "personnes": 50,
+    "equipes": [
+     "E-commerce",
+     "Opérations"
+    ],
+    "frequence": 470,
+    "heures_semaine": 2.0,
+    "cout_an": 3496,
+    "gain_an": 1748,
+    "heures_gagnees": 1.0,
+    "score": 55,
+    "categorie": "Recherche",
+    "visible": true,
+    "etapes": [
+     "Ouvrir Marketing > User Content > All Reviews",
+     "Choisir le critère de filtre : mot-clé, statut Approved ou plage de dates",
+     "Saisir le mot-clé ou les dates From/To",
+     "Lancer la recherche",
+     "Lire les avis obtenus"
+    ]
+   },
+   {
+    "titre": "Création d'une règle de prix panier",
+    "court": "Règle prix panier",
+    "personnes": 30,
+    "equipes": [
+     "E-commerce",
+     "Opérations"
+    ],
+    "frequence": 150,
+    "heures_semaine": 1.0,
+    "cout_an": 1748,
+    "gain_an": 1049,
+    "heures_gagnees": 0.6,
+    "score": 65,
+    "categorie": "Répétition",
+    "visible": true,
+    "etapes": [
+     "Cliquer sur Add New Rule",
+     "Saisir le nom de la règle",
+     "Choisir site web et groupes de clients (ex. non connecté)",
+     "Onglet Actions : type de remise en pourcentage et valeur",
+     "Règle de promotion enregistrée"
+    ]
+   },
+   {
+    "titre": "Retrouver une fiche client par numéro de téléphone",
+    "court": "Fiche client",
+    "personnes": 30,
+    "equipes": [
+     "E-commerce",
+     "Opérations"
+    ],
+    "frequence": 190,
+    "heures_semaine": 1.0,
+    "cout_an": 1748,
+    "gain_an": 1049,
+    "heures_gagnees": 0.6,
+    "score": 60,
+    "categorie": "Recherche",
+    "visible": true,
+    "etapes": [
+     "Ouvrir la liste All Customers",
+     "Ouvrir les filtres et saisir un numéro de téléphone",
+     "Appliquer les filtres",
+     "Consulter la fiche client trouvée"
+    ]
+   },
+   {
+    "titre": "Remettre un produit en stock",
+    "court": "Remise en stock",
+    "personnes": 30,
+    "equipes": [
+     "E-commerce",
+     "Opérations"
+    ],
+    "frequence": 150,
+    "heures_semaine": 1.0,
+    "cout_an": 1748,
+    "gain_an": 1398,
+    "heures_gagnees": 0.8,
+    "score": 78,
+    "categorie": "Ressaisie",
+    "visible": true,
+    "etapes": [
+     "Rechercher le produit par mot-clé",
+     "Ouvrir la fiche avec Edit",
+     "Passer l'état de stock à « In Stock »",
+     "Enregistrer"
+    ]
+   },
+   {
+    "titre": "Mettre à jour la quantité en stock des déclinaisons",
+    "court": "Stock déclinaisons",
+    "personnes": 0,
+    "equipes": [
+     "Opérations"
+    ],
+    "frequence": 60,
+    "heures_semaine": 1.0,
+    "cout_an": 1748,
+    "gain_an": 1311,
+    "heures_gagnees": 0.75,
+    "score": 91,
+    "categorie": "Ressaisie",
+    "visible": false,
+    "etapes": []
+   },
+   {
+    "titre": "Créer un nouveau produit configurable avec ses variantes",
+    "court": "Nouveau produit",
+    "personnes": 0,
+    "equipes": [
+     "Opérations"
+    ],
+    "frequence": 50,
+    "heures_semaine": 1.0,
+    "cout_an": 1748,
+    "gain_an": 1311,
+    "heures_gagnees": 0.75,
+    "score": 80,
+    "categorie": "Répétition",
+    "visible": false,
+    "etapes": []
+   },
+   {
+    "titre": "Modifier le contenu d'une page CMS",
+    "court": "Page CMS",
+    "personnes": 0,
+    "equipes": [
+     "Opérations"
+    ],
+    "frequence": 90,
+    "heures_semaine": 1.0,
+    "cout_an": 1748,
+    "gain_an": 1165,
+    "heures_gagnees": 0.67,
+    "score": 50,
+    "categorie": "Répétition",
+    "visible": false,
+    "etapes": []
+   },
+   {
+    "titre": "Expédier une commande avec numéro de suivi",
+    "court": "Expédition",
+    "personnes": 0,
+    "equipes": [
+     "Opérations"
+    ],
+    "frequence": 40,
+    "heures_semaine": 1.0,
+    "cout_an": 1748,
+    "gain_an": 1165,
+    "heures_gagnees": 0.67,
+    "score": 70,
+    "categorie": "Répétition",
+    "visible": false,
+    "etapes": []
+   },
+   {
+    "titre": "Modération des avis en attente",
+    "court": "Modération avis",
+    "personnes": 0,
+    "equipes": [
+     "E-commerce",
+     "Opérations"
+    ],
+    "frequence": 80,
+    "heures_semaine": 1.0,
+    "cout_an": 1748,
+    "gain_an": 874,
+    "heures_gagnees": 0.5,
+    "score": 52,
+    "categorie": "Ressaisie",
+    "visible": false,
+    "etapes": []
+   },
+   {
+    "titre": "Filtrer la liste des commandes annulées",
+    "court": "Liste annulées",
+    "personnes": 0,
+    "equipes": [
+     "Opérations"
+    ],
+    "frequence": 50,
+    "heures_semaine": 0.0,
+    "cout_an": 0,
+    "gain_an": 0,
+    "heures_gagnees": 0.0,
+    "score": 75,
+    "categorie": "Recherche",
+    "visible": false,
+    "etapes": []
+   },
+   {
+    "titre": "Consulter les termes de recherche par nombre de résultats",
+    "court": "Termes recherche",
+    "personnes": 0,
+    "equipes": [
+     "Opérations"
+    ],
+    "frequence": 20,
+    "heures_semaine": 0.0,
+    "cout_an": 0,
+    "gain_an": 0,
+    "heures_gagnees": 0.0,
+    "score": 70,
+    "categorie": "Recherche",
+    "visible": false,
+    "etapes": []
+   }
+  ],
+  "a_automatiser": [
+   "Modifier le prix d'un produit ou d'une variante",
+   "Consultation des commandes annulées",
+   "Rapport ventes/produits sur une période",
+   "Consulter les avis d'un produit depuis sa fiche",
+   "Régénérer les variantes d'un produit configurable existant"
+  ],
+  "goulots": [
+   {
+    "type": "Travail refait",
+    "heures_semaine": 37.0,
+    "taches": 14
+   },
+   {
+    "type": "Allers-retours",
+    "heures_semaine": 26.0,
+    "taches": 11
+   },
+   {
+    "type": "Passage de relais",
+    "heures_semaine": 1.0,
+    "taches": 1
+   }
+  ],
+  "cout_an": 71668,
+  "gain_an": 49320,
+  "heures_semaine": 41.0,
+  "heures_gagnees_semaine": 28.22,
+  "chaine": {
+   "captures": 55510,
+   "gardees": 50480,
+   "moments": 14470,
+   "taches": 19,
+   "problemes": 11,
+   "skills": 5
+  },
+  "bascules": 9780,
+  "avancement": 70,
+  "etapes": [
+   {
+    "label": "Installation",
+    "statut": "done"
+   },
+   {
+    "label": "Observation",
+    "statut": "done"
+   },
+   {
+    "label": "Analyse par l'IA",
+    "statut": "done"
+   },
+   {
+    "label": "Restitution & rapport",
+    "statut": "active"
+   },
+   {
+    "label": "Logiciel sur mesure",
+    "statut": "upcoming"
+   }
+  ]
  }
 };
