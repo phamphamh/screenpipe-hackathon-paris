@@ -1,0 +1,5 @@
+# « Tester en vrai » : les skills du pack font la tâche dans un faux Gmail + Sage
+- **Fait** : `labs/natsuwy/tester-en-vrai/` — `tester_en_vrai.py <dossier_skill>` donne la skill de `pack.py` à Claude (`claude -p`, seuls outils : la skill et `bac_a_sable.py`), sur 4 commandes fictives (propre, 2e client, référence inconnue, écart de prix), et vérifie l'état final des apps selon l'autonomie de la thèse.
+- **Preuve** : autonomie 3 → 4/4 (saisie, validation, client prévenu, arrêt sur les 2 exceptions). Autonomie 2 → 3/4 puis 2/4 : exceptions toujours OK, mais la réponse au client reste dans le compte rendu au lieu d'un brouillon Gmail. Rapports dans `labs/natsuwy/tester-en-vrai/exemples/`.
+- **Pas vérifié** : vrai Gmail / vrai Sage (il faudrait un connecteur à la place du bac à sable) ; un seul scénario (tâche n°1 de la démo).
+- **Pour les autres** : phamphamh, dans `pack.py` la consigne des sorties en autonomie 2 (« Montre exactement ce qui va partir ») gagnerait à dire « prépare-la en brouillon dans <app> ». Je n'ai rien touché dans ton lab.

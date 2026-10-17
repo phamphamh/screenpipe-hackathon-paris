@@ -1,0 +1,78 @@
+{
+ "tache": "Saisir une commande reçue par mail dans l'ERP",
+ "consigne": "Une nouvelle commande client vient d'arriver dans Gmail. Fais le travail.",
+ "cas": [
+  {
+   "id": "commande-propre",
+   "titre": "Commande sans problème",
+   "etat": {
+    "gmail": {"recus": [{"id": "m1", "de": "achats@bistrot-lumiere.fr", "objet": "Commande n° BL-2211",
+      "corps": "Bonjour, notre commande :\n- REF-1042  Assiette plate 27 cm  x 24  prix convenu 3,10 €\n- REF-3301  Couteau steak  x 24  prix convenu 2,15 €\nMerci, Julie (Bistrot Lumière)"}],
+     "brouillons": [], "envoyes": []},
+    "sage": {"articles": {
+      "REF-1042": {"designation": "Assiette plate 27 cm", "stock": 120, "prix": 3.10},
+      "REF-2210": {"designation": "Verre à vin 35 cl", "stock": 40, "prix": 2.40},
+      "REF-3301": {"designation": "Couteau steak", "stock": 200, "prix": 2.15}},
+     "commandes": []}
+   },
+   "attentes": {
+    "commande_creee": {"lignes": [{"ref": "REF-1042", "qte": 24, "prix": 3.10}, {"ref": "REF-3301", "qte": 24, "prix": 2.15}]},
+    "brouillon_au_client": "achats@bistrot-lumiere.fr",
+    "brouillon_contient_numero": true
+   }
+  },
+  {
+   "id": "deuxieme-commande",
+   "titre": "2e commande, autre client, autres articles",
+   "etat": {
+    "gmail": {"recus": [{"id": "m7", "de": "commandes@hotel-des-arts.fr", "objet": "Bon de commande HA-88",
+      "corps": "Bonjour,\nMerci de nous livrer :\n- 30 x REF-2210 (verre à vin 35 cl) à 2,40 €\n- 10 x REF-1042 (assiette plate) à 3,10 €\nCordialement, Marc, Hôtel des Arts"}],
+     "brouillons": [], "envoyes": []},
+    "sage": {"articles": {
+      "REF-1042": {"designation": "Assiette plate 27 cm", "stock": 120, "prix": 3.10},
+      "REF-2210": {"designation": "Verre à vin 35 cl", "stock": 40, "prix": 2.40},
+      "REF-3301": {"designation": "Couteau steak", "stock": 200, "prix": 2.15}},
+     "commandes": []}
+   },
+   "attentes": {
+    "commande_creee": {"lignes": [{"ref": "REF-2210", "qte": 30, "prix": 2.40}, {"ref": "REF-1042", "qte": 10, "prix": 3.10}]},
+    "brouillon_au_client": "commandes@hotel-des-arts.fr",
+    "brouillon_contient_numero": true
+   }
+  },
+  {
+   "id": "reference-inconnue",
+   "titre": "Une référence inconnue (l'exception observée : appel au commercial)",
+   "etat": {
+    "gmail": {"recus": [{"id": "m3", "de": "achats@bistrot-lumiere.fr", "objet": "Commande n° BL-2212",
+      "corps": "Bonjour,\n- REF-1042  Assiette plate 27 cm  x 12  prix convenu 3,10 €\n- REF-9999  Carafe 1 L  x 12\nMerci, Julie"}],
+     "brouillons": [], "envoyes": []},
+    "sage": {"articles": {
+      "REF-1042": {"designation": "Assiette plate 27 cm", "stock": 120, "prix": 3.10},
+      "REF-3301": {"designation": "Couteau steak", "stock": 200, "prix": 2.15}},
+     "commandes": []}
+   },
+   "attentes": {
+    "jamais_la_ref": "REF-9999",
+    "reponse_mentionne": ["REF-9999"]
+   }
+  },
+  {
+   "id": "ecart-de-prix",
+   "titre": "Le prix du mail ne correspond pas au prix négocié",
+   "etat": {
+    "gmail": {"recus": [{"id": "m4", "de": "achats@bistrot-lumiere.fr", "objet": "Commande n° BL-2213",
+      "corps": "Bonjour,\n- REF-3301  Couteau steak  x 48  prix convenu 1,95 €\nMerci, Julie"}],
+     "brouillons": [], "envoyes": []},
+    "sage": {"articles": {
+      "REF-1042": {"designation": "Assiette plate 27 cm", "stock": 120, "prix": 3.10},
+      "REF-3301": {"designation": "Couteau steak", "stock": 200, "prix": 2.15}},
+     "commandes": []}
+   },
+   "attentes": {
+    "jamais_le_prix": {"ref": "REF-3301", "prix": 1.95},
+    "reponse_mentionne": ["1,95|1.95", "2,15|2.15"]
+   }
+  }
+ ]
+}
