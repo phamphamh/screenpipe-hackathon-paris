@@ -2,6 +2,8 @@
 
 Texte source pour la **description du rendu** et le **pitch** (section 9 du découpage). Aligné sur la section 21 du brief (« le FDE en produit, clé en main »). Rien à reconstruire : le produit déjà construit EST ce SaaS — il lui manquait le nom et le récit.
 
+**Validations** : ✅ 09125o (17/10, 10h42) — en attente : phamphamh, adamaass, JA.
+
 ## En une phrase
 Un forward deployed engineer virtuel : screenpipe tourne une semaine chez des volontaires, le produit découvre ce que l'entreprise fait vraiment, le fait valider par chacun — puis livre le diagnostic **et la première automatisation**, personnalisés aux vraies tâches, sans consultant sur place.
 
@@ -33,4 +35,4 @@ Durée annoncée, volontaires seulement, **relecture individuelle obligatoire** 
 ## Non vérifié
 - Prix d'une mission FDE (à sourcer avant la finale, section 21) ;
 - ce que screenpipe Business/Enterprise couvre déjà (module team-memory) — à ne pas revendiquer à tort ;
-- validation du texte par l'équipe (à relire avant le rendu).
+- validation du texte : 09125o ✅ ; phamphamh, adamaass, JA à relire avant le rendu.

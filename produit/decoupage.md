@@ -139,6 +139,7 @@ Pas de chef de projet : chacun prend ce qu'il veut et le déclare dans `chantier
 - **Dim. 14h30** : rendu.
 
 ## 9. Le pitch en 2 minutes (brouillon)
+Récit source : `produit/positionnement.md` (« le FDE virtuel », validé par 09125o le 17/10).
 1. « Les entreprises paient des ingénieurs pour regarder leurs salariés travailler » (leur propre phrase à l'ouverture).
 2. Nous : une semaine de screenpipe chez des volontaires → le Wrapped de l'entreprise.
 3. Démo : l'équipe a joué l'entreprise pendant le hackathon. Montrer le Wrapped, puis le top 3, puis une correction par le salarié.
