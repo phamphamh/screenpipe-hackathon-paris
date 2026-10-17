@@ -79,7 +79,7 @@ function renderSidebar(route) {
   const afterGroup = `<div class="nav-group-label">Après l'étude</div>${pilotingItem}`;
   return `
     <div class="sidebar-brand">
-      <div class="mark">N</div>
+      <div class="mark">${DATA.firm[0]}</div>
       <div class="name">${DATA.firm}</div>
     </div>
     <div class="sidebar-client">

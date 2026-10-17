@@ -1,7 +1,7 @@
 // Fictional demo dataset — "Maison Verlaine" operational efficiency study.
 // Mirrors the reference mockup (Dashboard client — Étude & Pilotage).
 const DATA = {
-  firm: "[Nom du cabinet]",
+  firm: "CAIbinet",
   client: { name: "Maison Verlaine", postes: 52, equipes: 6 },
   consultant: "[Prénom Nom]",
   studyLabel: "Étude d'efficacité opérationnelle",
