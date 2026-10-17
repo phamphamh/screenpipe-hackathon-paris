@@ -1,0 +1,889 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rapport d'audit IA</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+/* Moteur de rapport par méthode. Même charte que labs/phamphamh/audit/gabarit.html : mode clair « salle de commandement »,
+   gris calmes, traits fins, bleu-vert réservé à l'IA, orange aux pertes de temps. Les chapitres viennent de la méthode choisie. */
+:root {
+  --fond: #f4f5f7;
+  --plan: #ffffff;
+  --plan-2: #eef0f3;
+  --trait: #e2e5ea;
+  --trait-fort: #c8ced6;
+  --encre: #0e141b;
+  --doux: #5a6472;
+  --faible: #8a93a0;
+  --ia: #0b8db0;
+  --ia-pale: #d7eef5;
+  --projet: #2f3b4b;
+  --comm: #6e7b8c;
+  --reunion: #4d6079;
+  --veille: #a9b3bf;
+  --admin: #cbd2db;
+  --systeme: #dde1e7;
+  --pause: #e8ebef;
+  --perte: #e0701c;
+  --f-texte: "Geist", "Inter Tight", system-ui, sans-serif;
+  --f-mono: "Geist Mono", ui-monospace, Menlo, monospace;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { background: var(--fond); color: var(--encre); font-family: var(--f-texte); font-size: 15px; line-height: 1.5; margin: 0; }
+.cadre { min-height: 100%; display: grid; grid-template-rows: auto 1fr auto; gap: 14px; max-width: 1320px; margin: 0 auto; padding-block: 18px 18px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.mono { font-family: var(--f-mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--doux); }
+.haut { display: grid; gap: 12px; }
+.ligne-haut { display: flex; justify-content: space-between; gap: 12px 20px; flex-wrap: wrap; align-items: center; }
+.marque { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.marque svg { flex: none; }
+.marque .nom { font-weight: 600; letter-spacing: -.01em; }
+.marque .insp { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--doux); }
+.methodes { display: flex; flex-wrap: wrap; gap: 4px; }
+.methodes a { font: 500 10.5px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--doux); text-decoration: none; border: 1px solid var(--trait-fort); padding: 5px 9px; background: var(--plan); }
+.methodes a:hover { border-color: var(--encre); color: var(--encre); }
+.methodes a.actif { background: var(--encre); color: var(--plan); border-color: var(--encre); }
+.methodes a:focus-visible { outline: 1px solid var(--ia); outline-offset: 2px; }
+.progres { display: flex; gap: 4px; }
+.progres button { flex: 1; height: 14px; padding: 6px 0; border: 0; background: transparent; cursor: pointer; }
+.progres button span { display: block; height: 2px; background: var(--trait-fort); overflow: hidden; }
+.progres button span b { display: block; height: 100%; width: 0; background: var(--encre); }
+.progres button:focus-visible { outline: 1px solid var(--ia); }
+
+.scene-story { position: relative; background: var(--plan); border: 1px solid var(--trait); min-height: 580px; overflow: hidden; }
+.chap { position: absolute; inset: 0; display: grid; grid-template-columns: minmax(0, 1.75fr) minmax(0, 1fr); visibility: hidden; }
+.chap.actif { visibility: visible; }
+@media (max-width: 900px) {
+  .scene-story { min-height: 0; }
+  .chap { position: relative; inset: auto; grid-template-columns: minmax(0, 1fr); display: none; }
+  .chap.actif { display: grid; }
+}
+.viz { position: relative; min-width: 0; min-height: 440px; border-right: 1px solid var(--trait); }
+@media (max-width: 900px) { .viz { border-right: 0; border-bottom: 1px solid var(--trait); min-height: 400px; } }
+.viz canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.viz .pad { position: absolute; inset: 0; padding: 26px 28px; display: grid; overflow: auto; }
+.viz svg.plein { position: absolute; inset: 0; width: 100%; height: 100%; display: block; overflow: visible; }
+.lecture { padding: 28px 28px 32px; display: grid; align-content: space-between; gap: 22px; min-width: 0; }
+.numero { display: flex; align-items: flex-start; gap: 10px; font-weight: 500; font-size: 14px; letter-spacing: -.01em; color: var(--encre); line-height: 1.35; }
+.numero span { flex: none; font-weight: 600; font-size: 13px; color: var(--plan); background: var(--ia); padding: 3px 8px; font-variant-numeric: tabular-nums; line-height: 1.35; }
+.numero em { font-style: normal; padding-top: 3px; }
+.lecture h2 { font-weight: 400; font-size: clamp(22px, 2.3vw, 30px); line-height: 1.14; letter-spacing: -.025em; margin: 12px 0 0; text-wrap: balance; }
+.chiffre { font-weight: 300; font-size: clamp(50px, 5.8vw, 84px); line-height: .92; letter-spacing: -.045em; font-variant-numeric: tabular-nums; }
+.chiffre.ia { color: var(--ia); }
+.chiffre.perte { color: var(--perte); }
+.chiffre small { font-size: .3em; letter-spacing: -.01em; color: var(--doux); font-weight: 400; margin-left: 6px; }
+.chiffre-l { font-size: 13px; color: var(--doux); margin-top: -6px; }
+.lecture p { margin: 0; color: var(--doux); max-width: 46ch; }
+.lecture p b { color: var(--encre); font-weight: 500; }
+.kpis { display: grid; gap: 0; border-top: 1px solid var(--trait); }
+.kpi { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; align-items: baseline; padding: 7px 0; border-bottom: 1px solid var(--trait); }
+.kpi b { font-weight: 500; font-variant-numeric: tabular-nums; font-size: 15px; }
+.kpi b.ia { color: var(--ia); }
+.kpi span { font-size: 12.5px; color: var(--doux); }
+
+.bas { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: center; min-height: 36px; }
+.nav { display: flex; gap: 8px; margin-left: auto; }
+.nav button, .bouton { font: 500 12px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--encre); background: var(--plan); border: 1px solid var(--trait-fort); padding: 8px 14px; cursor: pointer; }
+.nav button:hover, .bouton:hover { border-color: var(--encre); }
+.nav button:focus-visible, .bouton:focus-visible { outline: 1px solid var(--ia); outline-offset: 2px; }
+.bouton.plein { background: var(--encre); color: var(--plan); border-color: var(--encre); justify-self: start; }
+.legende { display: flex; flex-wrap: wrap; gap: 6px 14px; }
+.legende span { display: inline-flex; gap: 6px; align-items: center; font-family: var(--f-mono); font-size: 10.5px; color: var(--doux); letter-spacing: .04em; }
+.legende i { width: 9px; height: 9px; display: inline-block; border: 1px solid rgba(14,20,27,.08); }
+.legende i.pointille { border: 1px dashed var(--doux); background: transparent; }
+
+/* état vide : quand une donnée manque, on le dit */
+.vide { position: absolute; inset: 0; display: grid; place-content: center; padding: 32px; gap: 10px; text-align: left; max-width: 520px; margin: auto; }
+.vide b { font-weight: 500; font-size: 17px; letter-spacing: -.01em; }
+.vide p { margin: 0; color: var(--doux); font-size: 14px; }
+
+/* étiquettes 3D (bureau) */
+.etq { position: absolute; pointer-events: none; font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .07em; text-transform: uppercase; background: rgba(255,255,255,.94); border: 1px solid var(--trait-fort); padding: 5px 8px 6px; white-space: nowrap; line-height: 1.35; color: var(--encre); }
+.etq small { display: block; color: var(--doux); font-size: 10px; }
+.etq.vive { border-color: var(--ia); }
+.etq.vive b { color: var(--ia); font-weight: 500; }
+svg.fils { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.frise3d { position: absolute; left: 20px; right: 20px; bottom: 16px; display: grid; gap: 6px; }
+.frise3d canvas { position: relative; height: 54px; cursor: ew-resize; touch-action: none; }
+.horloge { position: absolute; left: 22px; top: 18px; font-family: var(--f-mono); font-size: 12px; letter-spacing: .06em; }
+
+/* SVG communs */
+.sv text { font-family: var(--f-texte); font-size: 12.5px; fill: var(--encre); }
+.sv text.m { font-family: var(--f-mono); font-size: 10.5px; fill: var(--doux); letter-spacing: .04em; }
+.sv text.mu { font-family: var(--f-mono); font-size: 10px; fill: var(--doux); letter-spacing: .1em; text-transform: uppercase; }
+
+/* barres empilées, liste, course, plan */
+.barres { display: grid; align-content: center; gap: 18px; }
+.barre-l { display: grid; gap: 6px; }
+.barre-l .tete { display: flex; justify-content: space-between; gap: 10px; font-size: 13px; flex-wrap: wrap; }
+.barre-l .tete b { font-weight: 500; }
+.barre-l .tete span { font-family: var(--f-mono); font-size: 11px; color: var(--doux); }
+.pile { display: flex; height: 26px; background: var(--plan-2); overflow: hidden; }
+.pile i { display: block; height: 100%; width: 0; }
+.taches { display: grid; align-content: center; gap: 14px; }
+.tache { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; gap: 4px 12px; align-items: center; }
+.tache .rang { font-family: var(--f-mono); font-size: 11px; color: var(--faible); grid-row: span 3; align-self: start; padding-top: 2px; }
+.tache .t { font-size: 14px; }
+.tache .h { font-family: var(--f-mono); font-size: 12px; color: var(--doux); text-align: right; }
+.tache .rail { grid-column: 2 / -1; height: 8px; background: var(--plan-2); }
+.tache .rail i { display: block; height: 100%; width: 0; }
+.tache .etat { font-family: var(--f-mono); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; }
+.course { display: grid; align-content: center; gap: 26px; }
+.piste { display: grid; gap: 8px; }
+.piste .tete { display: flex; justify-content: space-between; gap: 10px; }
+.piste .tete b { font-weight: 500; }
+.piste .chrono { font-family: var(--f-mono); font-size: 13px; font-variant-numeric: tabular-nums; }
+.rangee { display: flex; gap: 3px; height: 40px; }
+.rangee div { position: relative; height: 100%; background: var(--plan-2); overflow: hidden; }
+.rangee div i { position: absolute; inset: 0 auto 0 0; width: 0; }
+.rangee div span { position: absolute; left: 6px; bottom: 4px; font-family: var(--f-mono); font-size: 10px; color: var(--doux); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; right: 4px; }
+.plan { display: grid; align-content: center; gap: 0; }
+.reco { display: grid; grid-template-columns: 78px minmax(0, 1fr); gap: 16px; padding: 18px 0; border-top: 1px solid var(--trait); }
+.reco:last-child { border-bottom: 1px solid var(--trait); }
+.reco .quand { font-family: var(--f-mono); font-size: 11px; letter-spacing: .08em; color: var(--ia); text-transform: uppercase; padding-top: 3px; }
+.reco h3 { margin: 0 0 4px; font-weight: 500; font-size: 17px; letter-spacing: -.01em; }
+.reco p { margin: 0; color: var(--doux); font-size: 14px; }
+.inconnu { display: grid; gap: 6px; }
+.inconnu div { font-size: 13px; color: var(--doux); padding-left: 14px; position: relative; }
+.inconnu div::before { content: ""; position: absolute; left: 0; top: .6em; width: 6px; height: 1px; background: var(--faible); }
+
+/* chiffre clé */
+.cle { display: grid; align-content: center; gap: 28px; }
+.cle .grand { font-weight: 300; font-size: clamp(76px, 10.5vw, 156px); line-height: .86; letter-spacing: -.055em; font-variant-numeric: tabular-nums; }
+.cle .grand.ia { color: var(--ia); }
+.cle .grand small { font-size: .2em; letter-spacing: -.01em; color: var(--doux); font-weight: 400; margin-left: 10px; }
+.cle .sous { font-size: 16px; color: var(--doux); max-width: 46ch; margin-top: -8px; }
+.tuiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); border-top: 1px solid var(--trait); }
+.tuile { padding: 16px 16px 4px 0; display: grid; gap: 4px; align-content: start; }
+.tuile + .tuile { padding-left: 16px; border-left: 1px solid var(--trait); }
+.tuile b { font-weight: 300; font-size: 34px; letter-spacing: -.03em; line-height: 1; font-variant-numeric: tabular-nums; }
+.tuile b.ia { color: var(--ia); }
+.tuile b small { font-size: 13px; color: var(--doux); font-weight: 400; letter-spacing: 0; margin-left: 4px; }
+.tuile span { font-size: 12.5px; color: var(--doux); }
+
+/* anneau */
+.anneau { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; align-items: center; }
+.anneau .rond { position: relative; aspect-ratio: 1; width: 100%; max-width: 360px; justify-self: center; }
+.anneau .rond svg { width: 100%; height: 100%; display: block; }
+.anneau .centre { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; }
+.anneau .centre b { font-weight: 300; font-size: clamp(40px, 5vw, 64px); letter-spacing: -.04em; color: var(--ia); line-height: 1; font-variant-numeric: tabular-nums; }
+.anneau .centre span { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--doux); margin-top: 6px; }
+.anneau .liste { display: grid; gap: 0; border-top: 1px solid var(--trait); }
+.anneau .liste div { display: grid; grid-template-columns: 10px minmax(0, 1fr) auto auto; gap: 10px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--trait); font-size: 13.5px; }
+.anneau .liste i { width: 10px; height: 10px; display: block; border: 1px solid rgba(14,20,27,.08); }
+.anneau .liste em { font-style: normal; font-family: var(--f-mono); font-size: 11px; color: var(--doux); text-align: right; }
+.anneau .liste strong { font-weight: 500; font-variant-numeric: tabular-nums; min-width: 44px; text-align: right; }
+@media (max-width: 640px) { .anneau { grid-template-columns: minmax(0, 1fr); } .anneau .rond { max-width: 240px; } }
+
+/* VSM */
+.vsm { display: grid; align-content: center; gap: 14px; }
+.vsm .etapes { display: grid; gap: 10px; }
+.vsm .boite { border: 1.5px solid var(--encre); padding: 10px 10px 12px; display: grid; gap: 6px; align-content: start; min-height: 128px; background: var(--plan); position: relative; }
+.vsm .boite.necessaire { border-color: var(--trait-fort); }
+.vsm .boite.gaspillage { border-color: var(--perte); }
+.vsm .boite.suppose { border-style: dashed; }
+.vsm .boite .type { font-family: var(--f-mono); font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--doux); }
+.vsm .boite.valeur .type { color: var(--encre); }
+.vsm .boite.gaspillage .type { color: var(--perte); }
+.vsm .boite .tx { font-size: 13px; line-height: 1.3; }
+.vsm .boite .app { font-family: var(--f-mono); font-size: 10px; color: var(--faible); margin-top: auto; }
+.vsm .echelle { position: relative; height: 64px; }
+.vsm .echelle svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.vsm .totaux { display: flex; flex-wrap: wrap; gap: 8px 22px; border-top: 1px solid var(--trait); padding-top: 12px; font-size: 13px; color: var(--doux); }
+.vsm .totaux b { color: var(--encre); font-weight: 500; font-variant-numeric: tabular-nums; }
+.vsm .totaux b.ia { color: var(--ia); }
+.puces { display: flex; flex-wrap: wrap; gap: 6px; }
+.puces span { font-family: var(--f-mono); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; padding: 3px 7px; border: 1px solid var(--perte); color: var(--perte); }
+.puces span.neutre { border-color: var(--trait-fort); color: var(--doux); }
+@media (max-width: 640px) { .vsm .boite { min-height: 0; } .vsm .etapes { grid-template-columns: 1fr !important; } .vsm .echelle { display: none; } }
+
+/* carte de chaleur */
+.chaleur { display: grid; align-content: center; gap: 14px; }
+.grille-c { display: grid; gap: 3px; }
+.grille-c .ent { font-family: var(--f-mono); font-size: 9.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--doux); align-self: end; padding: 0 2px 4px; line-height: 1.3; }
+.grille-c .ent.ia { color: var(--ia); }
+.grille-c .lib { font-size: 13px; line-height: 1.25; align-self: center; padding-right: 10px; }
+.grille-c .lib small { display: block; font-family: var(--f-mono); font-size: 10px; color: var(--faible); margin-top: 2px; }
+.grille-c .case { height: 54px; display: grid; align-content: center; padding: 0 8px; background: var(--plan-2); }
+.grille-c .case b { font-weight: 500; font-size: 17px; line-height: 1; font-variant-numeric: tabular-nums; }
+.grille-c .case span { font-family: var(--f-mono); font-size: 9.5px; letter-spacing: .02em; margin-top: 3px; opacity: .8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.echelle-c { display: flex; align-items: center; gap: 6px; font-family: var(--f-mono); font-size: 10px; color: var(--doux); letter-spacing: .04em; flex-wrap: wrap; }
+.echelle-c i { width: 22px; height: 12px; display: inline-block; }
+@media (max-width: 640px) { .grille-c .case span { display: none; } .grille-c .case { height: 40px; } }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="cadre">
+  <div class="haut">
+    <div class="ligne-haut">
+      <div class="marque" id="marque"></div>
+      <nav class="methodes" id="methodes" aria-label="Changer de méthode d'audit"></nav>
+    </div>
+    <div class="progres" id="progres" role="tablist" aria-label="Chapitres"></div>
+  </div>
+  <main class="scene-story" id="story"></main>
+  <div class="bas">
+    <div class="legende" id="legende"></div>
+    <div class="nav">
+      <button type="button" id="prec" aria-label="Chapitre précédent">←</button>
+      <button type="button" id="auto">Pause</button>
+      <button type="button" id="suiv" aria-label="Chapitre suivant">→</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script type="module">
+import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js";
+/* Remplacés par construire.py : les données d'audit, la méthode de ce fichier, et toutes les méthodes (pour ?methode=<id>). */
+const A = __DATA__;
+const METHODE = __METHODE__;
+const METHODES = __METHODES__;
+const demande = new URLSearchParams(location.search).get("methode");
+const M = (demande && METHODES.find(m => m.id === demande)) || METHODE || METHODES[0];
+document.title = `Audit IA · ${M.nom}`;
+
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const reduit = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const G = window.gsap;
+const CATS = { ia: "Avec l'IA", projet: "Projet et code", reunion: "Réunions", comm: "Messages", veille: "Web et veille", admin: "Administratif", systeme: "Système", pause: "Pause" };
+const ORDRE = ["ia", "projet", "reunion", "comm", "veille", "admin", "systeme", "pause"];
+const coul = c => css("--" + (CATS[c] ? c : "systeme"));
+const D0 = A.periode.debut_min, D1 = A.periode.fin_min;
+const hm = m => String(Math.floor(m / 60)).padStart(2, "0") + ":" + String(Math.floor(m % 60)).padStart(2, "0");
+const hmin = m => m >= 59.5 ? `${Math.floor(Math.round(m) / 60)} h ${String(Math.round(m) % 60).padStart(2, "0")}` : `${Math.round(m)} min`;
+const pct = x => Math.round(x * 100) + " %";
+const nf = (x, d = 0) => x.toLocaleString("fr-FR", { minimumFractionDigits: d, maximumFractionDigits: d });
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const mediane = arr => { const s = arr.filter(x => x != null).sort((a, b) => a - b); return s.length ? s[Math.floor(s.length / 2)] : null; };
+const dateCourte = (() => { const m = /^\d{4}-(\d{2})-(\d{2})/.exec(A.periode.debut || ""); return m ? `${m[2]}.${m[1]}` : ""; })();
+
+/* ---------- Données dérivées (toutes calculées depuis audit.json) ---------- */
+const postes = A.postes || [];
+const frises = postes.filter(p => p.segments && p.segments.length);
+const parCat = p => (p.mesures ? p.mesures.par_categorie_min : p.agregats_min) || {};
+const actif = p => Object.values(parCat(p)).reduce((a, b) => a + b, 0);
+const equipe = {}; postes.forEach(p => Object.entries(parCat(p)).forEach(([c, m]) => equipe[c] = (equipe[c] || 0) + m));
+const totalEquipe = Object.values(equipe).reduce((a, b) => a + b, 0);
+const partIA = totalEquipe ? (equipe.ia || 0) / totalEquipe : null;
+const ensemble = (A.parallele?.ensemble_min || []).reduce((a, x) => a + x[2], 0);
+const memeSujet = (A.parallele?.meme_sujet_min || []).reduce((a, x) => a + x[3], 0);
+const segA = (p, m) => p.segments.find(s => s[0] <= m && m < s[1]);
+const outils = A.outils || {};
+
+/* Modèle des tâches. Hypothèse affichée : l'IA reprend TAUX de la durée des étapes de saisie, d'action et de sortie. */
+const TAUX = .8, SEUIL_F = .5, AUTO = ["input", "action", "output"], HUMAIN = ["check", "decision"];
+const RE_IA = /orca|claude|chatgpt|codex|cursor|gemini|copilot|mistral|perplexity|opencode/;
+const ETATS = { deja: { etat: "Déjà avec l'IA", c: "--ia" }, peut: { etat: "L'IA peut le faire", c: "--perte" }, aide: { etat: "L'IA aide", c: "--projet" }, flou: { etat: "À observer", c: "--faible" } };
+const taches = (A.taches || []).map(t => {
+  const etapes = t.etapes || [], n = etapes.length || 1, goulots = t.goulots || [];
+  const auto = etapes.filter(e => AUTO.includes(e.type)).length / n;
+  const dejaIA = RE_IA.test((t.apps || []).join(" ").toLowerCase());
+  const flou = goulots.includes("unclear");
+  const faisab = Math.min(1, Math.max(0, auto * .8 + (goulots.includes("switching") ? .1 : 0) + (goulots.includes("waiting") ? .1 : 0) - (flou ? .3 : 0)));
+  const cle = dejaIA ? "deja" : flou ? "flou" : faisab >= SEUIL_F ? "peut" : "aide";
+  const heures = (t.frequence_par_semaine || 0) * (t.duree_moyenne_min || 0) / 60;
+  return { ...t, etapes, goulots, apps: t.apps || [], heures, auto, faisab, dejaIA, flou, cle, expo: ETATS[cle], gain: dejaIA || flou ? 0 : auto * TAUX };
+}).sort((a, b) => b.heures - a.heures);
+const heuresTaches = taches.reduce((s, t) => s + t.heures, 0);
+const heuresAuto = taches.reduce((s, t) => s + t.heures * t.gain, 0);
+const cible = taches.filter(t => t.gain > 0).sort((a, b) => b.heures * b.gain - a.heures * a.gain)[0];
+const seuilV = (() => { if (!taches.length) return 0; const h = taches.map(t => t.heures), k = Math.ceil(h.length / 2); return h.length > 1 ? (h[k - 1] + h[Math.min(k, h.length - 1)]) / 2 : h[0] / 2; })();
+const quadrant = t => (t.heures >= seuilV ? (t.faisab >= SEUIL_F ? "rapides" : "chantiers") : (t.faisab >= SEUIL_F ? "marge" : "pieges"));
+
+/* VSM de la tâche n°1 */
+const RE_RETOUCHE = /corrig|relanc|refai|ressais|recopi|reprend/i;
+const vsmDe = t => { if (!t || !t.etapes.length || !t.duree_moyenne_min) return null;
+  const d = t.duree_moyenne_min / t.etapes.length;
+  const etapes = t.etapes.map(e => ({ ...e, d, classe: RE_RETOUCHE.test(e.texte || "") ? "gaspillage" : ["action", "output"].includes(e.type) ? "valeur" : "necessaire" }));
+  const va = etapes.filter(e => e.classe === "valeur").reduce((s, e) => s + e.d, 0);
+  return { t, etapes, va, total: t.duree_moyenne_min, pce: va / t.duree_moyenne_min }; };
+const vsm = vsmDe(taches[0]);
+
+/* Carte de chaleur : cinq critères notés 0-3 par des règles simples sur les étapes, les apps et les goulots */
+const CRITERES = [
+  { id: "frequence", nom: "Fréquence", note: t => { const f = t.frequence_par_semaine || 0; return [f >= 30 ? 3 : f >= 20 ? 2 : f >= 10 ? 1 : 0, `${nf(f)}×/sem.`]; } },
+  { id: "ressaisie", nom: "Ressaisie et allers-retours", note: t => { const n = t.etapes.filter(e => ["input", "output"].includes(e.type)).length, s = t.goulots.includes("switching"); return [Math.min(3, n + (s ? 1 : 0)), `${n} saisie${n > 1 ? "s" : ""}${s ? " + bascules" : ""}`]; } },
+  { id: "decisions", nom: "Décisions humaines", note: t => { const n = t.etapes.filter(e => HUMAIN.includes(e.type)).length; return [Math.min(3, n), `${n} contrôle${n > 1 ? "s" : ""}`]; } },
+  { id: "sensibilite", nom: "Sensibilité des données", note: t => { const x = (t.titre + " " + t.etapes.map(e => e.texte).join(" ")).toLowerCase();
+      if (/pai|abonnement|factur|bancaire|banque|salaire|contrat|\brib\b|carte bleue/.test(x)) return [3, "paiement"];
+      if (/mail|pièce|client|candidat|personnel|\brh\b|santé/.test(x)) return [2, "messages"];
+      if (/dépôt|code|commit|repo|projet/.test(x)) return [1, "code interne"];
+      return [0, "public"]; } },
+  { id: "maturite", nom: "Maturité IA", ia: true, note: t => t.dejaIA ? [3, "en place"] : /\bia\b|agent|\bai\b/i.test(t.titre) ? [1, "explorée"] : [0, "aucune"] },
+];
+const notes = taches.map(t => ({ t, n: CRITERES.map(c => c.note(t)) }));
+
+/* Arbre MECE : temps total → catégories → applications */
+const RE_CAT = [["ia", /orca|claude|chatgpt|codex|cursor|gemini|copilot|mistral|perplexity|opencode/], ["pause", /musique|music|spotify|deezer|youtube|netflix/], ["reunion", /meet|zoom|teams/], ["comm", /discord|slack|whatsapp|gmail|outlook|messages|mail/], ["projet", /github|linear|notion|visual studio|terminal|figma/], ["admin", /agenda|calendar|drive/], ["systeme", /finder|réglages|usernotificationcenter|securityagent|loginwindow|app store/], ["veille", /chrome|firefox|safari|edge|arc|brave/]];
+const categorieApp = app => (RE_CAT.find(([, r]) => r.test(app.toLowerCase())) || ["systeme"])[0];
+const arbre = (() => { const t = {}; const ajout = (c, a, m) => { (t[c] ||= {}); t[c][a] = (t[c][a] || 0) + m; };
+  frises.forEach(p => p.segments.forEach(s => ajout(s[2], s[5], s[1] - s[0])));
+  postes.filter(p => !p.segments?.length).forEach(p => { const reste = { ...parCat(p) };
+    Object.entries(outils).forEach(([app, v]) => { const m = v[p.id], c = categorieApp(app); if (!m || !reste[c]) return; const pris = Math.min(m, reste[c]); ajout(c, app, pris); reste[c] -= pris; });
+    Object.entries(reste).forEach(([c, m]) => { if (m > .05) ajout(c, "Autres apps", m); }); });
+  return t; })();
+
+/* Agents : quels outils d'agents coexistent */
+const appsAgents = new Set(); frises.forEach(p => p.segments.forEach(s => { if (s[3] === "agent") appsAgents.add(s[5]); }));
+postes.filter(p => !p.segments?.length).forEach(p => Object.entries(outils).forEach(([app, v]) => { if (v[p.id] && /orca|codex|cursor|opencode/i.test(app)) appsAgents.add(app); }));
+const outilsIA = Object.keys(outils).filter(a => RE_IA.test(a.toLowerCase()) || appsAgents.has(a));
+const partsIA = postes.map(p => ({ p, v: actif(p) ? (parCat(p).ia || 0) / actif(p) : null })).filter(x => x.v != null);
+
+/* Recommandations : chacune n'existe que si la mesure qui la justifie existe */
+const recos = [];
+if (appsAgents.size >= 2) recos.push({ titre: "Une seule méthode pour piloter les agents", texte: `${appsAgents.size} outillages d'agents coexistent (${[...appsAgents].join(", ")}). Écrire les consignes communes une fois, en « skills » partagées, et les brancher partout.` });
+if (cible) recos.push({ titre: `Automatiser « ${cible.titre.toLowerCase()} »`, texte: `${hmin(cible.heures * 60)} par semaine aujourd'hui, dont ${hmin(cible.heures * cible.gain * 60)} que l'IA peut reprendre. Générer la skill depuis les étapes observées, puis remesurer une semaine.` });
+const medEcran = mediane(frises.map(p => p.mesures?.ecran_median_s)), plongeeMax = Math.max(0, ...frises.map(p => p.mesures?.plongee?.minutes || 0));
+if (medEcran) recos.push({ titre: "Protéger les plongées", texte: `Un changement d'écran toutes les ${medEcran} s en médiane. Regrouper messages et veille sur des créneaux, et suivre chaque semaine la plus longue plongée (${Math.round(plongeeMax)} min aujourd'hui).` });
+if (!recos.length) recos.push({ titre: "Élargir l'observation", texte: "Les mesures disponibles ne suffisent pas encore à justifier une action. Ajouter des postes et une semaine complète d'observation." });
+const limites = [];
+const sansFrise = postes.filter(p => !p.segments?.length).length;
+if (sansFrise) limites.push(`${sansFrise} poste${sansFrise > 1 ? "s" : ""} sur ${postes.length} sans frise minute par minute (résumé validé seulement).`);
+limites.push(`Une fenêtre de ${hmin(D1 - D0)} observée, pas une semaine.`);
+const postesTaches = new Set(taches.map(t => t.poste)).size;
+if (taches.length) limites.push(`Tâches décrites pour ${postesTaches} poste${postesTaches > 1 ? "s" : ""} sur ${postes.length}, extrapolées à la semaine.`); else limites.push("Aucune tâche répétée décrite pour l'instant.");
+limites.push("La qualité du travail n'est pas mesurée, seulement le temps.");
+
+/* ---------- Catalogue des métriques : id → {n (nombre animé), f (format), v (valeur), u (unité), l (libellé), c (couleur)} ---------- */
+const MET = {};
+const met = (id, o) => { if (o.n == null && o.v == null) return; if (o.v == null) o.v = o.f(o.n); MET[id] = o; };
+const hS = h => hmin(h * 60);
+met("temps_total", { n: totalEquipe || null, f: hmin, l: "de travail à l'écran, tous postes" });
+met("postes", { n: postes.length || null, f: x => nf(Math.round(x)), u: "postes", l: "postes observés" });
+met("postes_frise", { n: frises.length, f: x => nf(Math.round(x)), u: "postes", l: "suivis minute par minute" });
+met("periode", { v: `${hm(D0)} → ${hm(D1)}`, l: "fenêtre observée" });
+if (partIA != null) met("part_ia", { n: partIA * 100, f: x => Math.round(x) + " %", l: "du temps d'écran avec un outil d'IA", c: "ia" });
+const ag = frises.reduce((s, p) => s + (p.mesures?.ia_agent_min || 0), 0), ch = frises.reduce((s, p) => s + (p.mesures?.ia_chat_min || 0), 0);
+if (ag + ch) met("part_agent", { n: ag / (ag + ch) * 100, f: x => Math.round(x) + " %", l: "du temps d'IA passe par des agents", c: "ia" });
+if (partsIA.length >= 2) { const lo = Math.min(...partsIA.map(x => x.v)), hi = Math.max(...partsIA.map(x => x.v));
+  met("ecart_ia", { n: Math.round((hi - lo) * 100), f: x => Math.round(x) + " pts", t: `de ${pct(lo)} à ${pct(hi)}`, l: `d'écart d'usage de l'IA entre postes (${pct(lo)} à ${pct(hi)})` }); }
+const catTri = Object.entries(equipe).sort((a, b) => b[1] - a[1]);
+if (catTri.length) { met("cat_1", { v: CATS[catTri[0][0]] || catTri[0][0], l: "premier poste de temps" }); met("cat_1_part", { n: catTri[0][1] / totalEquipe * 100, f: x => Math.round(x) + " %", l: `du temps dans « ${CATS[catTri[0][0]]} »`, c: catTri[0][0] === "ia" ? "ia" : null }); }
+if (frises.length) {
+  met("ecran_median_s", { n: medEcran, f: x => Math.round(x) + " s", l: "par écran, en médiane, avant de changer" });
+  const bph = frises.reduce((s, p) => s + (p.mesures?.bascules_par_heure || 0), 0) / frises.length;
+  met("bascules_heure", { n: bph, f: x => nf(x, 1), u: "par heure", t: `${nf(bph, 1)} changements d'application par heure en moyenne`, l: "changements d'application par heure" });
+  met("plongee_max", { n: plongeeMax, f: x => Math.round(x) + " min", l: "la plus longue plongée sans décrocher" });
+  met("minutes_ensemble", { n: ensemble, f: hmin, l: "à l'écran en même temps" });
+  met("meme_sujet_min", { n: memeSujet, f: hmin, l: "sur le même sujet en même temps" });
+}
+met("outils", { n: Object.keys(outils).length, f: x => nf(Math.round(x)), u: "outils", l: "outils utilisés plus de 3 min" });
+met("outils_partages", { n: Object.values(outils).filter(v => Object.keys(v).length >= 2).length, f: x => nf(Math.round(x)), u: "outils", l: "outils partagés par plusieurs postes" });
+met("outils_ia", { n: outilsIA.length, f: x => nf(Math.round(x)), u: "outils", l: `outils d'IA en usage (${outilsIA.join(", ")})`, c: "ia" });
+if (taches.length) {
+  met("taches", { n: taches.length, f: x => nf(Math.round(x)), u: "tâches", l: "tâches répétées décrites" });
+  met("heures_taches", { n: heuresTaches * 60, f: hmin, u: "par semaine", l: "de tâches répétées par semaine" });
+  met("heures_automatisables", { n: heuresAuto * 60, f: hmin, u: "par semaine", l: "par semaine que l'IA peut reprendre", c: "ia" });
+  met("heures_restantes", { n: (heuresTaches - heuresAuto) * 60, f: hmin, u: "par semaine", l: "par semaine qui restent humaines" });
+  met("heures_an", { n: heuresAuto * 47, f: x => nf(Math.round(x)) + " h", u: "par an", l: "rendues sur une année de 47 semaines", c: "ia" });
+  met("jours_an", { n: heuresAuto * 47 / 7, f: x => nf(Math.round(x)), u: "jours", l: "de travail de 7 h rendus par an", c: "ia" });
+  met("gains_rapides", { n: taches.filter(t => quadrant(t) === "rapides").length, f: x => nf(Math.round(x)), u: "tâches", l: "tâches en « gains rapides »" });
+  met("taches_deja_ia", { n: taches.filter(t => t.dejaIA).length, f: x => nf(Math.round(x)), u: "tâches", l: "tâches déjà faites avec l'IA", c: "ia" });
+  met("taches_sensibles", { n: notes.filter(x => x.n[3][0] >= 2).length, f: x => nf(Math.round(x)), u: "tâches", l: "tâches qui touchent des données sensibles" });
+  met("tache_1", { v: taches[0].titre, l: "tâche n°1 en heures par semaine" });
+  met("tache_1_heures", { n: taches[0].heures * 60, f: hmin, u: "par semaine", l: `pour « ${taches[0].titre} »` });
+}
+if (cible) { met("cible", { v: cible.titre, l: "tâche à automatiser en premier" }); met("cible_gain", { n: cible.heures * cible.gain * 60, f: hmin, u: "par semaine", l: `rendues sur « ${cible.titre} »`, c: "ia" }); }
+if (vsm) met("pce", { n: vsm.pce * 100, f: x => Math.round(x) + " %", l: "du temps de traversée à valeur ajoutée (PCE)" });
+met("actions", { n: recos.length, f: x => nf(Math.round(x)), u: recos.length > 1 ? "actions" : "action", l: "actions issues des mesures" });
+
+/* Texte des méthodes : {id} remplacé par la valeur ; une métrique absente devient « n.d. » */
+const remplir = s => String(s || "").replace(/\{([a-z0-9_]+)\}/g, (_, id) => MET[id] ? esc(MET[id].t || MET[id].v) : "n.d.");
+
+/* ---------- Outils communs ---------- */
+function toile(c) { const r = c.getBoundingClientRect(), d = Math.min(devicePixelRatio || 1, 2); if (c.width !== Math.round(r.width * d) || c.height !== Math.round(r.height * d)) { c.width = Math.round(r.width * d); c.height = Math.round(r.height * d); } const x = c.getContext("2d"); x.setTransform(d, 0, 0, d, 0, 0); x.clearRect(0, 0, r.width, r.height); return { x, w: r.width, h: r.height }; }
+const NS = "http://www.w3.org/2000/svg";
+function S(parent, tag, attrs = {}, texte) { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (texte != null) e.textContent = texte; parent.appendChild(e); return e; }
+const coupe = (s, max) => { const mots = String(s).split(" "), out = []; let l = ""; mots.forEach(m => { if ((l + " " + m).trim().length > max && l) { out.push(l); l = m; } else l = (l + " " + m).trim(); }); if (l) out.push(l); return out; };
+const tween = (duree, maj, ease = "power2.out", delai = 0) => { if (G && !reduit) { const o = { v: 0 }; return G.to(o, { v: 1, duration: duree, ease, delay: delai, onUpdate: () => maj(o.v) }); } maj(1); };
+const vide = (titre, texte) => ({ html: `<div class="viz"><div class="vide"><span class="mono">Donnée manquante</span><b>${titre}</b><p>${texte}</p></div></div>`, init: () => ({}) });
+const legCats = cats => ORDRE.filter(c => cats[c]).map(c => `<span><i style="background:${coul(c)}"></i>${CATS[c]}</span>`).join("");
+const legEtats = () => Object.values(ETATS).filter(e => taches.some(t => t.expo === e)).map(e => `<span><i style="background:var(${e.c})"></i>${e.etat}</span>`).join("");
+function compter(el) { el.querySelectorAll("[data-met]").forEach(x => { const m = MET[x.dataset.met]; if (!m || m.n == null || !m.f) return; const val = x.querySelector(".val") || x; tween(1.2, p => val.textContent = m.f(m.n * p), "power2.out"); val.textContent = m.f(G && !reduit ? 0 : m.n); }); }
+
+/* three.js, comme la couverture de l'audit */
+function monter3d(canvas, construire) {
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+  renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  const scene = new THREE.Scene(); scene.background = new THREE.Color(css("--plan"));
+  const cam = new THREE.OrthographicCamera(-1, 1, 1, -1, .1, 200); cam.position.set(22, 19, 22); cam.lookAt(0, 0, 0);
+  scene.add(new THREE.HemisphereLight(0xffffff, 0xc9ced6, 2.1));
+  const s = new THREE.DirectionalLight(0xffffff, 1.6); s.position.set(-8, 20, 12); s.castShadow = true; s.shadow.mapSize.set(2048, 2048);
+  Object.assign(s.shadow.camera, { left: -16, right: 16, top: 16, bottom: -16 }); s.shadow.radius = 6; scene.add(s);
+  const maj = construire(scene, cam);
+  let largeur = 0, hauteur = 0, prec = null, vivant = false;
+  function rendu(t) {
+    const r = canvas.getBoundingClientRect();
+    if (r.width && (r.width !== largeur || r.height !== hauteur)) { largeur = r.width; hauteur = r.height; renderer.setSize(r.width, r.height, false);
+      const a = r.width / r.height, v = maj.vue(a); cam.left = -v * a; cam.right = v * a; cam.top = v; cam.bottom = -v; cam.updateProjectionMatrix(); }
+    const dt = prec === null ? 0 : Math.min(.05, (t - prec) / 1000); prec = t;
+    maj(t, dt, r); renderer.render(scene, cam); maj.apres?.(r);
+    if (vivant) requestAnimationFrame(rendu);
+  }
+  return { demarrer() { if (!vivant) { vivant = true; prec = null; requestAnimationFrame(rendu); } }, arreter() { vivant = false; }, cam };
+}
+const mat = c => new THREE.MeshStandardMaterial({ color: c, roughness: .9, metalness: 0 });
+const aretes = (m, op = .28) => { m.add(new THREE.LineSegments(new THREE.EdgesGeometry(m.geometry), new THREE.LineBasicMaterial({ color: 0x5a6472, transparent: true, opacity: op }))); return m; };
+
+/* ---------- Renderers : un par type de viz. Chacun renvoie { html, init(el) → {entrer, sortir, redessiner}, defaut, legende, extra, sansChiffre } ---------- */
+const VIZ = {};
+
+VIZ["chiffre-cle"] = ch => {
+  const ids = (ch.metriques || []).filter(id => MET[id] && MET[id].n != null);
+  if (!ids.length) ids.push(...["temps_total", "part_ia", "postes"].filter(id => MET[id]));
+  if (!ids.length) return vide("Aucun chiffre disponible.", "Les données d'audit ne contiennent encore aucune mesure.");
+  const [p, ...autres] = ids, m = MET[p];
+  return { sansChiffre: true, html: `<div class="viz"><div class="pad"><div class="cle">
+      <div class="grand${m.c === "ia" ? " ia" : ""}" data-met="${p}"><span class="val">${esc(m.v)}</span>${m.u ? `<small>${esc(m.u)}</small>` : ""}</div>
+      <div class="sous">${esc(m.l)}</div>
+      ${autres.length ? `<div class="tuiles">${autres.slice(0, 3).map(id => `<div class="tuile"><b class="${MET[id].c === "ia" ? "ia" : ""}" data-met="${id}"><span class="val">${esc(MET[id].v)}</span>${MET[id].u ? `<small>${esc(MET[id].u)}</small>` : ""}</b><span>${esc(MET[id].l)}</span></div>`).join("")}</div>` : ""}
+    </div></div></div>`,
+    init(el) { const items = [...el.querySelectorAll(".cle > *, .tuile")];
+      return { entrer() { compter(el.querySelector(".viz")); if (G && !reduit) G.fromTo(items, { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: .7, stagger: .1, ease: "power3.out" }); } }; } };
+};
+
+VIZ["bureau-3d"] = () => ({ defaut: "temps_total", legende: legCats(equipe), html: `
+  <div class="viz"><canvas data-r="bureau" aria-label="Maquette 3D du bureau animée sur la soirée"></canvas><svg class="fils"></svg><div class="etqs"></div>
+    <div class="horloge"></div>
+    <div class="frise3d"><canvas data-r="frise" tabindex="0" aria-label="Frise de la soirée, glisser pour remonter le temps"></canvas></div></div>`,
+  init(el) {
+    const frise = el.querySelector('[data-r="frise"]'), fils = el.querySelector(".fils"), etqs = el.querySelector(".etqs"), horloge = el.querySelector(".horloge");
+    let temps = D0 + 60, glisse = false;
+    const p3 = monter3d(el.querySelector('[data-r="bureau"]'), (scene) => {
+      const sol = aretes(new THREE.Mesh(new THREE.BoxGeometry(22, .3, 15), mat(0xf0f2f5)), .35); sol.position.y = -.15; sol.receiveShadow = true; scene.add(sol);
+      const grille = new THREE.GridHelper(22, 44, 0xdfe3e8, 0xe9ecf0); grille.position.y = .01; grille.scale.z = 15 / 22; scene.add(grille);
+      [[0, 1, -7.5, 22, 2, .12], [-11, 1, 0, .12, 2, 15]].forEach(([x, y, z, w, h, d]) => { const m = aretes(new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat(0xe6e9ed)), .25); m.position.set(x, y, z); m.receiveShadow = true; scene.add(m); });
+      const table = aretes(new THREE.Mesh(new THREE.CylinderGeometry(1.6, 1.6, .1, 48), mat(0xffffff))); table.position.set(6.5, .78, 3); table.castShadow = true; scene.add(table);
+      const pied = new THREE.Mesh(new THREE.CylinderGeometry(.1, .18, .74, 12), mat(0xc8ced6)); pied.position.set(6.5, .37, 3); scene.add(pied);
+      for (let k = 0; k < 6; k++) { const a = k / 6 * Math.PI * 2, c = aretes(new THREE.Mesh(new THREE.BoxGeometry(.5, .45, .5), mat(0xf4f5f7)), .2); c.position.set(6.5 + Math.cos(a) * 2.3, .23, 3 + Math.sin(a) * 2.3); c.castShadow = true; scene.add(c); }
+      const places = [[-7.6, -4.4], [-3.8, -4.4], [0, -4.4], [-7.6, .8], [-3.8, .8]];
+      const objets = places.map(([x, z], i) => {
+        const g = new THREE.Group(); g.position.set(x, 0, z); scene.add(g);
+        const b = aretes(new THREE.Mesh(new THREE.BoxGeometry(2.8, .1, 1.45), mat(0xffffff))); b.position.y = .86; b.castShadow = b.receiveShadow = true; g.add(b);
+        [[-1.25, -.58], [1.25, -.58], [-1.25, .58], [1.25, .58]].forEach(([a, c]) => { const l = new THREE.Mesh(new THREE.BoxGeometry(.05, .86, .05), mat(0xc8ced6)); l.position.set(a, .43, c); g.add(l); });
+        const em = new THREE.MeshStandardMaterial({ color: 0xe9ecf0, emissive: 0x000000, emissiveIntensity: .9, roughness: .4 });
+        const ecran = aretes(new THREE.Mesh(new THREE.BoxGeometry(1.45, .85, .05), em), .4); ecran.position.set(0, 1.4, -.45); ecran.castShadow = true; g.add(ecran);
+        const p = postes[i];
+        const corps = aretes(new THREE.Mesh(new THREE.CapsuleGeometry(.24, .48, 6, 14), mat(p ? 0x3a4656 : 0xe6e9ed)), .15); corps.position.set(0, .86, .98); corps.castShadow = true; g.add(corps);
+        const tete = aretes(new THREE.Mesh(new THREE.SphereGeometry(.21, 20, 14), mat(p ? 0x3a4656 : 0xe6e9ed)), .1); tete.position.set(0, 1.45, .98); tete.castShadow = true; g.add(tete);
+        return { em, corps, tete, ancre: new THREE.Vector3(x, 2, z - .45), poste: p };
+      });
+      const etiquettes = objets.map((o, i) => { const d = document.createElement("div"); d.className = "etq"; etqs.appendChild(d);
+        const l = document.createElementNS(NS, "polyline"); l.setAttribute("fill", "none"); l.setAttribute("stroke-width", "1"); fils.appendChild(l);
+        const pt = document.createElementNS(NS, "circle"); pt.setAttribute("r", "2.2"); fils.appendChild(pt);
+        return { o, d, l, pt, dx: [-60, 20, 70, -80, -10][i], dy: [-55, -85, -40, 55, 85][i] }; });
+      const maj = (t, dt) => {
+        if (!glisse && !reduit) { temps += dt * 9; if (temps >= D1) temps = D0; }
+        objets.forEach(o => { const p = o.poste;
+          if (!p) { o.em.emissive.setHex(0); o.em.color.setHex(0xe9ecf0); return; }
+          if (p.segments.length) { const s = segA(p, temps); const c = new THREE.Color(s ? coul(s[2]) : "#e9ecf0"); o.em.color.copy(c); o.em.emissive.copy(c).multiplyScalar(s && s[2] === "ia" ? .55 : .15); o.corps.visible = o.tete.visible = !!s; }
+          else { const c = new THREE.Color(coul("ia")); o.em.color.copy(c).lerp(new THREE.Color("#ffffff"), .55); o.em.emissive.setHex(0); } });
+        horloge.textContent = (dateCourte ? dateCourte + " · " : "") + hm(temps);
+        dessinerFrise();
+      };
+      maj.vue = a => a > 1.4 ? 9 : 11.5;
+      maj.apres = r => { etiquettes.forEach(e => { const v = e.o.ancre.clone().project(p3.cam), x = (v.x + 1) / 2 * r.width, y = (1 - v.y) / 2 * r.height;
+        const p = e.o.poste; let html, vive = false;
+        if (!p) html = `Poste libre<small>pas encore audité</small>`;
+        else if (!p.segments.length) html = `${p.id} · ${esc(p.qui)}<small>résumé validé · ${actif(p) ? pct((parCat(p).ia || 0) / actif(p)) : "n.d."} avec l'IA</small>`;
+        else { const s = segA(p, temps); vive = s && s[2] === "ia"; html = s ? `${p.id} · ${esc(p.qui)} · <b>${CATS[s[2]] || s[2]}</b><small>${esc(s[5])}${s[3] === "agent" ? " · agent" : ""}</small>` : `${p.id} · ${esc(p.qui)}<small>hors écran</small>`; }
+        if (e.d.innerHTML !== html) e.d.innerHTML = html; e.d.classList.toggle("vive", !!vive);
+        const w = e.d.offsetWidth, h = e.d.offsetHeight, lx = x + e.dx, ly = y + e.dy;
+        const gx = Math.min(Math.max(8, lx - (e.dx < 0 ? w : 0)), r.width - w - 8), gy = Math.min(Math.max(44, e.dy < 0 ? ly - h : ly), r.height - h - 90);
+        e.d.style.left = gx + "px"; e.d.style.top = gy + "px";
+        const bx = e.dx < 0 ? gx + w : gx, by = e.dy < 0 ? gy + h : gy;
+        e.l.setAttribute("points", `${x},${y} ${x + e.dx * .45},${by} ${bx},${by}`); e.l.setAttribute("stroke", vive ? css("--ia") : css("--trait-fort"));
+        e.pt.setAttribute("cx", x); e.pt.setAttribute("cy", y); e.pt.setAttribute("fill", vive ? css("--ia") : css("--faible")); }); };
+      return maj;
+    });
+    function dessinerFrise() {
+      const { x, w, h } = toile(frise), X = m => (m - D0) / (D1 - D0) * w, lanes = Math.max(1, frises.length), hl = (h - 16) / lanes;
+      frises.forEach((p, k) => { const y = k * hl; x.fillStyle = css("--plan-2"); x.fillRect(0, y, w, hl - 3);
+        p.segments.forEach(s => { x.fillStyle = coul(s[2]); x.globalAlpha = s[0] <= temps ? 1 : .3; x.fillRect(X(s[0]), y, Math.max(1, X(s[1]) - X(s[0]) - .4), hl - 3); });
+        x.globalAlpha = 1; });
+      x.fillStyle = css("--faible"); x.font = "10px Geist Mono, monospace";
+      for (let m = Math.ceil(D0 / 60) * 60; m <= D1; m += 60) x.fillText(hm(m), Math.min(X(m) + 2, w - 34), h - 2);
+      const px = X(temps); x.fillStyle = css("--encre"); x.fillRect(px - .5, 0, 1, h - 12);
+    }
+    const versT = e => { const r = frise.getBoundingClientRect(); temps = D0 + Math.min(1, Math.max(0, (e.clientX - r.left) / r.width)) * (D1 - D0); };
+    frise.addEventListener("pointerdown", e => { glisse = true; frise.setPointerCapture(e.pointerId); versT(e); });
+    frise.addEventListener("pointermove", e => { if (glisse) versT(e); });
+    frise.addEventListener("pointerup", () => glisse = false);
+    frise.addEventListener("keydown", e => { if (e.key === "ArrowRight" || e.key === "ArrowLeft") { e.preventDefault(); e.stopPropagation(); temps = Math.min(D1 - .1, Math.max(D0, temps + (e.key === "ArrowRight" ? 5 : -5))); } });
+    return { entrer: () => p3.demarrer(), sortir: () => p3.arreter() };
+  } });
+
+VIZ["barres-empilees"] = () => {
+  if (!totalEquipe) return vide("Aucun temps mesuré.", "Il faut au moins un poste avec une frise ou un résumé validé.");
+  return { defaut: "part_ia", legende: legCats(equipe), html: `<div class="viz"><div class="pad"><div class="barres"></div></div></div>`,
+  init(el) {
+    const lignes = [{ nom: "Équipe", sous: hmin(totalEquipe), cats: equipe, tot: totalEquipe }, ...postes.filter(p => actif(p)).map(p => ({ nom: p.id + " · " + p.qui, sous: hmin(actif(p)) + (p.segments.length ? "" : " · résumé"), cats: parCat(p), tot: actif(p) }))];
+    el.querySelector(".barres").innerHTML = lignes.map((l, k) => `<div class="barre-l"><div class="tete"><b>${esc(l.nom)}</b><span>${l.sous} · ${pct((l.cats.ia || 0) / l.tot)} IA</span></div>
+      <div class="pile" style="${k === 0 ? "height:38px" : ""}">${ORDRE.filter(c => l.cats[c]).map(c => `<i data-w="${l.cats[c] / l.tot * 100}" style="background:${coul(c)}" title="${CATS[c]} · ${hmin(l.cats[c])}"></i>`).join("")}</div></div>`).join("");
+    const is = [...el.querySelectorAll(".pile i")];
+    return { entrer() { is.forEach(i => i.style.width = "0%"); if (G && !reduit) G.to(is, { width: (k, i) => i.dataset.w + "%", duration: .9, ease: "power3.out", stagger: .03 }); else is.forEach(i => i.style.width = i.dataset.w + "%"); } };
+  } };
+};
+
+VIZ["frise"] = () => {
+  if (!frises.length) return vide("Pas de frise minute par minute.", "Aucun poste n'a encore fourni d'export complet : seuls des résumés validés sont disponibles.");
+  return { defaut: "minutes_ensemble", legende: legCats(equipe) + `<span><i style="background:var(--plan-2)"></i>Minutes partagées</span>`, html: `<div class="viz"><canvas aria-label="Frises superposées des postes"></canvas></div>`,
+  init(el) {
+    const c = el.querySelector("canvas"); let p = 1;
+    const dessiner = () => {
+      const { x, w, h } = toile(c), g = 90, X = m => g + (m - D0) / (D1 - D0) * (w - g - 28), lim = D0 + (D1 - D0) * p;
+      const lanes = postes.length, hl = Math.min(92, (h - 130) / lanes), top = Math.max(40, (h - lanes * hl) / 2);
+      for (let m = D0; m < Math.min(D1, lim); m++) { const act = frises.filter(f => segA(f, m + .5)); if (act.length >= 2) { x.fillStyle = css("--plan-2"); x.fillRect(X(m), top - 8, X(m + 1) - X(m) + .5, lanes * hl + 8); const [a, b] = act.map(f => segA(f, m + .5)); if (a[4] && a[4] === b[4]) { x.fillStyle = css("--ia"); x.fillRect(X(m), top - 14, X(m + 1) - X(m) + .5, 4); } } }
+      postes.forEach((pp, k) => { const y = top + k * hl;
+        x.fillStyle = css("--encre"); x.font = "500 12px Geist, sans-serif"; x.fillText(pp.id, 0, y + hl / 2); x.fillStyle = css("--doux"); x.font = "10px Geist Mono, monospace"; x.fillText(pp.qui, 0, y + hl / 2 + 14);
+        if (!pp.segments.length) { x.strokeStyle = css("--trait-fort"); x.setLineDash([4, 4]); x.strokeRect(g, y + 6, w - g - 28, hl - 18); x.setLineDash([]); x.fillStyle = css("--faible"); x.fillText("résumé validé · pas de frise minute par minute", g + 10, y + hl / 2 + 2); return; }
+        pp.segments.forEach(s => { if (s[0] > lim) return; x.fillStyle = coul(s[2]); x.fillRect(X(s[0]), y + 6, Math.max(1, X(Math.min(s[1], lim)) - X(s[0]) - .4), hl - 18); }); });
+      x.fillStyle = css("--faible"); x.font = "10px Geist Mono, monospace";
+      for (let m = Math.ceil(D0 / 60) * 60; m <= D1; m += 30) { const xx = X(m); x.fillRect(xx, top + lanes * hl - 6, 1, 5); if (m % 60 === 0) x.fillText(hm(m), xx - 14, top + lanes * hl + 12); }
+    };
+    return { entrer() { p = 0; tween(2.2, v => { p = v; dessiner(); }, "power2.inOut"); }, redessiner() { p = 1; dessiner(); } };
+  } };
+};
+
+VIZ["reseau"] = () => {
+  if (!Object.keys(outils).length) return vide("Aucun outil recensé.", "Les exports ne contiennent pas encore d'applications utilisées plus de 3 minutes.");
+  return { defaut: "outils_partages", legende: `<span><i style="background:var(--ia)"></i>Outil partagé par plusieurs postes</span><span><i style="background:var(--trait-fort)"></i>Outil d'un seul poste</span><span>épaisseur = minutes</span>`,
+  html: `<div class="viz"><canvas aria-label="Réseau des postes et des outils qu'ils utilisent"></canvas></div>`,
+  init(el) {
+    const c = el.querySelector("canvas"); let p = 1;
+    const liste = Object.entries(outils).map(([n, v]) => ({ n, v, tot: Object.values(v).reduce((a, b) => a + b, 0) }));
+    const dessiner = () => { const { x, w, h } = toile(c);
+      const P = postes.map((pp, i) => ({ id: pp.id, qui: pp.qui, x: Math.max(110, w * .16), y: h * (.22 + i * .56 / Math.max(1, postes.length - 1)) }));
+      const O = liste.map((o, i) => ({ ...o, x: w * .7, y: h * (.1 + i * .8 / Math.max(1, liste.length - 1)) }));
+      O.forEach(o => { if (Object.keys(o.v).length >= 2) o.x = w * .48; });
+      const maxV = Math.max(...liste.flatMap(o => Object.values(o.v)));
+      O.forEach(o => Object.entries(o.v).forEach(([pid, m]) => { const a = P.find(q => q.id === pid); if (!a) return; const commun = Object.keys(o.v).length >= 2;
+        x.strokeStyle = commun ? css("--ia") : css("--trait-fort"); x.globalAlpha = .25 + .75 * p; x.lineWidth = 1 + 9 * m / maxV * p;
+        x.beginPath(); x.moveTo(a.x + 8, a.y); x.bezierCurveTo((a.x + o.x) / 2, a.y, (a.x + o.x) / 2, o.y, o.x - 8, o.y); x.stroke(); x.globalAlpha = 1; }));
+      P.forEach(a => { x.fillStyle = css("--encre"); x.fillRect(a.x - 7, a.y - 7, 14, 14); x.font = "500 13px Geist, sans-serif"; x.textAlign = "right"; x.fillText(a.id, a.x - 16, a.y - 2); x.fillStyle = css("--doux"); x.font = "10px Geist Mono, monospace"; x.fillText(a.qui, a.x - 16, a.y + 12); x.textAlign = "start"; });
+      O.forEach(o => { const commun = Object.keys(o.v).length >= 2, r = 5 + Math.sqrt(o.tot) * .9;
+        x.fillStyle = css("--plan"); x.strokeStyle = commun ? css("--ia") : css("--trait-fort"); x.lineWidth = 1.5; x.beginPath(); x.arc(o.x, o.y, r, 0, 7); x.fill(); x.stroke();
+        if (commun) { x.fillStyle = css("--ia"); x.beginPath(); x.arc(o.x, o.y, r * .45, 0, 7); x.fill(); }
+        x.fillStyle = css("--encre"); x.font = "500 12px Geist, sans-serif"; x.fillText(o.n, o.x + r + 8, o.y - 1); x.fillStyle = css("--doux"); x.font = "10px Geist Mono, monospace"; x.fillText(hmin(o.tot) + " · " + Object.keys(o.v).length + " poste" + (Object.keys(o.v).length > 1 ? "s" : ""), o.x + r + 8, o.y + 12); }); };
+    return { entrer() { p = 0; tween(1.4, v => { p = v; dessiner(); }); }, redessiner() { p = 1; dessiner(); } };
+  } };
+};
+
+VIZ["anneau"] = () => {
+  if (!totalEquipe) return vide("Aucun temps mesuré.", "Il faut au moins un poste avec une frise ou un résumé validé.");
+  const cats = ORDRE.filter(c => equipe[c]).map(c => ({ c, m: equipe[c] }));
+  return { defaut: "cat_1_part", legende: "", html: `<div class="viz"><div class="pad"><div class="anneau">
+      <div class="rond"><svg viewBox="0 0 200 200" aria-label="Répartition du temps de l'équipe par catégorie"></svg><div class="centre"><b>${partIA != null ? pct(partIA) : "n.d."}</b><span>avec l'IA</span></div></div>
+      <div class="liste">${cats.map(x => `<div><i style="background:${coul(x.c)}"></i><span>${CATS[x.c]}</span><em>${hmin(x.m)}</em><strong>${pct(x.m / totalEquipe)}</strong></div>`).join("")}</div>
+    </div></div></div>`,
+  init(el) {
+    const svg = el.querySelector("svg"), R = 78, C = 2 * Math.PI * R, ecart = cats.length > 1 ? 1.6 : 0;
+    S(svg, "circle", { cx: 100, cy: 100, r: R, fill: "none", stroke: css("--plan-2"), "stroke-width": 26 });
+    let deb = 0;
+    const arcs = cats.map(x => { const len = x.m / totalEquipe * C; const a = S(svg, "circle", { cx: 100, cy: 100, r: R, fill: "none", stroke: coul(x.c), "stroke-width": x.c === "ia" ? 30 : 24, transform: "rotate(-90 100 100)", "stroke-dashoffset": -deb, "stroke-dasharray": `0 ${C}` }); const o = { a, len: Math.max(.5, len - ecart), deb }; deb += len; return o; });
+    const lignes = [...el.querySelectorAll(".liste > div")], centre = el.querySelector(".centre b");
+    return { entrer() {
+      arcs.forEach(o => o.a.setAttribute("stroke-dasharray", `0 ${C}`));
+      if (G && !reduit) { let t = 0; arcs.forEach(o => { const d = .25 + 1.1 * o.len / C, s = { v: 0 }; G.to(s, { v: 1, duration: d, delay: t, ease: "power1.inOut", onUpdate: () => o.a.setAttribute("stroke-dasharray", `${o.len * s.v} ${C}`) }); t += d; });
+        G.fromTo(lignes, { opacity: 0, x: 10 }, { opacity: 1, x: 0, duration: .5, stagger: .08, ease: "power2.out" });
+        const n = { v: 0 }; if (partIA != null) G.to(n, { v: partIA, duration: 1.4, ease: "power2.out", onUpdate: () => centre.textContent = pct(n.v) }); }
+      else arcs.forEach(o => o.a.setAttribute("stroke-dasharray", `${o.len} ${C}`)); } };
+  } };
+};
+
+VIZ["liste-classee"] = () => {
+  if (!taches.length) return vide("Aucune tâche répétée décrite.", "Le classement a besoin d'au moins un résumé validé avec ses tâches.");
+  return { defaut: "heures_taches", legende: legEtats(), html: `<div class="viz"><div class="pad"><div class="taches"></div></div></div>`,
+  init(el) {
+    const box = el.querySelector(".taches"), max = Math.max(...taches.map(t => t.heures)) || 1;
+    box.innerHTML = taches.map((t, k) => `<div class="tache"><div class="rang">${String(k + 1).padStart(2, "0")}</div><div class="t">${esc(t.titre)}</div><div class="h">${hmin(t.heures * 60)}/sem.</div>
+      <div class="rail"><i data-w="${t.heures / max * 100}" style="background:var(${t.expo.c})"></i></div><div class="etat" style="color:var(${t.expo.c})">${t.expo.etat}</div><div class="h">${nf(t.frequence_par_semaine || 0)}× · ${nf(t.duree_moyenne_min || 0, t.duree_moyenne_min % 1 ? 1 : 0)} min</div></div>`).join("");
+    const is = [...box.querySelectorAll(".rail i")];
+    return { entrer() { is.forEach(i => i.style.width = "0%"); if (G && !reduit) G.to(is, { width: (k, i) => i.dataset.w + "%", duration: .9, ease: "power3.out", stagger: .07 }); else is.forEach(i => i.style.width = i.dataset.w + "%"); } };
+  } };
+};
+
+VIZ["course"] = () => {
+  if (!cible) return vide("Aucune tâche à rejouer.", "Aucune tâche décrite n'a d'étapes que l'IA peut reprendre : la course avant / après n'a rien à comparer.");
+  return { defaut: "cible_gain", legende: `<span><i style="background:var(--perte)"></i>Saisie et allers-retours</span><span><i style="background:var(--projet)"></i>Jugement humain</span><span><i style="background:var(--ia)"></i>Pris en charge par l'IA</span>`,
+  extra: `<button type="button" class="bouton plein" data-r="rejouer">Rejouer la course</button>`,
+  html: `<div class="viz"><div class="pad"><div class="course"></div></div></div>`,
+  init(el) {
+    const box = el.querySelector(".course"), n = cible.etapes.length, dur = cible.duree_moyenne_min;
+    const etapes = cible.etapes.map(e => { const auto = AUTO.includes(e.type); return { ...e, auto, avant: dur / n, apres: auto ? dur / n * (1 - TAUX) : dur / n }; });
+    const piste = (nom, cle) => `<div class="piste"><div class="tete"><b>${nom}</b><span class="chrono" data-c="${cle}">0:00</span></div><div class="rangee">${etapes.map(e => `<div style="flex:${e.avant}"><i data-c="${cle}" data-f="${e[cle] / e.avant}" style="background:var(${cle === "apres" && e.auto ? "--ia" : (e.auto && cle === "avant" ? "--perte" : "--projet")})"></i><span>${esc(e.texte)}</span></div>`).join("")}</div></div>`;
+    box.innerHTML = `<div class="mono">${esc(cible.titre)} · ${nf(cible.frequence_par_semaine)} fois par semaine</div>` + piste("Aujourd'hui", "avant") + piste("Avec l'IA", "apres");
+    const jouer = () => {
+      const segs = { avant: [...box.querySelectorAll('i[data-c="avant"]')], apres: [...box.querySelectorAll('i[data-c="apres"]')] };
+      Object.values(segs).flat().forEach(i => i.style.width = "0%");
+      ["avant", "apres"].forEach(cle => { const chrono = box.querySelector(`.chrono[data-c="${cle}"]`), total = etapes.reduce((s, e) => s + e[cle], 0);
+        if (!G || reduit) { segs[cle].forEach(i => i.style.width = i.dataset.f * 100 + "%"); chrono.textContent = nf(total, 1) + " min"; return; }
+        const tl = G.timeline(); let t = 0;
+        segs[cle].forEach((i, k) => { const d = etapes[k][cle] * .5; tl.to(i, { width: i.dataset.f * 100 + "%", duration: Math.max(.05, d), ease: "none" }, t); t += Math.max(.05, d); });
+        const o = { v: 0 }; G.to(o, { v: total, duration: t, ease: "none", onUpdate: () => chrono.textContent = nf(o.v, 1) + " min" }); });
+    };
+    el.querySelector('[data-r="rejouer"]')?.addEventListener("click", jouer);
+    return { entrer: jouer };
+  } };
+};
+
+VIZ["matrice-2x2"] = () => {
+  if (!taches.length) return vide("Aucune tâche à placer.", "La matrice a besoin d'au moins une tâche décrite dans un résumé validé.");
+  return { defaut: "gains_rapides", legende: legEtats(), html: `<div class="viz"><svg class="sv plein" aria-label="Matrice valeur × faisabilité IA des tâches"></svg></div>`,
+  init(el) {
+    const svg = el.querySelector("svg"); let anim = [];
+    const dessiner = () => {
+      svg.innerHTML = ""; const r = svg.getBoundingClientRect(), w = r.width, h = r.height; if (!w) return [];
+      svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
+      const g = { l: 64, r: 24, t: 30, b: 62 }, W = w - g.l - g.r, H = h - g.t - g.b;
+      const maxH = Math.max(...taches.map(t => t.heures)) * 1.18;
+      const X = f => g.l + f * W, Y = v => g.t + H - v / maxH * H, sx = X(SEUIL_F), sy = Y(seuilV);
+      const fond = S(svg, "g");
+      const Q = [["rapides", "Gains rapides", sx, g.t, g.l + W - sx, sy - g.t, "end", "haut"], ["chantiers", "Grands chantiers", g.l, g.t, sx - g.l, sy - g.t, "start", "haut"], ["marge", "À la marge", sx, sy, g.l + W - sx, g.t + H - sy, "end", "bas"], ["pieges", "Pièges", g.l, sy, sx - g.l, g.t + H - sy, "start", "bas"]];
+      Q.forEach(([id, nom, x, y, ww, hh, ancre, pos]) => { S(fond, "rect", { x, y, width: ww, height: hh, fill: id === "rapides" ? css("--ia-pale") : css("--plan"), "fill-opacity": id === "rapides" ? .55 : 1 });
+        const n = taches.filter(t => quadrant(t) === id).length, tx = ancre === "end" ? x + ww - 12 : x + 12, ty = pos === "haut" ? y + 20 : y + hh - 24;
+        S(fond, "text", { x: tx, y: ty, "text-anchor": ancre, class: "mu", style: id === "rapides" ? `fill:${css("--ia")}` : "" }, nom);
+        S(fond, "text", { x: tx, y: ty + 14, "text-anchor": ancre, class: "m" }, `${n} tâche${n > 1 ? "s" : ""}`); });
+      S(fond, "rect", { x: g.l, y: g.t, width: W, height: H, fill: "none", stroke: css("--trait-fort") });
+      S(fond, "line", { x1: sx, x2: sx, y1: g.t, y2: g.t + H, stroke: css("--trait-fort"), "stroke-dasharray": "4 4" });
+      S(fond, "line", { x1: g.l, x2: g.l + W, y1: sy, y2: sy, stroke: css("--trait-fort"), "stroke-dasharray": "4 4" });
+      for (let v = 0; v <= maxH; v += maxH > 8 ? 2 : 1) { S(fond, "text", { x: g.l - 10, y: Y(v) + 4, "text-anchor": "end", class: "m" }, v ? `${v} h` : "0"); }
+      S(fond, "text", { x: g.l, y: h - 18, class: "mu" }, "Faisabilité IA →");
+      S(fond, "text", { x: g.l + W, y: h - 18, "text-anchor": "end", class: "m" }, "part d'étapes automatisables, goulots");
+      [0, .5, 1].forEach(f => S(fond, "text", { x: X(f), y: g.t + H + 16, "text-anchor": f === 0 ? "start" : f === 1 ? "end" : "middle", class: "m" }, pct(f)));
+      S(fond, "text", { x: 14, y: g.t + H / 2, transform: `rotate(-90 14 ${g.t + H / 2})`, "text-anchor": "middle", class: "mu" }, "Valeur · heures par semaine →");
+      // points et étiquettes, sans chevauchement
+      const pts = taches.map(t => ({ t, x: X(t.faisab), y: Y(t.heures) }));
+      const etq = pts.map(p => { const grp = S(svg, "g"); const lignes = coupe(p.t.titre, 30).slice(0, 2);
+        const tx = S(grp, "text", {}); lignes.forEach((l, k) => S(tx, "tspan", { x: 0, dy: k ? 15 : 0 }, l));
+        S(grp, "text", { y: lignes.length * 15, class: "m" }, `${hmin(p.t.heures * 60)}/sem. · ${pct(p.t.faisab)}`);
+        const b = grp.getBBox(); return { p, grp, w: b.width, h: b.height, asc: -b.y }; });
+      etq.forEach(e => { e.droite = e.p.x + 14 + e.w < g.l + W - 4; e.x = e.droite ? e.p.x + 14 : e.p.x - 14 - e.w; e.y = e.p.y - e.h / 2; });
+      etq.sort((a, b) => a.y - b.y);
+      for (let k = 1; k < etq.length; k++) for (let j = 0; j < k; j++) { const a = etq[j], b = etq[k];
+        if (a.x < b.x + b.w && b.x < a.x + a.w && b.y < a.y + a.h + 6) b.y = a.y + a.h + 6; }
+      etq.forEach(e => { e.y = Math.min(e.y, g.t + H - e.h - 2); e.grp.setAttribute("transform", `translate(${e.x},${e.y + e.asc})`);
+        const cy = e.y + e.h / 2; if (Math.abs(cy - e.p.y) > 6) S(svg, "line", { x1: e.p.x + (e.droite ? 8 : -8), y1: e.p.y, x2: e.droite ? e.x - 3 : e.x + e.w + 3, y2: Math.min(Math.max(e.p.y, e.y + 4), e.y + e.h - 4), stroke: css("--trait-fort") }); });
+      const ronds = pts.map(p => S(svg, "circle", { cx: p.x, cy: p.y, r: 7.5, fill: css(p.t.expo.c), stroke: css("--plan"), "stroke-width": 2 }));
+      return { ronds, etqs: etq.map(e => e.grp), fond };
+    };
+    return { entrer() { const d = dessiner(); if (!d || !G || reduit) return;
+        G.fromTo(d.fond, { opacity: 0 }, { opacity: 1, duration: .5 });
+        G.fromTo(d.ronds, { attr: { r: 0 } }, { attr: { r: 7.5 }, duration: .6, ease: "back.out(2)", stagger: .12, delay: .35 });
+        G.fromTo(d.etqs, { opacity: 0 }, { opacity: 1, duration: .5, stagger: .12, delay: .55 }); },
+      redessiner: dessiner };
+  } };
+};
+
+VIZ["cascade"] = () => {
+  if (!taches.length) return vide("Aucune tâche à chiffrer.", "La cascade a besoin d'au moins une tâche décrite avec sa fréquence et sa durée.");
+  const gains = taches.filter(t => t.gain > 0).sort((a, b) => b.heures * b.gain - a.heures * a.gain), zero = taches.filter(t => !t.gain);
+  return { defaut: "heures_automatisables", legende: `<span><i style="background:var(--projet)"></i>Heures par semaine</span><span><i style="background:var(--ia)"></i>Reprises par l'IA</span><span>hypothèse : 80 % des étapes automatisables</span>`,
+  html: `<div class="viz"><div class="pad" style="grid-template-rows:minmax(0,1fr) auto;gap:10px"><div style="position:relative;min-height:0"><svg class="sv plein" aria-label="Cascade des heures par semaine"></svg></div>
+    ${zero.length ? `<div class="inconnu"><div class="mono" style="padding:0;margin-bottom:2px">Comptées pour zéro</div>${zero.map(t => `<div>${esc(t.titre)} · ${t.expo.etat.toLowerCase()}</div>`).join("")}</div>` : ""}</div></div>`,
+  init(el) {
+    const svg = el.querySelector("svg");
+    const dessiner = () => {
+      svg.innerHTML = ""; const r = svg.getBoundingClientRect(), w = r.width, h = r.height; if (!w) return null; svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
+      let run = heuresTaches;
+      const rangs = [{ nom: "Aujourd'hui", sous: `${taches.length} tâches répétées`, a: 0, b: heuresTaches, type: "total" },
+        ...gains.map(t => { const g = t.heures * t.gain, o = { nom: t.titre, sous: `${hmin(t.heures * 60)}/sem. · ${pct(t.gain)} repris`, a: run - g, b: run, type: "gain", v: g }; run -= g; return o; }),
+        { nom: "Après automatisation", sous: "reste humain", a: 0, b: run, type: "total" }];
+      const lab = Math.min(260, w * .36), x0 = lab + 16, x1 = w - 70, X = v => x0 + v / heuresTaches * (x1 - x0);
+      const rh = Math.min(74, h / rangs.length), bh = Math.min(30, rh * .5), top = Math.max(0, (h - rangs.length * rh) / 2);
+      const barres = [], liens = [];
+      rangs.forEach((q, k) => { const y = top + k * rh, cy = y + rh / 2;
+        const tx = S(svg, "text", { x: 0, y: cy - 3 }); coupe(q.nom, 34).slice(0, 2).forEach((l, i) => S(tx, "tspan", { x: 0, dy: i ? 15 : 0, "font-weight": q.type === "total" ? 500 : 400 }, l));
+        const nl = Math.min(2, coupe(q.nom, 34).length); S(svg, "text", { x: 0, y: cy - 3 + nl * 15, class: "m" }, q.sous);
+        if (nl === 2) tx.setAttribute("y", cy - 10);
+        S(svg, "rect", { x: x0, y: cy - bh / 2, width: x1 - x0, height: bh, fill: css("--plan-2") });
+        const b = S(svg, "rect", { x: X(q.a), y: cy - bh / 2, width: Math.max(1, X(q.b) - X(q.a)), height: bh, fill: q.type === "gain" ? css("--ia") : css("--projet") });
+        const val = S(svg, "text", { x: q.type === "gain" ? X(q.a) - 8 : X(q.b) + 8, y: cy + 4.5, "text-anchor": q.type === "gain" ? "end" : "start", "font-weight": 500, style: q.type === "gain" ? `fill:${css("--ia")}` : "" }, (q.type === "gain" ? "−" : "") + hmin((q.type === "gain" ? q.v : q.b) * 60));
+        barres.push({ b, q, val });
+        if (k < rangs.length - 1) { liens.push(S(svg, "line", { x1: X(q.type === "gain" ? q.a : q.b), x2: X(q.type === "gain" ? q.a : q.b), y1: cy + bh / 2, y2: cy + rh - bh / 2, stroke: css("--faible"), "stroke-dasharray": "3 3" })); }
+      });
+      return { barres, liens };
+    };
+    return { entrer() { const d = dessiner(); if (!d || !G || reduit) return;
+        d.barres.forEach(({ b, q, val }, k) => { const xa = +b.getAttribute("x"), wa = +b.getAttribute("width");
+          if (q.type === "gain") G.fromTo(b, { attr: { x: xa + wa, width: 0 } }, { attr: { x: xa, width: wa }, duration: .7, delay: .2 + k * .45, ease: "power2.out" });
+          else G.fromTo(b, { attr: { width: 0 } }, { attr: { width: wa }, duration: .8, delay: .2 + k * .45, ease: "power3.out" });
+          G.fromTo(val, { opacity: 0 }, { opacity: 1, duration: .4, delay: .6 + k * .45 }); });
+        G.fromTo(d.liens, { opacity: 0 }, { opacity: 1, duration: .3, stagger: .45, delay: .7 }); },
+      redessiner: dessiner };
+  } };
+};
+
+VIZ["arbre"] = () => {
+  if (!totalEquipe) return vide("Aucun temps à décomposer.", "Il faut au moins un poste avec une frise ou un résumé validé.");
+  return { defaut: "cat_1_part", legende: legCats(equipe), html: `<div class="viz"><svg class="sv plein" aria-label="Arbre MECE du temps : total, catégories, applications"></svg></div>`,
+  init(el) {
+    const svg = el.querySelector("svg");
+    const cats = ORDRE.filter(c => equipe[c]).sort((a, b) => equipe[b] - equipe[a]);
+    const feuillesDe = k => cats.map(c => { const apps = Object.entries(arbre[c] || {}).sort((a, b) => b[1] - a[1]); const tot = equipe[c];
+      let top = apps.slice(0, k).filter(([, m]) => m >= .5); const reste = tot - top.reduce((s, [, m]) => s + m, 0);
+      if (reste >= .5) { const n = apps.length - top.length; top = [...top, [n > 0 ? `${n} autre${n > 1 ? "s" : ""} app${n > 1 ? "s" : ""}` : "Autres apps", reste]]; }
+      if (!top.length) top = [["Autres apps", tot]]; return { c, tot, apps: top }; });
+    let K = 3, arb = feuillesDe(K); while (arb.reduce((s, x) => s + x.apps.length, 0) > 15 && K > 1) arb = feuillesDe(--K);
+    const dessiner = () => {
+      svg.innerHTML = ""; const r = svg.getBoundingClientRect(), w = r.width, h = r.height; if (!w) return null; svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
+      const nF = arb.reduce((s, x) => s + x.apps.length, 0), pasF = Math.min(36, (h - 40) / (nF + (arb.length - 1) * .45)), haut = pasF * (nF + (arb.length - 1) * .45), y0 = (h - haut) / 2 + pasF / 2;
+      const c0 = 0, c1 = Math.max(150, w * .3), c2 = Math.max(c1 + 150, w * .63), bw = Math.min(110, w * .14);
+      let y = y0; const noeuds = [], liens = [];
+      const noeud = (x, yy, nom, m, couleur, niv, base) => { const g = S(svg, "g", { transform: `translate(${x},${yy})` });
+        S(g, "text", { y: -4, "font-weight": niv < 2 ? 500 : 400, style: niv === 0 ? "font-size:14px" : "" }, nom);
+        S(g, "rect", { x: 0, y: 2, width: bw, height: 3, fill: css("--plan-2") });
+        S(g, "rect", { x: 0, y: 2, width: Math.max(1.5, bw * m / base), height: 3, fill: couleur });
+        S(g, "text", { x: bw + 8, y: 7, class: "m" }, `${hmin(m)} · ${pct(m / totalEquipe)}`);
+        noeuds.push({ g, niv }); return g; };
+      const coude = (xa, ya, xb, yb, couleur, niv) => { const mx = xa + (xb - xa) * .5; const p = S(svg, "path", { d: `M${xa},${ya} H${mx} V${yb} H${xb}`, fill: "none", stroke: couleur, "stroke-width": 1 }); liens.push({ p, niv }); };
+      const posC = arb.map(x => { const ys = x.apps.map(() => { const v = y; y += pasF; return v; }); y += pasF * .45; return { ...x, ys, yc: (ys[0] + ys[ys.length - 1]) / 2 }; });
+      const yr = (posC[0].yc + posC[posC.length - 1].yc) / 2;
+      const finR = c0 + bw + 92;
+      posC.forEach(x => { coude(Math.min(finR, c1 - 24), yr, c1 - 10, x.yc, css("--trait-fort"), 1);
+        const finC = c1 + bw + 92; x.ys.forEach(yy => coude(Math.min(finC, c2 - 24), x.yc, c2 - 10, yy, css("--trait"), 2)); });
+      noeud(c0, yr, "Temps à l'écran", totalEquipe, css("--encre"), 0, totalEquipe);
+      S(svg, "text", { x: c0, y: yr + 24, class: "m" }, `${postes.length} postes`);
+      posC.forEach(x => { noeud(c1, x.yc, CATS[x.c] || x.c, x.tot, coul(x.c), 1, totalEquipe);
+        x.apps.forEach(([a, m], i) => noeud(c2, x.ys[i], a, m, coul(x.c), 2, totalEquipe)); });
+      S(svg, "text", { x: c0, y: Math.max(16, y0 - pasF), class: "mu" }, "Total");
+      S(svg, "text", { x: c1, y: Math.max(16, y0 - pasF), class: "mu" }, "Catégorie");
+      S(svg, "text", { x: c2, y: Math.max(16, y0 - pasF), class: "mu" }, "Application");
+      return { noeuds, liens };
+    };
+    return { entrer() { const d = dessiner(); if (!d || !G || reduit) return;
+        [0, 1, 2].forEach(n => G.fromTo(d.noeuds.filter(x => x.niv === n).map(x => x.g), { opacity: 0, x: -8 }, { opacity: 1, x: 0, duration: .45, stagger: .04, delay: n * .55 }));
+        d.liens.forEach(({ p, niv }) => { const L = p.getTotalLength(); p.style.strokeDasharray = L; G.fromTo(p, { strokeDashoffset: L }, { strokeDashoffset: 0, duration: .5, delay: niv * .55 - .3, ease: "power1.inOut" }); }); },
+      redessiner: dessiner };
+  } };
+};
+
+VIZ["vsm"] = () => {
+  if (!vsm) return vide("Pas de chaîne de valeur à tracer.", "La tâche n°1 n'a pas d'étapes ou de durée décrites dans le résumé validé.");
+  const NOMS = { input: "Saisie", action: "Action", check: "Contrôle", output: "Sortie", decision: "Décision" }, CL = { valeur: "Valeur ajoutée", necessaire: "Nécessaire sans valeur", gaspillage: "Gaspillage · retouche" };
+  const GASP = { waiting: "Attente", switching: "Mouvements entre apps", unclear: "Processus flou" };
+  const n = vsm.etapes.length;
+  return { defaut: "pce", legende: `<span><i style="border:1.5px solid var(--encre)"></i>Valeur ajoutée</span><span><i style="border:1.5px solid var(--trait-fort)"></i>Nécessaire sans valeur</span><span><i style="border:1.5px solid var(--perte)"></i>Gaspillage</span><span><i class="pointille"></i>Étape supposée</span>`,
+  html: `<div class="viz"><div class="pad"><div class="vsm">
+    <div class="mono">${esc(vsm.t.titre)} · ${nf(vsm.t.frequence_par_semaine)}× par semaine · ${nf(vsm.total)} min</div>
+    <div class="etapes" style="grid-template-columns:repeat(${n},minmax(0,1fr))">${vsm.etapes.map(e => `<div class="boite ${e.classe}${e.statut === "supposé" ? " suppose" : ""}"><div class="type">${NOMS[e.type] || e.type} · ${CL[e.classe]}</div><div class="tx">${esc(e.texte)}</div><div class="app">${esc(e.app || "")}${e.statut === "supposé" ? " · supposé" : ""}</div></div>`).join("")}</div>
+    <div class="echelle"><svg preserveAspectRatio="none"></svg></div>
+    <div class="totaux"><span>Temps de traversée <b>${nf(vsm.total, vsm.total % 1 ? 1 : 0)} min</b></span><span>Valeur ajoutée <b>${nf(vsm.va, 1)} min</b></span><span>PCE <b class="ia">${pct(vsm.pce)}</b></span></div>
+    ${vsm.t.goulots.length ? `<div class="puces"><span class="neutre">Gaspillages signalés</span>${vsm.t.goulots.map(g => `<span>${GASP[g] || esc(g)}</span>`).join("")}</div>` : ""}
+    <div class="mono" style="text-transform:none;letter-spacing:.02em;color:var(--faible)">Durée répartie à parts égales entre les étapes : le résumé ne chronomètre pas chaque étape.</div>
+  </div></div></div>`,
+  init(el) {
+    const svg = el.querySelector(".echelle svg"), boites = [...el.querySelectorAll(".boite")];
+    const dessiner = () => { svg.innerHTML = ""; const r = svg.getBoundingClientRect(); if (!r.width) return null; svg.setAttribute("viewBox", `0 0 ${r.width} ${r.height}`);
+      const cw = (r.width + 10) / n, hautY = 14, basY = r.height - 18, segs = [];
+      let px = 0, py = null;
+      vsm.etapes.forEach((e, k) => { const x0 = k * cw, x1 = x0 + cw - 10, yy = e.classe === "valeur" ? basY : hautY;
+        if (py != null && py !== yy) segs.push(S(svg, "line", { x1: x0 - 5, x2: x0 - 5, y1: py, y2: yy, stroke: css("--encre"), "stroke-width": 1.5 }));
+        else if (py != null) segs.push(S(svg, "line", { x1: px, x2: x0, y1: yy, y2: yy, stroke: css("--encre"), "stroke-width": 1.5 }));
+        const sx0 = py != null && py !== yy ? x0 - 5 : x0;
+        segs.push(S(svg, "line", { x1: sx0, x2: x1 + 5, y1: yy, y2: yy, stroke: e.classe === "gaspillage" ? css("--perte") : css("--encre"), "stroke-width": e.classe === "valeur" ? 3 : 1.5 }));
+        segs.push(S(svg, "text", { x: (x0 + x1) / 2, y: yy === basY ? basY + 14 : hautY - 5, "text-anchor": "middle", class: "m", style: e.classe === "valeur" ? `fill:${css("--encre")}` : "" }, `${nf(e.d, 1)} min`));
+        px = x1 + 5; py = yy; });
+      return segs; };
+    return { entrer() { const segs = dessiner(); if (!G || reduit) return;
+        G.fromTo(boites, { y: 16, opacity: 0 }, { y: 0, opacity: 1, duration: .55, stagger: .12, ease: "power3.out" });
+        if (segs) G.fromTo(segs, { opacity: 0 }, { opacity: 1, duration: .25, stagger: .05, delay: .5 });
+        G.fromTo(el.querySelectorAll(".totaux, .puces"), { opacity: 0 }, { opacity: 1, duration: .5, delay: 1.1 }); },
+      redessiner: dessiner };
+  } };
+};
+
+VIZ["carte-chaleur"] = () => {
+  if (!taches.length) return vide("Aucune tâche à noter.", "La carte de chaleur a besoin d'au moins une tâche décrite dans un résumé validé.");
+  const rangs = notes.slice().sort((a, b) => b.n.slice(0, 4).reduce((s, x) => s + x[0], 0) - a.n.slice(0, 4).reduce((s, x) => s + x[0], 0));
+  const fond = (v, ia) => v === 0 ? "var(--plan-2)" : `color-mix(in srgb, var(${ia ? "--ia" : "--projet"}) ${[0, 28, 58, 100][v]}%, var(--plan-2))`;
+  return { defaut: "taches_sensibles", legende: "",
+  html: `<div class="viz"><div class="pad"><div class="chaleur">
+    <div class="grille-c" style="grid-template-columns:minmax(150px,1.5fr) repeat(${CRITERES.length},minmax(0,1fr))">
+      <div></div>${CRITERES.map(c => `<div class="ent${c.ia ? " ia" : ""}">${c.nom}</div>`).join("")}
+      ${rangs.map(({ t, n }) => `<div class="lib">${esc(t.titre)}<small>${hmin(t.heures * 60)}/sem.</small></div>${n.map(([v, l], k) => `<div class="case" style="background:${fond(v, CRITERES[k].ia)};color:${v >= 2 ? "var(--plan)" : "var(--encre)"}"><b>${v}</b><span>${esc(l)}</span></div>`).join("")}`).join("")}
+    </div>
+    <div class="echelle-c"><span>0</span>${[0, 1, 2, 3].map(v => `<i style="background:${fond(v)}"></i>`).join("")}<span>3</span><span style="margin-left:14px">maturité IA</span>${[0, 1, 2, 3].map(v => `<i style="background:${fond(v, true)}"></i>`).join("")}<span style="margin-left:14px;color:var(--faible)">notes dérivées des étapes, apps et goulots</span></div>
+  </div></div></div>`,
+  init(el) { const cases = [...el.querySelectorAll(".case")], libs = [...el.querySelectorAll(".lib")];
+    return { entrer() { if (!G || reduit) return; G.fromTo(libs, { opacity: 0, x: -8 }, { opacity: 1, x: 0, duration: .4, stagger: .06 });
+      G.fromTo(cases, { opacity: 0, scale: .85 }, { opacity: 1, scale: 1, duration: .35, ease: "power2.out", stagger: { each: .035, grid: [rangs.length, CRITERES.length], from: "start" }, delay: .2 }); } }; } };
+};
+
+VIZ["plan"] = () => ({ defaut: "actions",
+  extra: `<div class="inconnu"><div class="mono" style="margin-bottom:4px">Ce qu'on ne sait pas encore</div>${limites.map(l => `<div>${esc(l)}</div>`).join("")}</div>`,
+  html: `<div class="viz"><div class="pad"><div class="plan">${recos.map((r, k) => `<div class="reco"><div class="quand">${[30, 60, 90][k] || 90 + 30 * (k - 2)} jours</div><div><h3>${esc(r.titre)}</h3><p>${esc(r.texte)}</p></div></div>`).join("")}</div></div></div>`,
+  init(el) { const rs = [...el.querySelectorAll(".reco")]; return { entrer() { if (G && !reduit) G.fromTo(rs, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: .6, stagger: .18, ease: "power3.out" }); } }; } });
+
+/* ---------- Chapitres : construits depuis la spec de la méthode ---------- */
+const ICONES = {
+  pyramide: `<path d="M11 3 L20 19 H2 Z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6.5 12 H15.5" stroke="currentColor" stroke-width="1.2"/>`,
+  matrice: `<rect x="3" y="3" width="7" height="7" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="12" y="3" width="7" height="7" fill="var(--ia)" stroke="var(--ia)" stroke-width="1.5"/><rect x="3" y="12" width="7" height="7" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="12" y="12" width="7" height="7" fill="none" stroke="currentColor" stroke-width="1.5"/>`,
+  flux: `<path d="M2 11 H16 M12 6 L17 11 L12 16" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="2" y="5" width="4" height="12" fill="none" stroke="currentColor" stroke-width="1.2"/>`,
+  confiance: `<path d="M11 2.5 L18.5 5.5 V11 C18.5 15.5 15 18.5 11 19.5 C7 18.5 3.5 15.5 3.5 11 V5.5 Z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M7.5 11 L10 13.5 L14.5 8.5" fill="none" stroke="var(--ia)" stroke-width="1.6"/>`,
+  resultats: `<path d="M3 19 V13 M8.5 19 V9 M14 19 V6 M19.5 19 V3" stroke="currentColor" stroke-width="2.2"/>`,
+};
+document.getElementById("marque").innerHTML = `<svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true" style="color:var(--encre)">${ICONES[M.id] || `<rect x="6" y="6" width="10" height="10" transform="rotate(45 11 11)" fill="none" stroke="currentColor" stroke-width="1.5"/>`}</svg>
+  <div><div class="nom">Méthode ${esc(M.nom)}</div><div class="insp">inspirée de ${esc(M.inspire_de)}</div></div>`;
+document.getElementById("methodes").innerHTML = METHODES.map(m => `<a href="?methode=${encodeURIComponent(m.id)}" class="${m.id === M.id ? "actif" : ""}"${m.id === M.id ? ' aria-current="page"' : ""}>${esc(m.nom)}</a>`).join("");
+
+const lectureHtml = (ch, k, r) => {
+  const ids = (ch.metriques || []).filter(id => MET[id] && MET[id].n != null);
+  const principal = r.sansChiffre ? null : (ids[0] || (MET[r.defaut] && MET[r.defaut].n != null ? r.defaut : null));
+  const autres = r.sansChiffre ? [] : ids.filter(id => id !== principal).slice(0, 2);
+  const m = principal && MET[principal];
+  return `<div class="lecture"><div><div class="numero"><span>${String(k + 1).padStart(2, "0")}</span><em>${remplir(ch.question)}</em></div><h2>${remplir(ch.titre)}</h2></div>
+    <div style="display:grid;gap:14px">
+      ${m ? `<div class="chiffre${m.c === "ia" ? " ia" : ""}" data-met="${principal}"><span class="val">${esc(m.v)}</span>${m.u ? `<small>${esc(m.u)}</small>` : ""}</div><div class="chiffre-l">${esc(m.l)}</div>` : ""}
+      ${ch.lecture ? `<p>${remplir(ch.lecture).replace(/&lt;(\/?)b&gt;/g, "<$1b>")}</p>` : ""}
+      ${autres.length ? `<div class="kpis">${autres.map(id => { const x = MET[id], court = x.t && x.t.length < 18; return `<div class="kpi"><b class="${x.c === "ia" ? "ia" : ""}">${esc(court ? x.t : x.v + (x.u ? " " + x.u : ""))}</b><span>${esc(x.l)}</span></div>`; }).join("")}</div>` : ""}
+      ${r.extra || ""}
+    </div></div>`;
+};
+
+const chapitres = (M.chapitres || []).map((ch, k) => {
+  let r; try { r = (VIZ[ch.viz] || (() => vide(`Visualisation « ${esc(ch.viz)} » pas encore disponible.`, "Le chapitre est décrit par la méthode, mais ce moteur ne sait pas encore le dessiner.")))(ch); }
+  catch (e) { console.warn(e); r = vide("Ce chapitre n'a pas pu être calculé.", "Les données d'audit ne permettent pas de le construire."); }
+  return { ch, r, nom: remplir(ch.question || ch.id), html: () => r.html + lectureHtml(ch, k, r) };
+});
+
+/* ---------- Mécanique de story ---------- */
+const story = document.getElementById("story"), prog = document.getElementById("progres"), legende = document.getElementById("legende");
+chapitres.forEach((c, k) => { const s = document.createElement("section"); s.className = "chap"; s.setAttribute("aria-label", c.nom.replace(/<[^>]+>/g, "")); s.innerHTML = c.html(); story.appendChild(s); c.el = s;
+  const b = document.createElement("button"); b.type = "button"; b.setAttribute("aria-label", `Chapitre ${k + 1}`); b.innerHTML = "<span><b></b></span>"; b.addEventListener("click", () => aller(k)); prog.appendChild(b); });
+let i = -1, auto = !reduit, minuteur = null;
+const DUREE = 11;
+function aller(k) {
+  if (!chapitres.length) return;
+  k = (k + chapitres.length) % chapitres.length;
+  if (i >= 0) { chapitres[i].el.classList.remove("actif"); chapitres[i].api?.sortir?.(); }
+  i = k; const c = chapitres[i];
+  c.el.classList.add("actif");
+  if (!c.api) { try { c.api = c.r.init(c.el) || {}; } catch (e) { console.warn(e); c.api = {}; } }
+  try { c.api.entrer?.(); } catch (e) { console.warn(e); }
+  legende.innerHTML = c.r.legende || "";
+  compter(c.el.querySelector(".lecture"));
+  [...prog.querySelectorAll("b")].forEach((b, j) => { if (G) G.killTweensOf(b); b.style.width = j < i ? "100%" : "0%"; });
+  const barre = prog.querySelectorAll("b")[i];
+  if (G && !reduit) { const lec = c.el.querySelectorAll(".lecture > *"); G.fromTo(lec, { y: 14, opacity: 0 }, { y: 0, opacity: 1, duration: .55, stagger: .08, ease: "power3.out" }); }
+  clearTimeout(minuteur);
+  if (auto && G) { G.fromTo(barre, { width: "0%" }, { width: "100%", duration: DUREE, ease: "none" }); minuteur = setTimeout(() => aller(i + 1), DUREE * 1000); }
+  else barre.style.width = "100%";
+  try { history.replaceState(null, "", location.search + "#c" + (i + 1)); } catch (e) {}
+}
+document.getElementById("suiv").addEventListener("click", () => aller(i + 1));
+document.getElementById("prec").addEventListener("click", () => aller(i - 1));
+const bAuto = document.getElementById("auto");
+bAuto.textContent = auto ? "Pause" : "Lecture";
+bAuto.addEventListener("click", () => { auto = !auto; bAuto.textContent = auto ? "Pause" : "Lecture"; aller(i); });
+addEventListener("keydown", e => { if (e.target.closest("canvas")) return; if (e.key === "ArrowRight") aller(i + 1); if (e.key === "ArrowLeft") aller(i - 1); if (e.key === " ") { e.preventDefault(); bAuto.click(); } });
+let attente = null;
+addEventListener("resize", () => { clearTimeout(attente); attente = setTimeout(() => { const c = chapitres[i]; c?.api?.redessiner?.(); }, 120); });
+const depart = Math.max(0, (parseInt((location.hash.match(/^#c(\d+)$/) || [])[1]) || 1) - 1);
+(document.fonts?.ready || Promise.resolve()).then(() => aller(Math.min(depart, chapitres.length - 1)));
+</script>

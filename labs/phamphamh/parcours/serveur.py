@@ -10,7 +10,7 @@ Branchements (tous facultatifs, le parcours marche sans eux et s'y branche dès 
 - moteur de workflows : labs/phamphamh/workflows/pack.py (pack, generer, tester, deployer)
 Sans eux : données de secours intégrées, et les workflows sont simulés (marqués « simulation »).
 """
-import glob, gzip, importlib.util, json, os, re, subprocess, sys, threading, traceback, unicodedata, urllib.request, webbrowser
+import glob, gzip, importlib.util, json, os, re, subprocess, sys, threading, traceback, unicodedata, urllib.request, webbrowser  # noqa: E401
 from datetime import datetime, timedelta
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, unquote, urlparse
@@ -69,6 +69,35 @@ def json_sur(x):
         return str(x)
 
 
+# ---------- les deux campagnes ----------
+# « equipe » : notre équipe pour de vrai (exports + résumés validés de labs/*/campagne/).
+# « demo »   : l'entreprise fictive Maison Corvo (labs/phamphamh/demo), comme dans app/serveur.py.
+
+DEMO = os.path.join(LAB, "demo")
+
+
+def campagne(x):
+    return "demo" if x == "demo" else "equipe"
+
+
+def resumes(camp):
+    """[(qui, résumé)] ; le champ personne est remplacé par un nom lisible (le moteur s'en sert pour nommer les postes)."""
+    out = []
+    if camp == "demo":
+        for f in sorted(glob.glob(os.path.join(DEMO, "resumes", "*.json"))):
+            pid = os.path.basename(f)[:-5]
+            r = lire(os.path.join(RACINE, "donnees", "demo", f"{pid}.json")) or lire(f)
+            if isinstance(r, dict):
+                out.append((pid, {**r, "personne": pid}))
+    else:
+        for f in sorted(glob.glob(os.path.join(RACINE, "labs", "*", "campagne", "resume-valide.json"))):
+            r = lire(f)
+            if isinstance(r, dict):
+                qui = f.split(os.sep)[-3]
+                out.append((qui, {**r, "personne": qui}))
+    return out
+
+
 # ---------- étape 1 : l'onboarding ----------
 
 ONB_DEFAUT = {"entreprise": "Équipe hackathon screenpipe", "taille": 5, "activite": "Studio produit : on construit des outils IA pour les PME",
@@ -77,10 +106,14 @@ ONB_DEFAUT = {"entreprise": "Équipe hackathon screenpipe", "taille": 5, "activi
 CHAMPS_ONB = ("entreprise", "taille", "activite", "cout_horaire", "priorites", "irritants")
 
 
-def onboarding():
-    o = lire(os.path.join(ETAT, "onboarding.json"))
+def onboarding(camp):
+    o = lire(os.path.join(ETAT, f"onboarding-{camp}.json"))
     if o:
-        return {**ONB_DEFAUT, **o}
+        return o
+    if camp == "demo":
+        o = lire(os.path.join(DEMO, "onboarding.json")) or {}
+        m = re.search(r"(\d+)\s*salari", o.get("activite") or "")
+        return {"taille": int(m.group(1)) if m else 48, **{k: v for k, v in o.items() if k in CHAMPS_ONB}}
     for f in [os.path.join(LAB, "campagne", "onboarding.json")] + sorted(glob.glob(os.path.join(RACINE, "labs", "*", "campagne", "onboarding.json"))):
         o = lire(f)
         if o:
@@ -120,47 +153,51 @@ def heures_export_complet(chemin):
 def screenpipe_local():
     try:
         with urllib.request.urlopen("http://127.0.0.1:3030/health", timeout=0.6) as r:
-            return json.loads(r.read() or b"{}").get("status") in ("healthy", "degraded", "ok") or r.status == 200
+            return r.status == 200
     except Exception:
         return False
 
 
-def postes():
-    """Même ordre que labs/phamphamh/audit/construire.py, pour que P01, P02… désignent les mêmes personnes."""
+def postes(camp="equipe"):
+    """Équipe : même ordre que labs/phamphamh/audit/construire.py, pour que P01, P02… désignent les mêmes personnes."""
     out = []
-    for chemin in sorted(glob.glob(os.path.join(RACINE, "donnees", "equipe", "screenpipe-*.jsonl.gz"))):
-        qui = os.path.basename(chemin).split("-")[1]
-        if any(p["qui"] == qui for p in out):
-            continue
-        h, d, f = heures_export_complet(chemin)
-        out.append({"qui": qui, "source": "Export complet", "lance": True, "export": True, "valide": False, "heures": h, "debut": d, "fin": f})
-    for chemin in sorted(glob.glob(os.path.join(RACINE, "equipe", "*.json"))):
-        qui = os.path.splitext(os.path.basename(chemin))[0]
-        d = lire(chemin) or {}
-        if any(p["qui"] == qui for p in out) or not isinstance(d, dict) or "blocs" not in d:
-            continue
-        h = round(sum(nombre(v) for v in (d.get("temps_par_app_s") or {}).values()) / 3600, 1)
-        per = d.get("periode") or {}
-        out.append({"qui": qui, "source": "Export par blocs", "lance": True, "export": True, "valide": False, "heures": h, "debut": per.get("debut"), "fin": per.get("fin")})
-    for chemin in sorted(glob.glob(os.path.join(RACINE, "labs", "*", "campagne", "resume-valide.json"))):
-        qui = chemin.split(os.sep)[-3]
-        r = lire(chemin) or {}
-        if any(p["qui"] == qui for p in out):
-            continue
-        per = r.get("periode") or {}
-        out.append({"qui": qui, "source": "Résumé validé", "lance": True, "export": True, "valide": r.get("valide_par_la_personne") is True,
-                    "heures": round(nombre(r.get("heures_captees")), 1), "debut": per.get("debut"), "fin": per.get("fin"), "taches": len(r.get("taches") or [])})
+    if camp == "demo":
+        for qui, r in resumes("demo"):
+            per = r.get("periode") or {}
+            out.append({"qui": qui, "source": "Démo · résumé de la semaine", "lance": True, "export": True, "valide": r.get("valide_par_la_personne") is True,
+                        "heures": round(nombre(r.get("heures_captees")), 1), "debut": per.get("debut"), "fin": per.get("fin"), "taches": len(r.get("taches") or [])})
+    else:
+        for chemin in sorted(glob.glob(os.path.join(RACINE, "donnees", "equipe", "screenpipe-*.jsonl.gz"))):
+            qui = os.path.basename(chemin).split("-")[1]
+            if any(p["qui"] == qui for p in out):
+                continue
+            h, d, f = heures_export_complet(chemin)
+            out.append({"qui": qui, "source": "Export complet", "lance": True, "export": True, "valide": False, "heures": h, "debut": d, "fin": f})
+        for chemin in sorted(glob.glob(os.path.join(RACINE, "equipe", "*.json"))):
+            qui = os.path.splitext(os.path.basename(chemin))[0]
+            d = lire(chemin) or {}
+            if any(p["qui"] == qui for p in out) or not isinstance(d, dict) or "blocs" not in d:
+                continue
+            h = round(sum(nombre(v) for v in (d.get("temps_par_app_s") or {}).values()) / 3600, 1)
+            per = d.get("periode") or {}
+            out.append({"qui": qui, "source": "Export par blocs", "lance": True, "export": True, "valide": False, "heures": h, "debut": per.get("debut"), "fin": per.get("fin")})
+        for qui, r in resumes("equipe"):
+            if any(p["qui"] == qui for p in out):
+                continue
+            per = r.get("periode") or {}
+            out.append({"qui": qui, "source": "Résumé validé", "lance": True, "export": True, "valide": r.get("valide_par_la_personne") is True,
+                        "heures": round(nombre(r.get("heures_captees")), 1), "debut": per.get("debut"), "fin": per.get("fin"), "taches": len(r.get("taches") or [])})
     for i, p in enumerate(out):
         p["id"] = f"P{i + 1:02d}"
     return out
 
 
-def etat():
-    ps = postes()
+def etat(camp):
+    ps = postes(camp)
     total = round(sum(p["heures"] for p in ps), 1)
     audit = lire(os.path.join(RACINE, "donnees", "audit", "audit.json"))
     return {
-        "onboarding": onboarding(), "postes": ps, "total_heures": total, "seuil": SEUIL,
+        "campagne": camp, "onboarding": onboarding(camp), "postes": ps, "total_heures": total, "seuil": SEUIL,
         "assez": len(ps) >= SEUIL["postes"] and total >= SEUIL["heures"],
         "screenpipe_local": screenpipe_local(),
         "audit": {"existe": bool(audit), "genere_le": (audit or {}).get("genere_le"), "taches": len((audit or {}).get("taches") or [])},
@@ -244,34 +281,26 @@ def moteur_info():
     return {"branche": bool(mod), "fonctions": fonctions, "raison": _moteur["erreur"], "fichier": "labs/phamphamh/workflows/pack.py"}
 
 
-def taches_audit():
-    """Les tâches des résumés validés (lus en direct), au format de donnees/audit/audit.json."""
-    taches = []
-    for chemin in sorted(glob.glob(os.path.join(RACINE, "labs", "*", "campagne", "resume-valide.json"))):
-        r = lire(chemin) or {}
-        qui = chemin.split(os.sep)[-3]
+def taches_de(camp):
+    """Les tâches des résumés validés, à plat, avec la personne (même règle que le moteur : un résumé non validé ne compte pas)."""
+    out = []
+    for qui, r in resumes(camp):
+        if r.get("valide_par_la_personne") is not True:
+            continue
         for t in r.get("taches") or []:
-            if not t.get("titre"):
-                continue
-            taches.append({"poste": qui, "titre": t["titre"], "frequence_par_semaine": t.get("frequence_par_semaine"),
-                           "duree_moyenne_min": t.get("duree_moyenne_min"), "apps": t.get("apps") or [],
-                           "etapes": [{"type": e.get("type"), "texte": e.get("texte"), "app": e.get("app"), "statut": e.get("statut")} for e in t.get("etapes") or []],
-                           "goulots": [g.get("type") if isinstance(g, dict) else g for g in t.get("goulots") or []],
-                           "confiance": t.get("confiance"), "automatisable": t.get("automatisable") or {}})
-    if not taches:
-        taches = (lire(os.path.join(RACINE, "donnees", "audit", "audit.json")) or {}).get("taches") or []
-    return taches
+            if isinstance(t, dict) and t.get("titre"):
+                out.append({**t, "_personne": qui, "poste": qui})
+    return out
 
 
 FACTEUR_AUTONOMIE = {1: .5, 2: .75, 3: .9, 4: 1.0}
 
 
 def evaluer(t, these):
-    """Le chiffrage de secours : heures par semaine, gain possible, niveau d'autonomie."""
+    """Chiffrage de secours (sans moteur) : heures par semaine, gain possible, niveau d'autonomie."""
     heures = nombre(t.get("frequence_par_semaine")) * nombre(t.get("duree_moyenne_min")) / 60
-    apps = " ".join(t.get("apps") or []).lower()
     types = [e.get("type") for e in t.get("etapes") or []]
-    goulots = t.get("goulots") or []
+    goulots = [g.get("type") if isinstance(g, dict) else g for g in t.get("goulots") or []]
     score = nombre((t.get("automatisable") or {}).get("score"), -1)
     if score >= 0:
         base = score / 100 * .85
@@ -281,70 +310,68 @@ def evaluer(t, these):
         base = .7
     else:
         base = .4
-    if re.search(r"orca|claude|chatgpt|codex", apps):
-        etat_ia = "Déjà avec l'IA"
-    elif base >= .5:
-        etat_ia = "L'IA peut le faire"
-    elif base >= .25:
-        etat_ia = "L'IA aide"
+    aut = int(max(1, min(4, int(nombre(these.get("autonomie"), 2)))))
+    return {"heures_semaine": round(heures, 1), "gain": round(base * FACTEUR_AUTONOMIE.get(aut, .75), 2), "autonomie": aut}
+
+
+def personne_de(t):
+    return t.get("_personne") or t.get("personne") or t.get("poste")
+
+
+def groupes(camp, mod=None):
+    """[(référence, autres)] : la même tâche chez plusieurs personnes forme un groupe (regroupement du moteur s'il est là)."""
+    taches = taches_de(camp)
+    if mod and callable(getattr(mod, "grouper", None)):
+        try:
+            gs = mod.grouper(taches)
+        except Exception:
+            gs = [[t] for t in taches]
     else:
-        etat_ia = "À observer"
-    niveau = 4 if base >= .6 and "decision" not in types else 3 if "decision" not in types else 2
-    aut = int(max(1, min(niveau, int(nombre(these.get("autonomie"), 2)))))
-    gain = round(base * FACTEUR_AUTONOMIE.get(aut, .75), 2)
-    return {"heures_semaine": round(heures, 1), "gain": gain, "autonomie": aut, "etat_ia": etat_ia}
-
-
-def tache_id(t):
-    return slug(f"{t.get('poste', '')}-{t.get('titre', '')}")
-
-
-def pack_secours(taches, these):
+        gs = [[t] for t in taches]
     out = []
-    for t in taches:
-        out.append({"id": tache_id(t), "titre": t.get("titre"), "poste": t.get("poste"), **evaluer(t, these), "tache": t})
-    out = [x for x in out if x["heures_semaine"] > 0]
-    out.sort(key=lambda x: -x["heures_semaine"] * max(x["gain"], .05))
-    return out[:8]
+    for membres in gs:
+        ref = max(membres, key=lambda m: (m.get("confiance") or 0, len([e for e in m.get("etapes") or [] if isinstance(e, dict) and e.get("texte")])))
+        out.append((ref, [m for m in membres if m is not ref]))
+    return out
 
 
-def premier(d, *cles, defaut=None):
-    for k in cles:
-        if isinstance(d, dict) and d.get(k) not in (None, ""):
-            return d[k]
-    return defaut
+def vue_tache(t):
+    """Ce que l'interface affiche d'une tâche (et renvoie au serveur pour Générer)."""
+    return {"titre": t.get("titre"), "poste": personne_de(t), "etapes": [{"type": e.get("type"), "texte": e.get("texte"), "app": e.get("app"), "statut": e.get("statut")}
+                                                                      for e in t.get("etapes") or [] if isinstance(e, dict)]}
 
 
-def pack(these_id):
+def pack(these_id, camp):
     these = these_par_id(these_id)
-    taches = taches_audit()
-    secours = pack_secours(taches, these)
-    mod, note = moteur(), None
+    mod = moteur()
+    gs = groupes(camp, mod)
+    par_titre = {ref.get("titre"): (ref, autres) for ref, autres in gs}
     if mod and callable(getattr(mod, "pack", None)):
         try:
-            res = mod.pack(taches, these)
-            if isinstance(res, dict):
-                res = premier(res, "workflows", "taches", "pack", "cartes", defaut=[])
+            lignes = mod.pack([r for _, r in resumes(camp)], these)
             cartes = []
-            for x in res or []:
-                if not isinstance(x, dict):
-                    continue
-                src = x.get("tache") if isinstance(x.get("tache"), dict) else x
-                titre = premier(x, "titre", "nom", "title", defaut=src.get("titre"))
-                base = next((s for s in secours if s["titre"] == titre), None) or {"id": tache_id(src), **evaluer(src, these)}
-                gain = nombre(premier(x, "gain", "gain_estime", "gain_pct"), base["gain"])
-                cartes.append({"id": premier(x, "id", defaut=base["id"]), "titre": titre, "poste": premier(x, "poste", defaut=src.get("poste")),
-                               "heures_semaine": round(nombre(premier(x, "heures_semaine", "heures", "heures_par_semaine"), base["heures_semaine"]), 1),
-                               "gain": gain / 100 if gain > 1 else gain,
-                               "autonomie": int(nombre(premier(x, "autonomie", "niveau_autonomie"), base["autonomie"])),
-                               "etat_ia": premier(x, "etat_ia", "statut", defaut=base.get("etat_ia")), "tache": json_sur(x)})
-            if cartes:
-                return {"these": these, "simulation": False, "workflows": cartes, "note": None}
-            note = "Le moteur n'a renvoyé aucune tâche : chiffrage de secours."
+            for x in lignes:
+                ref, autres = par_titre.get(x.get("titre"), ({"titre": x.get("titre")}, []))
+                h = nombre(x.get("heures_semaine"))
+                cartes.append({"id": x.get("id") or slug(x.get("titre")), "titre": x.get("titre"), "poste": personne_de(ref),
+                               "heures_semaine": round(h, 1), "gain": round(nombre(x.get("gain_estime_h")) / h, 2) if h else 0,
+                               "gain_h": nombre(x.get("gain_estime_h")), "autonomie": int(nombre(x.get("autonomie"), 2)),
+                               "personnes": x.get("personnes") or 1 + len(autres), "libelles": x.get("libelles") or [],
+                               "tache": vue_tache(ref)})
+            return {"these": these, "simulation": False, "workflows": cartes, "note": None}
         except Exception as e:
-            note = f"Le moteur a échoué ({type(e).__name__}) : chiffrage de secours."
             traceback.print_exc()
-    return {"these": these, "simulation": True, "workflows": secours, "note": note}
+            note = f"Le moteur a échoué ({type(e).__name__} : {str(e)[:120]}). Chiffrage de secours."
+    else:
+        note = None
+    cartes = []
+    for ref, autres in gs:
+        ev = evaluer(ref, these)
+        if ev["heures_semaine"] > 0:
+            cartes.append({"id": slug(f"{personne_de(ref)}-{ref.get('titre')}"), "titre": ref.get("titre"), "poste": personne_de(ref), **ev,
+                           "gain_h": round(ev["heures_semaine"] * ev["gain"], 2), "personnes": 1 + len(autres), "tache": vue_tache(ref)})
+    cartes.sort(key=lambda c: -c["gain_h"])
+    return {"these": these, "simulation": True, "workflows": cartes[:10], "note": note}
 
 
 # ---------- Générer, Tester, Déployer ----------
@@ -353,126 +380,145 @@ def remesure(jours=7):
     return (datetime.now() + timedelta(days=jours)).strftime("%Y-%m-%d")
 
 
+def dossier_sur(d):
+    """N'accepte qu'un dossier de skill sous donnees/workflows/ (chemin relatif à la racine ou absolu)."""
+    if not d:
+        raise ValueError("aucun dossier de skill : lance d'abord Générer")
+    absolu = os.path.realpath(d if os.path.isabs(d) else os.path.join(RACINE, d))
+    base = os.path.realpath(os.path.join(RACINE, "donnees", "workflows")) + os.sep
+    if not absolu.startswith(base):
+        raise ValueError("dossier de skill refusé (hors de donnees/workflows)")
+    return absolu
+
+
+def reel_generer(mod, ref, autres, these):
+    dossier = mod.generer(ref, these)
+    l = [f"Tâche « {ref.get('titre')} » · {len(ref.get('etapes') or [])} étapes observées chez {personne_de(ref)}"
+         + (f", et {len(autres)} autre{'s' if len(autres) > 1 else ''} personne{'s' if len(autres) > 1 else ''} qui la font aussi" if autres else ""),
+         f"Approche « {these.get('nom')} » · autonomie {these.get('autonomie')} sur 4"]
+    md = ""
+    try:
+        with open(os.path.join(dossier, "SKILL.md"), encoding="utf-8") as f:
+            md = f.read()
+    except OSError:
+        pass
+    dans, n = False, 0
+    for ligne in md.splitlines():
+        if ligne.startswith("## "):
+            dans = ligne.strip() == "## Étapes"
+            continue
+        if dans and re.match(r"^\d+\. ", ligne) and n < 12:
+            l.append("Instruction " + ligne.strip()[:220])
+            n += 1
+    meta = lire(os.path.join(dossier, "workflow.json")) or {}
+    tests = lire(os.path.join(dossier, "tests.json")) or {}
+    for p in meta.get("points_humains") or []:
+        l.append(f"Point de validation humaine : {p}")
+    l += [f"✓ SKILL.md écrit ({len(md.splitlines())} lignes)", f"✓ tests.json : {len(tests.get('cas') or [])} cas de référence",
+          f"✓ Dossier : {rel(dossier)}"]
+    return {"lignes": l, "dossier": rel(dossier), "verdict": "pret", "fichiers": sorted(os.listdir(dossier))}
+
+
+def reel_tester(mod, dossier, autres):
+    entrees = [{"nom": f"2e entrée : {personne_de(m)} — {m.get('titre')}", "etapes": m.get("etapes"), "apps": m.get("apps"),
+                "exceptions": m.get("exceptions"), "preuves": m.get("preuves")} for m in autres]
+    r = mod.tester(dossier, entrees)
+    l = [f"Rejeu à sec de {r.get('cas', 0)} cas" + (f", dont {len(entrees)} chez une autre personne" if entrees else ", sans 2e personne")]
+    l.append(f"{'✓' if r.get('passes') == r.get('cas') else '!'} Cas réussis : {r.get('passes', 0)} sur {r.get('cas', 0)}")
+    for e in r.get("echecs") or []:
+        l.append(f"! {e.get('raison')}" + (f" · {e.get('cas')}" if e.get("cas") not in (None, "-") else ""))
+    for a in (r.get("avertissements") or [])[:4]:
+        l.append(f"Remarque : {a.get('raison')}")
+    cov = nombre(r.get("couverture_etapes"))
+    l.append(f"Couverture des étapes observées : {round(cov * 100)} %")
+    l.append(f"{'✓ Prêt à déployer' if r.get('verdict') == 'pret' else '! À revoir : ' + str(r.get('message') or '')}")
+    return {"lignes": l, "verdict": "pret" if r.get("verdict") == "pret" else "a_revoir", "taux": cov,
+            "raisons": [e.get("raison") for e in r.get("echecs") or []], "dossier": rel(dossier), "rapport": json_sur(r)}
+
+
+def reel_deployer(mod, dossier, cible, forcer, ref):
+    r = mod.deployer(dossier, cible, forcer=forcer, poste=personne_de(ref) if cible == "local-demo" else None)
+    if not r.get("deploye"):
+        return {"lignes": [f"! Déploiement refusé : {r.get('raison')}"], "verdict": "a_revoir", "refuse": True, "raisons": [r.get("raison")], "dossier": rel(dossier)}
+    t = r.get("tests") or {}
+    l = [f"✓ Copié vers {r.get('chemin')}",
+         f"Cible : {'un poste, en démonstration (' + str(r.get('poste')) + ')' if cible == 'local-demo' else 'toute l’équipe, partagé par le dépôt'}",
+         f"Autonomie {r.get('autonomie')} sur 4 · humain : {r.get('humain') or '—'}",
+         f"Tests au moment du déploiement : {t.get('verdict')}, {t.get('passes')} sur {t.get('cas')} cas"]
+    if r.get("force"):
+        l.append("! Déployé en forçant malgré des tests à revoir")
+    for s in (r.get("suivi_apres") or [])[:2]:
+        l.append(f"Suivi : {s}")
+    l.append(f"✓ Reçu écrit · remesure programmée le {remesure()}")
+    return {"lignes": l, "verdict": "pret", "dossier": rel(dossier), "recu": json_sur(r), "poste_deploye": r.get("poste")}
+
+
 def sim_generer(t, these):
     etapes = t.get("etapes") or []
-    l = [f"Lecture de la tâche « {t.get('titre')} » ({len(etapes)} étapes observées)"]
+    l = [f"Tâche « {t.get('titre')} » · {len(etapes)} étapes observées"]
     for k, e in enumerate(etapes, 1):
-        l.append(f"Étape {k} · {e.get('type') or 'action'} · {e.get('texte')}" + (f" [{e.get('app')}]" if e.get("app") else ""))
-    l.append(f"Règle de la thèse « {these.get('nom')} » : {these.get('humain') or 'validation humaine'}")
-    for g in (these.get("garde_fous") or [])[:2]:
-        l.append(f"Garde-fou ajouté : {g}")
-    dossier = f"skills/{slug(t.get('titre'))}"
-    l.append(f"Skill écrite : {dossier}/SKILL.md ({18 + 4 * len(etapes)} lignes)")
-    return {"lignes": l, "dossier": dossier, "verdict": "pret"}
+        l.append(f"Instruction {k}. {e.get('texte')}" + (f" ({e.get('app')})" if e.get("app") else ""))
+    l.append(f"Humain : {these.get('humain') or 'validation humaine'}")
+    l.append(f"✓ SKILL.md écrit (simulation, rien n'est créé sur le disque)")
+    return {"lignes": l, "dossier": f"skills/{slug(t.get('titre'))}", "verdict": "pret"}
 
 
-def sim_tester(t, these, dossier):
+def sim_tester(t, these):
     etapes = t.get("etapes") or []
-    l, couvertes = [f"Chargement de {dossier}", f"Rejeu sur {max(3, len(etapes))} cas observés"], []
+    l, couvertes = [f"Rejeu de {len(etapes)} étapes (simulation)"], []
     for k, e in enumerate(etapes, 1):
         ok = e.get("statut") != "supposé"
         couvertes.append(ok)
-        l.append(f"{'✓' if ok else '!'} Étape {k} : {e.get('texte')}" + ("" if ok else " (supposée, à confirmer avec la personne)"))
-    for x in (these.get("tests_avant") or [])[:2]:
-        l.append(f"✓ Contrôle de la thèse : {x}")
+        l.append(f"{'✓' if ok else '!'} Étape {k} : {e.get('texte')}" + ("" if ok else " (supposée, à confirmer)"))
     couv = sum(couvertes) / len(couvertes) if couvertes else 0
-    conf = nombre(t.get("confiance"), .6)
-    verdict = "pret" if couv >= .6 and conf >= .6 else "a_revoir"
-    l.append(f"Couverture des étapes : {round(couv * 100)} % · confiance du résumé : {round(conf * 100)} %")
-    return {"lignes": l, "couverture": [1 if c else 0 for c in couvertes], "verdict": verdict}
+    l.append(f"Couverture des étapes : {round(couv * 100)} %")
+    return {"lignes": l, "taux": couv, "verdict": "pret" if couv >= .6 else "a_revoir",
+            "raisons": [f"étape supposée, à confirmer : « {e.get('texte')} »" for e in etapes if e.get("statut") == "supposé"]}
 
 
-def sim_deployer(t, these, dossier, cible, ps):
-    postes_cible = [p["id"] for p in ps if p["qui"] == t.get("poste")] if cible == "local-demo" else [p["id"] for p in ps]
-    l = [f"Paquet {dossier} vérifié",
-         f"Cible : {'ce Mac, en démonstration' if cible == 'local-demo' else 'toute l’équipe'} ({', '.join(postes_cible) or 'ce poste'})",
-         "Branchement dans Claude Code et Orca : consignes copiées",
-         f"Point de contrôle humain : {these.get('humain') or 'validation avant envoi'}",
-         f"Remesure programmée le {remesure()}"]
-    return {"lignes": l, "verdict": "pret", "postes": postes_cible}
-
-
-def normaliser(res, defaut):
-    """Accepte ce que renvoie le moteur (chemin, dict, liste…) et en tire des lignes lisibles et un verdict."""
-    out = dict(defaut)
-    if isinstance(res, (str, os.PathLike)):
-        out["dossier"] = str(res)
-        out["lignes"] = [f"Résultat : {res}"]
-        return out
-    if isinstance(res, (list, tuple)):
-        out["lignes"] = [str(x) for x in res][:60]
-        return out
-    if not isinstance(res, dict):
-        out["lignes"] = [str(res)]
-        return out
-    lignes = premier(res, "lignes", "journal", "log", "logs", "etapes_log")
-    if isinstance(lignes, str):
-        lignes = lignes.splitlines()
-    if not lignes:
-        lignes = [f"{k} : {v if not isinstance(v, (dict, list)) else json.dumps(v, ensure_ascii=False)[:160]}" for k, v in res.items()][:20]
-    out["lignes"] = [str(x) for x in lignes][:80]
-    d = premier(res, "dossier", "dossier_skill", "chemin", "path", "skill")
-    if d:
-        out["dossier"] = str(d)
-    v = premier(res, "verdict", "statut")
-    if v is not None:
-        out["verdict"] = "pret" if str(v).lower().replace("ê", "e") in ("pret", "ok", "ready", "succes", "true", "vert") else "a_revoir"
-    elif "ok" in res or "pret" in res:
-        out["verdict"] = "pret" if (res.get("ok") or res.get("pret")) else "a_revoir"
-    c = premier(res, "couverture", "coverage")
-    if isinstance(c, list):
-        out["couverture"] = [1 if x else 0 for x in c]
-    elif c is not None:
-        n = len(out.get("couverture") or []) or 5
-        f = nombre(c)
-        f = f / 100 if f > 1 else f
-        out["couverture"] = [1 if k < round(f * n) else 0 for k in range(n)]
-    if res.get("postes"):
-        out["postes"] = res["postes"]
-    out["brut"] = json_sur(res)
-    return out
+def sim_deployer(t, cible):
+    return {"lignes": [f"Cible : {'un poste, en démonstration' if cible == 'local-demo' else 'toute l’équipe'} (simulation)",
+                       f"✓ Remesure programmée le {remesure()}"], "verdict": "pret"}
 
 
 def workflow(action, corps):
+    camp = campagne(corps.get("campagne"))
     t = corps.get("tache") or {}
     these = these_par_id(corps.get("these"))
-    dossier = corps.get("dossier") or f"skills/{slug(t.get('titre'))}"
     cible = "equipe" if corps.get("cible") == "equipe" else "local-demo"
-    ps = postes()
-    if action == "generer":
-        sim = sim_generer(t, these)
-    elif action == "tester":
-        sim = sim_tester(t, these, dossier)
-    else:
-        sim = sim_deployer(t, these, dossier, cible, ps)
-    mod, res = moteur(), None
+    mod = moteur()
     fn = getattr(mod, action, None) if mod else None
     if callable(fn):
+        ref, autres = next(((r, a) for r, a in groupes(camp, mod) if r.get("titre") == t.get("titre")), (None, []))
+        if ref is None:
+            return {"lignes": [f"! Tâche introuvable dans les résumés de cette campagne : « {t.get('titre')} »"], "verdict": "a_revoir", "simulation": False}
         try:
             if action == "generer":
-                r = fn(t, these)
+                res = reel_generer(mod, ref, autres, these)
             elif action == "tester":
-                r = fn(dossier, t.get("entrees") or t.get("exemples") or [{"etape": e.get("texte"), "type": e.get("type")} for e in t.get("etapes") or []])
+                res = reel_tester(mod, dossier_sur(corps.get("dossier")), autres)
             else:
-                r = fn(dossier, cible)
-            res = normaliser(r, {**sim, "lignes": []})
+                res = reel_deployer(mod, dossier_sur(corps.get("dossier")), cible, bool(corps.get("forcer")), ref)
             res["simulation"] = False
-            if not res["lignes"]:
-                res["lignes"] = sim["lignes"]
+        except ValueError as e:
+            return {"lignes": [f"! {e}"], "verdict": "a_revoir", "simulation": False, "raisons": [str(e)]}
         except Exception as e:
             traceback.print_exc()
-            res = {**sim, "simulation": True, "note": f"Le moteur a échoué ({type(e).__name__} : {str(e)[:140]}). Résultat simulé."}
-    if res is None:
-        res = {**sim, "simulation": True, "note": None if mod is None else f"Le moteur n'a pas encore de fonction « {action} ». Résultat simulé."}
-    if action == "deployer":
+            return {"lignes": [f"! Le moteur a échoué : {type(e).__name__} : {str(e)[:200]}"], "verdict": "a_revoir", "simulation": False}
+    else:
+        res = sim_generer(t, these) if action == "generer" else sim_tester(t, these) if action == "tester" else sim_deployer(t, cible)
+        res["simulation"] = True
+        res["note"] = "Moteur de workflows absent : résultat simulé, rien n'est installé." if mod is None else f"Le moteur n'a pas de fonction « {action} » : résultat simulé."
+    if action == "deployer" and not res.get("refuse"):
         f = os.path.join(ETAT, "deploiements.json")
-        deps = [d for d in (lire(f) or []) if d.get("id") != corps.get("id")]
-        ev = evaluer(t, these)
-        deps.append({"id": corps.get("id") or slug(t.get("titre")), "titre": t.get("titre"), "poste": t.get("poste"), "these": these.get("nom"),
-                     "cible": cible, "postes": res.get("postes") or sim.get("postes"), "dossier": res.get("dossier", dossier),
-                     "heures_avant": nombre(corps.get("heures_semaine"), ev["heures_semaine"]), "gain": nombre(corps.get("gain"), ev["gain"]),
-                     "autonomie": corps.get("autonomie") or ev["autonomie"],
-                     "deploye_le": datetime.now().isoformat(timespec="minutes"), "remesure_le": remesure(), "simulation": res["simulation"]})
+        deps = [d for d in (lire(f) or []) if not (d.get("id") == corps.get("id") and d.get("campagne") == camp)]
+        ps = {p["qui"]: p["id"] for p in postes(camp)}
+        cibles = [ps.get(res.get("poste_deploye") or t.get("poste"), res.get("poste_deploye") or t.get("poste"))] if cible == "local-demo" else list(ps.values())
+        deps.append({"id": corps.get("id") or slug(t.get("titre")), "campagne": camp, "titre": t.get("titre"), "poste": t.get("poste"), "these": these.get("nom"),
+                     "cible": cible, "postes": cibles, "dossier": res.get("dossier"),
+                     "heures_avant": nombre(corps.get("heures_semaine")), "gain": nombre(corps.get("gain")), "autonomie": corps.get("autonomie"),
+                     "deploye_le": datetime.now().isoformat(timespec="minutes"), "remesure_le": remesure(), "simulation": res["simulation"],
+                     "force": bool(corps.get("forcer"))})
         ecrire(f, deps)
     return res
 
@@ -510,16 +556,17 @@ class Handler(BaseHTTPRequestHandler):
         try:
             if p in ("/", "/index.html"):
                 return self.fichier(os.path.join(ICI, "index.html"))
+            camp = campagne(q.get("campagne"))
             if p == "/api/etat":
-                return self.envoyer(200, etat())
+                return self.envoyer(200, etat(camp))
             if p == "/api/methodes":
                 return self.envoyer(200, methodes())
             if p == "/api/theses":
                 return self.envoyer(200, theses())
             if p == "/api/pack":
-                return self.envoyer(200, pack(q.get("these", "")))
+                return self.envoyer(200, pack(q.get("these", ""), camp))
             if p == "/api/suivi":
-                return self.envoyer(200, {"deploiements": lire(os.path.join(ETAT, "deploiements.json")) or [], "postes": postes()})
+                return self.envoyer(200, {"deploiements": [d for d in lire(os.path.join(ETAT, "deploiements.json")) or [] if d.get("campagne", "equipe") == camp], "postes": postes(camp)})
             if p.startswith("/api/rapport/"):
                 chemin, source = rapport(unquote(p[len("/api/rapport/"):]))
                 return self.envoyer(200, {"source": source, "fichier": rel(chemin) if chemin else None})
@@ -541,11 +588,11 @@ class Handler(BaseHTTPRequestHandler):
         try:
             if p == "/api/onboarding":
                 c = self.corps()
-                ecrire(os.path.join(ETAT, "onboarding.json"), {k: v for k, v in c.items() if k in CHAMPS_ONB})
+                ecrire(os.path.join(ETAT, f"onboarding-{campagne(c.get('campagne'))}.json"), {k: v for k, v in c.items() if k in CHAMPS_ONB})
                 return self.envoyer(200, {"ok": True})
             if p == "/api/choix":
                 f = os.path.join(ETAT, "choix.json")
-                ecrire(f, {**(lire(f) or {}), **{k: v for k, v in self.corps().items() if k in ("methode", "these", "etape")}})
+                ecrire(f, {**(lire(f) or {}), **{k: v for k, v in self.corps().items() if k in ("methode", "these", "etape", "campagne")}})
                 return self.envoyer(200, {"ok": True})
             m = re.fullmatch(r"/api/workflow/(generer|tester|deployer)", p)
             if m:

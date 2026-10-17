@@ -1,0 +1,561 @@
+[
+  {
+    "id": "rails-dabord",
+    "nom": "Les Rails d'abord",
+    "accroche": "Du code fixe pour le chemin, l'IA seulement aux carrefours où il faut comprendre du texte.",
+    "auteurs": [
+      "Anthropic (Building effective agents)",
+      "Dex Horthy / HumanLayer (12-Factor Agents)",
+      "OpenAI (A practical guide to building agents)",
+      "Decagon (Agent Operating Procedures)",
+      "Sierra (Agent development life cycle)"
+    ],
+    "idee": "La plupart des agents qui marchent en production sont surtout du logiciel classique, avec quelques appels au modèle placés aux bons endroits ; on ne laisse le modèle décider que là où c'est indispensable.",
+    "principes": [
+      "Dessiner le processus comme une suite d'étapes fixes ; le modèle n'intervient que pour lire, classer ou rédiger.",
+      "Un contrôle automatique (une porte) entre chaque étape : format, champs obligatoires, montants.",
+      "Les actions critiques (paiement, envoi, suppression) sont du code, jamais une décision libre du modèle.",
+      "Chaque version du workflow est figée et peut être annulée en un geste.",
+      "Garder la main sur la boucle : pause, reprise, accord humain avant l'action à fort enjeu."
+    ],
+    "quand": "Processus répétitifs et stables (saisie, relances, rapprochements, reporting), faible tolérance au risque, PME sans équipe technique, secteurs régulés. Thèse par défaut pour un premier déploiement.",
+    "risques": [
+      "Rigide quand le processus change.",
+      "Gère mal les cas imprévus.",
+      "Peut devenir une usine à gaz de règles."
+    ],
+    "garde_fous": [
+      "Contrôles automatiques entre les étapes.",
+      "Liste blanche des actions autorisées.",
+      "Tout cas qui sort du rail part à un humain.",
+      "Versions figées et retour arrière instantané."
+    ],
+    "autonomie": 3,
+    "humain": "Valide le dessin du rail au départ et traite les exceptions qui sortent du rail.",
+    "tests_avant": [
+      "Rejouer 20 à 50 cas réels tirés des captures screenpipe et comparer la sortie de chaque étape à ce que le salarié a fait.",
+      "Tester chaque porte avec des entrées volontairement fausses.",
+      "Vérifier que les cas hors rail partent bien à un humain."
+    ],
+    "suivi_apres": [
+      "Temps passé sur la tâche avant/après, mesuré par screenpipe.",
+      "Taux de cas sortis du rail.",
+      "Taux de correction humaine.",
+      "Nombre de retours arrière."
+    ],
+    "etapes": [
+      "Déclencheur (fichier reçu, heure, événement vu par screenpipe)",
+      "Étape fixe : récupération des données",
+      "Appel au modèle : lire, classer ou rédiger",
+      "Porte de contrôle automatique ; si échec, file d'attente humaine",
+      "Action en code et notification"
+    ],
+    "sources": [
+      {
+        "titre": "Anthropic — Building effective agents",
+        "url": "https://www.anthropic.com/research/building-effective-agents"
+      },
+      {
+        "titre": "HumanLayer — 12-Factor Agents",
+        "url": "https://github.com/humanlayer/12-factor-agents"
+      },
+      {
+        "titre": "12-Factor Agents — Own your control flow",
+        "url": "https://github.com/humanlayer/12-factor-agents/blob/main/content/factor-08-own-your-control-flow.md"
+      },
+      {
+        "titre": "OpenAI — A practical guide to building agents",
+        "url": "https://cdn.openai.com/business-guides-and-resources/a-practical-guide-to-building-agents.pdf"
+      },
+      {
+        "titre": "Decagon — From SOPs to Agent Operating Procedures",
+        "url": "https://decagon.ai/blog/from-sops-to-agent-operating-procedures"
+      },
+      {
+        "titre": "Sierra — Agent development life cycle",
+        "url": "https://sierra.ai/blog/agent-development-life-cycle"
+      }
+    ]
+  },
+  {
+    "id": "seul-cerveau",
+    "nom": "Un Seul Cerveau",
+    "accroche": "Un seul agent qui voit tout le dossier, plutôt qu'une équipe d'agents qui se comprennent mal.",
+    "auteurs": [
+      "Walden Yan / Cognition (Don't Build Multi-Agents)",
+      "Anthropic (context engineering, Agent Skills)",
+      "OpenAI (guide pratique)",
+      "Drew Breunig (How Contexts Fail)",
+      "Harrison Chase (How to think about agent frameworks)"
+    ],
+    "idee": "La fiabilité vient d'un seul agent qui garde tout le fil de la tâche, avec un contexte soigné (ni trop, ni trop peu), plutôt que de plusieurs agents qui prennent des décisions contradictoires.",
+    "principes": [
+      "Un agent par tâche métier, qui garde tout l'historique de ce qu'il a fait.",
+      "Peu d'outils, bien nommés et bien décrits.",
+      "Le savoir-faire de l'entreprise rangé en skills chargées à la demande, pas tout dans le prompt.",
+      "Pour les tâches longues : notes hors contexte et résumés réguliers.",
+      "Une vérification exécutable à la fin pour que l'agent sache s'il a fini."
+    ],
+    "quand": "Tâches de connaissance où tout se tient (dossier client, proposition commerciale, analyse, code), équipes à l'aise avec un outil type Claude Code, tolérance au risque moyenne.",
+    "risques": [
+      "La fenêtre de contexte sature sur les très longues tâches.",
+      "Un seul point de défaillance.",
+      "La qualité baisse quand le contexte grossit (context rot)."
+    ],
+    "garde_fous": [
+      "Contexte minimal et propre, outils limités au nécessaire.",
+      "Repartir à neuf plutôt que corriger trois fois.",
+      "Vérification automatique de fin avec preuves.",
+      "Permissions limitées sur les outils."
+    ],
+    "autonomie": 3,
+    "humain": "Donne la tâche et relit le résultat final accompagné de ses preuves (sortie de test, capture, sources).",
+    "tests_avant": [
+      "Rejouer les cas observés par screenpipe avec la skill.",
+      "Vérifier que l'agent déclenche la bonne skill au bon moment.",
+      "Juger le résultat final, pas le chemin suivi."
+    ],
+    "suivi_apres": [
+      "Temps gagné par tâche, mesuré par screenpipe.",
+      "Taux de reprise par l'humain.",
+      "Nombre de relances nécessaires par tâche.",
+      "Taille du contexte au moment des échecs."
+    ],
+    "etapes": [
+      "L'humain (ou un pipe) lance la tâche",
+      "L'agent charge seulement les skills et données utiles",
+      "Il travaille en boucle, prend des notes, résume si besoin",
+      "Il lance la vérification de fin",
+      "Il rend le résultat avec les preuves"
+    ],
+    "sources": [
+      {
+        "titre": "Cognition — Don't Build Multi-Agents",
+        "url": "https://cognition.com/blog/dont-build-multi-agents"
+      },
+      {
+        "titre": "Anthropic — Effective context engineering for AI agents",
+        "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"
+      },
+      {
+        "titre": "Anthropic — Agent Skills",
+        "url": "https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills"
+      },
+      {
+        "titre": "Anthropic — Writing effective tools for agents",
+        "url": "https://www.anthropic.com/engineering/writing-tools-for-agents"
+      },
+      {
+        "titre": "OpenAI — A practical guide to building agents",
+        "url": "https://cdn.openai.com/business-guides-and-resources/a-practical-guide-to-building-agents.pdf"
+      },
+      {
+        "titre": "Drew Breunig — How Contexts Fail",
+        "url": "https://www.dbreunig.com/2025/06/22/how-contexts-fail-and-how-to-fix-them.html"
+      },
+      {
+        "titre": "Drew Breunig — How to Fix Your Context",
+        "url": "https://www.dbreunig.com/2025/06/26/how-to-fix-your-context.html"
+      },
+      {
+        "titre": "Harrison Chase — How to think about agent frameworks",
+        "url": "https://www.langchain.com/blog/how-to-think-about-agent-frameworks"
+      },
+      {
+        "titre": "Claude Code — Best practices",
+        "url": "https://code.claude.com/docs/en/best-practices"
+      }
+    ]
+  },
+  {
+    "id": "armure-pas-robot",
+    "nom": "L'Armure, pas le Robot",
+    "accroche": "L'IA prépare, l'humain vérifie vite, et c'est lui qui règle le curseur d'autonomie.",
+    "auteurs": [
+      "Andrej Karpathy (Software Is Changing (Again), Dwarkesh Podcast)",
+      "Chip Huyen (Agents)",
+      "Feng, McDonald, Zhang (Levels of Autonomy for AI Agents)",
+      "Anthropic (Measuring AI agent autonomy in practice)"
+    ],
+    "idee": "Construire des outils qui augmentent l'humain, comme l'armure d'Iron Man, avec un curseur d'autonomie qu'on monte seulement quand la confiance est prouvée, plutôt que des robots qui le remplacent.",
+    "principes": [
+      "L'IA propose, l'humain dispose : brouillon, pas envoi.",
+      "Rendre la vérification rapide : montrer l'avant/après, pas un pavé de texte.",
+      "Petits morceaux vérifiables plutôt qu'un gros résultat d'un coup.",
+      "Un curseur d'autonomie réglable par tâche.",
+      "Le plan est validé avant l'exécution."
+    ],
+    "quand": "Métiers où l'erreur engage la responsabilité (juridique, finance, santé, relation client sensible), équipes méfiantes envers l'IA, premier contact avec les agents, tâches où le jugement humain fait la valeur.",
+    "risques": [
+      "Gain de temps plafonné par la vitesse de relecture.",
+      "Fatigue de validation : on finit par cliquer OK sans lire.",
+      "IA sous-utilisée par rapport à ce qu'elle sait faire."
+    ],
+    "garde_fous": [
+      "Interface de relecture conçue pour aller vite.",
+      "Mesure du taux de modification des brouillons.",
+      "Montée du curseur uniquement sur preuve chiffrée."
+    ],
+    "autonomie": 2,
+    "humain": "À chaque sortie : il valide, corrige ou rejette avant que quoi que ce soit parte.",
+    "tests_avant": [
+      "Sur les cas observés par screenpipe, comparer le brouillon de l'IA à ce que le salarié a réellement produit.",
+      "Mesurer combien de modifications il aurait fallu pour chaque brouillon."
+    ],
+    "suivi_apres": [
+      "Taux d'acceptation sans modification.",
+      "Ampleur moyenne des corrections.",
+      "Temps de relecture comparé au temps de la tâche à la main (screenpipe).",
+      "Décision de monter d'un cran quand l'acceptation dépasse le seuil convenu avec le client."
+    ],
+    "etapes": [
+      "screenpipe repère le moment où la tâche commence",
+      "L'IA prépare un brouillon ou un plan",
+      "L'humain voit l'avant/après et valide, corrige ou rejette",
+      "L'action part seulement après validation",
+      "Les corrections sont comptées pour régler le curseur"
+    ],
+    "sources": [
+      {
+        "titre": "Karpathy — Software Is Changing (Again), transcription",
+        "url": "https://prepublish.ai/youtube-transcript/LCEmiRjPEtQ"
+      },
+      {
+        "titre": "Karpathy — Software Is Changing (Again), vidéo",
+        "url": "https://www.youtube.com/watch?v=LCEmiRjPEtQ"
+      },
+      {
+        "titre": "Fortune — Karpathy au Dwarkesh Podcast",
+        "url": "https://fortune.com/2025/10/20/workers-fear-ai-job-cuts-open-ai-co-founder-says-ai-agents-will-take-a-decade-before-they-even-work-they-dont-have-enough-intelligence-unemployment-automation-2035"
+      },
+      {
+        "titre": "Chip Huyen — Agents",
+        "url": "https://huyenchip.com/2025/01/07/agents.html"
+      },
+      {
+        "titre": "Feng, McDonald, Zhang — Levels of Autonomy for AI Agents",
+        "url": "https://arxiv.org/abs/2506.12469"
+      },
+      {
+        "titre": "Anthropic — Measuring AI agent autonomy in practice",
+        "url": "https://www.anthropic.com/research/measuring-agent-autonomy"
+      }
+    ]
+  },
+  {
+    "id": "banc-dessai",
+    "nom": "Le Banc d'Essai",
+    "accroche": "Pas de déploiement sans examen : on mesure les erreurs sur de vrais cas avant et après.",
+    "auteurs": [
+      "Hamel Husain",
+      "Shreya Shankar",
+      "Eugene Yan",
+      "Anthropic (Demystifying evals for AI agents)",
+      "Sierra (τ-bench, simulations)",
+      "Decagon (test-driven agents)"
+    ],
+    "idee": "Les produits IA échouent faute de système d'évaluation : on regarde les vraies erreurs, on les compte, et l'agent n'est déployé, puis promu en autonomie, que s'il passe ses tests.",
+    "principes": [
+      "Construire le jeu de tests à partir de vraies tâches et de vraies erreurs.",
+      "Juger en réussi/raté avec une phrase d'explication, pas une note sur 5.",
+      "Mesurer la constance (pass^k : la même tâche réussie k fois de suite).",
+      "Chaque changement de prompt, modèle ou skill relance tous les tests ; pas de mise en production si ça régresse.",
+      "Continuer à relire des traces en production : les critères évoluent."
+    ],
+    "quand": "Clients qui veulent des preuves chiffrées avant de faire confiance, processus à volume, déploiements appelés à grandir. Colonne vertébrale de toutes les autres thèses.",
+    "risques": [
+      "Coûte du temps au départ.",
+      "Tests qui ne ressemblent pas à la réalité.",
+      "Juge automatique mal calibré.",
+      "Réussir le test sans réussir la tâche."
+    ],
+    "garde_fous": [
+      "Juge automatique recalibré sur des jugements humains.",
+      "Tests tirés des vraies traces.",
+      "Relecture régulière d'échantillons.",
+      "Un responsable des tests côté client."
+    ],
+    "autonomie": 2,
+    "humain": "Étiquette les cas (réussi/raté), fixe le seuil d'acceptation et relit un échantillon chaque semaine ; l'autonomie passe à 3 quand le seuil est atteint.",
+    "tests_avant": [
+      "20 à 50 cas rejoués à partir des captures screenpipe.",
+      "pass^k : plusieurs essais par cas (par exemple 5).",
+      "Un jeu de cas où l'agent ne doit pas agir.",
+      "Aucun déploiement sous le seuil convenu."
+    ],
+    "suivi_apres": [
+      "Taux de réussite sur un échantillon relu chaque semaine.",
+      "Taux de correction humaine.",
+      "Nouvelles erreurs ajoutées au jeu de tests.",
+      "Temps gagné mesuré par screenpipe."
+    ],
+    "etapes": [
+      "screenpipe fournit les vraies traces de la tâche",
+      "On en tire 20 à 50 cas de test étiquetés",
+      "Le workflow passe plusieurs fois chaque cas (pass^k)",
+      "Seuil atteint : déploiement ; sinon correction",
+      "En production, chaque erreur relevée devient un nouveau test"
+    ],
+    "sources": [
+      {
+        "titre": "Hamel Husain — Your AI Product Needs Evals",
+        "url": "https://hamel.dev/blog/posts/evals/"
+      },
+      {
+        "titre": "Hamel Husain — A Field Guide to Rapidly Improving AI Products",
+        "url": "https://hamel.dev/blog/posts/field-guide/"
+      },
+      {
+        "titre": "Hamel Husain & Shreya Shankar — AI Evals FAQ",
+        "url": "https://hamel.dev/blog/posts/evals-faq/"
+      },
+      {
+        "titre": "Shankar et al. — Who Validates the Validators?",
+        "url": "https://arxiv.org/abs/2404.12272"
+      },
+      {
+        "titre": "Eugene Yan — An LLM-as-Judge Won't Save The Product",
+        "url": "https://eugeneyan.com/writing/eval-process/"
+      },
+      {
+        "titre": "Anthropic — Demystifying evals for AI agents",
+        "url": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
+      },
+      {
+        "titre": "Sierra — τ-bench",
+        "url": "https://sierra.ai/blog/benchmarking-ai-agents"
+      },
+      {
+        "titre": "Sierra — Simulations",
+        "url": "https://sierra.ai/blog/simulations-the-secret-behind-every-great-agent"
+      },
+      {
+        "titre": "Decagon — The future of AI agents is test driven",
+        "url": "https://decagon.ai/blog/the-future-of-ai-agents-is-test-driven"
+      }
+    ]
+  },
+  {
+    "id": "majordome-ambiant",
+    "nom": "Le Majordome Ambiant",
+    "accroche": "L'agent travaille en fond sur ce qui se passe, et ne dérange l'humain que pour notifier, demander ou faire valider.",
+    "auteurs": [
+      "Harrison Chase / LangChain (ambient agents)",
+      "Dex Horthy / HumanLayer (facteur 7)",
+      "OpenAI (Plan for human intervention)",
+      "swyx / Latent Space (Agent Engineering)"
+    ],
+    "idee": "Au lieu d'attendre qu'on lui parle, l'agent écoute un flux d'événements, avance seul sur ce qui est sûr, et passe par une boîte de réception quand il a besoin d'un humain.",
+    "principes": [
+      "Le déclencheur est un événement (écran, mail, fichier, heure), pas une conversation.",
+      "Chaque action est classée : sans risque (l'agent agit), à valider (l'agent prépare), à signaler (l'agent notifie).",
+      "Une seule boîte de réception où l'humain voit tout ce qui l'attend.",
+      "L'agent se met en pause et reprend sans tout recommencer.",
+      "Chaque réponse humaine est gardée et réutilisée."
+    ],
+    "quand": "Journées hachées de petites tâches (relances, suivi de dossiers, comptes rendus de réunion, CRM), managers et indépendants débordés, tolérance au risque moyenne. La thèse la plus naturelle avec screenpipe, qui est lui-même un flux d'événements.",
+    "risques": [
+      "Trop de notifications : l'humain décroche.",
+      "Actions faites dans son dos qui surprennent.",
+      "Demandes de validation à chaque pas qui lassent."
+    ],
+    "garde_fous": [
+      "Liste écrite des actions autorisées sans validation.",
+      "Plafond de notifications par jour.",
+      "Journal consultable de tout ce que l'agent a fait.",
+      "Passage à l'humain après un nombre fixé d'échecs."
+    ],
+    "autonomie": 3,
+    "humain": "Dans la boîte de réception : il répond aux questions de l'agent et valide les actions sensibles (autonomie 2 pour celles-ci).",
+    "tests_avant": [
+      "Rejouer une journée de captures screenpipe et vérifier que l'agent se déclenche aux bons moments, et pas aux mauvais.",
+      "Compter les notifications qu'il aurait envoyées.",
+      "Vérifier que les actions sensibles passent bien par la validation."
+    ],
+    "suivi_apres": [
+      "Notifications par jour et taux d'ouverture.",
+      "Délai de réponse humaine.",
+      "Taux d'actions annulées après coup.",
+      "Temps gagné sur les petites tâches, mesuré par screenpipe."
+    ],
+    "etapes": [
+      "screenpipe voit un événement (écran, réunion, mail)",
+      "Un pipe planifié ou déclenché réveille l'agent",
+      "L'agent classe : agir, préparer ou signaler",
+      "Ce qui demande un humain arrive dans la boîte de réception",
+      "La réponse est enregistrée et l'agent reprend"
+    ],
+    "sources": [
+      {
+        "titre": "LangChain — Introducing ambient agents",
+        "url": "https://www.langchain.com/blog/introducing-ambient-agents"
+      },
+      {
+        "titre": "12-Factor Agents — Contact humans with tool calls",
+        "url": "https://github.com/humanlayer/12-factor-agents/blob/main/content/factor-07-contact-humans-with-tools.md"
+      },
+      {
+        "titre": "OpenAI — A practical guide to building agents",
+        "url": "https://cdn.openai.com/business-guides-and-resources/a-practical-guide-to-building-agents.pdf"
+      },
+      {
+        "titre": "Latent Space — Agent Engineering",
+        "url": "https://www.latent.space/p/agent"
+      },
+      {
+        "titre": "screenpipe — Pipes",
+        "url": "https://docs.screenpipe.com/pipes"
+      }
+    ]
+  },
+  {
+    "id": "brigade",
+    "nom": "La Brigade",
+    "accroche": "Une équipe de petits agents spécialisés, un chef qui coordonne, et un seul qui écrit.",
+    "auteurs": [
+      "Anthropic (multi-agent research system)",
+      "Dex Horthy / HumanLayer (facteur 10)",
+      "Harrison Chase (How and when to build multi-agent systems)",
+      "NVIDIA / Belcak et al. (Small Language Models are the Future of Agentic AI)"
+    ],
+    "idee": "Découper le travail en petits agents qui font chacun une chose bien, coordonnés par un chef, surtout quand il faut chercher et lire beaucoup en parallèle.",
+    "principes": [
+      "Un agent = un poste précis (extraire, classer, chercher, vérifier), 3 à 10 étapes maximum.",
+      "Un chef qui découpe et répartit avec des consignes très claires.",
+      "Paralléliser la lecture ; un seul agent assemble et écrit.",
+      "Petits modèles pas chers pour les postes simples, gros modèle pour le chef.",
+      "Chaque poste a ses propres tests."
+    ],
+    "quand": "Recherche et veille larges (étude de marché, revue de documents, appels d'offres, audit de nombreux dossiers), volume élevé, tâches à forte valeur qui justifient le coût.",
+    "risques": [
+      "Coût élevé (environ 15 fois plus de tokens qu'une conversation selon Anthropic).",
+      "Décisions contradictoires entre agents.",
+      "Débogage plus difficile, pannes en cascade."
+    ],
+    "garde_fous": [
+      "Un seul rédacteur final.",
+      "Consignes de mission précises pour chaque sous-agent.",
+      "Budget de tokens plafonné.",
+      "Traçage de chaque sous-agent et reprise sur erreur sans tout relancer."
+    ],
+    "autonomie": 3,
+    "humain": "Valide la question de départ et lit la synthèse finale ; aucune action externe sans son accord.",
+    "tests_avant": [
+      "Tester chaque poste séparément sur des cas observés.",
+      "Tester la synthèse finale avec un juge automatique calibré sur l'avis humain.",
+      "Vérifier que les sources citées existent et disent bien ce qui est rapporté."
+    ],
+    "suivi_apres": [
+      "Coût par rapport rendu.",
+      "Taux de sources fausses ou inventées.",
+      "Temps gagné par rapport à la recherche à la main (screenpipe).",
+      "Taux de rapports repris par l'humain."
+    ],
+    "etapes": [
+      "L'humain pose la question",
+      "Le chef découpe en sous-missions",
+      "Des petits agents lisent et cherchent en parallèle",
+      "Le chef assemble, un vérificateur contrôle les sources",
+      "Un seul rapport final arrive chez l'humain"
+    ],
+    "sources": [
+      {
+        "titre": "Anthropic — How we built our multi-agent research system",
+        "url": "https://www.anthropic.com/engineering/multi-agent-research-system"
+      },
+      {
+        "titre": "12-Factor Agents — Small, Focused Agents",
+        "url": "https://github.com/humanlayer/12-factor-agents/blob/main/content/factor-10-small-focused-agents.md"
+      },
+      {
+        "titre": "LangChain — How and when to build multi-agent systems",
+        "url": "https://www.langchain.com/blog/how-and-when-to-build-multi-agent-systems"
+      },
+      {
+        "titre": "NVIDIA — Small Language Models are the Future of Agentic AI",
+        "url": "https://arxiv.org/abs/2506.02153"
+      },
+      {
+        "titre": "Anthropic — Building effective agents",
+        "url": "https://www.anthropic.com/research/building-effective-agents"
+      }
+    ]
+  },
+  {
+    "id": "forteresse",
+    "nom": "La Forteresse",
+    "accroche": "On peut laisser l'agent seul, à condition qu'il ne puisse jamais à la fois lire vos secrets, lire du contenu étranger et parler à l'extérieur.",
+    "auteurs": [
+      "Simon Willison (lethal trifecta, Dual LLM, agentic loops)",
+      "Beurer-Kellner et al. (Design Patterns for Securing LLM Agents against Prompt Injections)",
+      "Anthropic (sécurité des Agent Skills)",
+      "screenpipe (permissions des pipes)"
+    ],
+    "idee": "La sécurité se règle par l'architecture (ce que l'agent peut voir et faire), pas par des filtres ; une fois l'agent enfermé, on peut lui donner beaucoup d'autonomie.",
+    "principes": [
+      "Pour chaque workflow, écrire lequel des trois éléments (données privées, contenu non fiable, sortie vers l'extérieur) est absent.",
+      "Moindre privilège : pipes en lecture seule par défaut, liste deny sur les applis sensibles.",
+      "Bac à sable, identifiants limités, budget plafonné pour tout ce qui coûte de l'argent.",
+      "Le plan est fixé avant de lire le contenu non fiable ; ce contenu ne peut pas déclencher d'action nouvelle.",
+      "Traitement local quand c'est possible ; aucune sortie sans validation."
+    ],
+    "quand": "Secteurs régulés ou sensibles (avocats, santé, finance, RH), données clients confidentielles, entreprises qui veulent que rien ne sorte des machines. À appliquer aussi en complément de toute thèse qui lit l'écran et agit vers l'extérieur.",
+    "risques": [
+      "Workflows moins puissants (pas d'envoi automatique).",
+      "Contraintes qui agacent les équipes.",
+      "Faux sentiment de sécurité si les permissions screenpipe sont prises pour un vrai bac à sable (la doc précise que ce n'en est pas un)."
+    ],
+    "garde_fous": [
+      "Revue de sécurité de chaque skill et pipe avant installation.",
+      "Tests d'injection : texte piégé affiché à l'écran, l'agent ne doit pas agir.",
+      "Journal de tout accès aux données.",
+      "Secrets dans un fichier .env, jamais dans le prompt."
+    ],
+    "autonomie": 4,
+    "humain": "Au portillon de sortie : l'agent est autonome à l'intérieur, mais rien ne quitte la machine sans validation humaine (autonomie 2 pour toute action externe).",
+    "tests_avant": [
+      "Tests d'injection rejoués : pages et mails piégés affichés à l'écran.",
+      "Vérifier que les règles deny bloquent bien les applis sensibles.",
+      "Vérifier qu'aucun appel réseau non prévu n'a lieu."
+    ],
+    "suivi_apres": [
+      "Nombre de tentatives d'action bloquées.",
+      "Accès refusés par les règles deny.",
+      "Appels réseau sortants.",
+      "Incidents de sécurité (objectif zéro)."
+    ],
+    "etapes": [
+      "Lister les données, les sources non fiables et les sorties du workflow",
+      "Couper au moins un des trois",
+      "Le pipe tourne en lecture seule dans un périmètre limité",
+      "Les résultats restent en local",
+      "Toute sortie vers l'extérieur passe par la validation humaine"
+    ],
+    "sources": [
+      {
+        "titre": "Simon Willison — The lethal trifecta",
+        "url": "https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/"
+      },
+      {
+        "titre": "Simon Willison — Designing agentic loops",
+        "url": "https://simonwillison.net/2025/Sep/30/designing-agentic-loops/"
+      },
+      {
+        "titre": "Simon Willison — The Dual LLM pattern",
+        "url": "https://simonwillison.net/2023/Apr/25/dual-llm-pattern/"
+      },
+      {
+        "titre": "Simon Willison — Design Patterns for Securing LLM Agents against Prompt Injections",
+        "url": "https://simonwillison.net/2025/Jun/13/prompt-injection-design-patterns/"
+      },
+      {
+        "titre": "Anthropic — Agent Skills (sécurité)",
+        "url": "https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills"
+      },
+      {
+        "titre": "screenpipe — Pipes (permissions)",
+        "url": "https://docs.screenpipe.com/pipes"
+      }
+    ]
+  }
+]
