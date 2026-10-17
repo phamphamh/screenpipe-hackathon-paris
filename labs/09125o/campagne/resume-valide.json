@@ -1,0 +1,537 @@
+{
+ "campagne": "",
+ "personne": "equipe-887928",
+ "periode": {
+  "debut": "2026-10-16T18:52:27.632039+02:00",
+  "fin": "2026-10-16T22:57:12.760799+02:00"
+ },
+ "heures_captees": 3.1,
+ "temps_par_app": [
+  {
+   "app": "Orca",
+   "minutes": 142.0
+  },
+  {
+   "app": "Safari",
+   "minutes": 26.0
+  },
+  {
+   "app": "Google Chrome",
+   "minutes": 11.0
+  },
+  {
+   "app": "UserNotificationCenter",
+   "minutes": 5.0
+  },
+  {
+   "app": "Claude",
+   "minutes": 3.0
+  },
+  {
+   "app": "Finder",
+   "minutes": 1.0
+  }
+ ],
+ "temps_par_categorie": [
+  {
+   "categorie": "Travail sur le projet avec l'agent IA",
+   "minutes": 145.0
+  },
+  {
+   "categorie": "Recherche et veille en ligne",
+   "minutes": 38.0
+  },
+  {
+   "categorie": "Système et permissions",
+   "minutes": 5.0
+  }
+ ],
+ "usage_ia": [
+  {
+   "outil": "Orca",
+   "minutes": 142.0,
+   "usages": [
+    "pilotage d'un agent sur le dépôt",
+    "relecture des diffs et des messages",
+    "lancement de commandes"
+   ]
+  },
+  {
+   "outil": "Claude",
+   "minutes": 3.0,
+   "usages": [
+    "reprendre une session de travail existante"
+   ]
+  }
+ ],
+ "taches": [
+  {
+   "titre": "Piloter un agent IA sur le dépôt du projet",
+   "frequence_par_semaine": 25.0,
+   "duree_moyenne_min": 12.0,
+   "apps": [
+    "Orca",
+    "Claude"
+   ],
+   "etapes": [
+    {
+     "type": "input",
+     "texte": "Lire le brief ou l'état du projet dans l'espace de travail",
+     "app": "Orca",
+     "statut": "observé"
+    },
+    {
+     "type": "action",
+     "texte": "Écrire la demande à l'agent",
+     "app": "Orca",
+     "statut": "observé"
+    },
+    {
+     "type": "check",
+     "texte": "Relire le résultat produit (diff, message, commit)",
+     "app": "Orca",
+     "statut": "observé"
+    },
+    {
+     "type": "action",
+     "texte": "Corriger ou relancer l'agent",
+     "app": "Orca",
+     "statut": "supposé"
+    },
+    {
+     "type": "output",
+     "texte": "Faire avancer le dépôt (commit, push)",
+     "app": "Orca",
+     "statut": "supposé"
+    }
+   ],
+   "exceptions": [
+    "Certaines itérations durent plus de 20 min sans interruption"
+   ],
+   "goulots": [
+    {
+     "type": "waiting",
+     "detail": "Attendre les réponses de l'agent"
+    },
+    {
+     "type": "switching",
+     "detail": "Passer sans cesse entre l'IDE, le navigateur et le dépôt"
+    }
+   ],
+   "automatisable": {
+    "score": 45.0,
+    "pourquoi": "Le pilotage demande du jugement ; les relances, le suivi et les vérifications répétitives peuvent être partiellement outillés."
+   },
+   "confiance": 0.8,
+   "preuves": [
+    {
+     "debut": "2026-10-16T19:35:25.428462+02:00",
+     "fin": "2026-10-16T19:35:35.021101+02:00",
+     "app": "Orca"
+    },
+    {
+     "debut": "2026-10-16T19:36:15.056558+02:00",
+     "fin": "2026-10-16T19:40:53.049744+02:00",
+     "app": "Orca"
+    },
+    {
+     "debut": "2026-10-16T19:41:39.810799+02:00",
+     "fin": "2026-10-16T19:52:30.806285+02:00",
+     "app": "Orca"
+    },
+    {
+     "debut": "2026-10-16T19:54:36.576561+02:00",
+     "fin": "2026-10-16T19:57:14.435973+02:00",
+     "app": "Orca"
+    },
+    {
+     "debut": "2026-10-16T19:57:16.865545+02:00",
+     "fin": "2026-10-16T20:14:44.443293+02:00",
+     "app": "Orca"
+    },
+    {
+     "debut": "2026-10-16T20:14:44.443293+02:00",
+     "fin": "2026-10-16T20:27:03.877342+02:00",
+     "app": "Orca"
+    },
+    {
+     "debut": "2026-10-16T20:31:14.498437+02:00",
+     "fin": "2026-10-16T20:42:15.614303+02:00",
+     "app": "Orca"
+    },
+    {
+     "debut": "2026-10-16T20:42:16.989658+02:00",
+     "fin": "2026-10-16T20:50:05.196153+02:00",
+     "app": "Orca"
+    },
+    {
+     "debut": "2026-10-16T21:11:01.393720+02:00",
+     "fin": "2026-10-16T21:21:11.650483+02:00",
+     "app": "Orca"
+    },
+    {
+     "debut": "2026-10-16T21:32:48.040908+02:00",
+     "fin": "2026-10-16T21:53:23.568072+02:00",
+     "app": "Orca"
+    },
+    {
+     "debut": "2026-10-16T22:10:43.071557+02:00",
+     "fin": "2026-10-16T22:16:09.839419+02:00",
+     "app": "Orca"
+    },
+    {
+     "debut": "2026-10-16T22:18:05.898790+02:00",
+     "fin": "2026-10-16T22:22:55.179113+02:00",
+     "app": "Orca"
+    },
+    {
+     "debut": "2026-10-16T22:25:25.168017+02:00",
+     "fin": "2026-10-16T22:38:05.951161+02:00",
+     "app": "Orca"
+    },
+    {
+     "debut": "2026-10-16T22:38:44.302604+02:00",
+     "fin": "2026-10-16T22:42:26.043361+02:00",
+     "app": "Orca"
+    },
+    {
+     "debut": "2026-10-16T22:42:47.985174+02:00",
+     "fin": "2026-10-16T22:48:02.598105+02:00",
+     "app": "Orca"
+    },
+    {
+     "debut": "2026-10-16T22:48:23.138772+02:00",
+     "fin": "2026-10-16T22:57:17.760799+02:00",
+     "app": "Orca"
+    }
+   ]
+  },
+  {
+   "titre": "Traiter les e-mails et leurs pièces jointes",
+   "frequence_par_semaine": 35.0,
+   "duree_moyenne_min": 3.0,
+   "apps": [
+    "Safari"
+   ],
+   "etapes": [
+    {
+     "type": "input",
+     "texte": "Parcourir les nouveaux messages",
+     "app": "Safari",
+     "statut": "observé"
+    },
+    {
+     "type": "action",
+     "texte": "Ouvrir et prévisualiser les pièces jointes",
+     "app": "Safari",
+     "statut": "observé"
+    },
+    {
+     "type": "output",
+     "texte": "Répondre, transférer ou archiver",
+     "app": "Safari",
+     "statut": "supposé"
+    }
+   ],
+   "exceptions": [
+    "Les messages avec plusieurs pièces jointes demandent un tri manuel"
+   ],
+   "goulots": [
+    {
+     "type": "switching",
+     "detail": "Revenir plusieurs fois sur le même fil pour retrouver une pièce jointe"
+    }
+   ],
+   "automatisable": {
+    "score": 65.0,
+    "pourquoi": "Le tri, le classement et les réponses types sont outillables ; la décision de répondre reste humaine."
+   },
+   "confiance": 0.85,
+   "preuves": [
+    {
+     "debut": "2026-10-16T21:56:37.774520+02:00",
+     "fin": "2026-10-16T22:01:39.178364+02:00",
+     "app": "Safari"
+    },
+    {
+     "debut": "2026-10-16T22:04:44.387226+02:00",
+     "fin": "2026-10-16T22:05:40.168327+02:00",
+     "app": "Safari"
+    },
+    {
+     "debut": "2026-10-16T22:05:40.168327+02:00",
+     "fin": "2026-10-16T22:05:50.448928+02:00",
+     "app": "Safari"
+    },
+    {
+     "debut": "2026-10-16T22:06:09.870773+02:00",
+     "fin": "2026-10-16T22:06:37.905620+02:00",
+     "app": "Safari"
+    },
+    {
+     "debut": "2026-10-16T22:06:48.844906+02:00",
+     "fin": "2026-10-16T22:10:43.071557+02:00",
+     "app": "Safari"
+    },
+    {
+     "debut": "2026-10-16T22:16:13.354373+02:00",
+     "fin": "2026-10-16T22:17:56.970536+02:00",
+     "app": "Safari"
+    },
+    {
+     "debut": "2026-10-16T22:22:55.179113+02:00",
+     "fin": "2026-10-16T22:25:25.168017+02:00",
+     "app": "Safari"
+    },
+    {
+     "debut": "2026-10-16T22:42:27.070140+02:00",
+     "fin": "2026-10-16T22:42:47.985174+02:00",
+     "app": "Safari"
+    }
+   ]
+  },
+  {
+   "titre": "Surveiller et actualiser le dépôt du projet en ligne",
+   "frequence_par_semaine": 25.0,
+   "duree_moyenne_min": 2.5,
+   "apps": [
+    "Google Chrome",
+    "Safari"
+   ],
+   "etapes": [
+    {
+     "type": "check",
+     "texte": "Vérifier l'état du dépôt et les notifications",
+     "app": "Google Chrome",
+     "statut": "observé"
+    },
+    {
+     "type": "action",
+     "texte": "Créer, ranger ou mettre à jour le dépôt",
+     "app": "Google Chrome",
+     "statut": "observé"
+    },
+    {
+     "type": "check",
+     "texte": "Relire la documentation du projet en ligne",
+     "app": "Safari",
+     "statut": "observé"
+    }
+   ],
+   "exceptions": [],
+   "goulots": [
+    {
+     "type": "switching",
+     "detail": "Aller-retour entre le navigateur et l'IDE"
+    }
+   ],
+   "automatisable": {
+    "score": 60.0,
+    "pourquoi": "Le suivi du dépôt (état, notifications) peut être notifié automatiquement."
+   },
+   "confiance": 0.75,
+   "preuves": [
+    {
+     "debut": "2026-10-16T19:18:05.802309+02:00",
+     "fin": "2026-10-16T19:23:05.802309+02:00",
+     "app": "Google Chrome"
+    },
+    {
+     "debut": "2026-10-16T19:25:20.284881+02:00",
+     "fin": "2026-10-16T19:25:52.927152+02:00",
+     "app": "Google Chrome"
+    },
+    {
+     "debut": "2026-10-16T19:25:52.927152+02:00",
+     "fin": "2026-10-16T19:26:19.273048+02:00",
+     "app": "Google Chrome"
+    },
+    {
+     "debut": "2026-10-16T19:35:59.194578+02:00",
+     "fin": "2026-10-16T19:36:13.323708+02:00",
+     "app": "Safari"
+    },
+    {
+     "debut": "2026-10-16T20:50:05.196153+02:00",
+     "fin": "2026-10-16T20:51:02.930771+02:00",
+     "app": "Safari"
+    },
+    {
+     "debut": "2026-10-16T22:48:13.572182+02:00",
+     "fin": "2026-10-16T22:48:23.138772+02:00",
+     "app": "Safari"
+    }
+   ]
+  },
+  {
+   "titre": "Installer et régler l'outillage IA de l'atelier",
+   "frequence_par_semaine": 20.0,
+   "duree_moyenne_min": 6.0,
+   "apps": [
+    "Google Chrome",
+    "Orca",
+    "Finder",
+    "App Store"
+   ],
+   "etapes": [
+    {
+     "type": "action",
+     "texte": "Télécharger ou copier l'application",
+     "app": "Finder",
+     "statut": "observé"
+    },
+    {
+     "type": "action",
+     "texte": "Payer ou activer l'abonnement",
+     "app": "Google Chrome",
+     "statut": "observé"
+    },
+    {
+     "type": "check",
+     "texte": "Vérifier les intégrations et la checklist de configuration",
+     "app": "Orca",
+     "statut": "observé"
+    }
+   ],
+   "exceptions": [
+    "Selon l'outil : téléchargement, paiement ou permissions système"
+   ],
+   "goulots": [
+    {
+     "type": "unclear",
+     "detail": "Étapes de configuration dispersées entre plusieurs écrans et plusieurs outils"
+    }
+   ],
+   "automatisable": {
+    "score": 30.0,
+    "pourquoi": "Mise en place ponctuelle, propre à chaque outil ; peu répétitive."
+   },
+   "confiance": 0.6,
+   "preuves": [
+    {
+     "debut": "2026-10-16T18:52:27.632039+02:00",
+     "fin": "2026-10-16T18:57:27.632039+02:00",
+     "app": "UserNotificationCenter"
+    },
+    {
+     "debut": "2026-10-16T19:16:23.276471+02:00",
+     "fin": "2026-10-16T19:16:48.909641+02:00",
+     "app": "Google Chrome"
+    },
+    {
+     "debut": "2026-10-16T19:17:16.860955+02:00",
+     "fin": "2026-10-16T19:17:26.998097+02:00",
+     "app": "Google Chrome"
+    },
+    {
+     "debut": "2026-10-16T19:17:33.121734+02:00",
+     "fin": "2026-10-16T19:17:58.095154+02:00",
+     "app": "Google Chrome"
+    },
+    {
+     "debut": "2026-10-16T19:28:34.306810+02:00",
+     "fin": "2026-10-16T19:28:45.643199+02:00",
+     "app": "Google Chrome"
+    },
+    {
+     "debut": "2026-10-16T19:29:07.438332+02:00",
+     "fin": "2026-10-16T19:29:23.469975+02:00",
+     "app": "App Store"
+    },
+    {
+     "debut": "2026-10-16T19:29:23.469975+02:00",
+     "fin": "2026-10-16T19:30:25.563525+02:00",
+     "app": "Google Chrome"
+    },
+    {
+     "debut": "2026-10-16T19:31:22.413632+02:00",
+     "fin": "2026-10-16T19:31:34.114034+02:00",
+     "app": "Google Chrome"
+    },
+    {
+     "debut": "2026-10-16T19:32:34.971212+02:00",
+     "fin": "2026-10-16T19:32:48.494310+02:00",
+     "app": "SecurityAgent"
+    },
+    {
+     "debut": "2026-10-16T19:32:48.494310+02:00",
+     "fin": "2026-10-16T19:32:57.590901+02:00",
+     "app": "Finder"
+    },
+    {
+     "debut": "2026-10-16T19:32:57.590901+02:00",
+     "fin": "2026-10-16T19:33:13.132978+02:00",
+     "app": "Finder"
+    },
+    {
+     "debut": "2026-10-16T19:33:52.526394+02:00",
+     "fin": "2026-10-16T19:35:25.428462+02:00",
+     "app": "Orca"
+    }
+   ]
+  },
+  {
+   "titre": "Explorer un outil d'IA de création vidéo",
+   "frequence_par_semaine": 15.0,
+   "duree_moyenne_min": 4.0,
+   "apps": [
+    "Safari"
+   ],
+   "etapes": [
+    {
+     "type": "action",
+     "texte": "Parcourir les exemples et les modèles proposés",
+     "app": "Safari",
+     "statut": "observé"
+    },
+    {
+     "type": "check",
+     "texte": "Comparer avec ce qui est déjà fait",
+     "app": "Safari",
+     "statut": "supposé"
+    }
+   ],
+   "exceptions": [],
+   "goulots": [
+    {
+     "type": "unclear",
+     "detail": "L'intention (veille ou préparation) n'est pas visible à l'écran"
+    }
+   ],
+   "automatisable": {
+    "score": 20.0,
+    "pourquoi": "Exploration créative, peu outillable en l'état."
+   },
+   "confiance": 0.5,
+   "preuves": [
+    {
+     "debut": "2026-10-16T21:54:03.087108+02:00",
+     "fin": "2026-10-16T21:54:22.838785+02:00",
+     "app": "Safari"
+    },
+    {
+     "debut": "2026-10-16T21:54:34.732841+02:00",
+     "fin": "2026-10-16T21:56:31.448364+02:00",
+     "app": "Safari"
+    },
+    {
+     "debut": "2026-10-16T22:48:02.598105+02:00",
+     "fin": "2026-10-16T22:48:13.572182+02:00",
+     "app": "Safari"
+    }
+   ]
+  }
+ ],
+ "limites": [
+  "Période courte (une soirée de ~4 h) : les fréquences hebdomadaires sont extrapolées à partir d'une seule session ; à confirmer sur une semaine complète.",
+  "Résumé fondé sur les moments d'écran uniquement — l'audio n'est pas exploité.",
+  "Deux passages restent ambigus (outil vidéo, App Store) : l'étiquette décrit ce qui a été vu, pas l'intention."
+ ],
+ "tri_80_20": {
+  "captures_regardees": 878.0,
+  "captures_gardees": 211.0,
+  "part": 0.24
+ },
+ "valide_par_la_personne": true,
+ "valide_le": "2026-10-17T05:54:29+00:00"
+}
