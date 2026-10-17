@@ -1,0 +1,342 @@
+// Fictional demo dataset — "Maison Verlaine" operational efficiency study.
+// Mirrors the reference mockup (Dashboard client — Étude & Pilotage).
+const DATA = {
+  firm: "[Nom du cabinet]",
+  client: { name: "Maison Verlaine", postes: 52, equipes: 6 },
+  consultant: "[Prénom Nom]",
+  studyLabel: "Étude d'efficacité opérationnelle",
+  demoTag: "Données de démonstration",
+
+  steps: [
+    { n: 1, label: "Installation", date: "ven. 16 oct.", status: "done", sub: "Terminé" },
+    { n: 2, label: "Observation", date: "19 → 23 oct.", status: "active", sub: "Jour 3 sur 5" },
+    { n: 3, label: "Analyse par l'IA", date: "26 → 27 oct.", status: "upcoming", sub: "À venir" },
+    { n: 4, label: "Restitution & rapport", date: "jeu. 29 oct.", status: "upcoming", sub: "À venir" },
+    { n: 5, label: "Logiciel sur mesure", date: "dès le 2 nov.", status: "upcoming", sub: "À venir" },
+  ],
+  advancementPct: 34,
+
+  overview: {
+    dayLabel: "Observation en cours · jour 3 sur 5, mercredi 21 octobre",
+    stats: [
+      { label: "Postes actifs", value: "49 / 52", sub: "94 % de couverture · 3 à relancer" },
+      { label: "Heures de travail observées", value: "995 h", sub: "sur 3 jour(s) d'observation" },
+      { label: "Workflows identifiés", value: "74", sub: "dont 22 répétitifs" },
+      { label: "Problèmes détectés", value: "18", sub: "6 critiques · à valider avec vous" },
+    ],
+    dailyHours: [
+      { day: "Lun 19", value: 331, known: true },
+      { day: "Mar 20", value: 338, known: true },
+      { day: "Mer 21", value: 326, known: true },
+      { day: "Jeu 22", value: null, known: false },
+      { day: "Ven 23", value: null, known: false },
+    ],
+    teamCoverage: [
+      { team: "Ventes", have: 12, total: 12 },
+      { team: "Compta", have: 8, total: 8 },
+      { team: "Support", have: 10, total: 11 },
+      { team: "Ops", have: 9, total: 10 },
+      { team: "Achats", have: 6, total: 7 },
+      { team: "RH", have: 4, total: 4 },
+    ],
+    signals: [
+      { tag: "Ressaisie", path: "Ventes → Compta", text: "Les commandes sont ressaisies du CRM vers l'ERP", meta: "42 fois / semaine · 9 postes concernés", confidence: "Confiance élevée" },
+      { tag: "Attente d'info", path: "Compta ← Ventes", text: "La Compta attend les bons de commande 3 h 20 en moyenne", meta: "27 blocages / semaine", confidence: "Confiance élevée" },
+      { tag: "Hors outil", path: "Ops", text: "Le suivi des stocks se fait dans un tableur parallèle", meta: "34 % du temps de l'équipe Ops", confidence: "Confiance moyenne · à confirmer" },
+    ],
+    signalsUpdated: "il y a 12 min",
+    toRelaunch: [
+      { id: "SUPPORT-07", text: "Hors ligne depuis 26 h" },
+      { id: "OPS-03", text: "Agent en pause depuis hier 17 h" },
+      { id: "ACHATS-02", text: "Jamais connecté" },
+    ],
+    compliance: [
+      "CSE consulté le 5 octobre",
+      "52 salariés sur 52 informés individuellement",
+      "Captures traitées sur le poste, pseudonymisées",
+      "Analyse par équipe et par rôle, aucun classement individuel",
+      "Aucun enregistrement des frappes clavier",
+      "Applications privées exclues de la capture",
+      "Purge des données brutes 30 jours après la restitution",
+    ],
+    nextSteps: [
+      { date: "Ven. 23 oct.", text: "Fin de l'observation, désinstallation de l'agent" },
+      { date: "26 → 27 oct.", text: "Analyse complète par l'IA, croisement des workflows" },
+      { date: "Jeu. 29 oct.", text: "Restitution et remise du rapport de 50 pages" },
+      { date: "Dès le 2 nov.", text: "Développement de votre logiciel sur mesure" },
+    ],
+  },
+
+  problemsMeta: {
+    total: 23,
+    hoursPerWeek: "68 h 30",
+    annualCost: 141800,
+    validated: 9,
+    categories: ["Tous", "Ressaisie", "Attente d'info", "Répétition", "Hors outil", "Goulot", "Recherche"],
+  },
+  // id, cat, path, title, meta line, annualCost, status, detail{...}
+  problems: [
+    {
+      id: 1, cat: "Ressaisie", path: "Ventes → Compta",
+      title: "Ressaisie des commandes du CRM vers l'ERP",
+      metaBits: ["42 fois / sem.", "11 h 20 perdues / sem.", "Automatisable : oui"],
+      annualCost: 23460, status: "À valider",
+      detail: {
+        description: "Chaque commande signée est recopiée à la main du CRM vers l'ERP, champ par champ, souvent via un tableur intermédiaire.",
+        lostPerWeek: "11 h 20", confidence: "Élevée",
+        observed: ["42 occurrences sur la semaine observée", "9 postes concernés, aux Ventes et à la Compta", "16 min par commande en moyenne", "11 copier-coller par commande"],
+        sequence: ["CRM", "Tableur", "ERP"],
+        solution: "Synchronisation automatique CRM → ERP dès la signature (module 1).",
+      },
+    },
+    {
+      id: 2, cat: "Attente d'info", path: "Compta ← Ventes",
+      title: "Attente des bons de commande",
+      metaBits: ["27 blocages / sem.", "9 h 40 perdues / sem.", "Automatisable : partiel"],
+      annualCost: 20010, status: "Validé",
+      detail: {
+        description: "La Compta attend les bons de commande avant de pouvoir facturer ; ils arrivent par e-mail, sans format commun.",
+        lostPerWeek: "9 h 40", confidence: "Élevée",
+        observed: ["27 blocages sur la semaine observée", "3 h 20 d'attente moyenne par demande", "Arrivée par e-mail, format non standardisé"],
+        sequence: ["Ventes", "E-mail", "Compta"],
+        solution: "Formulaire de bon de commande standard, transmis automatiquement à la Compta (module 1).",
+      },
+    },
+    {
+      id: 3, cat: "Hors outil", path: "Ops",
+      title: "Suivi des stocks dans un tableur parallèle",
+      metaBits: ["34 % du temps Ops", "7 h 15 perdues / sem.", "Automatisable : partiel"],
+      annualCost: 15010, status: "À valider",
+      detail: {
+        description: "Le suivi des stocks se fait dans un tableur parallèle, non connecté à l'ERP, avec ressaisie manuelle régulière.",
+        lostPerWeek: "7 h 15", confidence: "Moyenne",
+        observed: ["34 % du temps actif de l'équipe Ops", "Mise à jour manuelle 3 à 4 fois par jour", "Écarts constatés avec l'ERP en fin de semaine"],
+        sequence: ["Tableur", "Vérification", "ERP"],
+        solution: "Tableau de stocks unifié, synchronisé avec l'ERP (module 5).",
+      },
+    },
+    {
+      id: 4, cat: "Répétition", path: "Support",
+      title: "Relances clients faites à la main",
+      metaBits: ["31 fois / sem.", "6 h 10 perdues / sem.", "Automatisable : oui"],
+      annualCost: 12770, status: "Validé",
+      detail: {
+        description: "Les relances de clients en attente de réponse sont rédigées et envoyées manuellement, une par une.",
+        lostPerWeek: "6 h 10", confidence: "Élevée",
+        observed: ["31 relances sur la semaine observée", "12 min par relance en moyenne", "Modèle de message réutilisé à l'identique"],
+        sequence: ["CRM", "Rédaction", "Envoi"],
+        solution: "Relances clients automatiques sur modèle validé (module 2).",
+      },
+    },
+    {
+      id: 5, cat: "Goulot", path: "RH → Direction",
+      title: "Validation des notes de frais par e-mail",
+      metaBits: ["4,2 j de délai", "5 h 30 perdues / sem.", "Automatisable : partiel"],
+      annualCost: 11390, status: "À valider",
+      detail: {
+        description: "Chaque note de frais est validée par un seul rôle de Direction, par e-mail, sans circuit de secours.",
+        lostPerWeek: "5 h 30", confidence: "Élevée",
+        observed: ["4,2 jours de délai moyen", "61 % des validations passent par un seul rôle", "Risque de blocage complet en cas d'absence"],
+        sequence: ["RH", "E-mail", "Direction"],
+        solution: "Circuit de validation avec délégation automatique (module 4).",
+      },
+    },
+    {
+      id: 6, cat: "Recherche", path: "Support, Ventes",
+      title: "Informations client dispersées",
+      metaBits: ["6 applis par dossier", "4 h 45 perdues / sem.", "Automatisable : partiel"],
+      annualCost: 9830, status: "À valider",
+      detail: {
+        description: "Pour reconstituer un dossier client, les équipes consultent en moyenne 6 applications différentes.",
+        lostPerWeek: "4 h 45", confidence: "Moyenne",
+        observed: ["6 applications consultées par dossier en moyenne", "Principalement Support et Ventes", "Temps de recherche avant toute réponse au client"],
+        sequence: ["CRM", "ERP", "Messagerie"],
+        solution: "Fiche client unique, agrégeant les sources existantes (module 6).",
+      },
+    },
+    {
+      id: 7, cat: "Répétition", path: "Compta",
+      title: "Export manuel des factures en PDF",
+      metaBits: ["18 fois / sem.", "3 h 50 perdues / sem.", "Automatisable : oui"],
+      annualCost: 7940, status: "En automatisation",
+      detail: {
+        description: "Chaque facture est exportée manuellement de l'ERP puis convertie et classée en PDF.",
+        lostPerWeek: "3 h 50", confidence: "Élevée",
+        observed: ["18 exports sur la semaine observée", "13 min par export en moyenne", "Classement manuel dans un dossier partagé"],
+        sequence: ["ERP", "Export", "Classement"],
+        solution: "Export automatique des factures à l'émission (module 3). En cours de déploiement.",
+      },
+    },
+    {
+      id: 8, cat: "Goulot", path: "Achats → Direction",
+      title: "Double validation des achats de moins de 500 €",
+      metaBits: ["2,1 j de délai", "2 h 30 perdues / sem.", "Automatisable : non"],
+      annualCost: 5180, status: "À valider",
+      detail: {
+        description: "Les achats de faible montant suivent le même circuit de validation que les achats importants.",
+        lostPerWeek: "2 h 30", confidence: "Moyenne",
+        observed: ["2,1 jours de délai moyen", "Même circuit quel que soit le montant", "Pas de seuil de validation simplifiée"],
+        sequence: ["Achats", "Direction", "Direction"],
+        solution: "Seuil de validation simplifiée en dessous de 500 € (module 4).",
+      },
+    },
+  ],
+
+  // Extra lower-value problems to reach the announced total of 23 (no detail panel content).
+  extraProblemsCount: 15,
+  extraProblemsHoursSupplement: "7 h 00 / sem.",
+
+  interactions: {
+    stats: [
+      { label: "Échanges entre équipes", value: "2 860", sub: "/ sem." },
+      { label: "Temps passé à attendre une info", value: "31 h", sub: "/ sem." },
+      { label: "Points de passage uniques", value: "2", sub: "rôles" },
+      { label: "Équipe la plus isolée", value: "Achats", sub: "" },
+    ],
+    weekLabel: "Semaine du 19 au 23 octobre",
+    nodes: [
+      { id: "rh", label: "RH", sub: "4 pers. · 310 échanges", x: 10, y: 8 },
+      { id: "direction", label: "Direction", sub: "Passage unique", x: 50, y: 8, highlight: "goulot" },
+      { id: "achats", label: "Achats", sub: "7 pers. · 190 échanges", x: 90, y: 8 },
+      { id: "ventes", label: "Ventes", sub: "12 pers. · 820 échanges", x: 10, y: 48 },
+      { id: "compta", label: "Compta", sub: "Équipe la plus en attente", x: 50, y: 48, highlight: "attente" },
+      { id: "support", label: "Support", sub: "11 pers. · 640 échanges", x: 90, y: 48 },
+      { id: "ops", label: "Ops", sub: "10 pers. · 520 échanges", x: 50, y: 85 },
+    ],
+    edges: [
+      { from: "rh", to: "direction", label: "4,2 j", detail: "4,2 j de validation", level: "goulot" },
+      { from: "direction", to: "achats", label: "2,1 j", detail: "2,1 j de validation", level: "goulot" },
+      { from: "ventes", to: "compta", label: "3 h 20 d'attente", detail: "3 h 20 d'attente · 410 échanges / sem.", level: "attente", labelDy: -14 },
+      { from: "compta", to: "ops", label: "Report des stocks", detail: "Report des stocks · 12 validations / sem.", level: "fluide", labelDy: -8 },
+      { from: "support", to: "ops", label: "14 allers-retours / sem.", detail: "14 allers-retours / sem. · 2 h 10 d'attente moyenne", level: "fluide", labelDy: 16 },
+    ],
+    legend: [
+      { label: "Échanges fluides", level: "fluide" },
+      { label: "Attente modérée", level: "attente" },
+      { label: "Goulot", level: "goulot" },
+    ],
+    bottlenecks: [
+      { tag: "Attente d'information", title: "La Compta attend les Ventes en moyenne 3 h 20 par demande", text: "27 fois par semaine, soit 9 h 40 perdues. Cause : les bons de commande arrivent par e-mail, sans format commun.", link: "Voir le problème n° 02", problemId: 2 },
+      { tag: "Point de passage unique", title: "61 % des validations passent par un seul rôle de la Direction", text: "4,2 jours de délai moyen pour les notes de frais. Risque de blocage complet en cas d'absence.", link: "Voir le problème n° 05", problemId: 5 },
+      { tag: "Allers-retours", title: "Le Support redemande le statut des livraisons à l'équipe Ops", text: "14 allers-retours par semaine, 2 h 10 d'attente moyenne avant de répondre au client.", link: null, problemId: null },
+    ],
+    waitTeams: ["Ventes", "Compta", "Support", "Ops", "Achats", "RH", "Direction"],
+    // rows = waiting team, matches waitTeams order (minus Direction as a row); cells keyed by target team label.
+    waitMatrix: [
+      { team: "Ventes", cells: { Compta: "40 min", Support: "1 h 10", Direction: "2 h 00" } },
+      { team: "Compta", cells: { Ventes: "3 h 20", Support: "30 min", Direction: "1 h 20" } },
+      { team: "Support", cells: { Ventes: "1 h 05", Compta: "50 min", Ops: "2 h 10" } },
+      { team: "Ops", cells: { Ventes: "45 min", Achats: "1 h 30" } },
+      { team: "Achats", cells: { Direction: "2,1 j" } },
+      { team: "RH", cells: { Direction: "4,2 j" } },
+    ],
+  },
+
+  tools: {
+    stats: [
+      { label: "Temps dans vos outils métiers", value: "34 %", sub: "ERP et CRM" },
+      { label: "Temps en messagerie et tableurs", value: "47 %", sub: "tous postes confondus" },
+      { label: "Changements d'application", value: "184", sub: "par jour et par poste" },
+      { label: "Copier-coller entre applications", value: "1 940", sub: "par semaine" },
+    ],
+    appCategories: ["Messagerie", "Tableur", "ERP", "CRM", "Navigateur", "Autres"],
+    byTeam: [
+      { team: "Ventes", values: [24, 14, 6, 38, 14, 4] },
+      { team: "Compta", values: [22, 31, 33, 4, 6, 4] },
+      { team: "Support", values: [30, 12, 14, 7, 22, 15] },
+      { team: "Ops", values: [18, 34, 28, 2, 10, 8] },
+      { team: "Achats", values: [26, 25, 30, 12, 2, 5] },
+      { team: "RH", values: [32, 28, 4, 2, 18, 16] },
+    ],
+    callout: "Seulement 34 % du temps se passe dans vos outils métiers. Le reste circule entre messagerie, tableurs et navigateur, là où naissent les ressaisies.",
+    heatmapHours: ["8h", "9h", "10h", "11h", "12h", "13h", "14h", "15h", "16h", "17h", "18h"],
+    heatmapDays: ["Lun", "Mar", "Mer", "Jeu", "Ven"],
+    // 5 days x 11 hours, intensity 0-5; peak Friday 16h-17h.
+    heatmapMatrix: [
+      [3, 4, 3, 2, 1, 2, 3, 4, 3, 2, 1],
+      [2, 3, 4, 3, 1, 2, 3, 3, 4, 3, 2],
+      [3, 3, 3, 2, 1, 1, 2, 3, 4, 3, 2],
+      [2, 4, 4, 3, 1, 2, 3, 4, 4, 3, 2],
+      [3, 4, 3, 2, 1, 2, 4, 5, 5, 3, 2],
+    ],
+    heatmapPeakNote: "Pic : vendredi 16 h–17 h (clôture de semaine)",
+    sequences: [
+      { path: "Messagerie → Tableur → ERP", count: 1120 },
+      { path: "CRM → Tableur → ERP", count: 860 },
+      { path: "ERP → Explorateur → Messagerie", count: 410 },
+      { path: "Tableur → Messagerie", count: 390 },
+    ],
+    copyPaste: [
+      { path: "CRM → ERP", count: 640 },
+      { path: "Tableur → ERP", count: 520 },
+      { path: "ERP → Messagerie", count: 380 },
+      { path: "Autres combinaisons", count: 400 },
+    ],
+  },
+
+  businessCase: {
+    stats: [
+      { label: "Coût annuel des inefficacités détectées", value: "141 800 €", sub: "68 h 30 perdues chaque semaine, sur 23 problèmes" },
+      { label: "Gain annuel récupérable", value: "101 090 €", sub: "71 % du temps perdu", accent: "good" },
+      { label: "Capacité libérée", value: "1,4 ETP", sub: "base 35 h / semaine" },
+    ],
+    modules: [
+      { order: 1, name: "Synchronisation CRM → ERP", tag: null, problems: "n° 01, 02", recovered: "18 h 00 / sem.", gain: 37260, delay: "3 sem." },
+      { order: 2, name: "Relances clients automatiques", tag: "Gain rapide", problems: "n° 04", recovered: "5 h 40 / sem.", gain: 11730, delay: "1 sem." },
+      { order: 3, name: "Export automatique des factures", tag: "Gain rapide", problems: "n° 07", recovered: "3 h 40 / sem.", gain: 7590, delay: "1 sem." },
+      { order: 4, name: "Circuit de validation", tag: null, problems: "n° 05, 08", recovered: "5 h 00 / sem.", gain: 10350, delay: "2 sem." },
+      { order: 5, name: "Tableau de stocks unifié", tag: null, problems: "n° 03", recovered: "5 h 30 / sem.", gain: 11390, delay: "3 sem." },
+      { order: 6, name: "Fiche client unique", tag: null, problems: "n° 06", recovered: "4 h 00 / sem.", gain: 8280, delay: "4 sem." },
+    ],
+    modulesNote: "Les 15 autres problèmes sont traités par des ajustements d'organisation ou intégrés aux modules ci-dessus (7 h 00 / sem. supplémentaires).",
+    beforeAfter: { before: "68 h 30", after: "19 h 40", note: "48 h 50 rendues chaque semaine à vos équipes, soit 1,4 poste(s) à temps plein." },
+    investment: [
+      { label: "Étude (une fois)", value: "[À COMPLÉTER]" },
+      { label: "Abonnement logiciel", value: "[À COMPLÉTER]" },
+      { label: "Gain net la première année", value: "[À COMPLÉTER]" },
+      { label: "Retour sur investissement", value: "[À COMPLÉTER]" },
+    ],
+    assumptions: ["Coût horaire chargé : 45 €/h", "Semaines travaillées : 46 / an", "Base : 5 jours d'observation, 49 postes sur 52", "Extrapolation annuelle linéaire, hors saisonnalité", "Marge d'incertitude : ± 15 %", "Gains comptés uniquement sur les constats validés"],
+  },
+
+  piloting: {
+    inProductionSince: "En production depuis 8 semaines · dernière synchronisation il y a 3 min",
+    stats: [
+      { label: "Heures récupérées ce mois", value: "147 h", sub: "objectif 195 h", progress: 147 / 195 },
+      { label: "Valeur générée depuis le lancement", value: "9 270 €", sub: "206 h rendues aux équipes" },
+      { label: "Tâches exécutées automatiquement", value: "1 836", sub: "ce mois · 99,8 % sans erreur" },
+      { label: "Adoption", value: "87 %", sub: "45 utilisateurs actifs sur 52" },
+    ],
+    chart: {
+      xLabels: ["Étude", "S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8"],
+      measured: [68.5, 68, 58.3, 50, 48, 40, 28, 24, 19.7],
+      objective: 19.67,
+      objectiveLabel: "19 h 40",
+      annotations: [
+        { atIndex: 2, label: "CRM → ERP" },
+        { atIndex: 5, label: "Relances + factures" },
+        { atIndex: 7, label: "Validation" },
+      ],
+    },
+    modules: [
+      { name: "Synchronisation CRM → ERP", status: "En production" },
+      { name: "Relances clients automatiques", status: "En production" },
+      { name: "Export automatique des factures", status: "En production" },
+      { name: "Circuit de validation", status: "Déploiement partiel · 57 % adoption Achats" },
+      { name: "Tableau de stocks unifié", status: "Planifié" },
+      { name: "Fiche client unique", status: "Planifié" },
+    ],
+    toHandle: [
+      { icon: "warning", title: "3 commandes rejetées hier", text: "Synchronisation CRM → ERP : champ TVA manquant côté CRM.", link: "Corriger les 3 commandes" },
+      { icon: "info", title: "Adoption à 57 % aux Achats", text: "Le circuit de validation est encore contourné par e-mail.", link: "Planifier une prise en main de 30 min" },
+      { icon: "plus", title: "Nouvelle demande de la Compta", text: "Export comptable mensuel automatique. Estimation : 2 h 30 récupérées / sem.", link: "Valider la demande" },
+    ],
+    nextImpact: { dateRange: "Du 12 au 14 janvier", text: "3 jours d'observation pour mesurer les gains réels. Information des salariés envoyée 15 jours avant.", note: "Hors de ces campagnes, aucune capture d'écran : les chiffres de cette page viennent uniquement des journaux du logiciel." },
+    requests: [
+      { name: "Export comptable mensuel", status: "En étude" },
+      { name: "Notifications de validation sur mobile", status: "Planifié · S11" },
+      { name: "Tableau de bord par boutique", status: "Reçu" },
+      { name: "Relances en anglais pour l'export", status: "Livré" },
+    ],
+  },
+};

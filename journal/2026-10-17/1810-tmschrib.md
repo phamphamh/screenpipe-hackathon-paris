@@ -1,0 +1,5 @@
+# Portail client « Étude & Pilotage » — 6 écrans, bout en bout
+- **Fait** : `labs/tmschrib/dashboard-client/` — portail client statique (HTML/CSS/JS, zéro dépendance) reproduisant une maquette fournie : vue d'ensemble, problèmes détectés (maître-détail), interactions & goulots (carte réseau + matrice d'attente), temps & outils (barres empilées + heatmap), business case (ROI), pilotage continu (post-étude). Données de démo « Maison Verlaine » (52 postes, 6 équipes, 23 problèmes).
+- **Preuve** : `bun server.js` → http://localhost:4300, les 6 routes chargent (200), captures prises sur chaque écran, diagramme réseau et graphiques vérifiés au survol.
+- **Pas vérifié** : pas de données réelles branchées (tout est dans `data.js`) ; pas testé sur Windows/Linux, seulement macOS + bun 1.4.3.
+- **Pour les autres** : proche dans l'esprit du « cabinet IA automatisé » de phamphamh (`labs/phamphamh/parcours/`) mais côté client final plutôt que côté consultant — à voir si ça vaut le coup de les brancher ensemble.

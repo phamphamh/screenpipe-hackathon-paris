@@ -1,0 +1,7 @@
+{
+  "name": "client-portal",
+  "private": true,
+  "scripts": {
+    "start": "bun server.js"
+  }
+}
