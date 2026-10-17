@@ -16,9 +16,10 @@ Vue pour le rendu : ce que chaque personne a livré, où c'est, et ce qui reste 
 - **Son résumé validé et partagé** (1 des 2/3) + le signalement du bug « [object Object] » de la relecture.
 - *Il a besoin de* : 3 résumés validés pour un vrai Wrapped d'équipe.
 
-## Natsuwy — l'export « sans le bruit » + la preuve de la skill
+## Natsuwy — l'export, la preuve de la skill, et « tester en vrai »
 - **L'export filtré de Mickael** (`equipe/mickael.json` + script d'export) : données screenpipe sans le bruit, utilisées dans le rapport d'audit.
-- **Le test réel de la skill générée** : donnée à Claude avec une commande piégée (référence inconnue, stock insuffisant, écart de prix) → il s'arrête, applique l'exception prévue (« appel au commercial »), pose ses questions ; commande propre → vérification + brouillon, rien envoyé. C'est la preuve du bonus « une tâche transformée en skill » (journal 1755).
+- **Le test réel de la skill générée** : donnée à Claude avec une commande piégée (référence inconnue, stock insuffisant, écart de prix) → il s'arrête, applique l'exception prévue (« appel au commercial »), pose ses questions ; commande propre → vérification + brouillon, rien envoyé (journal 1755).
+- **« Tester en vrai »** (17/10 soir) : un banc d'essai (`labs/natsuwy/tester-en-vrai/`) qui fait **faire la tâche à Claude dans un faux Gmail + faux Sage** et vérifie ses **actions** : autonomie « agit » → 4/4 (commande validée, client prévenu), arrêt net sur les deux exceptions ; autonomie « prépare » → rien n'est envoyé ni validé, mais la réponse reste dans le compte rendu au lieu d'un brouillon Gmail (il signale à `pack.py` la consigne à corriger). C'est la preuve du bonus « une tâche transformée en skill ».
 
 ## tmschrib — le portail client (arrivé ce soir)
 - **Portail client « Étude & Pilotage »** : 6 écrans autonomes (HTML/CSS/JS, zéro dépendance) — vue d'ensemble, problèmes détectés, interactions & goulots, temps & outils, business case, pilotage continu ; démo « Maison Verlaine » (52 postes). `labs/tmschrib/dashboard-client/`, `bun server.js` → localhost:4300.
