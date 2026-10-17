@@ -14,6 +14,11 @@ Noms donnés par les équipes : Saisir une commande reçue par mail dans l'ERP ;
 3. **Vérification** (Sage) : Vérifier le stock et le prix négocié
 4. **Sortie** (Gmail) : Répondre au client avec le numéro de commande
 
+## Déclencheurs
+- Dès qu'un bon de commande PDF arrive par mail → démarrer la tâche (la skill) sans attendre (connecteur Gmail → Sage).
+- Dès que référence inconnue → appel au commercial (rien d'automatique) — à prévenir : commercial.
+- Dès que la tâche est finie → Répondre au client avec le numéro de commande (API Gmail) — à prévenir : client.
+
 ## Exceptions
 - référence inconnue → appel au commercial
 

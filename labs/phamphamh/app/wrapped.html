@@ -68,6 +68,13 @@
   .cols h4 { font-size: 14px; text-transform: uppercase; letter-spacing: .08em; opacity: .65; margin: 0 0 8px; }
   .cols ul { margin: 0; padding-left: 18px; font-size: 16px; }
 
+  .brancher { margin-top: 26px; }
+  .brancher h4 { font-size: 14px; text-transform: uppercase; letter-spacing: .08em; opacity: .65; margin: 0 0 10px; }
+  .brancher .l { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; background: rgba(255, 255, 255, .09); border-radius: 12px; padding: 10px 14px; margin-bottom: 8px; font-size: 15.5px; }
+  .clair .brancher .l { background: rgba(0, 0, 0, .05); }
+  .brancher .g { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; padding: 3px 8px; border-radius: 999px; background: var(--a); color: var(--f); }
+  .brancher .voie, .brancher .qui { font-size: 13.5px; opacity: .8; }
+
   .grille { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; margin-top: 30px; }
   .bloc { padding: 22px; border-radius: 20px; background: rgba(255, 255, 255, .1); }
   .clair .bloc { background: rgba(0, 0, 0, .06); }
@@ -167,6 +174,7 @@ const GOULOTS = {
   handoff: ["Passage de relais", "Attendre la validation de quelqu'un d'autre"],
 };
 const TYPES = { action: "Action", input: "Entrée", output: "Sortie", decision: "Décision", check: "Vérification" };
+const GENRES = { "événement": "entrée", balayage: "balayage", exception: "exception", sortie: "sortie", "à préciser": "à confirmer" };
 
 const PREUVES = [];
 function preuve(titre, explication, liste = [], statut = "observé") {
@@ -239,7 +247,11 @@ function construire() {
     <div class="cols apparait" style="--d:${t1.etapes.length + 3}">
       <div><h4>Là où ça coince</h4><ul>${t1.goulots.map(g => `<li>${esc(g.detail)}</li>`).join("") || "<li>Rien de repéré</li>"}</ul></div>
       <div><h4>Les exceptions</h4><ul>${t1.exceptions.map(x => `<li>${esc(x)}</li>`).join("") || "<li>Aucune vue</li>"}</ul></div>
-    </div>`);
+    </div>
+    ${(t1.declencheurs || []).length ? `<div class="brancher apparait" style="--d:${t1.etapes.length + 4}">
+      <h4>Ce qu'il faut brancher (dès que…)</h4>
+      ${t1.declencheurs.map(d => `<div class="l"><span class="g">${esc(GENRES[d.genre] || d.genre)}</span><b>${esc(d.dès_que)}</b><span>→ ${esc(d.lancer.texte)}</span>${d.voie && d.voie !== "notification" ? `<span class="voie">${esc(d.voie)}</span>` : ""}${d.partager && (d.partager.qui || []).length ? `<span class="qui">à prévenir : <b>${d.partager.qui.map(esc).join(", ")}</b></span>` : ""}</div>`).join("")}
+    </div>` : ""}`);
 
   // 5. Goulots
   if (I.goulots.length) s.push(`<div class="sur apparait">Les goulots</div>
@@ -353,6 +365,8 @@ function telechargerSkill() {
   const t = [...I.taches].sort((a, b) => b.gain_par_mois - a.gain_par_mois)[0];
   const slug = t.titre.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 50);
   const decisions = t.etapes.filter(e => e.type === "decision");
+  const phrase = s => `Dès ${/^[aeiouéèêàâîôûœ]/i.test(s) ? "qu'" : "que "}${s}`;
+  const decl = (t.declencheurs || []).map(d => `- ${phrase(d.dès_que)} → ${d.lancer.texte}${d.voie && d.voie !== "notification" ? ` (${d.voie})` : ""}${d.partager && (d.partager.qui || []).length ? ` — à prévenir : ${d.partager.qui.join(", ")}` : ""}.`);
   const md = `---
 name: ${slug}
 description: ${t.titre}. À utiliser quand quelqu'un chez ${I.entreprise} doit faire cette tâche (${t.apps.join(", ")}).
@@ -365,6 +379,9 @@ Noms donnés par les équipes : ${t.libelles.join(" ; ")}.
 
 ## Étapes
 ${t.etapes.map((e, i) => `${i + 1}. **${TYPES[e.type] || e.type}** (${e.app}) : ${e.texte}${e.statut === "supposé" ? " _(supposé : à confirmer avec l'équipe)_" : ""}`).join("\n")}
+
+## Déclencheurs
+${decl.join("\n") || "- Aucun déclencheur détecté : demander à l'équipe quand cette tâche commence."}
 
 ## Exceptions
 ${t.exceptions.map(x => `- ${x}`).join("\n") || "- Aucune vue pendant la campagne."}
