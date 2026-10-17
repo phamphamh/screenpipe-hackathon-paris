@@ -1,0 +1,445 @@
+{
+ "campagne": "",
+ "personne": "equipe-9ab3eb",
+ "periode": {
+  "debut": "2026-10-16T18:42:50.324229+02:00",
+  "fin": "2026-10-17T13:14:54.785855+02:00"
+ },
+ "heures_captees": 3.6,
+ "temps_par_app": [
+  {
+   "app": "Claude",
+   "minutes": 135.0
+  },
+  {
+   "app": "Arc",
+   "minutes": 48.0
+  },
+  {
+   "app": "Discord",
+   "minutes": 8.0
+  },
+  {
+   "app": "‎WhatsApp",
+   "minutes": 7.0
+  },
+  {
+   "app": "Finder",
+   "minutes": 7.0
+  },
+  {
+   "app": "Terminal",
+   "minutes": 6.0
+  },
+  {
+   "app": "SecurityAgent",
+   "minutes": 4.0
+  },
+  {
+   "app": "QuickTime Player",
+   "minutes": 2.0
+  }
+ ],
+ "temps_par_categorie": [
+  {
+   "categorie": "Assistant IA (Claude : recherche, prompts, gestion de projets)",
+   "minutes": 142.0
+  },
+  {
+   "categorie": "Hackathon screenpipe (préparation, pages, discussions)",
+   "minutes": 40.0
+  },
+  {
+   "categorie": "Messagerie (Discord, WhatsApp)",
+   "minutes": 22.0
+  },
+  {
+   "categorie": "Navigation web et lecture (Arc : GitHub, YouTube, Outlook)",
+   "minutes": 12.0
+  },
+  {
+   "categorie": "Planning (Google Calendar)",
+   "minutes": 12.0
+  },
+  {
+   "categorie": "Fichiers et documents (Finder, QuickTime)",
+   "minutes": 13.0
+  },
+  {
+   "categorie": "Configuration et connexions (comptes, autorisations, Terminal)",
+   "minutes": 22.0
+  }
+ ],
+ "usage_ia": [
+  {
+   "outil": "Claude (app desktop)",
+   "minutes": 142.0,
+   "usages": [
+    "Analyse de dépôts GitHub liés au hackathon screenpipe",
+    "Recherche concurrentielle sur des cabinets d'audit IA (tarifs, offres, clients)",
+    "Réflexion sur l'automatisation du travail à partir de screenpipe",
+    "Questions sur la version et la mise à jour de Claude Desktop",
+    "Rédaction de notes à partir de recherches déjà faites",
+    "Demande d'audit des données screenpipe à publier sur GitHub"
+   ]
+  },
+  {
+   "outil": "Claude Code (CLI)",
+   "minutes": 2.0,
+   "usages": [
+    "Autorisation de connexion à l'organisation Anthropic (deux fois)"
+   ]
+  }
+ ],
+ "taches": [
+  {
+   "titre": "Recherche et analyse guidées par Claude sur un sujet de veille",
+   "frequence_par_semaine": 7.0,
+   "duree_moyenne_min": 25.0,
+   "apps": [
+    "Claude",
+    "Arc"
+   ],
+   "etapes": [
+    {
+     "type": "input",
+     "texte": "Poser une question ou donner une consigne à Claude dans une session de projet",
+     "app": "Claude",
+     "statut": "observé"
+    },
+    {
+     "type": "action",
+     "texte": "Laisser Claude lire des pages web ou des dépôts (outil utilisé)",
+     "app": "Claude",
+     "statut": "observé"
+    },
+    {
+     "type": "output",
+     "texte": "Lire la synthèse structurée renvoyée (tarifs, offres, clients, limites)",
+     "app": "Claude",
+     "statut": "observé"
+    },
+    {
+     "type": "check",
+     "texte": "Vérifier les sources et les points à confirmer",
+     "app": "Claude",
+     "statut": "supposé"
+    },
+    {
+     "type": "output",
+     "texte": "Demander une note qui reprend la recherche",
+     "app": "Claude",
+     "statut": "observé"
+    }
+   ],
+   "exceptions": [
+    "Certaines informations restent « à confirmer » dans les réponses de Claude"
+   ],
+   "goulots": [
+    {
+     "type": "waiting",
+     "detail": "Longues attentes devant la fenêtre Claude (plusieurs moments de 2 à 7 min avec peu de texte nouveau)"
+    },
+    {
+     "type": "switching",
+     "detail": "Allers-retours entre Claude, Arc, Terminal et Finder pendant la même recherche"
+    }
+   ],
+   "automatisable": {
+    "score": 55.0,
+    "pourquoi": "Le schéma question, recherche web, synthèse est répétitif et pourrait devenir un skill ou un modèle de prompt. Le jugement final reste humain."
+   },
+   "confiance": 0.6,
+   "preuves": [
+    {
+     "debut": "2026-10-16T19:56:53.911483+02:00",
+     "fin": "2026-10-16T19:59:43.918018+02:00",
+     "app": "Claude"
+    },
+    {
+     "debut": "2026-10-16T19:59:50.644195+02:00",
+     "fin": "2026-10-16T20:04:56.750896+02:00",
+     "app": "Claude"
+    },
+    {
+     "debut": "2026-10-16T20:30:31.184981+02:00",
+     "fin": "2026-10-16T20:32:16.857976+02:00",
+     "app": "Claude"
+    },
+    {
+     "debut": "2026-10-16T21:13:45.314374+02:00",
+     "fin": "2026-10-16T21:20:31.486726+02:00",
+     "app": "Claude"
+    },
+    {
+     "debut": "2026-10-16T21:48:57.025857+02:00",
+     "fin": "2026-10-16T21:52:06.752380+02:00",
+     "app": "Claude"
+    },
+    {
+     "debut": "2026-10-16T22:20:48.465738+02:00",
+     "fin": "2026-10-16T22:22:48.679641+02:00",
+     "app": "Claude"
+    },
+    {
+     "debut": "2026-10-16T22:22:48.679641+02:00",
+     "fin": "2026-10-16T22:26:30.072313+02:00",
+     "app": "Claude"
+    },
+    {
+     "debut": "2026-10-16T22:28:35.378347+02:00",
+     "fin": "2026-10-16T22:30:35.570633+02:00",
+     "app": "Claude"
+    },
+    {
+     "debut": "2026-10-16T22:36:50.891460+02:00",
+     "fin": "2026-10-16T22:38:51.107147+02:00",
+     "app": "Claude"
+    },
+    {
+     "debut": "2026-10-17T12:50:58.964124+02:00",
+     "fin": "2026-10-17T12:53:44.499863+02:00",
+     "app": "Claude"
+    },
+    {
+     "debut": "2026-10-17T13:13:06.591429+02:00",
+     "fin": "2026-10-17T13:14:59.785855+02:00",
+     "app": "Claude"
+    }
+   ]
+  },
+  {
+   "titre": "Suivi des messageries (Discord, WhatsApp)",
+   "frequence_par_semaine": 7.0,
+   "duree_moyenne_min": 3.0,
+   "apps": [
+    "Discord",
+    "WhatsApp"
+   ],
+   "etapes": [
+    {
+     "type": "action",
+     "texte": "Ouvrir la messagerie et parcourir les conversations non lues",
+     "app": "Discord / WhatsApp",
+     "statut": "observé"
+    },
+    {
+     "type": "check",
+     "texte": "Repérer les messages importants (équipe hackathon, proches)",
+     "app": "WhatsApp",
+     "statut": "observé"
+    },
+    {
+     "type": "decision",
+     "texte": "Répondre maintenant ou plus tard",
+     "app": "WhatsApp",
+     "statut": "supposé"
+    }
+   ],
+   "exceptions": [
+    "Vidéos et notes vocales à écouter, ce qui allonge la session"
+   ],
+   "goulots": [
+    {
+     "type": "switching",
+     "detail": "Interruptions fréquentes par les messages du groupe du hackathon pendant le travail"
+    }
+   ],
+   "automatisable": {
+    "score": 20.0,
+    "pourquoi": "Ce sont des échanges personnels et sociaux. Seul un résumé des messages non lus du groupe de travail pourrait être automatisé."
+   },
+   "confiance": 0.5,
+   "preuves": [
+    {
+     "debut": "2026-10-16T19:14:55.424199+02:00",
+     "fin": "2026-10-16T19:20:26.337594+02:00",
+     "app": "Discord"
+    },
+    {
+     "debut": "2026-10-16T20:21:50.663470+02:00",
+     "fin": "2026-10-16T20:22:00.162590+02:00",
+     "app": "‎WhatsApp"
+    },
+    {
+     "debut": "2026-10-16T21:45:09.732845+02:00",
+     "fin": "2026-10-16T21:47:15.816351+02:00",
+     "app": "Discord"
+    },
+    {
+     "debut": "2026-10-17T12:53:44.499863+02:00",
+     "fin": "2026-10-17T12:54:29.303616+02:00",
+     "app": "‎WhatsApp"
+    },
+    {
+     "debut": "2026-10-17T12:54:31.807530+02:00",
+     "fin": "2026-10-17T12:59:37.363892+02:00",
+     "app": "‎WhatsApp"
+    },
+    {
+     "debut": "2026-10-17T13:06:10.554230+02:00",
+     "fin": "2026-10-17T13:06:59.145281+02:00",
+     "app": "‎WhatsApp"
+    },
+    {
+     "debut": "2026-10-17T13:12:42.017968+02:00",
+     "fin": "2026-10-17T13:13:06.591429+02:00",
+     "app": "‎WhatsApp"
+    }
+   ]
+  },
+  {
+   "titre": "Consultation et organisation de documents dans Finder",
+   "frequence_par_semaine": 7.0,
+   "duree_moyenne_min": 1.0,
+   "apps": [
+    "Finder",
+    "Claude",
+    "QuickTime Player"
+   ],
+   "etapes": [
+    {
+     "type": "action",
+     "texte": "Parcourir les dossiers et prévisualiser des PDF ou vidéos",
+     "app": "Finder",
+     "statut": "observé"
+    },
+    {
+     "type": "input",
+     "texte": "Passer un fichier ou un contexte à Claude",
+     "app": "Claude",
+     "statut": "supposé"
+    },
+    {
+     "type": "check",
+     "texte": "Vérifier le contenu des rapports avant réutilisation",
+     "app": "Finder",
+     "statut": "supposé"
+    }
+   ],
+   "exceptions": [],
+   "goulots": [
+    {
+     "type": "switching",
+     "detail": "Retours fréquents de Finder vers Claude juste après l'ouverture d'un document"
+    }
+   ],
+   "automatisable": {
+    "score": 35.0,
+    "pourquoi": "La recherche de fichiers récurrents pourrait être simplifiée avec un index. Le choix des documents reste manuel."
+   },
+   "confiance": 0.4,
+   "preuves": [
+    {
+     "debut": "2026-10-16T20:19:43.127357+02:00",
+     "fin": "2026-10-16T20:20:42.948603+02:00",
+     "app": "Finder"
+    },
+    {
+     "debut": "2026-10-16T22:39:09.987590+02:00",
+     "fin": "2026-10-16T22:39:21.746162+02:00",
+     "app": "Finder"
+    },
+    {
+     "debut": "2026-10-16T22:39:45.478882+02:00",
+     "fin": "2026-10-16T22:40:53.124804+02:00",
+     "app": "Finder"
+    },
+    {
+     "debut": "2026-10-16T22:40:59.426948+02:00",
+     "fin": "2026-10-16T22:41:22.022669+02:00",
+     "app": "Finder"
+    },
+    {
+     "debut": "2026-10-16T22:42:17.494786+02:00",
+     "fin": "2026-10-16T22:42:30.006811+02:00",
+     "app": "Finder"
+    },
+    {
+     "debut": "2026-10-16T22:42:42.079353+02:00",
+     "fin": "2026-10-16T22:42:52.369956+02:00",
+     "app": "Finder"
+    },
+    {
+     "debut": "2026-10-16T22:47:57.132288+02:00",
+     "fin": "2026-10-16T22:48:09.329213+02:00",
+     "app": "Finder"
+    },
+    {
+     "debut": "2026-10-17T12:49:45.398523+02:00",
+     "fin": "2026-10-17T12:50:58.964124+02:00",
+     "app": "Finder"
+    }
+   ]
+  },
+  {
+   "titre": "Vérification du planning dans Google Calendar",
+   "frequence_par_semaine": 7.0,
+   "duree_moyenne_min": 2.0,
+   "apps": [
+    "Arc"
+   ],
+   "etapes": [
+    {
+     "type": "action",
+     "texte": "Ouvrir Google Calendar et parcourir la semaine",
+     "app": "Arc",
+     "statut": "observé"
+    },
+    {
+     "type": "check",
+     "texte": "Contrôler la répartition des heures par catégorie d'événement",
+     "app": "Arc",
+     "statut": "observé"
+    }
+   ],
+   "exceptions": [],
+   "goulots": [],
+   "automatisable": {
+    "score": 30.0,
+    "pourquoi": "Un résumé hebdomadaire des heures par catégorie pourrait être généré automatiquement."
+   },
+   "confiance": 0.4,
+   "preuves": [
+    {
+     "debut": "2026-10-17T13:00:09.156349+02:00",
+     "fin": "2026-10-17T13:00:39.013491+02:00",
+     "app": "Arc"
+    },
+    {
+     "debut": "2026-10-17T13:00:41.818919+02:00",
+     "fin": "2026-10-17T13:03:12.199934+02:00",
+     "app": "Arc"
+    },
+    {
+     "debut": "2026-10-17T13:03:12.199934+02:00",
+     "fin": "2026-10-17T13:05:12.595064+02:00",
+     "app": "Arc"
+    },
+    {
+     "debut": "2026-10-17T13:05:12.595064+02:00",
+     "fin": "2026-10-17T13:06:10.554230+02:00",
+     "app": "Arc"
+    },
+    {
+     "debut": "2026-10-17T13:07:08.056271+02:00",
+     "fin": "2026-10-17T13:12:13.948681+02:00",
+     "app": "Arc"
+    }
+   ]
+  }
+ ],
+ "limites": [
+  "{'texte': 'Période observée : environ 2 jours. Les fréquences par semaine sont extrapolées et peu fiables.'}",
+  "{'texte': \"Beaucoup de moments Claude n'ont aucun texte nouveau (stagnation de l'écran). Il est impossible de dire s'il s'agissait d'attente, de lecture ou d'inactivité.\"}",
+  "{'texte': 'Les durées de la catégorie Claude couvrent aussi des fenêtres où Terminal ou Discord étaient visibles, car le texte du Terminal est capté sous Claude.'}",
+  "{'texte': 'Les minutes par catégorie sont des estimations approximatives.'}"
+ ],
+ "tri_80_20": {
+  "captures_regardees": 706.0,
+  "captures_gardees": 304.0,
+  "part": 0.43
+ },
+ "valide_par_la_personne": true,
+ "valide_le": "2026-10-17T11:19:11+00:00"
+}
