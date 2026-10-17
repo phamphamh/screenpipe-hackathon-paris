@@ -511,6 +511,19 @@ $("#suiv").addEventListener("click", () => { if (pret(courant)) aller(courant + 
 $("#prec").addEventListener("click", () => aller(courant - 1));
 
 /* ---------- transitions ---------- */
+// une étape qui n'arrive pas à charger le dit, au lieu de rester blanche
+function chargerEtape(k, section) {
+  section.querySelector(".erreur-etape")?.remove();
+  Promise.resolve().then(() => ENTRER[k]()).catch(err => {
+    const d = document.createElement("div");
+    d.className = "panneau erreur-etape";
+    d.style.cssText = "margin-top:16px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap";
+    d.innerHTML = `<span>Cette étape n'a pas pu se charger : le serveur local n'a pas répondu.</span><button type="button" class="bouton">Réessayer</button>`;
+    d.querySelector("button").addEventListener("click", () => chargerEtape(k, section));
+    section.appendChild(d);
+    console.warn("étape", k, err);
+  }).finally(() => { majBas(); majNav(); });
+}
 const ENTRER = [entrerDemarrage, entrerObservation, entrerMethodes, entrerRapport, entrerTheses, entrerPack, entrerSuivi];
 function aller(k, premier = false) {
   k = Math.max(0, Math.min(NOMS.length - 1, k));
@@ -523,7 +536,7 @@ function aller(k, premier = false) {
   const montrer = () => {
     sections.forEach(s => s.classList.toggle("vue", s === neuf));
     window.scrollTo({ top: 0, behavior: premier || reduit ? "auto" : "smooth" });
-    ENTRER[k]();
+    chargerEtape(k, neuf);
     if (G && !reduit) { G.fromTo(neuf, { opacity: 0 }, { opacity: 1, duration: .25 }); G.fromTo($$(".anim", neuf), { y: 18 * sens, opacity: 0 }, { y: 0, opacity: 1, duration: .6, stagger: .07, ease: "power3.out", clearProps: "transform" }); }
   };
   if (ancien && G && !reduit && !premier) G.to(ancien, { opacity: 0, x: -24 * sens, duration: .22, ease: "power2.in", onComplete() { G.set(ancien, { clearProps: "all" }); montrer(); } });
