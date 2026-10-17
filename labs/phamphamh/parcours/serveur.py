@@ -164,7 +164,7 @@ def postes(camp="equipe"):
     if camp == "demo":
         for qui, r in resumes("demo"):
             per = r.get("periode") or {}
-            out.append({"qui": qui, "source": "Démo · résumé de la semaine", "lance": True, "export": True, "valide": r.get("valide_par_la_personne") is True,
+            out.append({"qui": qui, "source": "Résumé de la semaine", "lance": True, "export": True, "valide": r.get("valide_par_la_personne") is True,
                         "heures": round(nombre(r.get("heures_captees")), 1), "debut": per.get("debut"), "fin": per.get("fin"), "taches": len(r.get("taches") or [])})
     else:
         for chemin in sorted(glob.glob(os.path.join(RACINE, "donnees", "equipe", "screenpipe-*.jsonl.gz"))):

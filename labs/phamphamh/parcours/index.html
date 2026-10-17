@@ -16,6 +16,7 @@
   --f-mono: "Geist Mono", ui-monospace, Menlo, monospace;
 }
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 html, body { min-height: 100%; }
 body { background: var(--fond); color: var(--encre); font-family: var(--f-texte); font-size: 15px; line-height: 1.5; margin: 0; -webkit-font-smoothing: antialiased; }
 button, input, textarea { font: inherit; color: inherit; }
@@ -49,6 +50,7 @@ button, input, textarea { font: inherit; color: inherit; }
 .etapes .actif .nom { color: var(--encre); font-weight: 500; }
 .etapes .actif .rail b { background: var(--ia); width: 100%; }
 .etapes button:focus-visible { outline: 1px solid var(--ia); outline-offset: 3px; }
+@media (max-width: 640px) { .marque .mono { display: none; } }
 @media (max-width: 900px) { .etapes .nom { display: none; } .etapes .actif .nom { display: block; position: absolute; opacity: 0; } }
 
 /* ---- scène ---- */
@@ -110,7 +112,7 @@ form { display: grid; gap: 16px; }
 .prio div span { font-family: var(--f-mono); font-size: 11px; color: var(--ia); padding-top: 2px; }
 
 /* ---- 2. observation ---- */
-.poste { display: grid; grid-template-columns: auto minmax(0, 1.1fr) minmax(0, 1.6fr) minmax(120px, 1fr); gap: 16px; align-items: center; padding: 14px 0; border-top: 1px solid var(--trait); }
+.poste { display: grid; grid-template-columns: auto minmax(0, 1.3fr) minmax(0, 1.4fr) minmax(110px, .9fr); gap: 16px; align-items: center; padding: 14px 0; border-top: 1px solid var(--trait); }
 .poste:last-of-type { border-bottom: 1px solid var(--trait); }
 .poste .qui b { font-weight: 500; display: block; text-transform: capitalize; }
 .poste .qui span { font-family: var(--f-mono); font-size: 10.5px; color: var(--doux); letter-spacing: .05em; }
@@ -157,7 +159,10 @@ code { font-family: var(--f-mono); font-size: 12px; background: var(--plan-2); p
 .apercu { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--trait); border-bottom: 1px solid var(--trait); }
 .apercu div { background: var(--fond); padding: 12px 10px 8px; display: grid; gap: 6px; justify-items: center; min-width: 0; }
 .apercu svg { width: 100%; max-width: 92px; height: 56px; display: block; }
-.apercu span { font-family: var(--f-mono); font-size: 9px; letter-spacing: .06em; text-transform: uppercase; color: var(--faible); text-align: center; line-height: 1.3; }
+.apercu span { font-size: 10.5px; color: var(--faible); text-align: center; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.inspi { font-size: 12.5px; color: var(--doux); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.inspi b { font-family: var(--f-mono); font-weight: 400; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--faible); margin-right: 4px; }
+.ton { font-size: 12.5px; color: var(--doux); font-style: italic; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .carte-corps { padding: 18px 18px 16px; display: grid; gap: 10px; align-content: start; }
 .carte h3 { margin: 0; font-weight: 500; font-size: 20px; letter-spacing: -.02em; line-height: 1.2; }
 .carte p { margin: 0; color: var(--doux); font-size: 14px; }
@@ -199,9 +204,10 @@ code { font-family: var(--f-mono); font-size: 12px; background: var(--plan-2); p
 .wf-tete h3 { margin: 0; font-weight: 500; font-size: 17px; letter-spacing: -.01em; line-height: 1.3; }
 .wf-tete .sous { font-family: var(--f-mono); font-size: 10.5px; color: var(--doux); letter-spacing: .06em; text-transform: uppercase; margin-top: 3px; }
 .wf-chiffres { display: grid; grid-template-columns: repeat(3, auto) 150px; gap: 22px; align-items: center; }
-.wf-chiffres > div { display: grid; gap: 2px; }
-.wf-chiffres b { font-weight: 400; font-size: 22px; letter-spacing: -.02em; font-variant-numeric: tabular-nums; line-height: 1.1; white-space: nowrap; }
-.wf-chiffres span { font-family: var(--f-mono); font-size: 10px; color: var(--faible); letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; }
+.wf-chiffres > div { display: grid; gap: 2px; min-width: 0; }
+.wf-chiffres .autonomie .lib { font-size: 11.5px; flex-direction: column; gap: 0; }
+.wf-chiffres > div > b { font-weight: 400; font-size: 22px; letter-spacing: -.02em; font-variant-numeric: tabular-nums; line-height: 1.1; white-space: nowrap; }
+.wf-chiffres > div > span { font-family: var(--f-mono); font-size: 10px; color: var(--faible); letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; }
 @media (max-width: 1100px) { .wf-tete { grid-template-columns: auto minmax(0, 1fr); } .wf-chiffres { grid-column: 1 / -1; grid-template-columns: repeat(3, auto) minmax(120px, 160px); justify-content: start; } }
 @media (max-width: 640px) { .wf-chiffres { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .pipeline { display: flex; align-items: center; gap: 0; padding: 12px 20px; border-top: 1px solid var(--trait); background: #fafbfc; flex-wrap: wrap; row-gap: 10px; }
@@ -241,6 +247,15 @@ code { font-family: var(--f-mono); font-size: 12px; background: var(--plan-2); p
 .couverture .et.revoir i { background: var(--perte-pale); border-color: var(--perte); }
 .note { font-size: 13px; color: var(--doux); padding: 10px 14px; background: var(--plan-2); border-left: 2px solid var(--perte); }
 
+.socle { display: grid; grid-template-columns: auto repeat(2, minmax(0, 1fr)); gap: 0; background: var(--plan); border: 1px solid var(--trait); }
+.socle > div { padding: 16px 18px; border-right: 1px solid var(--trait); display: grid; gap: 6px; align-content: start; min-width: 0; }
+.socle > div:last-child { border-right: 0; }
+.socle .titre-socle { background: var(--ia-pale); max-width: 220px; }
+.socle .titre-socle b { font-weight: 500; font-size: 15px; letter-spacing: -.01em; }
+.socle h3 { margin: 0; font-size: 16px; font-weight: 500; letter-spacing: -.01em; display: flex; gap: 8px; align-items: center; }
+.socle h3 i { width: 14px; height: 14px; background: var(--ia); display: inline-grid; place-items: center; color: #fff; font-style: normal; font-size: 10px; flex: none; }
+.socle p { margin: 0; color: var(--doux); font-size: 13.5px; }
+@media (max-width: 900px) { .socle { grid-template-columns: minmax(0, 1fr); } .socle > div { border-right: 0; border-bottom: 1px solid var(--trait); } .socle .titre-socle { max-width: none; } }
 /* ---- 7. suivi ---- */
 .dep { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 18px; padding: 16px 0; border-top: 1px solid var(--trait); align-items: center; }
 .dep:last-child { border-bottom: 1px solid var(--trait); }
@@ -395,6 +410,8 @@ code { font-family: var(--f-mono); font-size: 12px; background: var(--plan-2); p
         <h1>Jusqu'où laisser faire l'IA ?</h1>
         <p class="intro">Chaque approche place l'humain à un endroit différent. Elle fixe l'autonomie des workflows qu'on va générer, leurs garde-fous et leurs tests.</p>
       </div>
+      <div class="socle anim" id="socle" hidden></div>
+      <div class="mono anim" id="choix-these-titre" style="margin-top:4px">Votre approche · choisissez-en une</div>
       <div class="cartes" id="cartes-theses"></div>
       <div class="detail anim" id="detail-these" hidden></div>
     </section>
@@ -477,6 +494,7 @@ function pret(k) {
 }
 const SUIVANT = ["Lancer l'observation", "Choisir la méthode", "Voir le rapport", "Déployer des agents", "Voir le pack de workflows", "Voir le suivi", ""];
 const AIDE = ["Les réponses s'enregistrent toutes seules", "", "Cliquez sur une carte", "", "Cliquez sur une carte", "Générer, puis Tester, puis Déployer", ""];
+const nomChoisi = (liste, id) => ((liste || []).find(x => x.id === id) || {}).nom;
 function majBas() {
   const s = $("#suiv"), p = $("#prec");
   p.style.visibility = courant > 0 ? "visible" : "hidden";
@@ -484,6 +502,8 @@ function majBas() {
   s.textContent = (SUIVANT[courant] || "Continuer") + " →";
   s.disabled = !pret(courant);
   let aide = AIDE[courant];
+  if (courant === 2 && memo.methode) aide = "Choisie : " + (nomChoisi(S.methodes?.methodes, memo.methode) || memo.methode);
+  if (courant === 4 && memo.these) aide = "Choisie : " + (nomChoisi(S.theses?.theses, memo.these) || memo.these);
   if (courant === 1 && S.etat) aide = S.etat.assez ? "Assez de données : l'audit peut commencer" : "Pas encore assez de données, mais on peut continuer avec ce qu'on a";
   $("#aide").textContent = aide;
 }
@@ -575,7 +595,7 @@ $$(".campagne button").forEach(b => b.addEventListener("click", async () => {
 function entrerObservation() { dessinerObservation(true); clearInterval(minuteurObs); minuteurObs = setInterval(async () => { if (courant !== 1) return clearInterval(minuteurObs); await chargerEtat().catch(() => {}); dessinerObservation(false); }, 8000); }
 $("#rafraichir").addEventListener("click", async () => { await chargerEtat(); dessinerObservation(true); });
 function dessinerObservation(anime) {
-  const e = S.etat; if (!e) return;
+  const e = S.etat; if (!e || !$("#liste-postes")) return;
   const max = Math.max(1, ...e.postes.map(p => p.heures));
   const fr = d => { try { return d ? new Date(d).toLocaleDateString("fr-FR", { day: "numeric", month: "short" }) : ""; } catch (x) { return ""; } };
   $("#liste-postes").innerHTML = e.postes.length ? e.postes.map(p => `
@@ -618,12 +638,20 @@ $("#lancer-export").addEventListener("click", async () => {
 function glyphe(nom) {
   const n = nom.toLowerCase(), C = { ia: "var(--ia)", p: "var(--projet)", o: "var(--perte)", g: "var(--trait-fort)", f: "var(--plan-2)" };
   const svg = c => `<svg viewBox="0 0 96 56" aria-hidden="true">${c}</svg>`;
+  if (/chiffre|impact/.test(n)) return svg(`<text x="48" y="38" text-anchor="middle" font-family="Geist, sans-serif" font-weight="300" font-size="30" letter-spacing="-1.5" fill="${C.ia}">42h</text><rect x="22" y="44" width="52" height="2" fill="${C.g}"/>`);
+  if (/arbre|mece|pyramid/.test(n)) return svg(`<g stroke="${C.g}" fill="none" stroke-width="1.2"><path d="M20 28 H34 M34 12 V44 M34 12 H46 M34 28 H46 M34 44 H46"/></g><rect x="6" y="22" width="14" height="12" fill="${C.ia}"/>${[6, 22, 38].map(y => `<rect x="46" y="${y}" width="${[40, 30, 36][y / 16 | 0]}" height="12" fill="${y === 6 ? C.p : C.f}"/>`).join("")}`);
+  if (/anneau|donut|rosace|répartition|repartition/.test(n)) return svg(`<circle cx="48" cy="28" r="19" fill="none" stroke="${C.f}" stroke-width="9"/><circle cx="48" cy="28" r="19" fill="none" stroke="${C.ia}" stroke-width="9" pathLength="100" stroke-dasharray="70 100" transform="rotate(-90 48 28)"/><circle cx="48" cy="28" r="19" fill="none" stroke="${C.o}" stroke-width="9" pathLength="100" stroke-dasharray="10 100" stroke-dashoffset="-70" transform="rotate(-90 48 28)"/>`);
+  if (/10\/20\/70|70/.test(n)) return svg(`<rect x="6" y="20" width="8.4" height="16" fill="${C.o}"/><rect x="15.4" y="20" width="16.8" height="16" fill="${C.p}"/><rect x="33.2" y="20" width="56.8" height="16" fill="${C.ia}"/><text x="10" y="48" font-family="Geist Mono, monospace" font-size="7" fill="${C.g}">10</text><text x="20" y="48" font-family="Geist Mono, monospace" font-size="7" fill="${C.g}">20</text><text x="58" y="48" font-family="Geist Mono, monospace" font-size="7" fill="${C.g}">70</text>`);
+  if (/value stream|chaîne de valeur|carte de processus|frise du flux/.test(n)) return svg(`${[6, 36, 66].map((x, k) => `<rect x="${x}" y="14" width="24" height="16" fill="${k === 1 ? C.ia : C.p}"/>`).join("")}<g stroke="${C.g}" stroke-width="1.2"><line x1="30" y1="22" x2="36" y2="22"/><line x1="60" y1="22" x2="66" y2="22"/></g><path d="M6 46 H30 V40 H36 V46 H60 V40 H66 V46 H90" fill="none" stroke="${C.o}" stroke-width="1.5"/>`);
+  if (/chaleur|heat|risque/.test(n)) return svg(Array.from({ length: 20 }, (_, i) => { const x = i % 5, y = i / 5 | 0, v = (x + (3 - y)) / 7; return `<rect x="${14 + x * 14}" y="${2 + y * 13}" width="13" height="12" fill="${v > .75 ? C.o : v > .45 ? "#f2b48a" : v > .25 ? C.f : "#f6f7f9"}"/>`; }).join(""));
+  if (/cascade|waterfall/.test(n)) return svg(`<rect x="8" y="8" width="13" height="40" fill="${C.p}"/><rect x="24" y="8" width="13" height="10" fill="${C.ia}"/><rect x="40" y="18" width="13" height="12" fill="${C.ia}"/><rect x="56" y="30" width="13" height="6" fill="${C.ia}"/><rect x="72" y="36" width="13" height="12" fill="${C.o}"/>`);
+  if (/liste|inventaire|titre|périmètre|perimetre|décision|decision|grille des r/.test(n)) return svg([10, 22, 34, 46].map((y, k) => `<rect x="10" y="${y - 4}" width="7" height="7" fill="${k === 0 ? C.ia : "none"}" stroke="${k === 0 ? C.ia : C.g}"/><rect x="22" y="${y - 2}" width="${[60, 48, 54, 36][k]}" height="3" fill="${k === 0 ? C.p : C.g}"/>`).join(""));
   if (/matrice|2×2|2x2|zones|faisab/.test(n)) return svg(`<rect x="22" y="4" width="25" height="23" fill="${C.f}"/><rect x="49" y="4" width="25" height="23" fill="${C.ia}"/><rect x="22" y="29" width="25" height="23" fill="${C.f}"/><rect x="49" y="29" width="25" height="23" fill="${C.f}"/><circle cx="58" cy="13" r="2.5" fill="#fff"/><circle cx="66" cy="20" r="2" fill="#fff"/><circle cx="30" cy="40" r="2" fill="${C.g}"/><circle cx="57" cy="44" r="2" fill="${C.o}"/>`);
   if (/jauge|maturit|exposition/.test(n)) return svg(`<path d="M18 50 A30 30 0 0 1 78 50" fill="none" stroke="${C.f}" stroke-width="7"/><path d="M18 50 A30 30 0 0 1 66 26" fill="none" stroke="${C.ia}" stroke-width="7"/><line x1="48" y1="50" x2="64" y2="30" stroke="${C.p}" stroke-width="1.5"/>`);
   if (/réseau|reseau|flux|graphe/.test(n)) return svg(`<g stroke="${C.g}" stroke-width="1.2"><line x1="14" y1="14" x2="48" y2="28"/><line x1="14" y1="42" x2="48" y2="28"/><line x1="48" y1="28" x2="82" y2="12"/><line x1="48" y1="28" x2="82" y2="44"/></g><line x1="14" y1="14" x2="48" y2="28" stroke="${C.ia}" stroke-width="3"/><rect x="10" y="10" width="8" height="8" fill="${C.p}"/><rect x="10" y="38" width="8" height="8" fill="${C.p}"/><circle cx="48" cy="28" r="6" fill="#fff" stroke="${C.ia}" stroke-width="1.5"/><circle cx="48" cy="28" r="2.5" fill="${C.ia}"/><circle cx="82" cy="12" r="4" fill="#fff" stroke="${C.g}"/><circle cx="82" cy="44" r="4" fill="#fff" stroke="${C.g}"/>`);
   if (/ville|3d|tour/.test(n)) return svg([8, 20, 32, 44, 56, 68, 80].map((x, k) => { const h = [14, 30, 22, 40, 18, 34, 26][k]; return `<rect x="${x}" y="${52 - h}" width="9" height="${h}" fill="${k === 3 || k === 5 ? C.ia : k === 1 ? C.o : C.p}" opacity="${k === 3 || k === 5 ? 1 : .75}"/>`; }).join(""));
   if (/course|avant|après|apres/.test(n)) return svg(`<rect x="6" y="12" width="84" height="12" fill="${C.f}"/><rect x="6" y="12" width="30" height="12" fill="${C.o}"/><rect x="37" y="12" width="22" height="12" fill="${C.p}"/><rect x="60" y="12" width="30" height="12" fill="${C.o}"/><rect x="6" y="32" width="84" height="12" fill="${C.f}"/><rect x="6" y="32" width="10" height="12" fill="${C.ia}"/><rect x="17" y="32" width="22" height="12" fill="${C.p}"/><rect x="40" y="32" width="10" height="12" fill="${C.ia}"/>`);
-  if (/feu/.test(n)) return svg(`<circle cx="28" cy="28" r="9" fill="${C.ia}"/><circle cx="48" cy="28" r="9" fill="${C.f}" stroke="${C.g}"/><circle cx="68" cy="28" r="9" fill="${C.o}"/>`);
+  if (/feu|rouge|tableau de bord/.test(n)) return svg(`<circle cx="28" cy="28" r="9" fill="${C.ia}"/><circle cx="48" cy="28" r="9" fill="${C.f}" stroke="${C.g}"/><circle cx="68" cy="28" r="9" fill="${C.o}"/>`);
   if (/frise|journ|30|calend|chrono/.test(n)) return svg([0, 1, 2].map(r => [[0, 18, "p"], [19, 12, "ia"], [32, 20, "g"], [53, 9, "o"], [63, 25, "ia"]].map(([x, w, c], k) => `<rect x="${6 + (x + r * 7) % 70}" y="${8 + r * 15}" width="${w - r * 2}" height="10" fill="${C[c]}"/>`).join("")).join(""));
   if (/empil|stack|temps|part/.test(n)) return svg([0, 1, 2].map(r => { const p = [[40, 25, 20, 15], [55, 15, 18, 12], [30, 35, 20, 15]][r]; let x = 6; return p.map((w, k) => { const s = `<rect x="${x}" y="${8 + r * 15}" width="${w * .84}" height="10" fill="${[C.ia, C.p, C.g, C.f][k]}"/>`; x += w * .84 + 1; return s; }).join(""); }).join(""));
   return svg([28, 44, 20, 36, 12].map((h, k) => `<rect x="${10 + k * 16}" y="${52 - h}" width="11" height="${h}" fill="${k === 1 ? C.ia : k === 3 ? C.o : C.p}"/>`).join(""));
@@ -641,10 +669,11 @@ async function entrerMethodes() {
       <span class="coche badge plein-ia">✓ Choisie</span>
       <div class="apercu">${vis.map(v => `<div>${glyphe(String(v))}<span>${esc(v)}</span></div>`).join("")}</div>
       <div class="carte-corps">
-        <div class="mono">Inspirée de ${esc(m.inspire_de || "—")}</div>
         <h3>${esc(m.nom)}</h3>
         <p>${esc(m.promesse || "")}</p>
-        <div class="pied">${ch ? `<span class="badge">${ch} chapitres</span>` : ""}${m.ton ? `<span class="badge" style="white-space:normal;text-transform:none;letter-spacing:.02em">${esc(m.ton)}</span>` : ""}</div>
+        <div class="inspi" title="${esc(m.inspire_de || "")}"><b>Inspirée de</b>${esc(m.inspire_de || "—")}</div>
+        <div class="pied">${ch ? `<span class="badge">${ch} chapitres</span>` : ""}${(m.visuels_signature || []).length ? `<span class="badge">${m.visuels_signature.length} visuels signature</span>` : ""}</div>
+        ${m.ton ? `<div class="ton" title="${esc(m.ton)}">${esc(m.ton)}</div>` : ""}
       </div></button>`;
   }).join("") + (ms.length % 3 ? `<div class="carte-aide"><div class="mono">Comment choisir</div><div><b>Pour convaincre un dirigeant</b> : une story chiffrée. <b>Pour passer à l'action</b> : une méthode qui finit par une liste de tâches.</div><div>Toutes les méthodes lisent les mêmes données mesurées. Vous pourrez revenir en changer.</div><div class="source"><span>Méthodes : ${esc(S.methodes.source)}</span></div></div>` : "");
   if (G && !reduit) G.fromTo($$(".carte, .carte-aide", box), { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: .55, stagger: .06, ease: "power3.out", clearProps: "transform" });
@@ -664,7 +693,7 @@ async function entrerRapport() {
   const info = await api("/api/rapport/" + encodeURIComponent(m.id)).catch(() => ({ source: "absent" }));
   $("#titre-rapport").textContent = `« ${m.nom} », sur vos vraies données.`;
   const badge = info.source === "methode" ? `<span class="badge ia">Rapport de cette méthode</span>` : info.source === "repli" ? `<span class="badge perte">Rapport générique, en attendant celui de la méthode</span>` : `<span class="badge perte">Aucun rapport pour l'instant</span>`;
-  $("#rapport-infos").innerHTML = `${badge}<span class="mono">Inspirée de ${esc(m.inspire_de || "—")}</span>`;
+  $("#rapport-infos").innerHTML = `${badge}<span class="inspi" style="max-width:70ch"><b>Inspirée de</b>${esc(m.inspire_de || "—")}</span>`;
   const url = "/rapport/" + encodeURIComponent(m.id);
   $("#rapport-plein").href = url;
   const fr = $("#rapport");
@@ -675,18 +704,25 @@ async function entrerRapport() {
 const jaugeAutonomie = a => `<div class="autonomie"><div class="barres-a">${[1, 2, 3, 4].map(k => `<i class="${k <= a ? "on" : ""}"></i>`).join("")}</div><div class="lib"><span>Autonomie <b>${a} / 4</b></span><span>${esc(AUTONOMIE[a] || "")}</span></div></div>`;
 async function entrerTheses() {
   if (!S.theses) S.theses = await api("/api/theses");
-  const box = $("#cartes-theses"), ts = S.theses.theses;
+  const box = $("#cartes-theses"), ts = S.theses.theses, socle = S.theses.socle || [];
+  const sb = $("#socle");
+  sb.hidden = !socle.length;
+  sb.innerHTML = socle.length ? `<div class="titre-socle"><span class="mono" style="color:#075f78">Toujours inclus</span><b>Deux garanties actives sur chaque workflow, quelle que soit l'approche.</b></div>` +
+    socle.map(t => `<div><h3><i>✓</i>${esc(t.nom)}</h3><p>${esc(t.accroche || "")}</p><span class="mono" style="font-size:10px">${(t.tests_avant || []).length} tests ajoutés · ${(t.garde_fous || []).length} garde-fous</span></div>`).join("") : "";
+  $("#choix-these-titre").hidden = !socle.length;
+  const auteurs = a => { a = (a || []).map(x => String(x).replace(/\s*\(.*\)\s*$/, "")); return a.slice(0, 2).join(" · ") + (a.length > 2 ? ` · +${a.length - 2}` : ""); };
+  if (memo.these && !ts.some(t => t.id === memo.these)) { delete memo.these; garder(); }
   box.innerHTML = ts.map(t => `<button type="button" class="carte" data-id="${esc(t.id)}" aria-pressed="${memo.these === t.id}">
       <span class="coche badge plein-ia">✓ Choisie</span>
       <div class="carte-corps" style="gap:12px">
-        <div class="mono">${esc((t.auteurs || []).join(" · "))}</div>
+        <div class="mono" title="${esc((t.auteurs || []).join(" · "))}">${esc(auteurs(t.auteurs))}</div>
         <h3>${esc(t.nom)}</h3>
         <p>${esc(t.accroche || "")}</p>
         ${jaugeAutonomie(Math.max(1, Math.min(4, +t.autonomie || 2)))}
         <div class="humain">${esc(t.humain || "")}</div>
-      </div></button>`).join("");
+      </div></button>`).join("") + (ts.length % 3 ? (() => { const def = ts.find(t => /par défaut/i.test(t.quand || "")) || ts[0]; return `<div class="carte-aide"><div class="mono">Comment choisir</div><div>Plus la jauge est pleine, plus l'agent agit seul. <b>Pour un premier déploiement</b>, commencez par « ${esc(def.nom)} ».</div><div>Le Banc d'Essai et la Forteresse s'appliquent quoi que vous choisissiez : leurs tests et leurs garde-fous sont ajoutés à chaque workflow.</div><div class="source"><span>Approches : ${esc(S.theses.source)}</span></div></div>`; })() : "");
   if (G && !reduit) G.fromTo($$(".carte", box), { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: .55, stagger: .06, ease: "power3.out", clearProps: "transform" });
-  detailThese(false);
+  detailThese(false); majBas(); majNav();
 }
 function detailThese(anime) {
   const t = (S.theses?.theses || []).find(x => x.id === memo.these), d = $("#detail-these");
@@ -771,20 +807,38 @@ function majPipeline(k) {
   $$(".lien", el).forEach((l, i) => l.classList.toggle("ok", !!st[ORDRE_A[i]]));
   el.classList.toggle("deploye", !!st.deployer);
   const v = $(".verdict", el);
-  if (st.deployer) v.innerHTML = `<span class="badge plein-ia">Déployé</span>`;
+  if (st.deployer) v.innerHTML = `<span class="badge plein-ia">Déployé${st.deployer.force ? " · forcé" : ""}</span>`;
+  else if (st.refus) v.innerHTML = `<span class="badge plein-perte">Déploiement refusé</span>`;
   else if (st.tester) v.innerHTML = st.tester.verdict === "pret" ? `<span class="badge plein-ia">Prêt</span>` : `<span class="badge plein-perte">À revoir</span>`;
   else v.innerHTML = "";
 }
 function restaurerWf(k) {
   const w = S.pack.workflows[k], st = S.wf[w.id]; majPipeline(k);
   if (!st || !st.dernier) return;
-  const el = $(`.wf[data-k="${k}"]`), r = st[st.dernier];
+  const el = $(`.wf[data-k="${k}"]`), r = st[st.dernier] || st.refus || {};
   $(".console", el).hidden = false;
   $(".quoi", el).textContent = `${LIB_A[st.dernier]} · ${r.dossier || ""}`;
   $(".sim", el).innerHTML = r.simulation ? `<span class="badge perte">Simulation</span>` : `<span class="badge ia">Moteur réel</span>`;
   $(".prog i", el).style.width = "100%";
   $(".lignes", el).innerHTML = (r.lignes || []).map((l, i) => ligneHtml(l, i)).join("");
-  couvrir(el, st.tester?.couverture, false);
+  couvrirTaux(el, w, st.tester?.taux, false);
+  montrerRaisons(el, st);
+}
+function couvrirTaux(el, w, taux, anime) {
+  const ets = $$(".couverture .et", el), es = etapesDe(w);
+  const obs = es.map((e, i) => [e, i]).filter(([e]) => e.statut !== "supposé"), nOk = taux == null ? 0 : Math.round(taux * obs.length);
+  const etat = es.map(e => e.statut === "supposé" ? "revoir" : "");
+  obs.forEach(([e, i], j) => etat[i] = j < nOk ? "ok" : "revoir");
+  ets.forEach((e, i) => { e.classList.remove("ok", "revoir"); e.title = es[i]?.statut === "supposé" ? "Étape supposée, pas observée : à confirmer" : ""; if (taux == null) return; const go = () => etat[i] && e.classList.add(etat[i]); anime ? setTimeout(go, i * 220) : go(); });
+}
+function montrerRaisons(el, st) {
+  const box = $(".raisons", el), src = st.refus || (st.tester && st.tester.verdict !== "pret" ? st.tester : null);
+  const rs = (src?.raisons || []).filter(Boolean);
+  if (!src || !rs.length) { box.hidden = true; return; }
+  box.innerHTML = `<div class="mono">${st.refus ? "Pourquoi le déploiement est refusé" : "Pourquoi c'est à revoir"}</div><ul>${rs.slice(0, 5).map(r => `<li>${esc(r)}</li>`).join("")}</ul>` +
+    (st.refus ? `<div class="actions"><button type="button" class="bouton petit" data-forcer="1">Déployer quand même</button><span class="mono" style="align-self:center">le reçu le notera</span></div>` : "");
+  box.hidden = false;
+  if (G && !reduit) G.fromTo(box, { opacity: 0, y: -6 }, { opacity: 1, y: 0, duration: .35 });
 }
 function ligneHtml(texte, i) {
   const t = String(texte), cls = /^\s*(✓|ok\b)/i.test(t) ? "ok" : /^\s*(!|✗|x\b|erreur)/i.test(t) ? "alerte" : "";
@@ -792,17 +846,15 @@ function ligneHtml(texte, i) {
   const ts = (i * .37 + .12).toFixed(2).padStart(5, "0");
   return `<div class="${cls}"><span class="t">00:${ts}</span><span class="s">${sym}</span><span class="x">${esc(propre)}</span></div>`;
 }
-function couvrir(el, couv, anime) {
-  const ets = $$(".couverture .et", el);
-  ets.forEach((e, i) => { e.classList.remove("ok", "revoir"); if (!couv) return; const go = () => e.classList.add(couv[i] ? "ok" : "revoir"); anime ? setTimeout(go, i * 260) : go(); });
-}
 $("#liste-wf").addEventListener("click", async e => {
   const c = e.target.closest(".cible button");
   if (c) { const el = c.closest(".wf"), w = S.pack.workflows[+el.dataset.k]; S.wf[w.id] = { ...(S.wf[w.id] || {}), cible: c.dataset.c }; $$(".cible button", el).forEach(b => b.setAttribute("aria-pressed", b === c)); return; }
+  const fz = e.target.closest("[data-forcer]");
+  if (fz) { lancer(+fz.closest(".wf").dataset.k, "deployer", true); return; }
   const b = e.target.closest("[data-a]"); if (!b || b.disabled) return;
   const el = b.closest(".wf"), k = +el.dataset.k; lancer(k, b.dataset.a);
 });
-async function lancer(k, action) {
+async function lancer(k, action, forcer = false) {
   const w = S.pack.workflows[k], el = $(`.wf[data-k="${k}"]`), st = S.wf[w.id] = S.wf[w.id] || {};
   st.enCours = action; majPipeline(k);
   const cons = $(".console", el), lignes = $(".lignes", el), barre = $(".prog i", el);
@@ -812,11 +864,12 @@ async function lancer(k, action) {
   $(".quoi", el).textContent = `${LIB_A[action]} en cours…`;
   $(".sim", el).innerHTML = "";
   lignes.innerHTML = `<div><span class="t">00:00.00</span><span class="s">›</span><span class="x curseur">${action === "generer" ? "Lecture des étapes observées" : action === "tester" ? "Préparation des cas de test" : "Préparation du déploiement"} </span></div>`;
-  if (action === "tester") couvrir(el, null);
+  if (action === "tester") couvrirTaux(el, w, null);
+  $(".raisons", el).hidden = true;
   barre.style.width = "0%";
   const attente = G && !reduit ? G.to(barre, { width: "28%", duration: 1.2, ease: "power1.out" }) : null;
   const tache = w.tache || {};
-  const corps = { id: w.id, tache: { ...tache, titre: tache.titre || w.titre, poste: tache.poste || w.poste }, these: memo.these, dossier: st.generer?.dossier, cible: st.cible || "local-demo", heures_semaine: w.heures_semaine, gain: w.gain, autonomie: w.autonomie };
+  const corps = { id: w.id, tache: { ...tache, titre: tache.titre || w.titre, poste: tache.poste || w.poste }, these: memo.these, dossier: st.generer?.dossier, cible: st.cible || "local-demo", forcer, campagne: camp(), heures_semaine: w.heures_semaine, gain: w.gain, autonomie: w.autonomie };
   let r;
   try { r = await api("/api/workflow/" + action, corps); }
   catch (err) { r = { lignes: ["! Le serveur n'a pas répondu : " + err.message], verdict: "a_revoir", simulation: true }; }
@@ -832,16 +885,19 @@ async function lancer(k, action) {
     lignes.scrollTop = lignes.scrollHeight;
     const pc = 28 + 72 * (i + 1) / ls.length;
     if (G && !reduit) G.to(barre, { width: pc + "%", duration: pas / 1000, ease: "none" }); else barre.style.width = pc + "%";
-    if (action === "tester" && r.couverture) { const ets = $$(".couverture .et", el), n = Math.floor((i + 1) / ls.length * ets.length); ets.slice(0, n).forEach((e, j) => e.classList.add(r.couverture[j] ? "ok" : "revoir")); }
     if (pas) await new Promise(res => setTimeout(res, pas));
   }
-  if (action === "tester" && r.couverture) couvrir(el, r.couverture, false);
+  if (action === "tester") couvrirTaux(el, w, r.taux ?? 0, true);
   barre.style.width = "100%";
-  $(".quoi", el).textContent = `${LIB_A[action]} terminé · ${r.dossier || st.generer?.dossier || ""}`;
+  $(".quoi", el).textContent = `${r.refuse ? "Déploiement refusé" : LIB_A[action] + " terminé"} · ${r.dossier || st.generer?.dossier || ""}`;
   $(".sim", el).innerHTML = r.simulation ? `<span class="badge perte">Simulation</span>` : `<span class="badge ia">Moteur réel</span>`;
-  st[action] = r; st.dernier = action; delete st.enCours;
-  if (action === "generer") { delete st.tester; delete st.deployer; }
-  if (action === "tester") delete st.deployer;
+  delete st.enCours; st.dernier = action;
+  if (action === "deployer" && r.refuse) { st.refus = r; st.deployer_lignes = r; }
+  else { st[action] = r; delete st.refus; }
+  if (action === "deployer" && !r.refuse) st.deployer.force = forcer;
+  if (action === "generer") { delete st.tester; delete st.deployer; delete st.refus; }
+  if (action === "tester") { delete st.deployer; delete st.refus; }
+  montrerRaisons(el, st);
   majPipeline(k);
   if (G && !reduit) G.fromTo($(".verdict .badge", el), { scale: .6, opacity: 0 }, { scale: 1, opacity: 1, duration: .45, ease: "back.out(2.5)" });
 }
@@ -856,7 +912,7 @@ async function entrerSuivi() {
     const ap = (d.heures_avant || 0) * (1 - (d.gain || 0));
     return `<div class="dep">
       <div><h3>${esc(d.titre)}</h3>
-        <div class="meta"><span class="badge ${d.cible === "equipe" ? "ia" : ""}">${d.cible === "equipe" ? "Toute l'équipe" : "Un poste · démo"}</span>${(d.postes || []).map(p => `<span class="badge">${esc(p)}</span>`).join("")}${d.simulation ? `<span class="badge perte">Simulation</span>` : ""}</div>
+        <div class="meta"><span class="badge ${d.cible === "equipe" ? "ia" : ""}">${d.cible === "equipe" ? "Toute l'équipe" : "Un poste · démo"}</span>${(d.postes || []).map(p => `<span class="badge">${esc(p)}</span>`).join("")}${d.simulation ? `<span class="badge perte">Simulation</span>` : ""}${d.force ? `<span class="badge perte">Forcé malgré les tests</span>` : ""}</div>
         <div class="mono" style="margin-top:8px">${esc(d.these || "")} · remesure le ${esc(new Date(d.remesure_le).toLocaleDateString("fr-FR"))}</div></div>
       <div class="av-ap">
         <div class="l avant"><span>Avant</span><div class="r"><i data-w="${(d.heures_avant || 0) / max * 100}"></i></div><span>${nf1.format(d.heures_avant || 0)} h/sem</span></div>
