@@ -6,17 +6,24 @@
 `construire.py` relit les **résumés validés** d'une campagne (la démo Maison Corvo par défaut), refait tourner **le regroupement officiel** (`labs/phamphamh/fusion/fusion.py`, importé tel quel — rien n'est recalculé à la main) et produit :
 
 - `resultat.html` — la page : pour chaque tâche commune, le tableau des étapes personne par personne (badges observé / supposé, app de chaque étape, mention « outil différent »), puis le bloc « Ce que ça change pour la skill » (la façon de référence que la skill reprend + l'écart à couvrir pour les autres) ;
-- `RESULTAT.md` — le même résultat en chiffres (pour le pitch ou le journal).
+- `RESULTAT.md` — le même résultat en chiffres (pour le pitch ou le journal) ;
+- version équipe (vraies validations) : `resultat-equipe.html` + `RESULTAT-EQUIPE.md`.
 
 ## Ce que ça montre sur la démo (17/10)
 - **5 tâches** faites par ≥ 2 personnes ; 5 salariés concernés ; **2 tâches à outil variable** ; **0 étape hors de la façon de référence**.
 - L'exemple qui parle : « Préparer le reporting hebdo » — 4 personnes, mêmes 3 étapes, mais l'export change (HubSpot / Sage / Pennylane) et l'envoi aussi (Gmail / Slack). « Répondre aux demandes de délai » — même texte d'étape, Gmail vs Zendesk.
 - Conclusion assumée : sur la démo, les **étapes** sont couvertes (la façon de référence suffit), ce sont les **outils** qui ne le sont pas. C'est la liste de courses pour la skill — pas une promesse.
 
+## Version équipe — vraies validations (17/10, 13h38)
+Deux personnes validées à cette heure (09125o, adamaass — identifiants anonymes) → **0 tâche commune** : leurs journées ne se recoupent pas. Résultat assumé : la fusion ne force aucun rapprochement, et le Wrapped d'équipe attendra la 3e validation pour parler d'agrégats. La page se régénère en une commande à chaque nouvelle validation ; quand deux rôles se recoupent, elle montrera le même tableau que la démo, sur de vraies données.
+
 ## Lancer
 ```sh
 python3 labs/09125o/deuxieme-entree/construire.py
-# autre campagne : --resumes donnees/<pseudo>   (les résumés non validés ne comptent jamais)
+# ou plusieurs dossiers/fichiers de résumés (les non validés ne comptent jamais) :
+python3 labs/09125o/deuxieme-entree/construire.py \
+  --resumes labs/09125o/campagne/resume-valide.json labs/adamaass/campagne/resume-valide.json \
+  --sortie labs/09125o/deuxieme-entree/resultat-equipe.html
 ```
 
 ## Limites (écrites dans la page elle-même)

@@ -42,8 +42,8 @@ def similar(t1, t2):
     return len(fusion.mots(t1) & fusion.mots(t2)) / (len(fusion.mots(t1) | fusion.mots(t2)) or 1)
 
 
-def construire(dossier):
-    resumes = [r for r in fusion.charger([dossier]) if r.get("valide_par_la_personne") is True]
+def construire(dossiers):
+    resumes = [r for r in fusion.charger(list(dossiers)) if r.get("valide_par_la_personne") is True]
     taches = []
     for rang, r in enumerate(resumes):
         for t in r.get("taches") or []:
@@ -105,7 +105,7 @@ def construire(dossier):
                         "libelles": list(dict.fromkeys(m["titre"] for m in membres))})
 
     groupes.sort(key=lambda x: (len(x["pers"]), len(x["outils_qui_varient"])), reverse=True)
-    return {"dossier": os.path.relpath(os.path.abspath(dossier), RACINE),
+    return {"dossier": " · ".join(os.path.relpath(os.path.abspath(p), RACINE) for p in dossiers),
             "nb_valides": len(resumes), "groupes": groupes,
             "campagne_demo": all(r.get("campagne") == "demo-maison-corvo" for r in resumes) if resumes else True}
 
@@ -198,6 +198,10 @@ mais pas le même outil. Données : les résumés validés de la démo (fictive,
 </div>""")
     if d["campagne_demo"]:
         c.append('<p class="note">Démo Maison Corvo : 6 salariés invités, 5 résumés validés, 1 sans validation (jamais compté).</p>')
+    else:
+        c.append('<p class="note">Vue de travail entre les personnes validées — le Wrapped d\'équipe, lui, attend 3 validations et ne montre que des agrégats.</p>')
+    if not d["groupes"]:
+        c.append('<p class="note">Aucune tâche commune à ≥ 2 personnes pour l\'instant — c\'est un résultat en soi : la fusion ne force rien, elle attend.</p>')
 
     for gr in d["groupes"]:
         ref_nom = nom_personne(gr["ref"])
@@ -261,18 +265,23 @@ def resultat_md(d):
         for o in gr["outils_qui_varient"]:
             l.append(f"- Outil qui varie : {' / '.join(o['apps'])} (étape « {o['texte']} »)")
         l.append("")
-    l.append("Limites : démo Maison Corvo (fictive) ; sur une campagne réelle, page à relire avant tout partage.")
+    if d["campagne_demo"]:
+        l.append("Limites : démo Maison Corvo (fictive) ; sur une campagne réelle, page à relire avant tout partage.")
+    else:
+        l.append("Vue de travail entre les personnes validées (identifiants anonymes) ; le Wrapped d'équipe, lui, attend 3 validations et ne montre que des agrégats.")
     return "\n".join(l)
 
 
 def main():
     a = argparse.ArgumentParser()
-    a.add_argument("--resumes", default=os.path.join(RACINE, "labs", "phamphamh", "demo", "resumes"))
+    a.add_argument("--resumes", nargs="+", default=[os.path.join(RACINE, "labs", "phamphamh", "demo", "resumes")],
+                   help="un ou plusieurs dossiers/fichiers de résumés (défaut : la démo Maison Corvo)")
     a.add_argument("--sortie", default=os.path.join(ICI, "resultat.html"))
     args = a.parse_args()
     d = construire(args.resumes)
     open(args.sortie, "w").write(page_html(d))
-    md = os.path.join(os.path.dirname(args.sortie), "RESULTAT.md")
+    base = os.path.splitext(os.path.basename(args.sortie))[0]
+    md = os.path.join(os.path.dirname(args.sortie), "RESULTAT.md" if base.lower() == "resultat" else base.upper() + ".md")
     open(md, "w").write(resultat_md(d))
     print(f"{len(d['groupes'])} tâches communes à ≥2 personnes → {os.path.relpath(args.sortie, RACINE)}")
     for gr in d["groupes"]:

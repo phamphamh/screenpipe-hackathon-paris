@@ -1,0 +1,71 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La 2e entrée — la même tâche chez plusieurs personnes</title>
+<style>
+:root { --encre:#17141f; --encre-2:#4a4556; --encre-3:#8a8496; --papier:#f6f3ec; --carte:#fff;
+  --trait:#e6e1d6; --violet:#5b3df5; --violet-pale:#ece8ff; --ambre:#b7791f; --ambre-pale:#fbf0dc;
+  --serif: Georgia, "Times New Roman", serif; }
+* { box-sizing: border-box; }
+body { margin:0; background:var(--papier); color:var(--encre);
+  font: 15px/1.55 -apple-system, "Segoe UI", system-ui, sans-serif; }
+header.bandeau { display:flex; align-items:center; justify-content:space-between; padding:14px 28px;
+  background:var(--carte); border-bottom:1px solid var(--trait); }
+.marque { display:flex; align-items:center; gap:9px; font-weight:700; letter-spacing:-.01em; }
+.marque i { width:22px; height:22px; border-radius:7px;
+  background: conic-gradient(from 200deg, var(--violet), #ff5fa2, #d4f53c, var(--violet)); display:inline-block; }
+.etiquette { display:inline-flex; align-items:center; font-size:12px; font-weight:600; padding:3px 10px;
+  border-radius:999px; background:#efebe2; color:var(--encre-2); }
+.etiquette.violet { background:var(--violet-pale); color:var(--violet); }
+main { max-width:1060px; margin:0 auto; padding:28px 24px 60px; }
+h1 { font-size:34px; letter-spacing:-.02em; margin:14px 0 4px; }
+h1 em { font-family:var(--serif); font-style:italic; font-weight:400; color:var(--violet); }
+.sous { color:var(--encre-2); max-width:760px; }
+.bandeau-chiffres { display:flex; gap:10px; flex-wrap:wrap; margin:18px 0 8px; }
+.chiffre { background:var(--carte); border:1px solid var(--trait); border-radius:12px; padding:10px 14px; }
+.chiffre b { display:block; font-size:20px; }
+.chiffre span { color:var(--encre-3); font-size:12.5px; }
+.carte { background:var(--carte); border:1px solid var(--trait); border-radius:14px; padding:20px 22px;
+  margin:16px 0; box-shadow:0 1px 2px rgba(23,20,31,.05); }
+.carte h2 { margin:0 0 2px; font-size:20px; letter-spacing:-.01em; }
+.carte .meta { color:var(--encre-3); font-size:13px; margin-bottom:14px; }
+table { border-collapse:collapse; width:100%; }
+th, td { text-align:left; vertical-align:top; padding:8px 10px; border-top:1px solid var(--trait); }
+th { font-size:12.5px; color:var(--encre-3); font-weight:600; border-top:0; }
+td.etape p { margin:0 0 3px; }
+.type { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--encre-2);
+  background:#efebe2; border-radius:6px; padding:2px 7px; margin-right:6px; }
+.suppose { font-size:11px; font-weight:600; color:var(--ambre); background:var(--ambre-pale); border-radius:6px; padding:2px 7px; }
+.marque-p { display:inline-block; font-size:12px; background:var(--violet-pale); color:var(--violet);
+  border-radius:8px; padding:3px 8px; margin:2px 4px 2px 0; }
+.absent { color:var(--encre-3); }
+.outil-diff { font-size:12px; color:var(--ambre); font-weight:600; }
+.skill { background:#faf8f3; border:1px dashed var(--trait); border-radius:12px; padding:14px 16px; margin-top:14px; }
+.skill h3 { margin:0 0 6px; font-size:14px; }
+.skill ul { margin:6px 0 0; padding-left:18px; }
+.skill li { margin:3px 0; }
+.ok { color:#1f9d6b; font-weight:600; }
+.note { color:var(--encre-3); font-size:12.5px; }
+footer { max-width:1060px; margin:0 auto; padding:0 24px 40px; color:var(--encre-3); font-size:12.5px; }
+</style></head><body>
+<header class="bandeau"><span class="marque"><i></i>Wrapped</span>
+<span><span class="etiquette">pièce de 09125o</span>
+&nbsp;<span class="etiquette ">Campagne réelle — à relire avant tout partage</span></span></header>
+<main>
+<h1>La 2e entrée, <em>prise au sérieux.</em></h1>
+<p class="sous">La fusion de l'app regroupe les tâches faites par plusieurs personnes. Mais la skill est écrite à partir
+de <b>la façon d'une personne de référence</b> (celle qui a le plus de confiance et d'étapes). Cette page montre, tâche par tâche :
+la même activité chez chacun, ce que la façon de référence couvre déjà, et <b>ce qu'il reste à absorber</b> — souvent le même travail,
+mais pas le même outil. Données : les résumés validés de la démo (fictive, étiquetée).</p>
+<div class="bandeau-chiffres">
+<div class="chiffre"><b>0</b><span>tâches à ≥ 2 personnes</span></div>
+<div class="chiffre"><b>0</b><span>salariés concernés</span></div>
+<div class="chiffre"><b>0</b><span>tâches à outil variable</span></div>
+<div class="chiffre"><b>0</b><span>étapes hors référence</span></div>
+</div>
+<p class="note">Vue de travail entre les personnes validées — le Wrapped d'équipe, lui, attend 3 validations et ne montre que des agrégats.</p>
+<p class="note">Aucune tâche commune à ≥ 2 personnes pour l'instant — c'est un résultat en soi : la fusion ne force rien, elle attend.</p>
+</main>
+<footer>Généré par <code>labs/09125o/deuxieme-entree/construire.py</code> — le regroupement vient de la fusion officielle
+(<code>labs/phamphamh/fusion/fusion.py</code>), rien n'est recalculé à la main. En relecture, chacun a validé son propre résumé ;
+le Wrapped, lui, n'affiche que des agrégats (« moins de 3 personnes → masqué »).</footer>
+</body></html>
