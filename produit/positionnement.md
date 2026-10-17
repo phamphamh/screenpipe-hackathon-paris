@@ -10,6 +10,11 @@ Un forward deployed engineer virtuel : screenpipe tourne une semaine chez des vo
 ## Le paragraphe (description du rendu)
 Les entreprises paient des ingénieurs très chers pour s'asseoir à côté de leurs équipes et regarder comment elles travaillent (« les entreprises paient des ingénieurs pour regarder leurs salariés travailler » — screenpipe). Notre produit fait ce travail tout seul : une semaine de capture **locale**, un tri 80/20 avant toute IA, chaque personne **relit et valide son propre résumé**, puis la fusion produit le **Wrapped de l'entreprise** — les tâches répétées, leur coût réel, ce qui vaut le coup d'être automatisé — et génère l'**automatisation (skill)** de la tâche choisie, testée sur une seconde personne. Aujourd'hui il faut des semaines et un consultant sur place ; ici : une semaine, zéro consultant, des données validées par les intéressés et supprimées à la fin.
 
+## Pour le formulaire de rendu (prêt à coller)
+- **Une phrase** : Un forward deployed engineer virtuel : une semaine de screenpipe, le Wrapped de l'entreprise et sa première automatisation — sans consultant sur place.
+- **Version courte (~300 caractères)** : Les entreprises paient des ingénieurs très chers pour regarder leurs équipes travailler. Wrapped le fait tout seul : capture locale une semaine, résumé validé par chaque salarié, fusion anonymisée (moins de 3 personnes = masqué), Wrapped de l'entreprise — puis la première skill générée, testée sur une 2e personne.
+- **Version longue** : le paragraphe ci-dessus.
+
 ## Pourquoi c'est un FDE virtuel (et pas un simple task mining)
 Un FDE fait quatre choses : **Map** (voir le travail réel), **Installer** (mettre les capteurs), **Improve** (chiffrer ce qui peut être automatisé), **Deploy** (livrer l'automatisation). Le produit reprend les quatre :
 1. **Map** → dérush local 80/20 + résumé des tâches répétées (l'IA est là : analyse des moments, déduction des tâches et de leurs étapes).
