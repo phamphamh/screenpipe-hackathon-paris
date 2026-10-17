@@ -225,13 +225,27 @@ def methodes():
     return liste_specs([os.path.join(LAB, "recherche", "methodes.json"), os.path.join(LAB, "rapport", "methodes-defaut.json")], METHODES, "methodes")
 
 
+SOCLE = ("banc-dessai", "forteresse")  # toujours actifs : affichés comme garanties incluses, jamais au choix
+
+
 def theses():
-    return liste_specs([os.path.join(LAB, "recherche", "theses.json")], THESES, "theses")
+    """Les thèses au choix, et à part le socle (Banc d'Essai, Forteresse) s'il est dans le fichier."""
+    d = liste_specs([os.path.join(LAB, "recherche", "theses.json")], THESES, "theses")
+    d["socle"] = [t for t in d["theses"] if t["id"] in SOCLE]
+    d["theses"] = [t for t in d["theses"] if t["id"] not in SOCLE]
+    return d
 
 
 def these_par_id(i):
-    ts = theses()["theses"]
-    return next((t for t in ts if t["id"] == i), ts[0] if ts else {"id": "defaut", "nom": "Par défaut", "autonomie": 2})
+    """La thèse choisie, avec les garde-fous et les tests du socle fusionnés (c'est ce que reçoit le moteur)."""
+    d = theses()
+    ts = d["theses"]
+    t = dict(next((t for t in ts if t["id"] == i), ts[0] if ts else {"id": "defaut", "nom": "Par défaut", "autonomie": 2}))
+    for s in d["socle"]:
+        for cle in ("garde_fous", "tests_avant"):
+            t[cle] = list(dict.fromkeys(list(t.get(cle) or []) + list(s.get(cle) or [])))
+    t["socle"] = [s["nom"] for s in d["socle"]]
+    return t
 
 
 # ---------- étape 4 : le rapport ----------
