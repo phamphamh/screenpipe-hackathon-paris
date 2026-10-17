@@ -19,7 +19,7 @@ Extrait prêt à tourner de la section 23 du brief (`.context/hackathon-brief.md
 | 0:22–0:45 | Le dérush en vrai | stats du collecteur (24 % gardées sur ce Mac), 44 % d'écrans non regardés, preuve que la chaîne de workflows existante ticke à vide |
 | 0:45–1:00 | Relecture : retirer une ligne → « Valider et partager » | à rejouer en direct — c'est le moment « rien ne part sans ce clic » |
 | 1:00–1:25 | Wrapped : top 3 des tâches, chiffres cliquables, badges observé/estimé | aucun chiffre par personne |
-| 1:25–1:45 | Cas d'échec : score contesté → le classement change ; puis la skill sur une 2e entrée (étiquetée si synthétique) | bouton « Créer la skill » (télécharge un SKILL.md) |
+| 1:25–1:45 | Cas d'échec : score contesté → le classement change ; puis la 2e entrée : la même tâche chez plusieurs personnes (leurs étapes, leurs outils, ce que la skill doit absorber) — écran à filmer : `labs/09125o/deuxieme-entree/resultat.html` | bouton « Créer la skill » (télécharge un SKILL.md) ; puis la page « 2e entrée » |
 | 1:45–2:00 | Fin + lien du repo | « Une semaine, sans consultant sur place. Données locales, supprimées à la fin. » |
 
 ## Les chiffres à l'écran (relevé du 16/10, 18h52–21h54, 1 Mac, 970 captures)
