@@ -29,7 +29,7 @@ Vue pour le rendu : ce que chaque personne a livré, où c'est, et ce qui reste 
 - **Le brief et le storyboard** de la vidéo (section 23) + les mesures du 16/10 soir (970 captures en 3 h, 59 % de copies exactes, 44 % d'écrans non regardés).
 - **Le positionnement produit** : `produit/positionnement.md` (« le FDE en produit »).
 - **La pièce « la 2e entrée »** : `labs/09125o/deuxieme-entree/` — même tâche chez plusieurs personnes (démo : 5 tâches communes ; vraie campagne : 0 commune, la fusion ne force rien), régénérable en une commande.
-- **Les « dès que… »** : `labs/09125o/declencheurs/` — pour chaque tâche, l'événement qui la lance, la voie technique (connecteur apps → apps, appel API) et l'info à partager aux concernés ; chaque ligne garde sa preuve, chiffres pris de la fusion officielle (démo : 9 tâches → 22 déclencheurs ; campagne équipe : 6 → 13).
+- **Les « dès que… »** : `labs/09125o/declencheurs/` — pour chaque tâche, l'événement qui la lance, la voie technique (connecteur apps → apps, appel API) et l'info à partager aux concernés ; chaque ligne garde sa preuve, chiffres pris de la fusion officielle (démo : 9 tâches → 22 déclencheurs ; campagne équipe : 6 → 13). Intégration produit proposée : PR #4 (fusion + bloc Wrapped + section SKILL.md).
 - **La voix off 2 min** : `.context/voix-off.md` (à figer avec JA ce soir).
 - **La vitrine et le ménage** : README racine, kit de tournage, `docs/skill-exemple/` (le SKILL.md exact du bouton, provenance + test).
 - **Les vérifications** : clone neuf des deux apps (200 partout), scan du dépôt avant ouverture, recette de capture corrigée.

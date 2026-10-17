@@ -48,6 +48,8 @@ sont proposées par règles à partir des étapes relues : c'est un brouillon à
 
 ## Où ça se branche (proposition)
 
+**Intégration proposée au produit : [PR #4](https://github.com/phamphamh/screenpipe-hackathon-paris/pull/4)** (branche `integration/declencheurs`) — la fusion porte `declencheurs` par tâche, le Wrapped affiche le bloc dans le zoom de la tâche n°1, et la skill générée gagne la section « Déclencheurs ».
+
 1. **Wrapped** : un bloc « Dès que… » par tâche — le produit dit **quoi brancher**, pas seulement
    quoi automatiser.
 2. **SKILL.md** : une section « Déclencheurs » (quand lancer, qui prévenir).
