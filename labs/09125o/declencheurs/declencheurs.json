@@ -1,0 +1,557 @@
+{
+  "dossiers": [
+    "labs/phamphamh/demo/resumes"
+  ],
+  "nb_valides": 5,
+  "officiel": true,
+  "taches": [
+    {
+      "titre": "Saisir une commande reçue par mail dans l'ERP",
+      "freq_texte": "31×/sem",
+      "duree_texte": "11 min",
+      "personnes_texte": "moins de 3 personnes",
+      "apps": [
+        "Gmail",
+        "Sage"
+      ],
+      "libelles": [
+        "Saisir une commande reçue par mail dans l'ERP"
+      ],
+      "declencheurs": [
+        {
+          "genre": "événement",
+          "dès_que": "un bon de commande PDF arrive par mail",
+          "preuve": {
+            "texte": "Ouvrir le bon de commande PDF reçu par mail",
+            "app": "Gmail",
+            "statut": "observé",
+            "type_etape": "Entrée"
+          },
+          "lancer": {
+            "genre": "action",
+            "texte": "démarrer la tâche (la skill) sans attendre"
+          },
+          "voie": "connecteur Gmail → Sage (API Gmail, API Sage)",
+          "partager": null
+        },
+        {
+          "genre": "exception",
+          "dès_que": "référence inconnue",
+          "preuve": {
+            "texte": "référence inconnue → appel au commercial",
+            "app": null,
+            "statut": "observé",
+            "type_etape": "Exception"
+          },
+          "lancer": {
+            "genre": "humain",
+            "texte": "appel au commercial (rien d'automatique)"
+          },
+          "voie": "notification",
+          "partager": {
+            "info": "appel au commercial",
+            "qui": [
+              "commercial"
+            ]
+          }
+        },
+        {
+          "genre": "sortie",
+          "dès_que": "la tâche est finie",
+          "preuve": {
+            "texte": "Répondre au client avec le numéro de commande",
+            "app": "Gmail",
+            "statut": "observé",
+            "type_etape": "Sortie"
+          },
+          "lancer": {
+            "genre": "partage",
+            "texte": "Répondre au client avec le numéro de commande"
+          },
+          "voie": "API Gmail",
+          "partager": {
+            "info": "Répondre au client avec le numéro de commande",
+            "qui": [
+              "client"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "titre": "Relancer les devis sans réponse",
+      "freq_texte": "29×/sem",
+      "duree_texte": "7 min",
+      "personnes_texte": "3 personnes",
+      "apps": [
+        "HubSpot",
+        "Gmail"
+      ],
+      "libelles": [
+        "Relancer les devis sans réponse"
+      ],
+      "declencheurs": [
+        {
+          "genre": "balayage",
+          "dès_que": "le balayage tourne — devis envoyés il y a plus de 7 jours",
+          "preuve": {
+            "texte": "Filtrer les devis envoyés il y a plus de 7 jours",
+            "app": "HubSpot",
+            "statut": "observé",
+            "type_etape": "Entrée"
+          },
+          "lancer": {
+            "genre": "action",
+            "texte": "démarrer la tâche (la skill) sans attendre"
+          },
+          "voie": "connecteur HubSpot → Gmail (API HubSpot, API Gmail)",
+          "partager": null
+        },
+        {
+          "genre": "exception",
+          "dès_que": "client sans email",
+          "preuve": {
+            "texte": "client sans email → appel",
+            "app": null,
+            "statut": "observé",
+            "type_etape": "Exception"
+          },
+          "lancer": {
+            "genre": "humain",
+            "texte": "appel (rien d'automatique)"
+          },
+          "voie": "notification",
+          "partager": {
+            "info": "appel",
+            "qui": [
+              "client"
+            ]
+          }
+        },
+        {
+          "genre": "sortie",
+          "dès_que": "la tâche est finie",
+          "preuve": {
+            "texte": "Envoyer le mail de relance depuis un modèle",
+            "app": "Gmail",
+            "statut": "observé",
+            "type_etape": "Sortie"
+          },
+          "lancer": {
+            "genre": "partage",
+            "texte": "Envoyer le mail de relance depuis un modèle"
+          },
+          "voie": "API Gmail",
+          "partager": {
+            "info": "Envoyer le mail de relance depuis un modèle",
+            "qui": []
+          }
+        }
+      ]
+    },
+    {
+      "titre": "Traiter une demande de retour produit",
+      "freq_texte": "12×/sem",
+      "duree_texte": "15 min",
+      "personnes_texte": "moins de 3 personnes",
+      "apps": [
+        "Zendesk",
+        "Sage",
+        "Gmail"
+      ],
+      "libelles": [
+        "Traiter une demande de retour produit"
+      ],
+      "declencheurs": [
+        {
+          "genre": "événement",
+          "dès_que": "un ticket et les photos du client arrivent",
+          "preuve": {
+            "texte": "Lire le ticket et les photos du client",
+            "app": "Zendesk",
+            "statut": "observé",
+            "type_etape": "Entrée"
+          },
+          "lancer": {
+            "genre": "action",
+            "texte": "démarrer la tâche (la skill) sans attendre"
+          },
+          "voie": "connecteur Zendesk → Sage (API Zendesk, API Sage)",
+          "partager": null
+        },
+        {
+          "genre": "exception",
+          "dès_que": "produit hors garantie",
+          "preuve": {
+            "texte": "produit hors garantie → devis de réparation",
+            "app": null,
+            "statut": "observé",
+            "type_etape": "Exception"
+          },
+          "lancer": {
+            "genre": "humain",
+            "texte": "devis de réparation (rien d'automatique)"
+          },
+          "voie": "notification",
+          "partager": {
+            "info": "devis de réparation",
+            "qui": []
+          }
+        },
+        {
+          "genre": "sortie",
+          "dès_que": "la tâche est finie",
+          "preuve": {
+            "texte": "Créer le bon de retour et prévenir le client",
+            "app": "Gmail",
+            "statut": "observé",
+            "type_etape": "Sortie"
+          },
+          "lancer": {
+            "genre": "partage",
+            "texte": "Créer le bon de retour et prévenir le client"
+          },
+          "voie": "API Gmail",
+          "partager": {
+            "info": "Créer le bon de retour et prévenir le client",
+            "qui": [
+              "client"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "titre": "Créer un devis à partir d'une demande mail",
+      "freq_texte": "8×/sem",
+      "duree_texte": "18 min",
+      "personnes_texte": "moins de 3 personnes",
+      "apps": [
+        "Gmail",
+        "Sage",
+        "Excel"
+      ],
+      "libelles": [
+        "Créer un devis à partir d'une demande mail"
+      ],
+      "declencheurs": [
+        {
+          "genre": "événement",
+          "dès_que": "une demande du client arrive",
+          "preuve": {
+            "texte": "Lire la demande du client",
+            "app": "Gmail",
+            "statut": "observé",
+            "type_etape": "Entrée"
+          },
+          "lancer": {
+            "genre": "action",
+            "texte": "démarrer la tâche (la skill) sans attendre"
+          },
+          "voie": "connecteur Gmail → Excel (API Gmail, fichier local)",
+          "partager": null
+        },
+        {
+          "genre": "exception",
+          "dès_que": "demande floue",
+          "preuve": {
+            "texte": "demande floue → appel",
+            "app": null,
+            "statut": "observé",
+            "type_etape": "Exception"
+          },
+          "lancer": {
+            "genre": "humain",
+            "texte": "appel (rien d'automatique)"
+          },
+          "voie": "notification",
+          "partager": {
+            "info": "appel",
+            "qui": []
+          }
+        },
+        {
+          "genre": "sortie",
+          "dès_que": "la tâche est finie",
+          "preuve": {
+            "texte": "Créer le devis dans Sage et l'envoyer",
+            "app": "Sage",
+            "statut": "observé",
+            "type_etape": "Sortie"
+          },
+          "lancer": {
+            "genre": "partage",
+            "texte": "Créer le devis dans Sage et l'envoyer"
+          },
+          "voie": "API Sage",
+          "partager": {
+            "info": "Créer le devis dans Sage et l'envoyer",
+            "qui": []
+          }
+        }
+      ]
+    },
+    {
+      "titre": "Répondre aux demandes de délai de livraison",
+      "freq_texte": "35×/sem",
+      "duree_texte": "6 min",
+      "personnes_texte": "moins de 3 personnes",
+      "apps": [
+        "Gmail",
+        "Sage",
+        "Site transporteur",
+        "Zendesk"
+      ],
+      "libelles": [
+        "Répondre aux demandes de délai de livraison"
+      ],
+      "declencheurs": [
+        {
+          "genre": "événement",
+          "dès_que": "une demande du client arrive",
+          "preuve": {
+            "texte": "Lire la demande du client",
+            "app": "Gmail",
+            "statut": "observé",
+            "type_etape": "Entrée"
+          },
+          "lancer": {
+            "genre": "action",
+            "texte": "démarrer la tâche (la skill) sans attendre"
+          },
+          "voie": "connecteur Gmail → Sage (API Gmail, API Sage)",
+          "partager": null
+        },
+        {
+          "genre": "sortie",
+          "dès_que": "la tâche est finie",
+          "preuve": {
+            "texte": "Répondre avec la date estimée",
+            "app": "Gmail",
+            "statut": "observé",
+            "type_etape": "Sortie"
+          },
+          "lancer": {
+            "genre": "partage",
+            "texte": "Répondre avec la date estimée"
+          },
+          "voie": "API Gmail",
+          "partager": {
+            "info": "Répondre avec la date estimée",
+            "qui": []
+          }
+        }
+      ]
+    },
+    {
+      "titre": "Préparer le reporting hebdo des ventes",
+      "freq_texte": "4×/sem",
+      "duree_texte": "49 min",
+      "personnes_texte": "4 personnes",
+      "apps": [
+        "HubSpot",
+        "Excel",
+        "Gmail",
+        "Slack",
+        "Sage",
+        "Pennylane"
+      ],
+      "libelles": [
+        "Préparer le reporting hebdo des ventes"
+      ],
+      "declencheurs": [
+        {
+          "genre": "balayage",
+          "dès_que": "le balayage tourne — chiffres de la semaine",
+          "preuve": {
+            "texte": "Exporter les chiffres de la semaine",
+            "app": "HubSpot",
+            "statut": "observé",
+            "type_etape": "Entrée"
+          },
+          "lancer": {
+            "genre": "action",
+            "texte": "démarrer la tâche (la skill) sans attendre"
+          },
+          "voie": "connecteur HubSpot → Excel (API HubSpot, fichier local)",
+          "partager": null
+        },
+        {
+          "genre": "sortie",
+          "dès_que": "la tâche est finie",
+          "preuve": {
+            "texte": "Envoyer le tableau à la direction",
+            "app": "Gmail",
+            "statut": "observé",
+            "type_etape": "Sortie"
+          },
+          "lancer": {
+            "genre": "partage",
+            "texte": "Envoyer le tableau à la direction"
+          },
+          "voie": "API Gmail",
+          "partager": {
+            "info": "Envoyer le tableau à la direction",
+            "qui": [
+              "direction"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "titre": "Rapprocher les factures fournisseurs des bons de commande",
+      "freq_texte": "30×/sem",
+      "duree_texte": "6 min",
+      "personnes_texte": "moins de 3 personnes",
+      "apps": [
+        "Pennylane",
+        "Sage"
+      ],
+      "libelles": [
+        "Rapprocher les factures fournisseurs des bons de commande"
+      ],
+      "declencheurs": [
+        {
+          "genre": "événement",
+          "dès_que": "une facture fournisseur arrive",
+          "preuve": {
+            "texte": "Ouvrir la facture fournisseur",
+            "app": "Pennylane",
+            "statut": "observé",
+            "type_etape": "Entrée"
+          },
+          "lancer": {
+            "genre": "action",
+            "texte": "démarrer la tâche (la skill) sans attendre"
+          },
+          "voie": "connecteur Pennylane → Sage (API Pennylane, API Sage)",
+          "partager": null
+        },
+        {
+          "genre": "exception",
+          "dès_que": "écart de prix",
+          "preuve": {
+            "texte": "écart de prix → mail au fournisseur",
+            "app": null,
+            "statut": "observé",
+            "type_etape": "Exception"
+          },
+          "lancer": {
+            "genre": "humain",
+            "texte": "mail au fournisseur (rien d'automatique)"
+          },
+          "voie": "notification",
+          "partager": {
+            "info": "mail au fournisseur",
+            "qui": [
+              "fournisseur"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "titre": "Chercher la fiche technique d'un produit",
+      "freq_texte": "37×/sem",
+      "duree_texte": "4 min",
+      "personnes_texte": "3 personnes",
+      "apps": [
+        "Google Drive",
+        "Google Chrome"
+      ],
+      "libelles": [
+        "Chercher la fiche technique d'un produit"
+      ],
+      "declencheurs": [
+        {
+          "genre": "événement",
+          "dès_que": "une question client sur un produit arrive",
+          "preuve": {
+            "texte": "Recevoir une question client sur un produit",
+            "app": "Gmail",
+            "statut": "observé",
+            "type_etape": "Entrée"
+          },
+          "lancer": {
+            "genre": "action",
+            "texte": "démarrer la tâche (la skill) sans attendre"
+          },
+          "voie": "connecteur Gmail → Google Drive (API Gmail, API Google Drive)",
+          "partager": null
+        },
+        {
+          "genre": "sortie",
+          "dès_que": "la tâche est finie",
+          "preuve": {
+            "texte": "Envoyer la fiche ou la réponse au client",
+            "app": "Gmail",
+            "statut": "observé",
+            "type_etape": "Sortie"
+          },
+          "lancer": {
+            "genre": "partage",
+            "texte": "Envoyer la fiche ou la réponse au client"
+          },
+          "voie": "API Gmail",
+          "partager": {
+            "info": "Envoyer la fiche ou la réponse au client",
+            "qui": [
+              "client"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "titre": "Relancer les factures impayées",
+      "freq_texte": "10×/sem",
+      "duree_texte": "10 min",
+      "personnes_texte": "moins de 3 personnes",
+      "apps": [
+        "Pennylane",
+        "Gmail"
+      ],
+      "libelles": [
+        "Relancer les factures impayées"
+      ],
+      "declencheurs": [
+        {
+          "genre": "balayage",
+          "dès_que": "le balayage tourne — factures échues",
+          "preuve": {
+            "texte": "Lister les factures échues",
+            "app": "Pennylane",
+            "statut": "observé",
+            "type_etape": "Entrée"
+          },
+          "lancer": {
+            "genre": "action",
+            "texte": "démarrer la tâche (la skill) sans attendre"
+          },
+          "voie": "connecteur Pennylane → Gmail (API Pennylane, API Gmail)",
+          "partager": null
+        },
+        {
+          "genre": "sortie",
+          "dès_que": "la tâche est finie",
+          "preuve": {
+            "texte": "Envoyer la relance",
+            "app": "Gmail",
+            "statut": "observé",
+            "type_etape": "Sortie"
+          },
+          "lancer": {
+            "genre": "partage",
+            "texte": "Envoyer la relance"
+          },
+          "voie": "API Gmail",
+          "partager": {
+            "info": "Envoyer la relance",
+            "qui": []
+          }
+        }
+      ]
+    }
+  ]
+}

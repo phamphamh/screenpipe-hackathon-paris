@@ -1,0 +1,337 @@
+{
+  "dossiers": [
+    "labs/09125o/campagne/resume-valide.json",
+    "labs/adamaass/campagne/resume-valide.json"
+  ],
+  "nb_valides": 2,
+  "officiel": false,
+  "taches": [
+    {
+      "titre": "Recherche et analyse guidées par Claude sur un sujet de veille",
+      "freq_texte": "7×/sem",
+      "duree_texte": "25 min",
+      "personnes_texte": "moins de 3 personnes",
+      "apps": [
+        "Claude",
+        "Arc"
+      ],
+      "libelles": [
+        "Recherche et analyse guidées par Claude sur un sujet de veille"
+      ],
+      "declencheurs": [
+        {
+          "genre": "à préciser",
+          "dès_que": "« Poser une question ou donner une consigne à Claude dans une session de projet »",
+          "preuve": {
+            "texte": "Poser une question ou donner une consigne à Claude dans une session de projet",
+            "app": "Claude",
+            "statut": "observé",
+            "type_etape": "Entrée"
+          },
+          "lancer": {
+            "genre": "action",
+            "texte": "démarrer la tâche (la skill) sans attendre"
+          },
+          "voie": "connecteur Claude → Arc (API Claude, API Arc)",
+          "partager": null
+        },
+        {
+          "genre": "exception",
+          "dès_que": "Certaines informations restent « à confirmer » dans les réponses de Claude",
+          "preuve": {
+            "texte": "Certaines informations restent « à confirmer » dans les réponses de Claude",
+            "app": null,
+            "statut": "observé",
+            "type_etape": "Exception"
+          },
+          "lancer": {
+            "genre": "humain",
+            "texte": "s'arrêter et demander (rien d'automatique)"
+          },
+          "voie": "notification",
+          "partager": {
+            "info": "s'arrêter et demander",
+            "qui": []
+          }
+        },
+        {
+          "genre": "sortie",
+          "dès_que": "la tâche est finie",
+          "preuve": {
+            "texte": "Lire la synthèse structurée renvoyée (tarifs, offres, clients, limites)",
+            "app": "Claude",
+            "statut": "observé",
+            "type_etape": "Sortie"
+          },
+          "lancer": {
+            "genre": "partage",
+            "texte": "Lire la synthèse structurée renvoyée (tarifs, offres, clients, limites)"
+          },
+          "voie": "API Claude",
+          "partager": {
+            "info": "Lire la synthèse structurée renvoyée (tarifs, offres, clients, limites)",
+            "qui": []
+          }
+        },
+        {
+          "genre": "sortie",
+          "dès_que": "la tâche est finie",
+          "preuve": {
+            "texte": "Demander une note qui reprend la recherche",
+            "app": "Claude",
+            "statut": "observé",
+            "type_etape": "Sortie"
+          },
+          "lancer": {
+            "genre": "partage",
+            "texte": "Demander une note qui reprend la recherche"
+          },
+          "voie": "API Claude",
+          "partager": {
+            "info": "Demander une note qui reprend la recherche",
+            "qui": []
+          }
+        }
+      ]
+    },
+    {
+      "titre": "Piloter un agent IA sur le dépôt du projet",
+      "freq_texte": "25×/sem",
+      "duree_texte": "12 min",
+      "personnes_texte": "moins de 3 personnes",
+      "apps": [
+        "Orca",
+        "Claude"
+      ],
+      "libelles": [
+        "Piloter un agent IA sur le dépôt du projet"
+      ],
+      "declencheurs": [
+        {
+          "genre": "événement",
+          "dès_que": "un brief ou l'état du projet dans l'espace de travail arrive",
+          "preuve": {
+            "texte": "Lire le brief ou l'état du projet dans l'espace de travail",
+            "app": "Orca",
+            "statut": "observé",
+            "type_etape": "Entrée"
+          },
+          "lancer": {
+            "genre": "action",
+            "texte": "démarrer la tâche (la skill) sans attendre"
+          },
+          "voie": "connecteur Orca → Claude (API Orca, API Claude)",
+          "partager": null
+        },
+        {
+          "genre": "exception",
+          "dès_que": "Certaines itérations durent plus de 20 min sans interruption",
+          "preuve": {
+            "texte": "Certaines itérations durent plus de 20 min sans interruption",
+            "app": null,
+            "statut": "observé",
+            "type_etape": "Exception"
+          },
+          "lancer": {
+            "genre": "humain",
+            "texte": "s'arrêter et demander (rien d'automatique)"
+          },
+          "voie": "notification",
+          "partager": {
+            "info": "s'arrêter et demander",
+            "qui": []
+          }
+        },
+        {
+          "genre": "sortie",
+          "dès_que": "la tâche est finie",
+          "preuve": {
+            "texte": "Faire avancer le dépôt (commit, push)",
+            "app": "Orca",
+            "statut": "supposé",
+            "type_etape": "Sortie"
+          },
+          "lancer": {
+            "genre": "partage",
+            "texte": "Faire avancer le dépôt (commit, push)"
+          },
+          "voie": "API Orca",
+          "partager": {
+            "info": "Faire avancer le dépôt (commit, push)",
+            "qui": []
+          }
+        }
+      ]
+    },
+    {
+      "titre": "Traiter les e-mails et leurs pièces jointes",
+      "freq_texte": "35×/sem",
+      "duree_texte": "3 min",
+      "personnes_texte": "moins de 3 personnes",
+      "apps": [
+        "Safari"
+      ],
+      "libelles": [
+        "Traiter les e-mails et leurs pièces jointes"
+      ],
+      "declencheurs": [
+        {
+          "genre": "balayage",
+          "dès_que": "le balayage tourne — nouveaux messages",
+          "preuve": {
+            "texte": "Parcourir les nouveaux messages",
+            "app": "Safari",
+            "statut": "observé",
+            "type_etape": "Entrée"
+          },
+          "lancer": {
+            "genre": "action",
+            "texte": "démarrer la tâche (la skill) sans attendre"
+          },
+          "voie": "API Safari",
+          "partager": null
+        },
+        {
+          "genre": "exception",
+          "dès_que": "Les messages avec plusieurs pièces jointes demandent un tri manuel",
+          "preuve": {
+            "texte": "Les messages avec plusieurs pièces jointes demandent un tri manuel",
+            "app": null,
+            "statut": "observé",
+            "type_etape": "Exception"
+          },
+          "lancer": {
+            "genre": "humain",
+            "texte": "s'arrêter et demander (rien d'automatique)"
+          },
+          "voie": "notification",
+          "partager": {
+            "info": "s'arrêter et demander",
+            "qui": []
+          }
+        },
+        {
+          "genre": "sortie",
+          "dès_que": "la tâche est finie",
+          "preuve": {
+            "texte": "Répondre, transférer ou archiver",
+            "app": "Safari",
+            "statut": "supposé",
+            "type_etape": "Sortie"
+          },
+          "lancer": {
+            "genre": "partage",
+            "texte": "Répondre, transférer ou archiver"
+          },
+          "voie": "API Safari",
+          "partager": {
+            "info": "Répondre, transférer ou archiver",
+            "qui": []
+          }
+        }
+      ]
+    },
+    {
+      "titre": "Installer et régler l'outillage IA de l'atelier",
+      "freq_texte": "20×/sem",
+      "duree_texte": "6 min",
+      "personnes_texte": "moins de 3 personnes",
+      "apps": [
+        "Google Chrome",
+        "Orca",
+        "Finder",
+        "App Store"
+      ],
+      "libelles": [
+        "Installer et régler l'outillage IA de l'atelier"
+      ],
+      "declencheurs": [
+        {
+          "genre": "exception",
+          "dès_que": "Selon l'outil : téléchargement, paiement ou permissions système",
+          "preuve": {
+            "texte": "Selon l'outil : téléchargement, paiement ou permissions système",
+            "app": null,
+            "statut": "observé",
+            "type_etape": "Exception"
+          },
+          "lancer": {
+            "genre": "humain",
+            "texte": "s'arrêter et demander (rien d'automatique)"
+          },
+          "voie": "notification",
+          "partager": {
+            "info": "s'arrêter et demander",
+            "qui": []
+          }
+        }
+      ]
+    },
+    {
+      "titre": "Suivi des messageries (Discord, WhatsApp)",
+      "freq_texte": "7×/sem",
+      "duree_texte": "3 min",
+      "personnes_texte": "moins de 3 personnes",
+      "apps": [
+        "Discord",
+        "WhatsApp"
+      ],
+      "libelles": [
+        "Suivi des messageries (Discord, WhatsApp)"
+      ],
+      "declencheurs": [
+        {
+          "genre": "exception",
+          "dès_que": "Vidéos et notes vocales à écouter, ce qui allonge la session",
+          "preuve": {
+            "texte": "Vidéos et notes vocales à écouter, ce qui allonge la session",
+            "app": null,
+            "statut": "observé",
+            "type_etape": "Exception"
+          },
+          "lancer": {
+            "genre": "humain",
+            "texte": "s'arrêter et demander (rien d'automatique)"
+          },
+          "voie": "notification",
+          "partager": {
+            "info": "s'arrêter et demander",
+            "qui": []
+          }
+        }
+      ]
+    },
+    {
+      "titre": "Consultation et organisation de documents dans Finder",
+      "freq_texte": "7×/sem",
+      "duree_texte": "1 min",
+      "personnes_texte": "moins de 3 personnes",
+      "apps": [
+        "Finder",
+        "Claude",
+        "QuickTime Player"
+      ],
+      "libelles": [
+        "Consultation et organisation de documents dans Finder"
+      ],
+      "declencheurs": [
+        {
+          "genre": "à préciser",
+          "dès_que": "« Passer un fichier ou un contexte à Claude »",
+          "preuve": {
+            "texte": "Passer un fichier ou un contexte à Claude",
+            "app": "Claude",
+            "statut": "supposé",
+            "type_etape": "Entrée"
+          },
+          "lancer": {
+            "genre": "action",
+            "texte": "démarrer la tâche (la skill) sans attendre"
+          },
+          "voie": "connecteur Claude → Finder (API Claude, API Finder)",
+          "partager": null
+        }
+      ]
+    }
+  ]
+}
