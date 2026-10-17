@@ -21,6 +21,7 @@ python3 labs/phamphamh/app/serveur.py
 - **La boucle complète, en local** : dérush 80/20 (screenpipe → moments) → résumé des tâches → **relecture par la personne** (corriger, retirer, masquer, contester) → fusion (agrégats seulement) → Wrapped → skill.
 - **La 2e entrée, montrée** (17/10) : « la même tâche chez plusieurs personnes » — pour chaque tâche commune de la démo, la comparaison des façons de faire et des outils, et ce que la skill doit encore absorber : [`labs/09125o/deuxieme-entree/`](labs/09125o/deuxieme-entree/) (page régénérable en une commande).
 - **La skill générée, déjà là** (17/10) : le fichier exact que produit le bouton « Créer la skill », testé à la main sur une commande piégée (il s'arrête et fait préparer — il n'agit pas seul) : [`docs/skill-exemple/`](docs/skill-exemple/).
+- **Qui a fait quoi** : le détail par personne (pour le rendu) : [`docs/contribution-equipe.md`](docs/contribution-equipe.md).
 - **Tests** : `cd labs/phamphamh/fusion && python3 -m unittest test_fusion` — 10 cas de la section 6 du découpage, passent en 0,01 s.
 - **La confidentialité est dans le code, pas dans une charte** : seuls les résumés validés comptent ; moins de 3 participants → pas de Wrapped ; une app ou une tâche vue chez moins de 3 personnes est fondue ; aucune capture brute ne circule ; le serveur n'écoute que sur 127.0.0.1.
 - **Pas de dépendance à `claude` pour la démo** : l'IA est optionnelle (brique résumé et `fusion --ia` ; un appel LLM, remplaçable).
