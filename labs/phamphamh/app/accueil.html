@@ -80,7 +80,7 @@ fetch("/api/campagne?campagne=" + campagne).then(r => r.json()).then(c => {
   if (o.entreprise) document.getElementById("onb-resume").innerHTML =
     `<b>${esc(o.entreprise)}</b>${o.activite ? " — " + esc(o.activite) : ""}. Coût horaire moyen : <b>${esc(o.cout_horaire)} €</b>.`;
   const ul = document.getElementById("participants");
-  const lignes = c.participants.map(p => `<li>
+  const lignes = c.participants.filter(p => !(campagne === "equipe" && p.id === c.moi)).map(p => `<li>
       <span>${esc(campagne === "demo" ? "Salarié·e " + p.id.split("-").pop() : p.id)}</span>
       ${p.valide ? `<span class="etiquette observe">validé</span>` : `<span class="etiquette suppose">pas validé</span>`}
       ${campagne === "demo" ? `<a href="/relecture?campagne=demo&personne=${encodeURIComponent(p.id)}">relire</a>` : ""}
