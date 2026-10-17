@@ -166,6 +166,9 @@ def postes(camp="equipe"):
             per = r.get("periode") or {}
             out.append({"qui": qui, "source": "Résumé de la semaine", "lance": True, "export": True, "valide": r.get("valide_par_la_personne") is True,
                         "heures": round(nombre(r.get("heures_captees")), 1), "debut": per.get("debut"), "fin": per.get("fin"), "taches": len(r.get("taches") or [])})
+    elif not glob.glob(os.path.join(RACINE, "donnees", "equipe", "screenpipe-*.jsonl.gz")) and os.path.exists(os.path.join(RACINE, "donnees", "audit", "postes.json")):
+        # machine sans les exports bruts (le VPS) : la photo des postes prise au déploiement
+        out = lire(os.path.join(RACINE, "donnees", "audit", "postes.json")) or []
     else:
         for chemin in sorted(glob.glob(os.path.join(RACINE, "donnees", "equipe", "screenpipe-*.jsonl.gz"))):
             qui = os.path.basename(chemin).split("-")[1]
@@ -636,8 +639,9 @@ class Handler(BaseHTTPRequestHandler):
 
 
 def main():
-    s = ThreadingHTTPServer(("127.0.0.1", PORT), Handler)  # local uniquement
-    url = f"http://127.0.0.1:{PORT}"
+    hote = os.environ.get("HOTE", "127.0.0.1")  # local par défaut ; sur le VPS, l'adresse interne vue par le proxy
+    s = ThreadingHTTPServer((hote, PORT), Handler)
+    url = f"http://{hote}:{PORT}"
     print(f"Parcours prêt : {url}  (Ctrl+C ou fermer la fenêtre pour arrêter)")
     if "--sans-navigateur" not in sys.argv:
         threading.Timer(0.6, lambda: webbrowser.open(url)).start()
