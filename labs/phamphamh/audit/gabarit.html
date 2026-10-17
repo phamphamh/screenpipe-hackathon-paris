@@ -53,7 +53,9 @@ body { background: var(--fond); color: var(--encre); font-family: var(--f-texte)
 @media (max-width: 900px) { .viz { border-right: 0; border-bottom: 1px solid var(--trait); min-height: 340px; } }
 .viz canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 .viz .pad { position: absolute; inset: 0; padding: 26px 28px; display: grid; }
-.lecture { padding: 28px 28px 24px; display: grid; align-content: space-between; gap: 22px; min-width: 0; }
+.lecture { padding: 28px 28px 32px; display: grid; align-content: space-between; gap: 22px; min-width: 0; }
+.numero { display: flex; align-items: center; gap: 10px; font-weight: 500; font-size: 15px; letter-spacing: -.01em; color: var(--encre); }
+.numero span { font-weight: 600; font-size: 13px; color: var(--plan); background: var(--ia); padding: 3px 8px; font-variant-numeric: tabular-nums; }
 .lecture h2 { font-weight: 400; font-size: clamp(24px, 2.5vw, 32px); line-height: 1.12; letter-spacing: -.025em; margin: 8px 0 0; text-wrap: balance; }
 .chiffre { font-weight: 300; font-size: clamp(54px, 6.4vw, 92px); line-height: .92; letter-spacing: -.045em; font-variant-numeric: tabular-nums; }
 .chiffre.ia { color: var(--ia); }
@@ -125,7 +127,6 @@ svg.fils { position: absolute; inset: 0; width: 100%; height: 100%; pointer-even
   <div class="haut">
     <div class="ligne-haut">
       <div class="marque"><i></i>Audit IA · Équipe hackathon screenpipe</div>
-      <span class="mono" id="periode"></span>
     </div>
     <div class="progres" id="progres" role="tablist" aria-label="Chapitres"></div>
   </div>
@@ -167,7 +168,6 @@ const ensemble = A.parallele.ensemble_min.reduce((a, x) => a + x[2], 0);
 const memeSujet = A.parallele.meme_sujet_min.reduce((a, x) => a + x[3], 0);
 const nomPoste = p => p.id;
 const segA = (p, m) => p.segments.find(s => s[0] <= m && m < s[1]);
-document.getElementById("periode").textContent = `Pilote · 16.10.2026 · ${hm(D0)}–${hm(D1)} · ${postes.length} postes audités`;
 document.getElementById("legende").innerHTML = ORDRE.filter(c => equipe[c]).map(c => `<span><i style="background:${coul(c)}"></i>${CATS[c]}</span>`).join("");
 
 const exposition = t => {
@@ -183,9 +183,8 @@ const cible = taches.filter(t => t.expo.gain > 0).sort((a, b) => b.heures * b.ex
 /* ---------- Outils communs ---------- */
 function toile(c) { const r = c.getBoundingClientRect(), d = Math.min(devicePixelRatio || 1, 2); if (c.width !== Math.round(r.width * d) || c.height !== Math.round(r.height * d)) { c.width = Math.round(r.width * d); c.height = Math.round(r.height * d); } const x = c.getContext("2d"); x.setTransform(d, 0, 0, d, 0, 0); x.clearRect(0, 0, r.width, r.height); return { x, w: r.width, h: r.height }; }
 const lecture = ({ num, titre, chiffre, ia, texte, sources, extra = "" }) => `
-  <div class="lecture"><div><div class="mono">${num}</div><h2>${titre}</h2></div>
-  <div style="display:grid;gap:14px"><div class="chiffre${ia ? " ia" : ""}">${chiffre}</div><p>${texte}</p>${extra}</div>
-  <div class="source">${sources.map(s => `<span>${s}</span>`).join("")}</div></div>`;
+  <div class="lecture"><div><div class="numero"><span>${num.split(" · ")[0]}</span>${num.split(" · ")[1]}</div><h2>${titre}</h2></div>
+  <div style="display:grid;gap:14px"><div class="chiffre${ia ? " ia" : ""}">${chiffre}</div><p>${texte}</p>${extra}</div></div>`;
 function monter3d(canvas, construire) {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
   renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
