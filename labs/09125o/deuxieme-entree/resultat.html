@@ -1,0 +1,140 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La 2e entrée — la même tâche chez plusieurs personnes</title>
+<style>
+:root { --encre:#17141f; --encre-2:#4a4556; --encre-3:#8a8496; --papier:#f6f3ec; --carte:#fff;
+  --trait:#e6e1d6; --violet:#5b3df5; --violet-pale:#ece8ff; --ambre:#b7791f; --ambre-pale:#fbf0dc;
+  --serif: Georgia, "Times New Roman", serif; }
+* { box-sizing: border-box; }
+body { margin:0; background:var(--papier); color:var(--encre);
+  font: 15px/1.55 -apple-system, "Segoe UI", system-ui, sans-serif; }
+header.bandeau { display:flex; align-items:center; justify-content:space-between; padding:14px 28px;
+  background:var(--carte); border-bottom:1px solid var(--trait); }
+.marque { display:flex; align-items:center; gap:9px; font-weight:700; letter-spacing:-.01em; }
+.marque i { width:22px; height:22px; border-radius:7px;
+  background: conic-gradient(from 200deg, var(--violet), #ff5fa2, #d4f53c, var(--violet)); display:inline-block; }
+.etiquette { display:inline-flex; align-items:center; font-size:12px; font-weight:600; padding:3px 10px;
+  border-radius:999px; background:#efebe2; color:var(--encre-2); }
+.etiquette.violet { background:var(--violet-pale); color:var(--violet); }
+main { max-width:1060px; margin:0 auto; padding:28px 24px 60px; }
+h1 { font-size:34px; letter-spacing:-.02em; margin:14px 0 4px; }
+h1 em { font-family:var(--serif); font-style:italic; font-weight:400; color:var(--violet); }
+.sous { color:var(--encre-2); max-width:760px; }
+.bandeau-chiffres { display:flex; gap:10px; flex-wrap:wrap; margin:18px 0 8px; }
+.chiffre { background:var(--carte); border:1px solid var(--trait); border-radius:12px; padding:10px 14px; }
+.chiffre b { display:block; font-size:20px; }
+.chiffre span { color:var(--encre-3); font-size:12.5px; }
+.carte { background:var(--carte); border:1px solid var(--trait); border-radius:14px; padding:20px 22px;
+  margin:16px 0; box-shadow:0 1px 2px rgba(23,20,31,.05); }
+.carte h2 { margin:0 0 2px; font-size:20px; letter-spacing:-.01em; }
+.carte .meta { color:var(--encre-3); font-size:13px; margin-bottom:14px; }
+table { border-collapse:collapse; width:100%; }
+th, td { text-align:left; vertical-align:top; padding:8px 10px; border-top:1px solid var(--trait); }
+th { font-size:12.5px; color:var(--encre-3); font-weight:600; border-top:0; }
+td.etape p { margin:0 0 3px; }
+.type { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--encre-2);
+  background:#efebe2; border-radius:6px; padding:2px 7px; margin-right:6px; }
+.suppose { font-size:11px; font-weight:600; color:var(--ambre); background:var(--ambre-pale); border-radius:6px; padding:2px 7px; }
+.marque-p { display:inline-block; font-size:12px; background:var(--violet-pale); color:var(--violet);
+  border-radius:8px; padding:3px 8px; margin:2px 4px 2px 0; }
+.absent { color:var(--encre-3); }
+.outil-diff { font-size:12px; color:var(--ambre); font-weight:600; }
+.skill { background:#faf8f3; border:1px dashed var(--trait); border-radius:12px; padding:14px 16px; margin-top:14px; }
+.skill h3 { margin:0 0 6px; font-size:14px; }
+.skill ul { margin:6px 0 0; padding-left:18px; }
+.skill li { margin:3px 0; }
+.ok { color:#1f9d6b; font-weight:600; }
+.note { color:var(--encre-3); font-size:12.5px; }
+footer { max-width:1060px; margin:0 auto; padding:0 24px 40px; color:var(--encre-3); font-size:12.5px; }
+</style></head><body>
+<header class="bandeau"><span class="marque"><i></i>Wrapped</span>
+<span><span class="etiquette">pièce de 09125o</span>
+&nbsp;<span class="etiquette violet">Démo · Maison Corvo (fictive)</span></span></header>
+<main>
+<h1>La 2e entrée, <em>prise au sérieux.</em></h1>
+<p class="sous">La fusion de l'app regroupe les tâches faites par plusieurs personnes. Mais la skill est écrite à partir
+de <b>la façon d'une personne de référence</b> (celle qui a le plus de confiance et d'étapes). Cette page montre, tâche par tâche :
+la même activité chez chacun, ce que la façon de référence couvre déjà, et <b>ce qu'il reste à absorber</b> — souvent le même travail,
+mais pas le même outil. Données : les résumés validés de la démo (fictive, étiquetée).</p>
+<div class="bandeau-chiffres">
+<div class="chiffre"><b>5</b><span>tâches à ≥ 2 personnes</span></div>
+<div class="chiffre"><b>5</b><span>salariés concernés</span></div>
+<div class="chiffre"><b>2</b><span>tâches à outil variable</span></div>
+<div class="chiffre"><b>0</b><span>étapes hors référence</span></div>
+</div>
+<p class="note">Démo Maison Corvo : 6 salariés invités, 5 résumés validés, 1 sans validation (jamais compté).</p>
+<section class="carte">
+<h2>Préparer le reporting hebdo des ventes</h2>
+<div class="meta">4 personnes · « Préparer le reporting hebdo des ventes » · « Reporting hebdo des ventes » · « Mettre à jour le reporting hebdo » · « Préparer le reporting hebdo de trésorerie » · façon de référence : <b>Salarié 1</b></div>
+<table><tr><th>Étapes</th><th>Salarié 1</th><th>Salarié 2</th><th>Salarié 3</th><th>Salarié 4</th></tr>
+<tr><td class="etape"><span class="type">Entrée</span> <span class="outil-diff">outil différent</span><p>Exporter les chiffres de la semaine</p></td><td><span class="marque-p" title="app">HubSpot</span></td><td><span class="marque-p" title="app">HubSpot</span></td><td><span class="marque-p" title="app">Sage</span></td><td><span class="marque-p" title="app">Pennylane</span></td></tr>
+<tr><td class="etape"><span class="type">Action</span><p>Coller dans le tableau et recalculer les totaux</p></td><td><span class="marque-p" title="app">Excel</span></td><td><span class="marque-p" title="app">Excel</span></td><td><span class="marque-p" title="app">Excel</span></td><td><span class="marque-p" title="app">Excel</span></td></tr>
+<tr><td class="etape"><span class="type">Sortie</span> <span class="outil-diff">outil différent</span><p>Envoyer le tableau à la direction</p></td><td><span class="marque-p" title="app">Gmail</span></td><td><span class="marque-p" title="app">Slack</span></td><td><span class="marque-p" title="app">Gmail</span></td><td><span class="marque-p" title="app">Gmail</span></td></tr>
+</table>
+<div class="skill"><h3>Ce que ça change pour la skill</h3><ul>
+<li>La skill actuelle reprend la façon de <b>Salarié 1</b> (3 étapes).</li>
+<li>Salarié 2 : les 3 étapes sont déjà dans la façon de référence. <span class="ok">couvert</span></li>
+<li>Salarié 3 : les 3 étapes sont déjà dans la façon de référence. <span class="ok">couvert</span></li>
+<li>Salarié 4 : les 3 étapes sont déjà dans la façon de référence. <span class="ok">couvert</span></li>
+<li>Même étape, outil différent selon la personne → étape « Exporter les chiffres de la semaine » : HubSpot / Pennylane / Sage</li>
+<li>Même étape, outil différent selon la personne → étape « Envoyer le tableau à la direction » : Gmail / Slack</li>
+</ul></div></section>
+<section class="carte">
+<h2>Relancer les devis sans réponse</h2>
+<div class="meta">3 personnes · « Relancer les devis sans réponse » · façon de référence : <b>Salarié 1</b></div>
+<table><tr><th>Étapes</th><th>Salarié 1</th><th>Salarié 2</th><th>Salarié 3</th></tr>
+<tr><td class="etape"><span class="type">Entrée</span><p>Filtrer les devis envoyés il y a plus de 7 jours</p></td><td><span class="marque-p" title="app">HubSpot</span></td><td><span class="marque-p" title="app">HubSpot</span></td><td><span class="marque-p" title="app">HubSpot</span></td></tr>
+<tr><td class="etape"><span class="type">Action</span><p>Copier le contact et le numéro du devis</p></td><td><span class="marque-p" title="app">HubSpot</span></td><td><span class="marque-p" title="app">HubSpot</span></td><td><span class="marque-p" title="app">HubSpot</span></td></tr>
+<tr><td class="etape"><span class="type">Sortie</span><p>Envoyer le mail de relance depuis un modèle</p></td><td><span class="marque-p" title="app">Gmail</span></td><td><span class="marque-p" title="app">Gmail</span></td><td><span class="marque-p" title="app">Gmail</span></td></tr>
+<tr><td class="etape"><span class="type">Décision</span><span class="suppose">supposé</span><p>Ne pas relancer si le client a déjà répondu</p></td><td><span class="marque-p" title="app">Gmail</span></td><td><span class="marque-p" title="app">Gmail</span></td><td><span class="marque-p" title="app">Gmail</span></td></tr>
+</table>
+<div class="skill"><h3>Ce que ça change pour la skill</h3><ul>
+<li>La skill actuelle reprend la façon de <b>Salarié 1</b> (4 étapes).</li>
+<li>Salarié 2 : les 4 étapes sont déjà dans la façon de référence. <span class="ok">couvert</span></li>
+<li>Salarié 3 : les 4 étapes sont déjà dans la façon de référence. <span class="ok">couvert</span></li>
+</ul></div></section>
+<section class="carte">
+<h2>Chercher la fiche technique d&#x27;un produit</h2>
+<div class="meta">3 personnes · « Chercher la fiche technique d&#x27;un produit » · façon de référence : <b>Salarié 1</b></div>
+<table><tr><th>Étapes</th><th>Salarié 1</th><th>Salarié 2</th><th>Salarié 5</th></tr>
+<tr><td class="etape"><span class="type">Entrée</span><p>Recevoir une question client sur un produit</p></td><td><span class="marque-p" title="app">Gmail</span></td><td><span class="marque-p" title="app">Gmail</span></td><td><span class="marque-p" title="app">Gmail</span></td></tr>
+<tr><td class="etape"><span class="type">Action</span><p>Chercher la fiche dans le Drive ou sur le site du fabricant</p></td><td><span class="marque-p" title="app">Google Drive</span></td><td><span class="marque-p" title="app">Google Drive</span></td><td><span class="marque-p" title="app">Google Drive</span></td></tr>
+<tr><td class="etape"><span class="type">Sortie</span><p>Envoyer la fiche ou la réponse au client</p></td><td><span class="marque-p" title="app">Gmail</span></td><td><span class="marque-p" title="app">Gmail</span></td><td><span class="marque-p" title="app">Gmail</span></td></tr>
+</table>
+<div class="skill"><h3>Ce que ça change pour la skill</h3><ul>
+<li>La skill actuelle reprend la façon de <b>Salarié 1</b> (3 étapes).</li>
+<li>Salarié 2 : les 3 étapes sont déjà dans la façon de référence. <span class="ok">couvert</span></li>
+<li>Salarié 5 : les 3 étapes sont déjà dans la façon de référence. <span class="ok">couvert</span></li>
+</ul></div></section>
+<section class="carte">
+<h2>Répondre aux demandes de délai de livraison</h2>
+<div class="meta">2 personnes · « Répondre aux demandes de délai de livraison » · façon de référence : <b>Salarié 3</b></div>
+<table><tr><th>Étapes</th><th>Salarié 3</th><th>Salarié 5</th></tr>
+<tr><td class="etape"><span class="type">Entrée</span> <span class="outil-diff">outil différent</span><p>Lire la demande du client</p></td><td><span class="marque-p" title="app">Gmail</span></td><td><span class="marque-p" title="app">Zendesk</span></td></tr>
+<tr><td class="etape"><span class="type">Action</span><p>Chercher la commande puis le suivi transporteur</p></td><td><span class="marque-p" title="app">Sage</span></td><td><span class="marque-p" title="app">Sage</span></td></tr>
+<tr><td class="etape"><span class="type">Sortie</span> <span class="outil-diff">outil différent</span><p>Répondre avec la date estimée</p></td><td><span class="marque-p" title="app">Gmail</span></td><td><span class="marque-p" title="app">Zendesk</span></td></tr>
+</table>
+<div class="skill"><h3>Ce que ça change pour la skill</h3><ul>
+<li>La skill actuelle reprend la façon de <b>Salarié 3</b> (3 étapes).</li>
+<li>Salarié 5 : les 3 étapes sont déjà dans la façon de référence. <span class="ok">couvert</span></li>
+<li>Même étape, outil différent selon la personne → étape « Lire la demande du client » : Gmail / Zendesk</li>
+<li>Même étape, outil différent selon la personne → étape « Répondre avec la date estimée » : Gmail / Zendesk</li>
+</ul></div></section>
+<section class="carte">
+<h2>Saisir une commande reçue par mail dans l&#x27;ERP</h2>
+<div class="meta">2 personnes · « Saisir une commande reçue par mail dans l&#x27;ERP » · « Saisie des commandes mail dans Sage » · façon de référence : <b>Salarié 1</b></div>
+<table><tr><th>Étapes</th><th>Salarié 1</th><th>Salarié 3</th></tr>
+<tr><td class="etape"><span class="type">Entrée</span><p>Ouvrir le bon de commande PDF reçu par mail</p></td><td><span class="marque-p" title="app">Gmail</span></td><td><span class="marque-p" title="app">Gmail</span></td></tr>
+<tr><td class="etape"><span class="type">Action</span><p>Créer la commande et saisir les lignes article par article</p></td><td><span class="marque-p" title="app">Sage</span></td><td><span class="marque-p" title="app">Sage</span></td></tr>
+<tr><td class="etape"><span class="type">Vérification</span><p>Vérifier le stock et le prix négocié</p></td><td><span class="marque-p" title="app">Sage</span></td><td><span class="marque-p" title="app">Sage</span></td></tr>
+<tr><td class="etape"><span class="type">Sortie</span><p>Répondre au client avec le numéro de commande</p></td><td><span class="marque-p" title="app">Gmail</span></td><td><span class="marque-p" title="app">Gmail</span></td></tr>
+</table>
+<div class="skill"><h3>Ce que ça change pour la skill</h3><ul>
+<li>La skill actuelle reprend la façon de <b>Salarié 1</b> (4 étapes).</li>
+<li>Salarié 3 : les 4 étapes sont déjà dans la façon de référence. <span class="ok">couvert</span></li>
+</ul></div></section>
+</main>
+<footer>Généré par <code>labs/09125o/deuxieme-entree/construire.py</code> — le regroupement vient de la fusion officielle
+(<code>labs/phamphamh/fusion/fusion.py</code>), rien n'est recalculé à la main. En relecture, chacun a validé son propre résumé ;
+le Wrapped, lui, n'affiche que des agrégats (« moins de 3 personnes → masqué »).</footer>
+</body></html>
