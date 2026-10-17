@@ -1,0 +1,1223 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rapport d'audit IA</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+/* Moteur de rapport par méthode. Même charte que labs/phamphamh/audit/gabarit.html : mode clair « salle de commandement »,
+   gris calmes, traits fins, bleu-vert réservé à l'IA, orange aux pertes de temps. Les chapitres viennent de la méthode choisie. */
+:root {
+  --fond: #f4f5f7;
+  --plan: #ffffff;
+  --plan-2: #eef0f3;
+  --trait: #e2e5ea;
+  --trait-fort: #c8ced6;
+  --encre: #0e141b;
+  --doux: #5a6472;
+  --faible: #8a93a0;
+  --ia: #0b8db0;
+  --ia-pale: #d7eef5;
+  --projet: #2f3b4b;
+  --comm: #6e7b8c;
+  --reunion: #4d6079;
+  --veille: #a9b3bf;
+  --admin: #cbd2db;
+  --systeme: #dde1e7;
+  --pause: #e8ebef;
+  --perte: #e0701c;
+  --f-texte: "Geist", "Inter Tight", system-ui, sans-serif;
+  --f-mono: "Geist Mono", ui-monospace, Menlo, monospace;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { background: var(--fond); color: var(--encre); font-family: var(--f-texte); font-size: 15px; line-height: 1.5; margin: 0; }
+.cadre { min-height: 100%; display: grid; grid-template-rows: auto 1fr auto; gap: 14px; max-width: 1320px; margin: 0 auto; padding-block: 18px 18px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.mono { font-family: var(--f-mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--doux); }
+.haut { display: grid; gap: 12px; }
+.ligne-haut { display: flex; justify-content: space-between; gap: 12px 20px; flex-wrap: wrap; align-items: center; }
+.marque { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.marque svg { flex: none; }
+.marque .nom { font-weight: 600; letter-spacing: -.01em; }
+.marque .insp { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--doux); }
+.methodes { display: flex; flex-wrap: wrap; gap: 4px; }
+.methodes a { font: 500 10.5px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--doux); text-decoration: none; border: 1px solid var(--trait-fort); padding: 5px 9px; background: var(--plan); }
+.methodes a:hover { border-color: var(--encre); color: var(--encre); }
+.methodes a.actif { background: var(--encre); color: var(--plan); border-color: var(--encre); }
+.methodes a:focus-visible { outline: 1px solid var(--ia); outline-offset: 2px; }
+.progres { display: flex; gap: 4px; }
+.progres button { flex: 1; height: 14px; padding: 6px 0; border: 0; background: transparent; cursor: pointer; }
+.progres button span { display: block; height: 2px; background: var(--trait-fort); overflow: hidden; }
+.progres button span b { display: block; height: 100%; width: 0; background: var(--encre); }
+.progres button:focus-visible { outline: 1px solid var(--ia); }
+
+.scene-story { position: relative; background: var(--plan); border: 1px solid var(--trait); min-height: 580px; overflow: hidden; }
+.chap { position: absolute; inset: 0; display: grid; grid-template-columns: minmax(0, 1.75fr) minmax(0, 1fr); visibility: hidden; }
+.chap.actif { visibility: visible; }
+@media (max-width: 900px) {
+  .scene-story { min-height: 0; }
+  .chap { position: relative; inset: auto; grid-template-columns: minmax(0, 1fr); display: none; }
+  .chap.actif { display: grid; }
+}
+.viz { position: relative; min-width: 0; min-height: 440px; border-right: 1px solid var(--trait); }
+@media (max-width: 900px) { .viz { border-right: 0; border-bottom: 1px solid var(--trait); min-height: 400px; } .chap .viz .pad { position: relative; min-height: 400px; padding: 22px 16px; } .chap .viz .cont-cascade { min-height: 460px !important; } }
+.viz canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.viz .pad { position: absolute; inset: 0; padding: 26px 28px; display: grid; overflow: auto; }
+.viz svg.plein { position: absolute; inset: 0; width: 100%; height: 100%; display: block; overflow: visible; }
+.lecture { padding: 28px 28px 32px; display: grid; align-content: space-between; gap: 22px; min-width: 0; }
+.numero { display: flex; align-items: flex-start; gap: 10px; font-weight: 500; font-size: 14px; letter-spacing: -.01em; color: var(--encre); line-height: 1.35; }
+.numero span { flex: none; font-weight: 600; font-size: 13px; color: var(--plan); background: var(--ia); padding: 3px 8px; font-variant-numeric: tabular-nums; line-height: 1.35; }
+.numero em { font-style: normal; padding-top: 3px; }
+.lecture h2 { font-weight: 400; font-size: clamp(22px, 2.3vw, 30px); line-height: 1.14; letter-spacing: -.025em; margin: 12px 0 0; text-wrap: balance; }
+.chiffre { font-weight: 300; font-size: clamp(50px, 5.8vw, 84px); line-height: .92; letter-spacing: -.045em; font-variant-numeric: tabular-nums; }
+.chiffre.ia { color: var(--ia); }
+.chiffre.perte { color: var(--perte); }
+.chiffre small { font-size: .3em; letter-spacing: -.01em; color: var(--doux); font-weight: 400; margin-left: 6px; }
+.chiffre-l { font-size: 13px; color: var(--doux); margin-top: -6px; }
+.lecture p { margin: 0; color: var(--doux); max-width: 46ch; }
+.lecture p b { color: var(--encre); font-weight: 500; }
+.kpis { display: grid; gap: 0; border-top: 1px solid var(--trait); }
+.kpi { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; align-items: baseline; padding: 7px 0; border-bottom: 1px solid var(--trait); }
+.kpi b { font-weight: 500; font-variant-numeric: tabular-nums; font-size: 15px; }
+.kpi b.ia { color: var(--ia); }
+.kpi span { font-size: 12.5px; color: var(--doux); }
+
+.bas { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: center; min-height: 36px; }
+.nav { display: flex; gap: 8px; margin-left: auto; }
+.nav button, .bouton { font: 500 12px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--encre); background: var(--plan); border: 1px solid var(--trait-fort); padding: 8px 14px; cursor: pointer; }
+.nav button:hover, .bouton:hover { border-color: var(--encre); }
+.nav button:focus-visible, .bouton:focus-visible { outline: 1px solid var(--ia); outline-offset: 2px; }
+.bouton.plein { background: var(--encre); color: var(--plan); border-color: var(--encre); justify-self: start; }
+.legende { display: flex; flex-wrap: wrap; gap: 6px 14px; }
+.legende span { display: inline-flex; gap: 6px; align-items: center; font-family: var(--f-mono); font-size: 10.5px; color: var(--doux); letter-spacing: .04em; }
+.legende i { width: 9px; height: 9px; display: inline-block; border: 1px solid rgba(14,20,27,.08); }
+.legende i.pointille { border: 1px dashed var(--doux); background: transparent; }
+
+/* état vide : quand une donnée manque, on le dit */
+.vide { position: absolute; inset: 0; display: grid; place-content: center; padding: 32px; gap: 10px; text-align: left; max-width: 520px; margin: auto; }
+.vide b { font-weight: 500; font-size: 17px; letter-spacing: -.01em; }
+.vide p { margin: 0; color: var(--doux); font-size: 14px; }
+
+/* étiquettes 3D (bureau) */
+.etq { position: absolute; pointer-events: none; font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .07em; text-transform: uppercase; background: rgba(255,255,255,.94); border: 1px solid var(--trait-fort); padding: 5px 8px 6px; white-space: nowrap; line-height: 1.35; color: var(--encre); }
+.etq small { display: block; color: var(--doux); font-size: 10px; }
+.etq.vive { border-color: var(--ia); }
+.etq.vive b { color: var(--ia); font-weight: 500; }
+svg.fils { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.frise3d { position: absolute; left: 20px; right: 20px; bottom: 16px; display: grid; gap: 6px; }
+.frise3d canvas { position: relative; height: 54px; cursor: ew-resize; touch-action: none; }
+.horloge { position: absolute; left: 22px; top: 18px; font-family: var(--f-mono); font-size: 12px; letter-spacing: .06em; }
+
+/* SVG communs */
+.sv text { font-family: var(--f-texte); font-size: 12.5px; fill: var(--encre); }
+.sv text.m { font-family: var(--f-mono); font-size: 10.5px; fill: var(--doux); letter-spacing: .04em; }
+.sv text.mu { font-family: var(--f-mono); font-size: 10px; fill: var(--doux); letter-spacing: .1em; text-transform: uppercase; }
+
+/* barres empilées, liste, course, plan */
+.barres { display: grid; align-content: center; gap: 18px; }
+.barre-l { display: grid; gap: 6px; }
+.barre-l .tete { display: flex; justify-content: space-between; gap: 10px; font-size: 13px; flex-wrap: wrap; }
+.barre-l .tete b { font-weight: 500; }
+.barre-l .tete span { font-family: var(--f-mono); font-size: 11px; color: var(--doux); }
+.pile { display: flex; height: 26px; background: var(--plan-2); overflow: hidden; }
+.pile i { display: block; height: 100%; width: 0; }
+.taches { display: grid; align-content: center; gap: 14px; }
+.tache { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; gap: 4px 12px; align-items: center; }
+.tache .rang { font-family: var(--f-mono); font-size: 11px; color: var(--faible); grid-row: span 3; align-self: start; padding-top: 2px; }
+.tache .t { font-size: 14px; }
+.tache .h { font-family: var(--f-mono); font-size: 12px; color: var(--doux); text-align: right; }
+.tache .rail { grid-column: 2 / -1; height: 8px; background: var(--plan-2); }
+.tache .rail i { display: block; height: 100%; width: 0; }
+.tache .etat { font-family: var(--f-mono); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; }
+.course { display: grid; align-content: center; gap: 26px; }
+.piste { display: grid; gap: 8px; }
+.piste .tete { display: flex; justify-content: space-between; gap: 10px; }
+.piste .tete b { font-weight: 500; }
+.piste .chrono { font-family: var(--f-mono); font-size: 13px; font-variant-numeric: tabular-nums; }
+.rangee { display: flex; gap: 3px; height: 40px; }
+.rangee div { position: relative; height: 100%; background: var(--plan-2); overflow: hidden; }
+.rangee div i { position: absolute; inset: 0 auto 0 0; width: 0; }
+.rangee div span { position: absolute; left: 6px; bottom: 4px; font-family: var(--f-mono); font-size: 10px; color: var(--doux); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; right: 4px; }
+.plan { display: grid; align-content: center; gap: 0; }
+.reco { display: grid; grid-template-columns: 78px minmax(0, 1fr); gap: 16px; padding: 18px 0; border-top: 1px solid var(--trait); }
+.reco:last-child { border-bottom: 1px solid var(--trait); }
+.reco .quand { font-family: var(--f-mono); font-size: 11px; letter-spacing: .08em; color: var(--ia); text-transform: uppercase; padding-top: 3px; }
+.reco h3 { margin: 0 0 4px; font-weight: 500; font-size: 17px; letter-spacing: -.01em; }
+.reco p { margin: 0; color: var(--doux); font-size: 14px; }
+.inconnu { display: grid; gap: 6px; }
+.inconnu div { font-size: 13px; color: var(--doux); padding-left: 14px; position: relative; }
+.inconnu div::before { content: ""; position: absolute; left: 0; top: .6em; width: 6px; height: 1px; background: var(--faible); }
+
+/* chiffre clé */
+.cle { display: grid; align-content: center; gap: 28px; }
+.cle .grand { font-weight: 300; font-size: clamp(76px, 10.5vw, 156px); line-height: .86; letter-spacing: -.055em; font-variant-numeric: tabular-nums; }
+.cle .grand.ia { color: var(--ia); }
+.cle .grand small { font-size: .2em; letter-spacing: -.01em; color: var(--doux); font-weight: 400; margin-left: 10px; }
+.cle .sous { font-size: 16px; color: var(--doux); max-width: 46ch; margin-top: -8px; }
+.tuiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); border-top: 1px solid var(--trait); }
+.tuile { padding: 16px 16px 4px 0; display: grid; gap: 4px; align-content: start; }
+.tuile + .tuile { padding-left: 16px; border-left: 1px solid var(--trait); }
+.tuile b { font-weight: 300; font-size: 34px; letter-spacing: -.03em; line-height: 1; font-variant-numeric: tabular-nums; }
+.tuile b.ia { color: var(--ia); }
+.tuile b small { font-size: 13px; color: var(--doux); font-weight: 400; letter-spacing: 0; margin-left: 4px; }
+.tuile > span { font-size: 12.5px; color: var(--doux); }
+
+/* anneau */
+.anneau { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; align-items: center; }
+.anneau .rond { position: relative; aspect-ratio: 1; width: 100%; max-width: 360px; justify-self: center; }
+.anneau .rond svg { width: 100%; height: 100%; display: block; }
+.anneau .centre { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; }
+.anneau .centre b { font-weight: 300; font-size: clamp(40px, 5vw, 64px); letter-spacing: -.04em; color: var(--ia); line-height: 1; font-variant-numeric: tabular-nums; }
+.anneau .centre span { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--doux); margin-top: 6px; }
+.anneau .liste { display: grid; gap: 0; border-top: 1px solid var(--trait); }
+.anneau .liste div { display: grid; grid-template-columns: 10px minmax(0, 1fr) auto auto; gap: 10px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--trait); font-size: 13.5px; }
+.anneau .liste i { width: 10px; height: 10px; display: block; border: 1px solid rgba(14,20,27,.08); }
+.anneau .liste em { font-style: normal; font-family: var(--f-mono); font-size: 11px; color: var(--doux); text-align: right; }
+.anneau .liste strong { font-weight: 500; font-variant-numeric: tabular-nums; min-width: 44px; text-align: right; }
+@media (max-width: 640px) { .anneau { grid-template-columns: minmax(0, 1fr); } .anneau .rond { max-width: 240px; } }
+
+/* VSM */
+.vsm { display: grid; align-content: center; gap: 14px; }
+.vsm .etapes { display: grid; gap: 10px; }
+.vsm .boite { border: 1.5px solid var(--encre); padding: 10px 10px 12px; display: grid; gap: 6px; align-content: start; min-height: 128px; background: var(--plan); position: relative; }
+.vsm .boite.necessaire { border-color: var(--trait-fort); }
+.vsm .boite.gaspillage { border-color: var(--perte); }
+.vsm .boite.suppose { border-style: dashed; }
+.vsm .boite .type { font-family: var(--f-mono); font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--doux); }
+.vsm .boite.valeur .type { color: var(--encre); }
+.vsm .boite.gaspillage .type { color: var(--perte); }
+.vsm .boite .tx { font-size: 13px; line-height: 1.3; }
+.vsm .boite .app { font-family: var(--f-mono); font-size: 10px; color: var(--faible); margin-top: auto; }
+.vsm .echelle { position: relative; height: 64px; }
+.vsm .echelle svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.vsm .totaux { display: flex; flex-wrap: wrap; gap: 8px 22px; border-top: 1px solid var(--trait); padding-top: 12px; font-size: 13px; color: var(--doux); }
+.vsm .totaux b { color: var(--encre); font-weight: 500; font-variant-numeric: tabular-nums; }
+.vsm .totaux b.ia { color: var(--ia); }
+.puces { display: flex; flex-wrap: wrap; gap: 6px; }
+.puces span { font-family: var(--f-mono); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; padding: 3px 7px; border: 1px solid var(--perte); color: var(--perte); }
+.puces span.neutre { border-color: var(--trait-fort); color: var(--doux); }
+@media (max-width: 640px) { .vsm .boite { min-height: 0; } .vsm .etapes { grid-template-columns: 1fr !important; } .vsm .echelle { display: none; } }
+
+/* carte de chaleur */
+.chaleur { display: grid; align-content: center; gap: 14px; }
+.grille-c { display: grid; gap: 3px; }
+.grille-c .ent { font-family: var(--f-mono); font-size: 9.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--doux); align-self: end; padding: 0 2px 4px; line-height: 1.3; }
+.grille-c .ent.ia { color: var(--ia); }
+.grille-c .lib { font-size: 13px; line-height: 1.25; align-self: center; padding-right: 10px; }
+.grille-c .lib small { display: block; font-family: var(--f-mono); font-size: 10px; color: var(--faible); margin-top: 2px; }
+.grille-c .case { height: 54px; display: grid; align-content: center; padding: 0 8px; background: var(--plan-2); }
+.grille-c .case b { font-weight: 500; font-size: 17px; line-height: 1; font-variant-numeric: tabular-nums; }
+.grille-c .case span { font-family: var(--f-mono); font-size: 9.5px; letter-spacing: .02em; margin-top: 3px; opacity: .8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.echelle-c { display: flex; align-items: center; gap: 6px; font-family: var(--f-mono); font-size: 10px; color: var(--doux); letter-spacing: .04em; flex-wrap: wrap; }
+.echelle-c i { width: 22px; height: 12px; display: inline-block; }
+@media (max-width: 640px) { .grille-c .case span { display: none; } .grille-c .case { height: 40px; padding: 0 4px; } .grille-c .case b { font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .grille-c { grid-template-columns: minmax(96px, 1.3fr) repeat(var(--n, 5), minmax(0, 1fr)) !important; } .grille-c .lib { font-size: 11.5px; } .grille-c .ent { font-size: 8.5px; letter-spacing: .02em; } }
+.cle-mat { display: none; }
+@media (max-width: 640px) { .viz:has(.cle-mat) svg.plein { position: relative; height: 380px; } .cle-mat { display: block; margin: 0; padding: 4px 16px 16px 34px; font-size: 12.5px; color: var(--doux); } .cle-mat li { padding: 2px 0; } }
+
+.nd { font-size: 12.5px; color: var(--faible); border-left: 2px solid var(--trait-fort); padding-left: 10px; max-width: 46ch; }
+.nd span { display: block; font-family: var(--f-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--doux); margin-bottom: 2px; }
+.vsm .boite.agent { border-color: var(--ia); background: color-mix(in srgb, var(--ia-pale) 60%, var(--plan)); }
+.vsm .boite.agent .type { color: var(--ia); }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="cadre">
+  <div class="haut">
+    <div class="ligne-haut">
+      <div class="marque" id="marque"></div>
+      <nav class="methodes" id="methodes" aria-label="Changer de méthode d'audit"></nav>
+    </div>
+    <div class="progres" id="progres" role="tablist" aria-label="Chapitres"></div>
+  </div>
+  <main class="scene-story" id="story"></main>
+  <div class="bas">
+    <div class="legende" id="legende"></div>
+    <div class="nav">
+      <button type="button" id="prec" aria-label="Chapitre précédent">←</button>
+      <button type="button" id="auto">Pause</button>
+      <button type="button" id="suiv" aria-label="Chapitre suivant">→</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script type="module">
+import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js";
+/* Remplacés par construire.py : les données d'audit, la méthode de ce fichier, et toutes les méthodes (pour ?methode=<id>). */
+const A = {"genere_le": "2026-10-17T14:26:05+02:00", "periode": {"debut": "2026-10-12T09:00", "fin": "2026-10-16T18:00", "debut_min": 540, "fin_min": 1080}, "regles": {"note": "démo Maison Corvo, données fictives ; résumés non validés écartés : anonyme-6"}, "postes": [{"id": "P01", "qui": "anonyme-1", "source": "résumé validé (démo)", "segments": [], "mesures": null, "agregats_min": {"comm": 616.3, "projet": 722.2, "veille": 317.8, "reunion": 163.7, "ia": 70}}, {"id": "P02", "qui": "anonyme-2", "source": "résumé validé (démo)", "segments": [], "mesures": null, "agregats_min": {"comm": 791.2, "projet": 913.7, "veille": 160.1, "ia": 115}}, {"id": "P03", "qui": "anonyme-3", "source": "résumé validé (démo)", "segments": [], "mesures": null, "agregats_min": {"projet": 1234.9, "comm": 750.8, "veille": 59.3, "ia": 25}}, {"id": "P04", "qui": "anonyme-4", "source": "résumé validé (démo)", "segments": [], "mesures": null, "agregats_min": {"projet": 961.5, "comm": 163.5, "ia": 45}}, {"id": "P05", "qui": "anonyme-5", "source": "résumé validé (démo)", "segments": [], "mesures": null, "agregats_min": {"comm": 1054.4, "projet": 507.7, "admin": 87.9, "ia": 40}}], "parallele": {"ensemble_min": [], "meme_sujet_min": []}, "outils": {"Gmail": {"P01": 640, "P02": 700, "P03": 760, "P04": 170, "P05": 260}, "Sage": {"P01": 160, "P02": 300, "P03": 920, "P04": 230, "P05": 380}, "HubSpot": {"P01": 520, "P02": 450, "P03": 50}, "Zendesk": {"P05": 820}, "Excel": {"P01": 70, "P02": 220, "P03": 160, "P04": 160}, "Pennylane": {"P04": 610}, "Google Chrome": {"P01": 330, "P02": 170, "P03": 60}, "Site transporteur": {"P03": 120, "P05": 140}, "ChatGPT": {"P01": 70, "P02": 95, "P03": 25, "P04": 15, "P05": 40}, "Google Meet": {"P01": 170}, "Slack": {"P02": 140}, "Google Drive": {"P05": 90}, "Copilot": {"P04": 30}, "Claude": {"P02": 20}}, "taches": [{"poste": "anonyme-1", "titre": "Relancer les devis sans réponse", "frequence_par_semaine": 10, "duree_moyenne_min": 8, "apps": ["HubSpot", "Gmail"], "etapes": [{"type": "input", "texte": "Filtrer les devis envoyés il y a plus de 7 jours", "app": "HubSpot", "statut": "observé"}, {"type": "action", "texte": "Copier le contact et le numéro du devis", "app": "HubSpot", "statut": "observé"}, {"type": "output", "texte": "Envoyer le mail de relance depuis un modèle", "app": "Gmail", "statut": "observé"}, {"type": "decision", "texte": "Ne pas relancer si le client a déjà répondu", "app": "Gmail", "statut": "supposé"}], "goulots": ["switching"], "automatisable": {"score": 82, "pourquoi": "Mêmes étapes à chaque fois, une seule décision simple."}, "confiance": 0.85}, {"poste": "anonyme-1", "titre": "Saisir une commande reçue par mail dans l'ERP", "frequence_par_semaine": 6, "duree_moyenne_min": 12, "apps": ["Gmail", "Sage"], "etapes": [{"type": "input", "texte": "Ouvrir le bon de commande PDF reçu par mail", "app": "Gmail", "statut": "observé"}, {"type": "action", "texte": "Créer la commande et saisir les lignes article par article", "app": "Sage", "statut": "observé"}, {"type": "check", "texte": "Vérifier le stock et le prix négocié", "app": "Sage", "statut": "observé"}, {"type": "output", "texte": "Répondre au client avec le numéro de commande", "app": "Gmail", "statut": "observé"}], "goulots": ["switching", "rework"], "automatisable": {"score": 78, "pourquoi": "Le PDF a toujours la même structure ; la saisie ligne à ligne est mécanique."}, "confiance": 0.8}, {"poste": "anonyme-1", "titre": "Chercher la fiche technique d'un produit", "frequence_par_semaine": 15, "duree_moyenne_min": 4, "apps": ["Google Drive", "Google Chrome"], "etapes": [{"type": "input", "texte": "Recevoir une question client sur un produit", "app": "Gmail", "statut": "observé"}, {"type": "action", "texte": "Chercher la fiche dans le Drive ou sur le site du fabricant", "app": "Google Drive", "statut": "observé"}, {"type": "output", "texte": "Envoyer la fiche ou la réponse au client", "app": "Gmail", "statut": "observé"}], "goulots": ["waiting"], "automatisable": {"score": 70, "pourquoi": "Une base de fiches interrogeable répondrait à la place."}, "confiance": 0.75}, {"poste": "anonyme-1", "titre": "Préparer le reporting hebdo des ventes", "frequence_par_semaine": 1, "duree_moyenne_min": 50, "apps": ["HubSpot", "Excel", "Gmail"], "etapes": [{"type": "input", "texte": "Exporter les chiffres de la semaine", "app": "HubSpot", "statut": "observé"}, {"type": "action", "texte": "Coller dans le tableau et recalculer les totaux", "app": "Excel", "statut": "observé"}, {"type": "output", "texte": "Envoyer le tableau à la direction", "app": "Gmail", "statut": "observé"}], "goulots": ["rework"], "automatisable": {"score": 74, "pourquoi": "Export et calculs identiques chaque semaine ; seul le commentaire est humain."}, "confiance": 0.8}, {"poste": "anonyme-2", "titre": "Relancer les devis sans réponse", "frequence_par_semaine": 14, "duree_moyenne_min": 7, "apps": ["HubSpot", "Gmail"], "etapes": [{"type": "input", "texte": "Filtrer les devis envoyés il y a plus de 7 jours", "app": "HubSpot", "statut": "observé"}, {"type": "action", "texte": "Copier le contact et le numéro du devis", "app": "HubSpot", "statut": "observé"}, {"type": "output", "texte": "Envoyer le mail de relance depuis un modèle", "app": "Gmail", "statut": "observé"}, {"type": "decision", "texte": "Ne pas relancer si le client a déjà répondu", "app": "Gmail", "statut": "supposé"}], "goulots": ["switching"], "automatisable": {"score": 82, "pourquoi": "Mêmes étapes à chaque fois, une seule décision simple."}, "confiance": 0.85}, {"poste": "anonyme-2", "titre": "Créer un devis à partir d'une demande mail", "frequence_par_semaine": 8, "duree_moyenne_min": 18, "apps": ["Gmail", "Sage", "Excel"], "etapes": [{"type": "input", "texte": "Lire la demande du client", "app": "Gmail", "statut": "observé"}, {"type": "action", "texte": "Chercher les prix et les remises du client", "app": "Excel", "statut": "observé"}, {"type": "decision", "texte": "Choisir la remise à proposer", "app": "Excel", "statut": "supposé"}, {"type": "output", "texte": "Créer le devis dans Sage et l'envoyer", "app": "Sage", "statut": "observé"}], "goulots": ["switching"], "automatisable": {"score": 76, "pourquoi": "Les champs du devis se remplissent à partir du mail."}, "confiance": 0.7}, {"poste": "anonyme-2", "titre": "Chercher la fiche technique d'un produit", "frequence_par_semaine": 12, "duree_moyenne_min": 4, "apps": ["Google Drive", "Google Chrome"], "etapes": [{"type": "input", "texte": "Recevoir une question client sur un produit", "app": "Gmail", "statut": "observé"}, {"type": "action", "texte": "Chercher la fiche dans le Drive ou sur le site du fabricant", "app": "Google Drive", "statut": "observé"}, {"type": "output", "texte": "Envoyer la fiche ou la réponse au client", "app": "Gmail", "statut": "observé"}], "goulots": ["waiting"], "automatisable": {"score": 70, "pourquoi": "Une base de fiches interrogeable répondrait à la place."}, "confiance": 0.75}, {"poste": "anonyme-2", "titre": "Reporting hebdo des ventes", "frequence_par_semaine": 1, "duree_moyenne_min": 40, "apps": ["HubSpot", "Excel", "Slack"], "etapes": [{"type": "input", "texte": "Exporter les chiffres de la semaine", "app": "HubSpot", "statut": "observé"}, {"type": "action", "texte": "Coller dans le tableau et recalculer les totaux", "app": "Excel", "statut": "observé"}, {"type": "output", "texte": "Envoyer le tableau à la direction", "app": "Slack", "statut": "observé"}], "goulots": ["rework"], "automatisable": {"score": 74, "pourquoi": "Export et calculs identiques chaque semaine ; seul le commentaire est humain."}, "confiance": 0.8}, {"poste": "anonyme-3", "titre": "Saisie des commandes mail dans Sage", "frequence_par_semaine": 25, "duree_moyenne_min": 10, "apps": ["Gmail", "Sage"], "etapes": [{"type": "input", "texte": "Ouvrir le bon de commande PDF reçu par mail", "app": "Gmail", "statut": "observé"}, {"type": "action", "texte": "Créer la commande et saisir les lignes article par article", "app": "Sage", "statut": "observé"}, {"type": "check", "texte": "Vérifier le stock et le prix négocié", "app": "Sage", "statut": "observé"}, {"type": "output", "texte": "Répondre au client avec le numéro de commande", "app": "Gmail", "statut": "observé"}], "goulots": ["switching", "rework"], "automatisable": {"score": 78, "pourquoi": "Le PDF a toujours la même structure ; la saisie ligne à ligne est mécanique."}, "confiance": 0.8}, {"poste": "anonyme-3", "titre": "Répondre aux demandes de délai de livraison", "frequence_par_semaine": 20, "duree_moyenne_min": 6, "apps": ["Gmail", "Sage", "Site transporteur"], "etapes": [{"type": "input", "texte": "Lire la demande du client", "app": "Gmail", "statut": "observé"}, {"type": "action", "texte": "Chercher la commande puis le suivi transporteur", "app": "Sage", "statut": "observé"}, {"type": "output", "texte": "Répondre avec la date estimée", "app": "Gmail", "statut": "observé"}], "goulots": ["switching"], "automatisable": {"score": 68, "pourquoi": "Le suivi transporteur est consultable automatiquement."}, "confiance": 0.75}, {"poste": "anonyme-3", "titre": "Relancer les devis sans réponse", "frequence_par_semaine": 5, "duree_moyenne_min": 6, "apps": ["HubSpot", "Gmail"], "etapes": [{"type": "input", "texte": "Filtrer les devis envoyés il y a plus de 7 jours", "app": "HubSpot", "statut": "observé"}, {"type": "action", "texte": "Copier le contact et le numéro du devis", "app": "HubSpot", "statut": "observé"}, {"type": "output", "texte": "Envoyer le mail de relance depuis un modèle", "app": "Gmail", "statut": "observé"}, {"type": "decision", "texte": "Ne pas relancer si le client a déjà répondu", "app": "Gmail", "statut": "supposé"}], "goulots": ["switching"], "automatisable": {"score": 82, "pourquoi": "Mêmes étapes à chaque fois, une seule décision simple."}, "confiance": 0.85}, {"poste": "anonyme-3", "titre": "Mettre à jour le reporting hebdo", "frequence_par_semaine": 1, "duree_moyenne_min": 60, "apps": ["Sage", "Excel", "Gmail"], "etapes": [{"type": "input", "texte": "Exporter les chiffres de la semaine", "app": "Sage", "statut": "observé"}, {"type": "action", "texte": "Coller dans le tableau et recalculer les totaux", "app": "Excel", "statut": "observé"}, {"type": "output", "texte": "Envoyer le tableau à la direction", "app": "Gmail", "statut": "observé"}], "goulots": ["rework"], "automatisable": {"score": 74, "pourquoi": "Export et calculs identiques chaque semaine ; seul le commentaire est humain."}, "confiance": 0.8}, {"poste": "anonyme-4", "titre": "Rapprocher les factures fournisseurs des bons de commande", "frequence_par_semaine": 30, "duree_moyenne_min": 6, "apps": ["Pennylane", "Sage"], "etapes": [{"type": "input", "texte": "Ouvrir la facture fournisseur", "app": "Pennylane", "statut": "observé"}, {"type": "check", "texte": "Retrouver le bon de commande et comparer les montants", "app": "Sage", "statut": "observé"}, {"type": "decision", "texte": "Valider ou signaler un écart", "app": "Pennylane", "statut": "observé"}], "goulots": ["switching"], "automatisable": {"score": 72, "pourquoi": "La comparaison des montants est mécanique ; seuls les écarts demandent un humain."}, "confiance": 0.8}, {"poste": "anonyme-4", "titre": "Relancer les factures impayées", "frequence_par_semaine": 10, "duree_moyenne_min": 10, "apps": ["Pennylane", "Gmail"], "etapes": [{"type": "input", "texte": "Lister les factures échues", "app": "Pennylane", "statut": "observé"}, {"type": "output", "texte": "Envoyer la relance", "app": "Gmail", "statut": "observé"}, {"type": "decision", "texte": "Appeler les clients importants plutôt que d'écrire", "app": "Gmail", "statut": "supposé"}], "goulots": ["waiting"], "automatisable": {"score": 65, "pourquoi": "Relance écrite automatisable ; le choix d'appeler reste humain."}, "confiance": 0.55}, {"poste": "anonyme-4", "titre": "Préparer le reporting hebdo de trésorerie", "frequence_par_semaine": 1, "duree_moyenne_min": 45, "apps": ["Pennylane", "Excel", "Gmail"], "etapes": [{"type": "input", "texte": "Exporter les chiffres de la semaine", "app": "Pennylane", "statut": "observé"}, {"type": "action", "texte": "Coller dans le tableau et recalculer les totaux", "app": "Excel", "statut": "observé"}, {"type": "output", "texte": "Envoyer le tableau à la direction", "app": "Gmail", "statut": "observé"}], "goulots": ["rework"], "automatisable": {"score": 74, "pourquoi": "Export et calculs identiques chaque semaine ; seul le commentaire est humain."}, "confiance": 0.8}, {"poste": "anonyme-5", "titre": "Traiter une demande de retour produit", "frequence_par_semaine": 12, "duree_moyenne_min": 15, "apps": ["Zendesk", "Sage", "Gmail"], "etapes": [{"type": "input", "texte": "Lire le ticket et les photos du client", "app": "Zendesk", "statut": "observé"}, {"type": "check", "texte": "Vérifier la garantie dans Sage", "app": "Sage", "statut": "observé"}, {"type": "decision", "texte": "Accepter ou refuser le retour", "app": "Zendesk", "statut": "observé"}, {"type": "output", "texte": "Créer le bon de retour et prévenir le client", "app": "Gmail", "statut": "observé"}], "goulots": ["handoff"], "automatisable": {"score": 45, "pourquoi": "La décision d'accepter demande du jugement ; la préparation peut être automatisée."}, "confiance": 0.7}, {"poste": "anonyme-5", "titre": "Répondre aux demandes de délai de livraison", "frequence_par_semaine": 15, "duree_moyenne_min": 6, "apps": ["Zendesk", "Sage", "Site transporteur"], "etapes": [{"type": "input", "texte": "Lire la demande du client", "app": "Zendesk", "statut": "observé"}, {"type": "action", "texte": "Chercher la commande puis le suivi transporteur", "app": "Sage", "statut": "observé"}, {"type": "output", "texte": "Répondre avec la date estimée", "app": "Zendesk", "statut": "observé"}], "goulots": ["switching"], "automatisable": {"score": 68, "pourquoi": "Le suivi transporteur est consultable automatiquement."}, "confiance": 0.75}, {"poste": "anonyme-5", "titre": "Chercher la fiche technique d'un produit", "frequence_par_semaine": 10, "duree_moyenne_min": 4, "apps": ["Google Drive", "Google Chrome"], "etapes": [{"type": "input", "texte": "Recevoir une question client sur un produit", "app": "Gmail", "statut": "observé"}, {"type": "action", "texte": "Chercher la fiche dans le Drive ou sur le site du fabricant", "app": "Google Drive", "statut": "observé"}, {"type": "output", "texte": "Envoyer la fiche ou la réponse au client", "app": "Gmail", "statut": "observé"}], "goulots": ["waiting"], "automatisable": {"score": 70, "pourquoi": "Une base de fiches interrogeable répondrait à la place."}, "confiance": 0.75}], "libelles": {"projet": "Outils métier"}, "parametres": {"entreprise": "Maison Corvo", "cout_horaire": 42, "outils_fournis": ["Gmail", "HubSpot", "Sage", "Pennylane", "Zendesk", "Excel"]}};
+const METHODE = {"id": "gemba", "nom": "Gemba", "inspire_de": "Toyota et le Lean (cartographie de la chaîne de valeur, 8 gaspillages), Six Sigma (DMAIC, efficacité du cycle), process et task mining (Celonis, UiPath)", "promesse": "Suivre le travail tel qu'il se fait vraiment, étape par étape, et chiffrer chaque minute perdue.", "ton": "Concret, d'atelier. Des verbes, des minutes, des étapes. On parle du processus, jamais de la personne.", "chapitres": [{"id": "definir", "titre": "Le flux choisi", "question": "Quel processus regarde-t-on, et combien pèse-t-il ?", "viz": "chiffre-cle", "metriques": ["taches.frequence_par_semaine", "taches.duree_moyenne_min", "calc:heures_semaine_tache", "calc:cout_tache"], "lecture": "« {tache} » : {frequence} fois par semaine, {duree} min à chaque fois, {heures} h par semaine au total ({euros} €)."}, {"id": "carte-actuelle", "titre": "La carte du flux aujourd'hui", "question": "Par quelles étapes et quelles apps passe le travail ?", "viz": "vsm", "metriques": ["taches.etapes", "taches.goulots", "paires", "calc:duree_etape"], "lecture": "{n_etapes} étapes, {n_apps} apps et {n_bascules} changements d'app pour une seule exécution. Plus longue attente : « {etape_attente} »."}, {"id": "rendement", "titre": "Le rendement du flux", "question": "Quelle part du temps produit vraiment le résultat ?", "viz": "anneau", "metriques": ["calc:pce", "calc:duree_etape", "taches.etapes"], "lecture": "Sur {duree} min, {minutes_valeur} min produisent le résultat : rendement de {pce} %. Repère publié pour un processus administratif : {repere_pce}."}, {"id": "gaspillages", "titre": "Les huit gaspillages", "question": "Quels gaspillages, et combien de minutes chacun ?", "viz": "barres-empilees", "metriques": ["taches.goulots", "bascules", "paires", "meme_sujet_min", "calc:gaspillages"], "lecture": "Attente : {min_attente} min/sem. Ressaisie entre apps : {min_ressaisie}. Reprises : {min_reprise}. Travail en double entre postes : {min_double}."}, {"id": "terrain", "titre": "Le terrain heure par heure", "question": "À quels moments le travail est-il haché ?", "viz": "carte-chaleur", "metriques": ["bascules_par_heure", "ecran_median_s", "plongee", "segments", "calc:fragmentation_horaire"], "lecture": "On reste {ecran_median_s} s en médiane sur un écran. Plus longue plongée : {plongee_min} min, à {plongee_heure}. Les heures les plus hachées : {creneau_max}."}, {"id": "variantes", "titre": "Une tâche, plusieurs chemins", "question": "Combien de façons différentes de faire la même tâche ?", "viz": "reseau", "metriques": ["calc:variantes_tache", "taches.etapes", "taches.duree_moyenne_min"], "lecture": "« {tache} » se fait par {n_variantes} chemins différents, de {duree_min} à {duree_max} min. Standardiser avant d'automatiser."}, {"id": "carte-cible", "titre": "La carte du flux demain", "question": "À quoi ressemble le flux une fois l'agent en place ?", "viz": "vsm", "metriques": ["taches.etapes", "calc:exposition_ia", "calc:duree_etape"], "lecture": "{n_etapes_cible} étapes au lieu de {n_etapes}. L'agent prend « {etapes_agent} », l'humain garde « {etapes_humain} ». Durée visée : {duree_cible} min."}, {"id": "controler", "titre": "Tenir le gain", "question": "Le gain tient-il dans la durée ?", "viz": "course", "metriques": ["calc:tendance_semaine", "taches.duree_moyenne_min", "taches.frequence_par_semaine"], "lecture": "Semaine {semaine} : « {tache} » prend {duree_apres} min, contre {duree_avant} min avant l'agent."}], "visuels_signature": ["cartographie de la chaîne de valeur (état actuel et état cible)", "barres des huit gaspillages", "jauge du rendement du flux", "carte de processus (variantes)", "avant / après"], "sources": [{"titre": "Lean Enterprise Institute, Value-Stream Mapping", "url": "https://www.lean.org/lexicon-terms/value-stream-mapping/"}, {"titre": "Lean Enterprise Institute, Muda", "url": "https://www.lean.org/lexicon-terms/muda/"}, {"titre": "Lean Enterprise Institute, Learning to See (Rother et Shook)", "url": "https://www.lean.org/store/book/learning-to-see/"}, {"titre": "Learn Lean Sigma, 8 Wastes (DOWNTIME)", "url": "https://www.learnleansigma.com/guides/8-wastes/"}, {"titre": "Quality America, Process Cycle Efficiency (repères de M. George, 2002)", "url": "https://qualityamerica.com/LSS-Knowledge-Center/leansixsigma/process_cycle_efficiency.php"}, {"titre": "ASQ, DMAIC", "url": "https://asq.org/quality-resources/dmaic"}, {"titre": "Celonis, How does process mining work", "url": "https://www.celonis.com/insights/topics/how-does-process-mining-work"}, {"titre": "UiPath, Task Mining (introduction)", "url": "https://docs.uipath.com/task-mining/automation-cloud/latest/user-guide/introduction-as"}, {"titre": "W. van der Aalst, Process Mining Manifesto", "url": "https://vdaalst.com/publications/p685.pdf"}]};
+const METHODES = [{"id": "pyramide", "nom": "Sommet", "inspire_de": "McKinsey (principe pyramidal de B. Minto, arbres MECE, résolution en 7 étapes, Rewired, trois horizons)", "promesse": "La réponse d'abord : une recommandation en une phrase, puis seulement les preuves qui la portent.", "ton": "Sobre et affirmatif. Chaque page porte un titre-phrase qui dit la conclusion. Pas d'adjectif, pas de suspense.", "chapitres": [{"id": "reponse", "titre": "La réponse", "question": "Que doit faire le dirigeant cette semaine ?", "viz": "chiffre-cle", "metriques": ["calc:heures_recuperables", "calc:cout_tache", "cout_horaire", "calc:exposition_ia"], "lecture": "Confier {n_taches_cibles} tâches à des agents libère {heures_recuperables} h par semaine, soit {euros_semaine} €. Commencez par « {tache_1} »."}, {"id": "scqa", "titre": "Situation, complication, question", "question": "Pourquoi agir maintenant ?", "viz": "barres-empilees", "metriques": ["actif_min", "par_categorie_min", "part_ia"], "lecture": "Situation : {n_postes} postes, {actif_h} h de travail observées. Complication : {part_coordination} % partent en réunions, messages et admin, l'IA n'en couvre que {part_ia} %. Question : comment rendre ces heures au cœur du métier ?"}, {"id": "arbre", "titre": "Où part le temps, sans trou ni doublon", "question": "En quoi se décompose le temps observé ?", "viz": "arbre", "metriques": ["actif_min", "par_categorie_min", "taches.frequence_par_semaine", "taches.duree_moyenne_min", "calc:heures_semaine_tache"], "lecture": "{actif_h} h = {h_cat_1} h de {cat_1} + {h_cat_2} h de {cat_2} + … La branche « {branche_max} » pèse {part_branche} % et contient {n_taches_branche} tâches répétées."}, {"id": "pareto", "titre": "Le 80/20 des tâches", "question": "Quelles tâches concentrent l'essentiel du temps répété ?", "viz": "liste-classee", "metriques": ["taches.frequence_par_semaine", "taches.duree_moyenne_min", "calc:heures_semaine_tache", "calc:part_cumulee"], "lecture": "{n_top} tâches sur {n_taches} représentent {part_cumulee} % du temps passé en tâches répétées. « {tache_1} » arrive en tête avec {h_tache_1} h par semaine."}, {"id": "hypotheses", "titre": "Ce qu'on croyait, testé", "question": "Les idées reçues sur l'équipe tiennent-elles face aux mesures ?", "viz": "liste-classee", "metriques": ["bascules_par_heure", "ecran_median_s", "plongee", "paires", "taches.goulots"], "lecture": "Hypothèse : « {hypothese} ». Verdict : {verdict}. Preuve : {preuve}."}, {"id": "cascade", "titre": "Le gain, marche par marche", "question": "Combien d'heures récupère-t-on, et d'où viennent-elles ?", "viz": "cascade", "metriques": ["calc:heures_semaine_tache", "calc:exposition_ia", "calc:heures_recuperables", "cout_horaire"], "lecture": "De {h_actuel} h à {h_cible} h par semaine : −{h_gain_1} h sur « {tache_1} », −{h_gain_2} h sur « {tache_2} », −{h_gain_3} h sur « {tache_3} ». Taux de gain supposé : {hypothese_gain}."}, {"id": "horizons", "titre": "Trois horizons", "question": "Quoi faire ce mois-ci, ce trimestre, cette année ?", "viz": "frise", "metriques": ["calc:heures_semaine_tache", "calc:exposition_ia", "outils", "taches.goulots"], "lecture": "Horizon 1 (ce mois) : {action_h1}. Horizon 2 (ce trimestre) : {action_h2}. Horizon 3 (cette année) : {action_h3}."}, {"id": "capacites", "titre": "Ce qu'il faut pour que ça tienne", "question": "Parmi les six capacités d'une transformation, lesquelles manquent ?", "viz": "liste-classee", "metriques": ["part_ia", "ia_agent_min", "ia_chat_min", "outils", "meme_sujet_min", "ensemble_min"], "lecture": "Adoption : {n_utilisateurs_ia} postes sur {n_postes} utilisent l'IA. Données partagées : {n_outils_communs} outils communs. Coordination : {meme_sujet_h} h sur le même sujet en parallèle. Talents, modèle opérationnel et technologie : non mesurés à l'écran."}], "visuels_signature": ["titre-phrase en tête de chaque page", "arbre MECE", "cascade (waterfall)", "Pareto avec courbe cumulée", "frise des trois horizons"], "sources": [{"titre": "Barbara Minto, The Pyramid Principle (site officiel)", "url": "https://www.barbaraminto.com/"}, {"titre": "McKinsey Podcast, How to master the seven-step problem-solving process (transcription PDF, 2019)", "url": "https://cdn.ksrinc.com/mckinseysurvey/How-to-master-the-seven-step-problem-solving-process.pdf"}, {"titre": "Wiley, Rewired, 2e édition (les six capacités)", "url": "https://www.wiley.com/en-us/Rewired:+McKinsey's+Playbook+on+How+Leading+Companies+Win+with+Technology+and+AI,+2nd+Edition-p-9781394381913"}, {"titre": "McKinsey, Rewired to outcompete", "url": "https://www.mckinsey.com/capabilities/tech-and-ai/our-insights/rewired-to-outcompete"}, {"titre": "McKinsey, Enduring Ideas: The three horizons of growth", "url": "https://www.mckinsey.com/capabilities/strategy-and-corporate-finance/our-insights/enduring-ideas-the-three-horizons-of-growth"}, {"titre": "McKinsey Alumni, Remembering Gene Zelazny (cascade)", "url": "https://www.mckinsey.com/alumni/news-and-events/global-news/alumni-news/2023-05-remembering-gene-zelazny"}, {"titre": "ModelThinkers, Minto Pyramid & SCQA", "url": "https://modelthinkers.com/mental-model/minto-pyramid-scqa"}, {"titre": "iSixSigma, Juran : vital few, trivial many", "url": "https://www.isixsigma.com/dictionary/trivial-many/"}]}, {"id": "frontiere", "nom": "Frontière", "inspire_de": "BCG (étude « jagged frontier » avec Harvard 2023, Deploy-Reshape-Invent, règle 10/20/70, matrice croissance/part de marché) et Accenture (profils de maturité IA)", "promesse": "Montrer où l'IA aide vraiment vos équipes, où elle les piège, et où investir en premier.", "ton": "Analytique et nuancé. « Ça dépend de la tâche » est une réponse acceptable. On montre les deux côtés de la frontière.", "chapitres": [{"id": "profil", "titre": "Votre profil IA", "question": "Où en est l'équipe, de l'expérimentation à la maîtrise ?", "viz": "matrice-2x2", "metriques": ["part_ia", "ia_agent_min", "ia_chat_min", "calc:jours_actifs_ia", "outils"], "lecture": "{n_utilisateurs_ia} postes sur {n_postes} utilisent l'IA, {jours_actifs_ia} jours sur {n_jours}, pour {part_ia} % du temps actif. Profil : {profil}."}, {"id": "deleguer-converser", "titre": "Déléguer ou converser", "question": "L'équipe confie-t-elle des tâches entières à l'IA, ou travaille-t-elle avec elle pas à pas ?", "viz": "anneau", "metriques": ["ia_agent_min", "ia_chat_min", "part_ia"], "lecture": "{part_agent} % du temps IA passe en délégation à des agents, {part_chat} % en conversation. Les deux façons de bien travailler avec l'IA existent : partager les sous-tâches, ou travailler avec elle en continu."}, {"id": "frontiere", "titre": "La frontière en dents de scie", "question": "Sur quelles tâches l'IA est-elle déjà présente, et sur lesquelles est-elle absente ?", "viz": "carte-chaleur", "metriques": ["taches.etapes", "calc:ia_dans_tache", "calc:exposition_ia"], "lecture": "« {tache} » : IA présente dans {n_etapes_ia} étapes sur {n_etapes}. Exposition estimée : {niveau_exposition}."}, {"id": "portefeuille", "titre": "Le portefeuille de tâches", "question": "Quelles tâches lancer, garder, tester ou laisser ?", "viz": "matrice-2x2", "metriques": ["calc:heures_semaine_tache", "calc:exposition_ia", "taches.frequence_par_semaine"], "lecture": "{n_a_lancer} tâches « à lancer » (beaucoup d'heures, faciles à confier à l'IA), dont « {tache_1} » ({h_tache_1} h/sem). {n_a_laisser} tâches à laisser à l'humain."}, {"id": "trois-niveaux", "titre": "Déployer, refondre, inventer", "question": "Quel niveau d'ambition pour chaque piste ?", "viz": "barres-empilees", "metriques": ["calc:heures_semaine_tache", "taches.goulots", "taches.etapes", "calc:exposition_ia"], "lecture": "Déployer (l'outil sur la tâche telle quelle) : {h_deployer} h/sem. Refondre (changer la façon de faire) : {h_refondre} h/sem sur {n_refondre} processus. Inventer : {n_inventer} pistes, non chiffrées."}, {"id": "effort", "titre": "Où mettre l'effort", "question": "Combien de nos recommandations portent sur l'outil, et combien sur les gens et les façons de faire ?", "viz": "barres-empilees", "metriques": ["calc:recommandations_par_type"], "lecture": "{part_gens} % de nos recommandations portent sur les personnes et les processus, {part_tech} % sur la technologie et les données, {part_algo} % sur les algorithmes. Repère BCG : 70 % personnes et processus."}, {"id": "outils", "titre": "Les outils qui portent le travail", "question": "Quels outils partagés relient les postes ?", "viz": "reseau", "metriques": ["outils", "paires", "ensemble_min"], "lecture": "{n_outils_communs} outils sont utilisés par au moins {seuil_postes} postes. « {outil_1} » est au centre, et la paire « {app_a} → {app_b} » revient {n_paire} fois."}, {"id": "pieges", "titre": "Là où l'IA piège", "question": "Sur quelles tâches l'IA risque-t-elle de faire baisser la qualité ?", "viz": "liste-classee", "metriques": ["taches.etapes", "calc:exposition_ia", "calc:ia_dans_tache"], "lecture": "« {tache} » contient {n_decisions} décisions et {n_verifications} vérifications, et l'IA y est {presence_ia}. À garder sous contrôle humain : hors de la frontière, l'IA fait moins bien que l'humain seul."}], "visuels_signature": ["matrice 2×2 de portefeuille", "matrice 2×2 des profils de maturité", "carte de chaleur de la frontière (tâches × étapes)", "anneau délégation / conversation", "barres 10/20/70"], "sources": [{"titre": "BCG, The Leader's Guide to Transforming with AI (10/20/70, Deploy-Reshape-Invent)", "url": "https://www.bcg.com/featured-insights/the-leaders-guide-to-transforming-with-ai"}, {"titre": "Dell'Acqua et al., Navigating the Jagged Technological Frontier, HBS WP 24-013 (2023)", "url": "https://mitsloan.mit.edu/sites/default/files/2023-10/SSRN-id4573321.pdf"}, {"titre": "BCG, Growth-Share Matrix: BCG Classics Revisited (2014)", "url": "https://www.bcg.com/en-gb/publications/2014/growth-share-matrix-bcg-classics-revisited"}, {"titre": "BCG, AI Transformation (trois plays)", "url": "https://www.bcg.com/capabilities/artificial-intelligence"}, {"titre": "Accenture, The Art of AI Maturity (communiqué 2022)", "url": "https://newsroom.accenture.com/news/2022/more-than-60-percent-of-companies-are-only-experimenting-with-ai-creating-significant-opportunities-for-value-on-their-journey-to-ai-maturity-accenture-research-finds"}, {"titre": "Accenture, The Art of AI Maturity (rapport PDF)", "url": "https://www.accenture.com/content/dam/accenture/final/a-com-migration/manual/r3/pdf/pdf-5/Accenture-Art-of-AI-Maturity-Report.pdf"}, {"titre": "Eloundou et al., GPTs are GPTs (rubrique E0/E1/E2)", "url": "https://arxiv.org/abs/2303.10130"}]}, {"id": "resultat", "nom": "Résultat net", "inspire_de": "Bain (Results Delivery, décisions RAPID, Founder's Mentality, Net Promoter System)", "promesse": "Chaque recommandation a un montant, un responsable et une date, et on voit tout de suite si ça dérape.", "ton": "Direct, chiffré, tourné vers l'exécution. Un indicateur rouge annoncé tôt vaut mieux qu'un vert de façade.", "chapitres": [{"id": "montant", "titre": "Le montant en jeu", "question": "Combien vaut le temps récupérable ?", "viz": "chiffre-cle", "metriques": ["calc:cout_tache", "calc:heures_semaine_tache", "cout_horaire"], "lecture": "{euros_semaine} € par semaine passent dans {n_taches} tâches répétées, à {cout_horaire} € de l'heure. Les {n_top} premières en font {part_top} %."}, {"id": "valeur", "titre": "D'où vient la valeur", "question": "Quelles tâches font le montant ?", "viz": "cascade", "metriques": ["calc:cout_tache", "calc:exposition_ia"], "lecture": "« {tache_1} » pèse {euros_1} €/sem, « {tache_2} » {euros_2} €/sem, « {tache_3} » {euros_3} €/sem. Total : {euros_total} €/sem."}, {"id": "terrain", "titre": "Le temps du cœur de métier", "question": "Combien de temps va au métier, et combien à la complexité interne ?", "viz": "barres-empilees", "metriques": ["par_categorie_min", "calc:part_coeur_metier", "bascules_par_heure"], "lecture": "{part_coeur} % du temps sur le cœur du métier, {part_complexite} % sur la coordination interne (réunions, messages, admin), avec {bascules_par_heure} changements d'app par heure."}, {"id": "decisions", "titre": "Qui décide, où ça bloque", "question": "Où les décisions et les passages de main ralentissent-ils le travail ?", "viz": "liste-classee", "metriques": ["taches.etapes", "taches.goulots", "calc:decisions_par_tache"], "lecture": "« {tache} » : {n_decisions} décisions et {n_passages} passages de main par exécution. À clarifier : qui recommande, qui décide, qui exécute."}, {"id": "changement", "titre": "La carte du changement", "question": "Quelles tâches seront les plus bousculées, et lesquelles comptent le plus ?", "viz": "matrice-2x2", "metriques": ["calc:heures_semaine_tache", "calc:exposition_ia", "calc:cout_tache"], "lecture": "{n_prioritaires} tâches sont à la fois importantes et très bousculées : à accompagner en premier, en commençant par « {tache_1} »."}, {"id": "plan-90", "titre": "Le plan à 90 jours", "question": "Qui fait quoi, et quand ?", "viz": "frise", "metriques": ["calc:heures_semaine_tache", "calc:cout_tache", "taches.goulots"], "lecture": "Semaine {semaine} : « {action} ». Responsable : {role}. Gain visé : {heures_visees} h/sem."}, {"id": "tableau-de-bord", "titre": "Le tableau de bord rouge, orange, vert", "question": "Comment savoir chaque semaine si ça marche ?", "viz": "carte-chaleur", "metriques": ["part_ia", "calc:heures_semaine_tache", "bascules_par_heure", "calc:tendance_semaine"], "lecture": "« {indicateur} » : {valeur} pour une cible de {cible}, donc {couleur}. Le rouge visible tôt est une bonne nouvelle : on peut encore corriger."}, {"id": "adhesion", "titre": "Les équipes recommanderaient-elles l'agent ?", "question": "L'adoption sera-t-elle portée par les salariés ?", "viz": "anneau", "metriques": ["calc:nps_salaries"], "lecture": "Score de recommandation : {nps}. {part_promoteurs} % de promoteurs, {part_passifs} % de passifs, {part_detracteurs} % de détracteurs, sur {n_reponses} réponses."}], "visuels_signature": ["cascade de valeur en euros", "matrice 2×2 du changement (importance × bouleversement)", "tableau de bord rouge, orange, vert", "grille des rôles de décision", "anneau promoteurs / passifs / détracteurs"], "sources": [{"titre": "Bain, Results Delivery: Busting three common myths of change management", "url": "https://www.bain.com/insights/results-delivery-busting-3-common-change-management-myths"}, {"titre": "Bain, Chris Zook: Overview of Founder's Mentality", "url": "https://www.bain.com/insights/chris-zook-overview-of-founders-mentality-video"}, {"titre": "Bain, Introducing the Net Promoter System", "url": "https://www.bain.com/insights/introducing-the-net-promoter-system-loyalty-insights/"}, {"titre": "Umbrex, Bain RAPID Decision Framework", "url": "https://umbrex.com/resources/frameworks/organization-frameworks/bain-rapid-decision-framework/"}, {"titre": "Bain Insights (Forbes), Decisions: Who Does What?", "url": "https://www.forbes.com/sites/baininsights/2011/05/04/decisions-who-does-what/"}, {"titre": "Umbrex, Bain Results Delivery", "url": "https://umbrex.com/resources/frameworks/project-management-frameworks/bain-results-delivery/"}]}, {"id": "gardefou", "nom": "Garde-fou", "inspire_de": "Big Four : EY (indice de confiance IA), Deloitte (Trustworthy AI), PwC (Responsible AI), KPMG (Trusted AI, guide risques et contrôles)", "promesse": "Savoir quelle IA tourne déjà chez vous, ce qu'elle touche, et quoi verrouiller avant d'aller plus loin.", "ton": "Prudent et factuel, langage d'auditeur : constat, risque, contrôle. On ne fait pas peur, on classe.", "chapitres": [{"id": "inventaire", "titre": "L'inventaire de l'IA réelle", "question": "Quels outils IA sont vraiment utilisés, et par combien de postes ?", "viz": "liste-classee", "metriques": ["outils", "ia_chat_min", "ia_agent_min", "calc:ia_non_fournie"], "lecture": "{n_outils_ia} outils IA observés sur {n_postes} postes. {n_hors_liste} ne figurent pas dans la liste des outils fournis par l'entreprise."}, {"id": "exposition", "titre": "Où l'IA touche le travail", "question": "Dans quelles activités et quelles tâches l'IA intervient-elle ?", "viz": "barres-empilees", "metriques": ["par_categorie_min", "part_ia", "taches.etapes", "calc:ia_dans_tache"], "lecture": "L'IA intervient dans {n_taches_ia} tâches sur {n_taches}, surtout en « {categorie_max} ». Elle représente {part_ia} % du temps actif."}, {"id": "main", "titre": "Qui garde la main", "question": "Quelle part du travail confié à l'IA passe par une vérification humaine ?", "viz": "anneau", "metriques": ["ia_agent_min", "ia_chat_min", "taches.etapes"], "lecture": "{part_agent} % du temps IA est délégué à des agents. {part_taches_verifiees} % des tâches où l'IA intervient ont une étape de vérification."}, {"id": "carte-risques", "titre": "La carte de chaleur des risques", "question": "Quels risques, sur quelles tâches, avec quelle gravité ?", "viz": "carte-chaleur", "metriques": ["taches.etapes", "calc:exposition_ia", "calc:donnees_sensibles_vers_ia", "calc:niveau_confiance"], "lecture": "« {tache} » : risque {niveau} sur « {pilier} », parce que {raison}."}, {"id": "aller-attendre", "titre": "Aller ou attendre", "question": "Quelles automatisations peut-on lancer sans risque déraisonnable ?", "viz": "matrice-2x2", "metriques": ["calc:heures_semaine_tache", "calc:niveau_confiance", "calc:exposition_ia"], "lecture": "{n_go} tâches en zone « aller » : forte valeur, confiance suffisante. {n_attendre} tâches attendent un contrôle, dont « {tache_bloquee} »."}, {"id": "controles", "titre": "Risques et contrôles", "question": "Quel contrôle poser pour chaque risque, et qui en est responsable ?", "viz": "liste-classee", "metriques": ["taches.goulots", "taches.etapes", "calc:niveau_confiance"], "lecture": "Risque : « {risque} ». Contrôle : {controle}. Responsable : {role}. À poser avant le {date}."}, {"id": "indice", "titre": "L'indice de confiance par pilier", "question": "Sur chaque pilier de confiance, où en est l'entreprise ?", "viz": "anneau", "metriques": ["calc:niveau_confiance"], "lecture": "Confiance {niveau_global}. Point faible : « {pilier_min} » ({note_min}/5). C'est la note la plus basse qui fixe le niveau, pas la moyenne."}, {"id": "regles", "titre": "Les règles à écrire cette semaine", "question": "Quelles règles d'usage de l'IA poser tout de suite ?", "viz": "liste-classee", "metriques": ["calc:ia_non_fournie", "calc:donnees_sensibles_vers_ia", "outils"], "lecture": "Règle {n} : {regle}. Motif : {constat}."}], "visuels_signature": ["carte de chaleur des risques (tâches × piliers)", "matrice risques / contrôles", "rosace de confiance par pilier", "matrice valeur × confiance avec feu vert ou rouge"], "sources": [{"titre": "EY.ai Confidence Index, document de discussion (mai 2024)", "url": "https://www.ey.com/content/dam/ey-unified-site/ey-com/en-ca/services/ai/documents/ey-ai-confidence-index-discussion-paper.pdf"}, {"titre": "EY.ai Confidence Index (page produit)", "url": "https://www.ey.com/en_us/services/ai/platform/confidence-index"}, {"titre": "Deloitte, Trustworthy AI framework (communiqué, 26/08/2020)", "url": "https://www.prnewswire.com/news-releases/deloitte-introduces-trustworthy-ai-framework-to-guide-organizations-in-ethical-application-of-technology-in-the-age-of-with-301118495.html"}, {"titre": "Deloitte, State of AI in the Enterprise 2026", "url": "https://www.deloitte.com/us/en/what-we-do/capabilities/applied-artificial-intelligence/content/state-of-ai-in-the-enterprise.html"}, {"titre": "PwC, Responsible AI Toolkit", "url": "https://www.pwc.com/id/en/services/risk-assurance-services/data-analytics/responsible-ai.html"}, {"titre": "KPMG, Deploying trustworthy AI: an illustrative risk and controls guide (2025)", "url": "https://kpmg.com/kpmg-us/content/dam/kpmg/pdf/2025/trusted-ai-controls-matrix-tool-us.pdf"}, {"titre": "KPMG, Trusted AI framework", "url": "https://kpmg.com/xx/en/what-we-do/services/ai/trusted-ai-framework.html"}]}, {"id": "gemba", "nom": "Gemba", "inspire_de": "Toyota et le Lean (cartographie de la chaîne de valeur, 8 gaspillages), Six Sigma (DMAIC, efficacité du cycle), process et task mining (Celonis, UiPath)", "promesse": "Suivre le travail tel qu'il se fait vraiment, étape par étape, et chiffrer chaque minute perdue.", "ton": "Concret, d'atelier. Des verbes, des minutes, des étapes. On parle du processus, jamais de la personne.", "chapitres": [{"id": "definir", "titre": "Le flux choisi", "question": "Quel processus regarde-t-on, et combien pèse-t-il ?", "viz": "chiffre-cle", "metriques": ["taches.frequence_par_semaine", "taches.duree_moyenne_min", "calc:heures_semaine_tache", "calc:cout_tache"], "lecture": "« {tache} » : {frequence} fois par semaine, {duree} min à chaque fois, {heures} h par semaine au total ({euros} €)."}, {"id": "carte-actuelle", "titre": "La carte du flux aujourd'hui", "question": "Par quelles étapes et quelles apps passe le travail ?", "viz": "vsm", "metriques": ["taches.etapes", "taches.goulots", "paires", "calc:duree_etape"], "lecture": "{n_etapes} étapes, {n_apps} apps et {n_bascules} changements d'app pour une seule exécution. Plus longue attente : « {etape_attente} »."}, {"id": "rendement", "titre": "Le rendement du flux", "question": "Quelle part du temps produit vraiment le résultat ?", "viz": "anneau", "metriques": ["calc:pce", "calc:duree_etape", "taches.etapes"], "lecture": "Sur {duree} min, {minutes_valeur} min produisent le résultat : rendement de {pce} %. Repère publié pour un processus administratif : {repere_pce}."}, {"id": "gaspillages", "titre": "Les huit gaspillages", "question": "Quels gaspillages, et combien de minutes chacun ?", "viz": "barres-empilees", "metriques": ["taches.goulots", "bascules", "paires", "meme_sujet_min", "calc:gaspillages"], "lecture": "Attente : {min_attente} min/sem. Ressaisie entre apps : {min_ressaisie}. Reprises : {min_reprise}. Travail en double entre postes : {min_double}."}, {"id": "terrain", "titre": "Le terrain heure par heure", "question": "À quels moments le travail est-il haché ?", "viz": "carte-chaleur", "metriques": ["bascules_par_heure", "ecran_median_s", "plongee", "segments", "calc:fragmentation_horaire"], "lecture": "On reste {ecran_median_s} s en médiane sur un écran. Plus longue plongée : {plongee_min} min, à {plongee_heure}. Les heures les plus hachées : {creneau_max}."}, {"id": "variantes", "titre": "Une tâche, plusieurs chemins", "question": "Combien de façons différentes de faire la même tâche ?", "viz": "reseau", "metriques": ["calc:variantes_tache", "taches.etapes", "taches.duree_moyenne_min"], "lecture": "« {tache} » se fait par {n_variantes} chemins différents, de {duree_min} à {duree_max} min. Standardiser avant d'automatiser."}, {"id": "carte-cible", "titre": "La carte du flux demain", "question": "À quoi ressemble le flux une fois l'agent en place ?", "viz": "vsm", "metriques": ["taches.etapes", "calc:exposition_ia", "calc:duree_etape"], "lecture": "{n_etapes_cible} étapes au lieu de {n_etapes}. L'agent prend « {etapes_agent} », l'humain garde « {etapes_humain} ». Durée visée : {duree_cible} min."}, {"id": "controler", "titre": "Tenir le gain", "question": "Le gain tient-il dans la durée ?", "viz": "course", "metriques": ["calc:tendance_semaine", "taches.duree_moyenne_min", "taches.frequence_par_semaine"], "lecture": "Semaine {semaine} : « {tache} » prend {duree_apres} min, contre {duree_avant} min avant l'agent."}], "visuels_signature": ["cartographie de la chaîne de valeur (état actuel et état cible)", "barres des huit gaspillages", "jauge du rendement du flux", "carte de processus (variantes)", "avant / après"], "sources": [{"titre": "Lean Enterprise Institute, Value-Stream Mapping", "url": "https://www.lean.org/lexicon-terms/value-stream-mapping/"}, {"titre": "Lean Enterprise Institute, Muda", "url": "https://www.lean.org/lexicon-terms/muda/"}, {"titre": "Lean Enterprise Institute, Learning to See (Rother et Shook)", "url": "https://www.lean.org/store/book/learning-to-see/"}, {"titre": "Learn Lean Sigma, 8 Wastes (DOWNTIME)", "url": "https://www.learnleansigma.com/guides/8-wastes/"}, {"titre": "Quality America, Process Cycle Efficiency (repères de M. George, 2002)", "url": "https://qualityamerica.com/LSS-Knowledge-Center/leansixsigma/process_cycle_efficiency.php"}, {"titre": "ASQ, DMAIC", "url": "https://asq.org/quality-resources/dmaic"}, {"titre": "Celonis, How does process mining work", "url": "https://www.celonis.com/insights/topics/how-does-process-mining-work"}, {"titre": "UiPath, Task Mining (introduction)", "url": "https://docs.uipath.com/task-mining/automation-cloud/latest/user-guide/introduction-as"}, {"titre": "W. van der Aalst, Process Mining Manifesto", "url": "https://vdaalst.com/publications/p685.pdf"}]}];
+const demande = new URLSearchParams(location.search).get("methode");
+const M = (demande && METHODES.find(m => m.id === demande)) || METHODE || METHODES[0];
+document.title = `Audit IA · ${M.nom}`;
+
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const reduit = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const G = window.gsap;
+const CATS = { ia: "Avec l'IA", projet: "Projet et code", reunion: "Réunions", comm: "Messages", veille: "Web et veille", admin: "Administratif", systeme: "Système", pause: "Pause", ...(A.libelles || {}) };
+const ORDRE = ["ia", "projet", "reunion", "comm", "veille", "admin", "systeme", "pause"];
+const coul = c => css("--" + (CATS[c] ? c : "systeme"));
+const D0 = A.periode.debut_min, D1 = A.periode.fin_min;
+const PARAM = A.parametres || {};
+const hm = m => String(Math.floor(m / 60)).padStart(2, "0") + ":" + String(Math.floor(m % 60)).padStart(2, "0");
+const hmin = m => m >= 59.5 ? `${Math.floor(Math.round(m) / 60)}\u00a0h\u00a0${String(Math.round(m) % 60).padStart(2, "0")}` : `${Math.round(m)}\u00a0min`;
+const pct = x => Math.round(x * 100) + "\u00a0%";
+const nf = (x, d = 0) => (+x).toLocaleString("fr-FR", { minimumFractionDigits: d, maximumFractionDigits: d }).replace(/\u202f/g, "\u00a0");
+const nfa = x => nf(x, Number.isInteger(Math.round(x * 10) / 10) ? 0 : 1);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const mediane = arr => { const s = arr.filter(x => x != null).sort((a, b) => a - b); return s.length ? s[Math.floor(s.length / 2)] : null; };
+const dateCourte = (() => { const m = /^\d{4}-(\d{2})-(\d{2})/.exec(A.periode.debut || ""); return m ? `${m[2]}.${m[1]}` : ""; })();
+const pluriel = (n, mot, pl) => `${nf(n)} ${n > 1 ? (pl || mot + "s") : mot}`;
+
+/* ==========================================================================================
+   Données dérivées : tout est calculé depuis audit.json (et ses paramètres d'onboarding).
+   ========================================================================================== */
+const postes = A.postes || [];
+const frises = postes.filter(p => p.segments && p.segments.length);
+const parCat = p => (p.mesures ? p.mesures.par_categorie_min : p.agregats_min) || {};
+const actif = p => Object.values(parCat(p)).reduce((a, b) => a + b, 0);
+const equipe = {}; postes.forEach(p => Object.entries(parCat(p)).forEach(([c, m]) => equipe[c] = (equipe[c] || 0) + m));
+const totalEquipe = Object.values(equipe).reduce((a, b) => a + b, 0);
+const partIA = totalEquipe ? (equipe.ia || 0) / totalEquipe : null;
+const ensemble = (A.parallele?.ensemble_min || []).reduce((a, x) => a + x[2], 0);
+const memeSujet = (A.parallele?.meme_sujet_min || []).reduce((a, x) => a + x[3], 0);
+const segA = (p, m) => p.segments.find(s => s[0] <= m && m < s[1]);
+const outils = A.outils || {};
+const RE_IA = /orca|claude|chatgpt|codex|cursor|gemini|copilot|mistral|perplexity|opencode/i;
+const RE_AGENT = /orca|codex|cursor|opencode|claude code/i;
+
+/* Agents ou conversation, par poste (frise : mesuré ; résumé : d'après les outils) */
+const iaDe = p => { if (p.segments?.length) return { a: p.mesures?.ia_agent_min || 0, c: p.mesures?.ia_chat_min || 0 };
+  let a = 0, c = 0; Object.entries(outils).forEach(([app, v]) => { const m = v[p.id]; if (!m || !RE_IA.test(app)) return; if (RE_AGENT.test(app)) a += m; else c += m; }); return { a, c }; };
+const iaPostes = postes.map(p => ({ p, ...iaDe(p), part: actif(p) ? (parCat(p).ia || 0) / actif(p) : null }));
+const agentT = iaPostes.reduce((s, x) => s + x.a, 0), chatT = iaPostes.reduce((s, x) => s + x.c, 0);
+const partAgent = agentT + chatT ? agentT / (agentT + chatT) : null;
+
+/* Tâches : les mêmes titres chez plusieurs postes sont regroupées (heures additionnées). */
+const TAUX = .8, SEUIL_F = .5, AUTO = ["input", "action", "output"], HUMAIN = ["check", "decision"];
+const ETATS = { deja: { etat: "Déjà avec l'IA", c: "--ia" }, peut: { etat: "L'IA peut le faire", c: "--perte" }, aide: { etat: "L'IA aide", c: "--projet" }, flou: { etat: "À observer", c: "--faible" } };
+const RE_RETOUCHE = /corrig|relanc.*agent|refai|ressais|recopi|reprend/i;
+const groupes = new Map();
+(A.taches || []).forEach(t => { const k = String(t.titre || "").trim().toLowerCase(); if (!groupes.has(k)) groupes.set(k, []); groupes.get(k).push(t); });
+const taches = [...groupes.values()].map(inst => {
+  const ref = inst.slice().sort((a, b) => (b.etapes || []).length - (a.etapes || []).length)[0];
+  const freq = inst.reduce((s, t) => s + (t.frequence_par_semaine || 0), 0), minSem = inst.reduce((s, t) => s + (t.frequence_par_semaine || 0) * (t.duree_moyenne_min || 0), 0);
+  const etapes = ref.etapes || [], n = etapes.length || 1;
+  const goulots = [...new Set(inst.flatMap(t => (t.goulots || []).map(g => typeof g === "string" ? g : g.type)))];
+  const apps = [...new Set(inst.flatMap(t => t.apps || []))];
+  const scores = inst.map(t => t.automatisable?.score).filter(x => x != null);
+  const auto = etapes.filter(e => AUTO.includes(e.type)).length / n;
+  const iaEtapes = etapes.filter(e => RE_IA.test(e.app || "")).length;
+  const dejaIA = RE_IA.test(apps.join(" ")) || iaEtapes > 0;
+  const flou = goulots.includes("unclear");
+  const regle = Math.min(1, Math.max(0, auto * .8 + (goulots.includes("switching") ? .1 : 0) + (goulots.includes("waiting") ? .1 : 0) - (flou ? .3 : 0)));
+  const faisab = scores.length ? scores.reduce((a, b) => a + b, 0) / scores.length / 100 : regle;
+  const cle = dejaIA ? "deja" : flou ? "flou" : faisab >= SEUIL_F ? "peut" : "aide";
+  const heures = minSem / 60;
+  const nDec = etapes.filter(e => e.type === "decision").length, nChk = etapes.filter(e => e.type === "check").length;
+  const nPass = goulots.includes("handoff") ? inst.filter(t => (t.goulots || []).some(g => (g.type || g) === "handoff")).length : 0;
+  return { titre: ref.titre, postes: [...new Set(inst.map(t => t.poste))], frequence_par_semaine: freq, duree_moyenne_min: freq ? minSem / freq : (ref.duree_moyenne_min || 0),
+    etapes, goulots, apps, heures, auto, faisab, score: scores.length ? faisab : null, dejaIA, flou, cle, expo: ETATS[cle], iaEtapes, nDec, nChk, nPass,
+    gain: dejaIA || flou ? 0 : auto * TAUX, rework: goulots.includes("rework") };
+}).sort((a, b) => b.heures - a.heures);
+const heuresTaches = taches.reduce((s, t) => s + t.heures, 0);
+const heuresAuto = taches.reduce((s, t) => s + t.heures * t.gain, 0);
+const gains = taches.filter(t => t.gain > 0).sort((a, b) => b.heures * b.gain - a.heures * a.gain);
+const cible = gains[0];
+const flux = cible || taches[0];
+const seuilV = (() => { if (!taches.length) return 0; const h = taches.map(t => t.heures), k = Math.ceil(h.length / 2); return h.length > 1 ? (h[k - 1] + h[Math.min(k, h.length - 1)]) / 2 : h[0] / 2; })();
+const quadrant = (t, fx = "faisab") => (t.heures >= seuilV ? (t[fx] >= SEUIL_F ? "rapides" : "chantiers") : (t[fx] >= SEUIL_F ? "marge" : "pieges"));
+
+/* Carte de chaleur : cinq critères notés 0-3 par des règles simples sur les étapes, les apps et les goulots */
+const CRITERES = [
+  { id: "frequence", nom: "Fréquence", note: t => { const f = t.frequence_par_semaine || 0; return [f >= 30 ? 3 : f >= 20 ? 2 : f >= 10 ? 1 : 0, `${nfa(f)}×/sem.`, `elle revient ${nfa(f)} fois par semaine`]; } },
+  { id: "ressaisie", nom: "Ressaisie et allers-retours", note: t => { const n = t.etapes.filter(e => ["input", "output"].includes(e.type)).length, s = t.goulots.includes("switching"); return [Math.min(3, n + (s ? 1 : 0)), `${n} saisie${n > 1 ? "s" : ""}${s ? " + bascules" : ""}`, `elle enchaîne ${n} saisie${n > 1 ? "s" : ""}${s ? " et des allers-retours entre applications" : ""}`]; } },
+  { id: "decisions", nom: "Décisions humaines", note: t => { const n = t.nDec + t.nChk; return [Math.min(3, n), `${t.nDec} déc. · ${t.nChk} contr.`, `elle demande ${pluriel(t.nDec, "décision")} et ${pluriel(t.nChk, "vérification")}`]; } },
+  { id: "sensibilite", nom: "Sensibilité des données", note: t => { const x = (t.titre + " " + t.etapes.map(e => e.texte).join(" ")).toLowerCase();
+      if (/pai|abonnement|factur|bancaire|banque|salaire|contrat|\brib\b|trésorerie|impayé/.test(x)) return [3, "paiement", "elle touche des données de paiement"];
+      if (/mail|pièce|client|candidat|personnel|\brh\b|santé|commande|devis|retour/.test(x)) return [2, "données clients", "elle manipule des données clients"];
+      if (/dépôt|code|commit|repo|projet|produit|reporting/.test(x)) return [1, "interne", "elle touche des données internes"];
+      return [0, "public", "elle ne touche que des données publiques"]; } },
+  { id: "maturite", nom: "Maturité IA", ia: true, note: t => t.dejaIA ? [3, "en place", "l'IA y est déjà"] : (t.score != null ? [t.faisab >= .66 ? 2 : t.faisab >= .33 ? 1 : 0, `${Math.round(t.faisab * 100)} % auto.`, "l'IA n'y est pas encore"] : /\bia\b|agent|\bai\b/i.test(t.titre) ? [1, "explorée", "l'IA y est explorée"] : [0, "aucune", "l'IA n'y est pas"]) },
+];
+const notes = taches.map(t => ({ t, n: CRITERES.map(c => c.note(t)) }));
+const risques = notes.map(({ t, n }) => { const k = [3, 1, 2].sort((a, b) => n[b][0] - n[a][0])[0]; return { t, crit: CRITERES[k], note: n[k] }; }).filter(r => r.note[0] >= 2).sort((a, b) => b.note[0] - a.note[0] || b.t.heures - a.t.heures);
+taches.forEach(t => { const s = notes.find(x => x.t === t).n[3][0]; t.confiance = Math.max(0, Math.min(1, 1 - s / 3 - (t.flou ? .25 : 0))); });
+const CONTROLES = { sensibilite: ["Données sensibles envoyées à un outil d'IA", "Masquer ou exclure ces données avant tout envoi à l'IA, et journaliser les envois."],
+  ressaisie: ["Erreur de recopie entre applications", "Contrôle de cohérence automatique entre la source et la destination."],
+  decisions: ["Décision humaine court-circuitée par l'automatisation", "Validation humaine obligatoire avant chaque étape de décision."] };
+
+/* Arbre MECE : temps total → catégories → applications */
+const RE_CAT = [["ia", RE_IA], ["pause", /musique|music|spotify|deezer|youtube|netflix/i], ["reunion", /meet|zoom|teams/i], ["comm", /discord|slack|whatsapp|gmail|outlook|messages|mail|zendesk/i], ["admin", /agenda|calendar|drive/i], ["systeme", /finder|réglages|usernotificationcenter|securityagent|loginwindow|app store/i], ["veille", /chrome|firefox|safari|edge|arc|brave/i], ["projet", /github|linear|notion|visual studio|terminal|figma|.*/i]];
+const categorieApp = app => (RE_CAT.find(([, r]) => r.test(app)) || ["projet"])[0];
+const arbre = (() => { const t = {}; const ajout = (c, a, m) => { (t[c] ||= {}); t[c][a] = (t[c][a] || 0) + m; };
+  frises.forEach(p => p.segments.forEach(s => ajout(s[2], s[5], s[1] - s[0])));
+  postes.filter(p => !p.segments?.length).forEach(p => { const reste = { ...parCat(p) };
+    Object.entries(outils).forEach(([app, v]) => { const m = v[p.id], c = categorieApp(app); if (!m || !reste[c]) return; const pris = Math.min(m, reste[c]); ajout(c, app, pris); reste[c] -= pris; });
+    Object.entries(reste).forEach(([c, m]) => { if (m > .05) ajout(c, "Autres apps", m); }); });
+  return t; })();
+
+/* Outils, agents, paires */
+const appsAgents = new Set(); frises.forEach(p => p.segments.forEach(s => { if (s[3] === "agent") appsAgents.add(s[5]); }));
+postes.filter(p => !p.segments?.length).forEach(p => Object.entries(outils).forEach(([app, v]) => { if (v[p.id] && RE_AGENT.test(app)) appsAgents.add(app); }));
+const outilsIA = Object.keys(outils).filter(a => RE_IA.test(a) || appsAgents.has(a));
+const outilsListe = Object.entries(outils).map(([n, v]) => ({ n, v, tot: Object.values(v).reduce((a, b) => a + b, 0), postes: Object.keys(v).length, ia: outilsIA.includes(n) })).sort((a, b) => b.tot - a.tot);
+const partages = outilsListe.filter(o => o.postes >= 2);
+const fournis = PARAM.outils_fournis ? PARAM.outils_fournis.map(x => x.toLowerCase()) : null;
+const horsListe = fournis ? outilsIA.filter(a => !fournis.includes(a.toLowerCase())) : null;
+const paires = {}; frises.forEach(p => (p.mesures?.paires || []).forEach(([a, b, n]) => { const k = a + "→" + b; paires[k] = (paires[k] || 0) + n; }));
+const paireTop = Object.entries(paires).sort((a, b) => b[1] - a[1])[0];
+
+/* Attention, terrain heure par heure */
+const medEcran = mediane(frises.map(p => p.mesures?.ecran_median_s));
+const plongeur = frises.slice().sort((a, b) => (b.mesures?.plongee?.minutes || 0) - (a.mesures?.plongee?.minutes || 0))[0];
+const plongeeMax = plongeur?.mesures?.plongee?.minutes || 0;
+const PAS = 30, T0 = Math.floor(D0 / PAS) * PAS, creneaux = []; for (let m = T0; m < D1; m += PAS) creneaux.push(m);
+const fragments = frises.map(p => ({ p, n: creneaux.map(m => p.segments.filter((s, i) => i && s[0] >= m && s[0] < m + PAS && s[5] !== p.segments[i - 1][5]).length),
+  actif: creneaux.map(m => p.segments.reduce((s, x) => s + Math.max(0, Math.min(m + PAS, x[1]) - Math.max(m, x[0])), 0)) }));
+const creneauMax = (() => { if (!fragments.length) return null; const tot = creneaux.map((_, k) => fragments.reduce((s, f) => s + f.n[k], 0)); const k = tot.indexOf(Math.max(...tot)); return tot[k] ? `${hm(creneaux[k])}–${hm(creneaux[k] + PAS)}` : null; })();
+
+/* VSM du flux à améliorer (la tâche n°1 à automatiser), état actuel et état cible */
+const vsmDe = t => { if (!t || !t.etapes.length || !t.duree_moyenne_min) return null;
+  const d = t.duree_moyenne_min / t.etapes.length;
+  const etapes = t.etapes.map(e => ({ ...e, d, classe: RE_RETOUCHE.test(e.texte || "") ? "gaspillage" : ["action", "output"].includes(e.type) ? "valeur" : "necessaire" }));
+  const va = etapes.filter(e => e.classe === "valeur").reduce((s, e) => s + e.d, 0);
+  const apres = etapes.map(e => ({ ...e, agent: AUTO.includes(e.type) && !t.dejaIA, d2: AUTO.includes(e.type) && !t.dejaIA ? e.d * (1 - TAUX) : e.d }));
+  return { t, etapes, apres, va, total: t.duree_moyenne_min, pce: va / t.duree_moyenne_min, cible: apres.reduce((s, e) => s + e.d2, 0) }; };
+const vsm = vsmDe(flux);
+
+/* Gaspillages (8 du Lean), en minutes par semaine quand c'est mesurable */
+const parSemaine = filtre => taches.reduce((s, t) => s + t.etapes.filter(filtre).length * (t.duree_moyenne_min / (t.etapes.length || 1)) * t.frequence_par_semaine, 0);
+const nGoulot = g => taches.filter(t => t.goulots.includes(g)).length;
+const GASPILLAGES = [
+  { nom: "Défauts et reprises", m: taches.length ? parSemaine(e => RE_RETOUCHE.test(e.texte || "")) : null, n: nGoulot("rework"), quoi: "reprises" },
+  { nom: "Surproduction", m: null, quoi: "travail produit avant d'être demandé" },
+  { nom: "Attente", m: null, n: nGoulot("waiting"), quoi: "la durée des attentes" },
+  { nom: "Talents inemployés", m: null, quoi: "le temps d'expert passé sur de la saisie" },
+  { nom: "Transport d'information", m: taches.length ? taches.filter(t => t.goulots.includes("switching") || t.goulots.includes("handoff")).reduce((s, t) => s + t.etapes.filter(e => ["input", "output"].includes(e.type)).length * t.duree_moyenne_min / (t.etapes.length || 1) * t.frequence_par_semaine, 0) : null, n: nGoulot("switching") + nGoulot("handoff") },
+  { nom: "Stocks", m: null, quoi: "les dossiers en attente de traitement" },
+  { nom: "Mouvements", m: null, txt: frises.length ? `${nf(frises.reduce((s, p) => s + (p.mesures?.bascules_par_heure || 0), 0) / frises.length, 1)} changements d'app / h` : null, quoi: "les changements d'application" },
+  { nom: "Contrôles en trop", m: taches.length ? parSemaine(e => e.type === "check") : null },
+];
+
+/* Recommandations : chacune n'existe que si la mesure qui la justifie existe */
+const candidats = [];
+if (appsAgents.size >= 2) candidats.push({ type: "gens", titre: "Une seule méthode pour piloter les agents", texte: `${appsAgents.size} outillages d'agents coexistent (${[...appsAgents].join(", ")}). Écrire les consignes communes une fois, en « skills » partagées, et les brancher partout.` });
+if (cible) candidats.push({ type: "tech", titre: `Automatiser « ${cible.titre.toLowerCase()} »`, texte: `${hmin(cible.heures * 60)} par semaine aujourd'hui, dont ${hmin(cible.heures * cible.gain * 60)} que l'IA peut reprendre. Générer l'agent depuis les étapes observées, puis remesurer une semaine.` });
+if (medEcran) candidats.push({ type: "gens", titre: "Protéger les plongées", texte: `Un changement d'écran toutes les ${medEcran} s en médiane. Regrouper messages et veille sur des créneaux, et suivre chaque semaine la plus longue plongée (${Math.round(plongeeMax)} min aujourd'hui).` });
+if (gains[1]) candidats.push({ type: "tech", titre: `Puis « ${gains[1].titre.toLowerCase()} »`, texte: `${hmin(gains[1].heures * 60)} par semaine${gains[1].postes.length > 1 ? `, chez ${gains[1].postes.length} postes` : ""}. Même méthode, une fois le premier agent en place.` });
+if (horsListe && horsListe.length) candidats.push({ type: "gens", titre: "Fournir un outil d'IA officiel", texte: `${horsListe.length} outil${horsListe.length > 1 ? "s" : ""} d'IA utilisé${horsListe.length > 1 ? "s" : ""} hors de la liste fournie (${horsListe.join(", ")}). En choisir un, l'ouvrir à tous, et poser ses règles d'usage.` });
+if (risques.some(r => r.crit.id === "sensibilite")) candidats.push({ type: "gens", titre: "Encadrer les données sensibles", texte: `${risques.filter(r => r.crit.id === "sensibilite").length} tâche(s) touchent des données clients ou de paiement. Écrire ce qui peut partir vers une IA, et ce qui ne le peut pas.` });
+if (partIA != null && partIA < .1) candidats.push({ type: "gens", titre: "Former l'équipe à déléguer", texte: `L'IA ne pèse que ${pct(partIA)} du temps d'écran. Une formation courte, sur les tâches de ce rapport, avant de déployer quoi que ce soit.` });
+const recos = candidats.slice(0, 3);
+if (!recos.length) recos.push({ type: "gens", titre: "Élargir l'observation", texte: "Les mesures disponibles ne suffisent pas encore à justifier une action. Ajouter des postes et une semaine complète d'observation." });
+const limites = [];
+const sansFrise = postes.filter(p => !p.segments?.length).length;
+if (sansFrise) limites.push(`${sansFrise} poste${sansFrise > 1 ? "s" : ""} sur ${postes.length} sans frise minute par minute (résumé validé seulement).`);
+const nJours = (() => { const d = x => Date.parse(String(x || "").slice(0, 10)), a = d(A.periode.debut), b = d(A.periode.fin); return a && b ? Math.max(1, Math.round((b - a) / 864e5) + 1) : 1; })();
+limites.push(nJours > 1 ? `${nJours} jours observés, une seule semaine.` : `Une fenêtre de ${hmin(D1 - D0)} observée, pas une semaine.`);
+const postesTaches = new Set(taches.flatMap(t => t.postes)).size;
+if (taches.length) limites.push(`Tâches décrites pour ${postesTaches} poste${postesTaches > 1 ? "s" : ""} sur ${postes.length}, extrapolées à la semaine.`); else limites.push("Aucune tâche répétée décrite pour l'instant.");
+limites.push("La qualité du travail n'est pas mesurée, seulement le temps.");
+
+/* Hypothèses testées, règles, capacités : des listes calculées, pas écrites à la main */
+const hypotheses = [];
+if (partIA != null) hypotheses.push({ h: "L'équipe se sert encore peu de l'IA", vrai: partIA < .2, preuve: `${pct(partIA)} du temps d'écran passe par un outil d'IA` });
+if (partAgent != null) hypotheses.push({ h: "L'IA sert surtout à discuter avec un chatbot", vrai: partAgent < .5, preuve: `${pct(partAgent)} du temps d'IA passe par des agents qui agissent seuls` });
+if (medEcran) hypotheses.push({ h: "On reste longtemps concentré sur un même écran", vrai: medEcran >= 120, preuve: `${medEcran} s par écran en médiane, plus longue plongée de ${Math.round(plongeeMax)} min` });
+if (frises.length >= 2 && ensemble) hypotheses.push({ h: "Les postes travaillent ensemble sur les mêmes sujets", vrai: memeSujet / ensemble >= .25, preuve: `${hmin(memeSujet)} sur le même sujet, sur ${hmin(ensemble)} passées côte à côte` });
+if (taches.length) { const d = taches.filter(t => t.dejaIA).reduce((s, t) => s + t.heures, 0); hypotheses.push({ h: "Les tâches répétées sont déjà outillées par l'IA", vrai: d / heuresTaches >= .5, preuve: `${hmin(d * 60)} sur ${hmin(heuresTaches * 60)} de tâches répétées se font déjà avec l'IA` }); }
+const regles = [];
+if (outilsIA.length) regles.push({ titre: "Tenir la liste des outils d'IA autorisés", constat: `${pluriel(outilsIA.length, "outil")} d'IA en usage (${outilsIA.join(", ")})${horsListe ? `, dont ${horsListe.length} hors de la liste fournie` : ", sans liste de référence connue"}.` });
+if (risques.some(r => r.crit.id === "sensibilite")) regles.push({ titre: "Aucune donnée client ou de paiement vers une IA sans relecture", constat: `${pluriel(risques.filter(r => r.crit.id === "sensibilite").length, "tâche")} touchent ces données : ${risques.filter(r => r.crit.id === "sensibilite").map(r => `« ${r.t.titre} »`).slice(0, 2).join(", ")}.` });
+if (partAgent != null && partAgent > .5) regles.push({ titre: "Relire chaque sortie d'agent avant qu'elle parte", constat: `${pct(partAgent)} du temps d'IA passe par des agents qui agissent seuls.` });
+if (taches.some(t => t.nDec)) regles.push({ titre: "Garder la décision à un humain", constat: `${pluriel(taches.filter(t => t.nDec).length, "tâche")} comportent une étape de décision.` });
+const nUtilIA = iaPostes.filter(x => (x.part || 0) > 0).length;
+const capacites = [
+  { nom: "Adoption", ok: true, txt: `${nUtilIA} postes sur ${postes.length} utilisent l'IA${partIA != null ? `, ${pct(partIA)} du temps d'écran` : ""}.` },
+  { nom: "Technologie", ok: true, txt: outilsIA.length ? `${pluriel(outilsIA.length, "outil")} d'IA en usage : ${outilsIA.join(", ")}.` : "Aucun outil d'IA observé." },
+  { nom: "Données partagées", ok: true, txt: `${pluriel(partages.length, "outil")} commun${partages.length > 1 ? "s" : ""} sur ${outilsListe.length}${partages.length ? ` (${partages.map(o => o.n).join(", ")})` : ""}.` },
+  { nom: "Coordination", ok: frises.length >= 2, txt: frises.length >= 2 ? `${hmin(memeSujet)} sur le même sujet en parallèle, sur ${hmin(ensemble)} côte à côte.` : "Il faut au moins deux frises minute par minute." },
+  { nom: "Talents", ok: false, txt: "Pas visible à l'écran : à évaluer en entretien." },
+  { nom: "Modèle opérationnel", ok: false, txt: "Pas visible à l'écran : qui décide, qui exécute, à évaluer en entretien." },
+];
+
+/* ==========================================================================================
+   Catalogue des métriques : id → { n (nombre), k (sorte : pct, min, heures, s, eur, n, txt), f (format), u, l, c }
+   Les méthodes s'y réfèrent par {id} dans leurs textes. Une métrique absente devient « pas encore observé ».
+   ========================================================================================== */
+const MET = {};
+const met = (id, o) => { if (o.n == null && o.v == null) return; if (o.n != null && !Number.isFinite(o.n)) return; o.k ||= "n"; if (!o.f) o.f = { pct: x => Math.round(x) + " %", min: hmin, heures: x => nf(Math.round(x)) + " h", s: x => Math.round(x) + " s", eur: x => nf(Math.round(x)) + " €" }[o.k] || nfa; if (o.v == null) o.v = o.f(o.n); MET[id] = o; return o; };
+const txt = (id, v, l) => v ? met(id, { v, k: "txt", l }) : null;
+met("temps_total", { n: totalEquipe || null, k: "min", l: "de travail à l'écran, tous postes" });
+met("postes", { n: postes.length || null, u: "postes", l: "postes observés" });
+met("postes_frise", { n: frises.length, u: "postes", l: "suivis minute par minute" });
+met("periode", { v: nJours > 1 ? `${nJours} jours, ${hm(D0)} → ${hm(D1)}` : `${hm(D0)} → ${hm(D1)}`, k: "txt", l: "fenêtre observée" });
+met("n_jours", { n: nJours, u: "jours", l: "jours observés" });
+if (partIA != null) { met("part_ia", { n: partIA * 100, k: "pct", l: "du temps d'écran avec un outil d'IA", c: "ia" }); met("jours_actifs_ia", { n: partIA > 0 ? nJours : 0, u: "jours", l: "jours avec de l'IA" }); }
+if (partAgent != null) { met("part_agent", { n: partAgent * 100, k: "pct", l: "du temps d'IA passe par des agents", c: "ia" }); met("part_chat", { n: (1 - partAgent) * 100, k: "pct", l: "du temps d'IA en conversation" }); }
+const partsIA = iaPostes.filter(x => x.part != null);
+if (partsIA.length >= 2) { const lo = Math.min(...partsIA.map(x => x.part)), hi = Math.max(...partsIA.map(x => x.part));
+  met("ecart_ia", { n: Math.round((hi - lo) * 100), f: x => Math.round(x) + " pts", t: `de ${pct(lo)} à ${pct(hi)}`, l: `d'écart d'usage de l'IA entre postes (${pct(lo)} à ${pct(hi)})` }); }
+met("n_utilisateurs_ia", { n: nUtilIA, u: "postes", l: "postes qui utilisent l'IA" });
+const catTri = Object.entries(equipe).sort((a, b) => b[1] - a[1]);
+if (catTri[0]) { txt("cat_1", CATS[catTri[0][0]], "premier poste de temps"); met("cat_1_min", { n: catTri[0][1], k: "min", l: `dans « ${CATS[catTri[0][0]]} »` }); met("cat_1_part", { n: catTri[0][1] / totalEquipe * 100, k: "pct", l: `du temps dans « ${CATS[catTri[0][0]]} »`, c: catTri[0][0] === "ia" ? "ia" : null });
+  met("n_taches_branche", { n: taches.filter(t => catTri[0][0] === "ia" ? t.dejaIA : t.apps.some(a => categorieApp(a) === catTri[0][0])).length, u: "tâches", l: "tâches répétées dans cette branche" }); }
+if (catTri[1]) { txt("cat_2", CATS[catTri[1][0]], "deuxième poste de temps"); met("cat_2_min", { n: catTri[1][1], k: "min", l: `dans « ${CATS[catTri[1][0]]} »` }); }
+const partDe = cs => totalEquipe ? cs.reduce((s, c) => s + (equipe[c] || 0), 0) / totalEquipe * 100 : null;
+met("part_coordination", { n: partDe(["reunion", "comm", "admin"]), k: "pct", l: "du temps en réunions, messages et administratif" });
+met("part_complexite", { n: partDe(["reunion", "comm", "admin"]), k: "pct", l: "du temps en coordination interne" });
+const denomCoeur = ["projet", "reunion", "comm", "admin"].reduce((s, c) => s + (equipe[c] || 0), 0);
+if (denomCoeur) met("part_coeur", { n: (equipe.projet || 0) / denomCoeur * 100, k: "pct", l: "du temps de travail sur le cœur du métier" });
+if (frises.length) {
+  met("ecran_median_s", { n: medEcran, k: "s", l: "par écran, en médiane, avant de changer" });
+  const bph = frises.reduce((s, p) => s + (p.mesures?.bascules_par_heure || 0), 0) / frises.length;
+  met("bascules_heure", { n: bph, f: x => nf(x, 1), u: "par heure", t: `${nf(bph, 1)} changements d'application par heure en moyenne`, l: "changements d'application par heure" });
+  met("plongee_max", { n: plongeeMax, k: "min", l: "la plus longue plongée sans décrocher" });
+  if (plongeur) txt("plongee_heure", hm(plongeur.mesures.plongee.debut), "début de la plus longue plongée");
+  txt("creneau_max", creneauMax, "créneau le plus haché");
+  met("minutes_ensemble", { n: ensemble, k: "min", l: "à l'écran en même temps" });
+  met("meme_sujet_min", { n: memeSujet, k: "min", l: "sur le même sujet en même temps" });
+}
+met("outils", { n: outilsListe.length, u: "outils", l: "outils utilisés plus de 3 min" });
+met("outils_partages", { n: partages.length, u: "outils", l: "outils partagés par plusieurs postes" });
+met("seuil_postes", { n: 2, l: "postes au moins" });
+met("outils_ia", { n: outilsIA.length, u: "outils", l: `outils d'IA en usage${outilsIA.length ? ` (${outilsIA.join(", ")})` : ""}`, c: "ia" });
+if (horsListe) met("n_hors_liste", { n: horsListe.length, u: "outils", l: "outils d'IA hors de la liste fournie" });
+txt("outil_1", (partages[0] || outilsListe[0])?.n, "outil central");
+if (paireTop) { const [a, b] = paireTop[0].split("→"); txt("app_a", a); txt("app_b", b); met("n_paire", { n: paireTop[1], l: "passages entre ces deux apps" }); }
+const COUT = PARAM.cout_horaire || null;
+if (COUT) met("cout_horaire", { n: COUT, k: "eur", l: "coût horaire chargé (onboarding)" });
+if (taches.length) {
+  met("taches", { n: taches.length, u: "tâches", l: "tâches répétées décrites" });
+  met("heures_taches", { n: heuresTaches * 60, k: "min", u: "par semaine", l: "de tâches répétées par semaine" });
+  met("heures_automatisables", { n: heuresAuto * 60, k: "min", u: "par semaine", l: "par semaine que l'IA peut reprendre", c: "ia" });
+  met("heures_restantes", { n: (heuresTaches - heuresAuto) * 60, k: "min", u: "par semaine", l: "par semaine qui restent humaines" });
+  met("heures_an", { n: heuresAuto * 47, k: "heures", u: "par an", l: "rendues sur une année de 47 semaines", c: "ia" });
+  met("jours_an", { n: heuresAuto * 47 / 7, u: "jours", l: "de travail de 7 h rendus par an", c: "ia" });
+  met("taches_cibles", { n: gains.length, u: "tâches", l: "tâches que l'IA peut reprendre en partie" });
+  met("gains_rapides", { n: taches.filter(t => quadrant(t) === "rapides").length, u: "tâches", l: "tâches en « gains rapides »" });
+  met("n_a_lancer", { n: taches.filter(t => quadrant(t) === "rapides" && !t.dejaIA).length, u: "tâches", l: "tâches « à lancer »" });
+  met("n_a_laisser", { n: taches.filter(t => quadrant(t) === "pieges").length, u: "tâches", l: "tâches « à laisser »" });
+  met("taches_deja_ia", { n: taches.filter(t => t.dejaIA).length, u: "tâches", l: "tâches déjà faites avec l'IA", c: "ia" });
+  met("n_taches_ia", { n: taches.filter(t => t.dejaIA).length, u: "tâches", l: "tâches où l'IA intervient", c: "ia" });
+  const avecIA = taches.filter(t => t.dejaIA); if (avecIA.length) met("part_taches_verifiees", { n: avecIA.filter(t => t.nChk).length / avecIA.length * 100, k: "pct", l: "des tâches avec IA ont une vérification humaine" });
+  met("taches_sensibles", { n: notes.filter(x => x.n[3][0] >= 2).length, u: "tâches", l: "tâches qui touchent des données sensibles" });
+  txt("tache_1", taches[0].titre, "tâche n°1 en heures par semaine");
+  met("tache_1_heures", { n: taches[0].heures * 60, k: "min", u: "par semaine", l: `pour « ${taches[0].titre} »` });
+  let cum = 0, k = 0; while (k < taches.length && cum / heuresTaches < .8) cum += taches[k++].heures;
+  met("n_top", { n: k, u: "tâches", l: `tâches font ${pct(cum / heuresTaches)} du temps répété` }); met("part_cumulee", { n: cum / heuresTaches * 100, k: "pct", l: `du temps répété dans les ${k} premières tâches` }); met("part_top", { n: cum / heuresTaches * 100, k: "pct", l: "du temps répété" });
+  met("h_actuel", { n: heuresTaches * 60, k: "min", l: "par semaine aujourd'hui" }); met("h_cible", { n: (heuresTaches - heuresAuto) * 60, k: "min", l: "par semaine après automatisation" });
+  gains.slice(0, 3).forEach((t, i) => met(`h_gain_${i + 1}`, { n: t.heures * t.gain * 60, k: "min", l: `repris sur « ${t.titre} »` }));
+  txt("hypothese_gain", `${pct(TAUX)} de la durée des étapes de saisie, d'action et de sortie`, "taux de gain supposé");
+  const nv = { deployer: taches.filter(t => t.cle === "peut"), refondre: taches.filter(t => t.cle === "aide"), inventer: taches.filter(t => t.cle === "flou") };
+  met("h_deployer", { n: nv.deployer.reduce((s, t) => s + t.heures * t.gain, 0) * 60, k: "min", l: "par semaine à déployer" });
+  met("h_refondre", { n: nv.refondre.reduce((s, t) => s + t.heures, 0) * 60, k: "min", l: "par semaine à refondre" });
+  met("n_refondre", { n: nv.refondre.length, u: "processus", l: "processus à refondre" }); met("n_inventer", { n: nv.inventer.length, u: "pistes", l: "pistes à inventer" });
+  const go = taches.filter(t => t.heures >= seuilV && t.confiance >= SEUIL_F), att = taches.filter(t => t.confiance < SEUIL_F);
+  met("n_go", { n: go.length, u: "tâches", l: "tâches en zone « aller »" }); met("n_attendre", { n: att.length, u: "tâches", l: "tâches qui attendent un contrôle" }); txt("tache_bloquee", att[0]?.titre, "tâche bloquée");
+  met("n_prioritaires", { n: taches.filter(t => quadrant(t) === "rapides").length, u: "tâches", l: "tâches importantes et bousculées" });
+  if (COUT) { met("euros_total", { n: heuresTaches * COUT, k: "eur", u: "par semaine", l: "par semaine dans les tâches répétées" }); met("euros_recuperables", { n: heuresAuto * COUT, k: "eur", u: "par semaine", l: "par semaine que l'IA peut reprendre", c: "ia" }); met("euros_an", { n: heuresAuto * 47 * COUT, k: "eur", u: "par an", l: "par an rendus (47 semaines)", c: "ia" }); }
+}
+if (cible) { txt("cible", cible.titre, "tâche à automatiser en premier"); met("cible_gain", { n: cible.heures * cible.gain * 60, k: "min", u: "par semaine", l: `rendues sur « ${cible.titre} »`, c: "ia" }); met("heures_visees", { n: cible.heures * cible.gain * 60, k: "min", l: "gain visé par semaine" }); }
+if (flux) { txt("tache_flux", flux.titre, "flux étudié"); met("frequence", { n: flux.frequence_par_semaine, u: "fois par semaine", l: `exécutions de « ${flux.titre} »` }); met("duree", { n: flux.duree_moyenne_min, k: "min", l: "par exécution" }); met("heures", { n: flux.heures * 60, k: "min", u: "par semaine", l: `pour « ${flux.titre} »` });
+  met("n_etapes", { n: flux.etapes.length, u: "étapes", l: "étapes par exécution" }); met("n_apps", { n: new Set(flux.etapes.map(e => e.app).filter(Boolean)).size, u: "apps", l: "applications traversées" });
+  met("n_bascules", { n: flux.etapes.filter((e, i) => i && e.app !== flux.etapes[i - 1].app).length, l: "changements d'app par exécution" });
+  if (COUT) met("euros", { n: flux.heures * COUT, k: "eur", l: "par semaine" }); }
+if (vsm) { met("pce", { n: vsm.pce * 100, k: "pct", l: "du temps de traversée à valeur ajoutée (PCE)" }); met("minutes_valeur", { n: vsm.va, k: "min", f: x => nf(x, 1) + " min", l: "à valeur ajoutée par exécution" });
+  met("duree_avant", { n: vsm.total, k: "min", l: "par exécution aujourd'hui" }); met("duree_apres", { n: vsm.cible, k: "min", f: x => nf(x, 1) + " min", l: "par exécution avec l'agent (projection)" }); met("duree_cible", { n: vsm.cible, k: "min", f: x => nf(x, 1) + " min", l: "par exécution visée" });
+  const ag = vsm.apres.filter(e => e.agent), hu = vsm.apres.filter(e => !e.agent);
+  met("n_etapes_cible", { n: hu.length + (ag.length ? 1 : 0), u: "étapes", l: "étapes une fois l'agent en place" }); txt("etapes_agent", ag.map(e => e.texte.toLowerCase()).join(", "), "pris par l'agent"); txt("etapes_humain", hu.map(e => e.texte.toLowerCase()).join(", "), "gardé par l'humain"); }
+const gm = Object.fromEntries(GASPILLAGES.map(g => [g.nom, g]));
+if (gm["Transport d'information"].m != null) met("min_ressaisie", { n: gm["Transport d'information"].m, k: "min", l: "par semaine de ressaisie entre apps" });
+if (gm["Défauts et reprises"].m) met("min_reprise", { n: gm["Défauts et reprises"].m, k: "min", l: "par semaine de reprises" });
+if (frises.length >= 2) met("min_double", { n: memeSujet, k: "min", l: "sur le même sujet en parallèle" });
+met("min_gaspillage", { n: GASPILLAGES.reduce((s, g) => s + (g.m || 0), 0), k: "min", u: "par semaine", l: "par semaine de gaspillages chiffrables", c: "perte" });
+const typesR = { gens: recos.filter(r => r.type === "gens").length, tech: recos.filter(r => r.type === "tech").length, algo: recos.filter(r => r.type === "algo").length };
+met("part_gens", { n: typesR.gens / recos.length * 100, k: "pct", l: "des recommandations portent sur les personnes et les processus" }); met("part_tech", { n: typesR.tech / recos.length * 100, k: "pct", l: "sur la technologie et les données" }); met("part_algo", { n: typesR.algo / recos.length * 100, k: "pct", l: "sur les algorithmes" });
+met("actions", { n: recos.length, u: recos.length > 1 ? "actions" : "action", l: "actions issues des mesures" });
+recos.forEach((r, i) => txt(`action_h${i + 1}`, r.titre.charAt(0).toLowerCase() + r.titre.slice(1), `horizon ${i + 1}`));
+txt("action", recos[0]?.titre);
+if (hypotheses[0]) { txt("hypothese", hypotheses[0].h); txt("verdict", hypotheses[0].vrai ? "confirmée" : "démentie"); txt("preuve", hypotheses[0].preuve); }
+if (regles[0]) { met("n", { n: 1 }); txt("regle", regles[0].titre.charAt(0).toLowerCase() + regles[0].titre.slice(1)); txt("constat", regles[0].constat.replace(/\.$/, "")); }
+if (risques[0]) { const r = risques[0]; txt("risque", CONTROLES[r.crit.id][0]); txt("controle", CONTROLES[r.crit.id][1].replace(/\.$/, "").replace(/^./, c => c.toLowerCase())); txt("niveau", r.note[0] >= 3 ? "élevé" : "moyen"); txt("pilier", r.crit.nom); txt("raison", r.note[2]); }
+const profil = (() => { if (partIA == null || partAgent == null) return null; return partIA >= .5 ? (partAgent >= .5 ? "Délégation" : "Conversation") : (partAgent >= .5 ? "Essais d'agents" : "Découverte"); })();
+txt("profil", profil && `« ${profil} »`, "profil IA de l'équipe");
+
+/* Les noms employés par la recherche (methodes.json) qui désignent une métrique déjà calculée */
+const ALIAS = { n_postes: "postes", actif_h: "temps_total", heures_recuperables: "heures_automatisables", n_taches_cibles: "taches_cibles", n_taches: "taches",
+  h_cat_1: "cat_1_min", h_cat_2: "cat_2_min", branche_max: "cat_1", part_branche: "cat_1_part", h_tache_1: "tache_1_heures", n_outils_communs: "outils_partages",
+  meme_sujet_h: "meme_sujet_min", n_outils_ia: "outils_ia", categorie_max: "cat_1", bascules_par_heure: "bascules_heure", plongee_min: "plongee_max", tache_2: "tache_2", euros_semaine: "euros_total" };
+/* Ce qu'il faudrait capter quand une donnée manque */
+const RAISONS = [[/^(euros|cout_horaire)/, "le coût horaire (question d'onboarding)"], [/^(role|date)$/, "les responsables et les dates, à fixer avec vous"], [/^(nps|part_promoteurs|part_passifs|part_detracteurs|n_reponses)$/, "un sondage des équipes (une question de 0 à 10)"],
+  [/^n_hors_liste$/, "la liste des outils fournis par l'entreprise (onboarding)"], [/^semaine$/, "une deuxième semaine de mesure"], [/^repere_pce$/, "un repère publié vérifié"], [/^(etape_attente|min_attente)$/, "la durée des attentes, non chronométrée"],
+  [/^(n_variantes|duree_min|duree_max)$/, "plusieurs exécutions observées de la même tâche"], [/^(niveau_global|pilier_min|note_min)$/, "une notation par pilier, en entretien"], [/^(indicateur|valeur|couleur|cible)$/, "des cibles fixées avec vous"],
+  [/^n_passages$/, "les passages de main entre personnes"], [/^n_decisions$/, "des étapes de décision"], [/^(h_gain_|tache_|euros_)\d$/, "d'autres tâches automatisables"], [/^(min_double|meme_sujet|n_paire|app_)/, "au moins deux frises minute par minute"],
+  [/^(ecran|bascules|plongee|creneau)/, "une frise minute par minute (export complet)"], [/^(etapes_humain)$/, "une étape gardée par l'humain"], [/^(part_taches_verifiees|n_taches_ia)$/, "des tâches où l'IA intervient déjà"], [/^(profil|part_agent|part_chat)$/, "le temps passé dans des outils d'IA"]];
+const raison = id => (RAISONS.find(([r]) => r.test(id)) || [0, "cette mesure"])[1];
+
+/* Contexte d'un chapitre : la tâche dont on parle dépend de ce que le chapitre montre */
+function contexte(ch, variante) {
+  const L = `${ch.titre || ""} ${ch.question || ""} ${ch.lecture || ""}`, refs = ch.metriques || [], ctx = {};
+  const tache = (id, t, sorte = "titre") => { if (t) ctx[id] = { v: t.titre, k: "txt" }; };
+  // {tache} et ses compagnons
+  let t = flux;
+  if (variante === "frontiere") t = taches.slice().sort((a, b) => b.iaEtapes / (b.etapes.length || 1) - a.iaEtapes / (a.etapes.length || 1) || b.heures - a.heures)[0];
+  else if (/\{n_decisions\}|\{n_verifications\}/.test(L)) t = taches.slice().sort((a, b) => (b.nDec + b.nChk + b.nPass) - (a.nDec + a.nChk + a.nPass) || b.heures - a.heures)[0];
+  else if (/\{pilier\}|\{raison\}/.test(L)) t = risques[0]?.t;
+  if (t) { tache("tache", t);
+    if (t.nDec) ctx.n_decisions = { n: t.nDec, k: "n", v: nf(t.nDec) }; ctx.n_verifications = { n: t.nChk, k: "n", v: nf(t.nChk) };
+    if (t.nPass) ctx.n_passages = { n: t.nPass, k: "n", v: nf(t.nPass) };
+    ctx.presence_ia = { v: t.dejaIA ? "déjà présente" : "absente", k: "txt" };
+    ctx.n_etapes_ia = { n: t.iaEtapes, k: "n", v: nf(t.iaEtapes) }; if (variante === "frontiere") ctx.n_etapes = { n: t.etapes.length, k: "n", v: nf(t.etapes.length) };
+    ctx.niveau_exposition = { v: t.faisab >= .66 ? "forte" : t.faisab >= .33 ? "moyenne" : "faible", k: "txt" }; }
+  // {tache_1}, {tache_2}, {tache_3} : par gain quand on parle de gain, sinon par heures
+  const parGain = /\{h_gain_1\}/.test(L), lancer = /\{n_a_lancer\}/.test(L), commencer = /commencez|commençant/i.test(L);
+  [1, 2, 3].forEach(k => { const x = parGain ? gains[k - 1] : k === 1 && commencer ? cible : k === 1 && lancer ? taches.find(t => quadrant(t) === "rapides" && !t.dejaIA) : taches[k - 1];
+    if (x) { tache(`tache_${k}`, x); if (COUT) ctx[`euros_${k}`] = { n: x.heures * COUT, k: "eur", v: nf(Math.round(x.heures * COUT)) + " €" }; } else ctx[`tache_${k}`] = null; });
+  if (ctx.tache_1 !== undefined) { const x = parGain ? gains[0] : commencer ? cible : lancer ? taches.find(t => quadrant(t) === "rapides" && !t.dejaIA) : taches[0]; if (x) ctx.h_tache_1 = { n: x.heures * 60, k: "min", v: hmin(x.heures * 60) }; }
+  // {euros_semaine} : ce qu'on récupère quand la phrase parle d'heures récupérables, sinon le total
+  if (COUT) ctx.euros_semaine = /\{heures_recuperables\}/.test(L) ? MET.euros_recuperables : MET.euros_total;
+  // {cible} : une valeur cible quand la phrase parle d'indicateur
+  if (/\{indicateur\}/.test(L)) ctx.cible = null;
+  if (/\{semaine\}/.test(L) && /\{action\}/.test(L)) ctx.semaine = { n: 1, k: "n", v: "1" };
+  return ctx;
+}
+
+/* Remplit un texte de méthode. Une valeur suivie de son unité (« {part_ia} % », « {actif_h} h ») s'écrit en nombre brut.
+   Un morceau de phrase dont la donnée manque est retiré proprement, et la raison est donnée. */
+function remplir(s, ctx = {}, manquants = new Set()) {
+  const res = id => (id in ctx ? ctx[id] : MET[ALIAS[id] || id]) || null;
+  const absents = x => [...x.matchAll(/\{([a-z0-9_]+)\}/g)].map(m => m[1]).filter(id => !res(id));
+  const valeur = (m, suite) => { const u = (suite.match(/^\s?(%|€|h(?![a-zà-ü])|min(?![a-z])|s(?![a-zà-ü]))/i) || [])[1];
+    if (u && m.n != null) { if (u === "%" && m.k === "pct") return String(Math.round(m.n)); if (u === "h" && m.k === "min") { const h = m.n / 60; return nf(h, h < 10 ? 1 : 0); }
+      if (u === "h" && m.k === "heures") return nf(Math.round(m.n)); if (u === "min" && m.k === "min") return nf(m.n, m.n < 10 && m.n % 1 ? 1 : 0); if (u === "s" && m.k === "s") return String(Math.round(m.n)); if (u === "€" && m.k === "eur") return nf(Math.round(m.n)); }
+    return m.t || m.v; };
+  let t = String(s || "").replace(/\s*\([^()]*\)/g, g => { const a = absents(g); if (a.length) { a.forEach(x => manquants.add(x)); return ""; } return g; });
+  const phrases = t.split(/(?<=[.!?»])\s+(?=[A-ZÀ-ÜÉ«])/).map(ph => {
+    const a = absents(ph); if (!a.length) return ph;
+    a.forEach(x => manquants.add(x));
+    const parts = ph.split(/(,\s|\s:\s|\s;\s)/), cl = [];
+    for (let k = 0; k < parts.length; k += 2) cl.push({ x: parts[k], sep: parts[k - 1] || "" });
+    const gardes = cl.filter(c => !absents(c.x).length);
+    if (!gardes.length || (gardes.length === 1 && cl.length > 1 && gardes[0].x.replace(/<[^>]+>/g, "").length < 40) || gardes[0] !== cl[0] && /\s:\s/.test(gardes[0].sep)) return "";
+    let out = gardes.map((c, i) => (i ? c.sep : "") + c.x).join("").trim();
+    if (!/[.!?]$/.test(out)) out += ".";
+    return out.charAt(0).toUpperCase() + out.slice(1);
+  }).filter(Boolean);
+  return phrases.join(" ").replace(/\{([a-z0-9_]+)\}/g, (_, id, off, all) => { const m = res(id); return m ? esc(valeur(m, all.slice(off + id.length + 2))) : ""; })
+    .replace(/\b(qu|d)e (?=[aeiouéèêAEIOUÉ])/g, "$1'").replace(/\b([01]) (étape|tâche|poste|outil|action|piste|jour|décision|vérification|passage|changement)s\b/g, "$1 $2");
+}
+const noteManque = ids => { const r = [...new Set([...ids].map(raison))]; return r.length ? `<div class="nd"><span>Pas encore observé</span>il faudrait capter ${r.join(" ; ")}.</div>` : ""; };
+
+/* ==========================================================================================
+   Outils de dessin
+   ========================================================================================== */
+function toile(c) { const r = c.getBoundingClientRect(), d = Math.min(devicePixelRatio || 1, 2); if (c.width !== Math.round(r.width * d) || c.height !== Math.round(r.height * d)) { c.width = Math.round(r.width * d); c.height = Math.round(r.height * d); } const x = c.getContext("2d"); x.setTransform(d, 0, 0, d, 0, 0); x.clearRect(0, 0, r.width, r.height); return { x, w: r.width, h: r.height }; }
+const NS = "http://www.w3.org/2000/svg";
+function S(parent, tag, attrs = {}, texte) { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (texte != null) e.textContent = texte; parent.appendChild(e); return e; }
+const coupe = (s, max) => { const mots = String(s).split(" "), out = []; let l = ""; mots.forEach(m => { if ((l + " " + m).trim().length > max && l) { out.push(l); l = m; } else l = (l + " " + m).trim(); }); if (l) out.push(l); return out; };
+const tween = (duree, maj, ease = "power2.out", delai = 0) => { if (G && !reduit) { const o = { v: 0 }; return G.to(o, { v: 1, duration: duree, ease, delay: delai, onUpdate: () => maj(o.v) }); } maj(1); };
+const vide = (titre, capter, base = []) => ({ sansChiffre: true, html: `<div class="viz"><div class="vide"><span class="mono">Pas encore observé</span><b>${titre}</b><p>Ce qu'il faudrait capter : ${capter}</p>
+  ${base.length ? `<div class="kpis" style="margin-top:8px">${base.filter(id => MET[id]).map(id => `<div class="kpi"><b>${esc(MET[id].t && MET[id].t.length < 18 ? MET[id].t : MET[id].v)}</b><span>${esc(MET[id].l)} · point de départ</span></div>`).join("")}</div>` : ""}</div></div>`, init: () => ({}) });
+const uniteVisible = m => m.u && !String(m.l || "").startsWith(m.u);
+const legCats = cats => ORDRE.filter(c => cats[c]).map(c => `<span><i style="background:${coul(c)}"></i>${CATS[c]}</span>`).join("");
+const legEtats = () => Object.values(ETATS).filter(e => taches.some(t => t.expo === e)).map(e => `<span><i style="background:var(${e.c})"></i>${e.etat}</span>`).join("");
+function compter(el) { if (!el) return; el.querySelectorAll("[data-met]").forEach(x => { const m = MET[x.dataset.met]; if (!m || m.n == null || !m.f || m.t) return; const val = x.querySelector(".val") || x; val.textContent = m.f(G && !reduit ? 0 : m.n); tween(1.2, p => val.textContent = m.f(m.n * p)); }); }
+const apparaitre = (els, o = {}) => { if (G && !reduit && els && (els.length ?? 1)) G.fromTo(els, { opacity: 0, y: o.y ?? 14, x: o.x ?? 0 }, { opacity: 1, y: 0, x: 0, duration: o.d ?? .55, stagger: o.s ?? .1, delay: o.delai ?? 0, ease: "power3.out" }); };
+const fondNiveau = (v, couleur = "--projet") => v === 0 ? "var(--plan-2)" : `color-mix(in srgb, var(${couleur}) ${[0, 28, 58, 100][v]}%, var(--plan-2))`;
+
+/* three.js, comme la couverture de l'audit */
+function monter3d(canvas, construire) {
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+  renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  const scene = new THREE.Scene(); scene.background = new THREE.Color(css("--plan"));
+  const cam = new THREE.OrthographicCamera(-1, 1, 1, -1, .1, 200); cam.position.set(22, 19, 22); cam.lookAt(0, 0, 0);
+  scene.add(new THREE.HemisphereLight(0xffffff, 0xc9ced6, 2.1));
+  const s = new THREE.DirectionalLight(0xffffff, 1.6); s.position.set(-8, 20, 12); s.castShadow = true; s.shadow.mapSize.set(2048, 2048);
+  Object.assign(s.shadow.camera, { left: -16, right: 16, top: 16, bottom: -16 }); s.shadow.radius = 6; scene.add(s);
+  const maj = construire(scene, cam);
+  let largeur = 0, hauteur = 0, prec = null, vivant = false;
+  function rendu(t) {
+    const r = canvas.getBoundingClientRect();
+    if (r.width && (r.width !== largeur || r.height !== hauteur)) { largeur = r.width; hauteur = r.height; renderer.setSize(r.width, r.height, false);
+      const a = r.width / r.height, v = maj.vue(a); cam.left = -v * a; cam.right = v * a; cam.top = v; cam.bottom = -v; cam.updateProjectionMatrix(); }
+    const dt = prec === null ? 0 : Math.min(.05, (t - prec) / 1000); prec = t;
+    maj(t, dt, r); renderer.render(scene, cam); maj.apres?.(r);
+    if (vivant) requestAnimationFrame(rendu);
+  }
+  return { demarrer() { if (!vivant) { vivant = true; prec = null; requestAnimationFrame(rendu); } }, arreter() { vivant = false; }, cam };
+}
+const mat = c => new THREE.MeshStandardMaterial({ color: c, roughness: .9, metalness: 0 });
+const aretes = (m, op = .28) => { m.add(new THREE.LineSegments(new THREE.EdgesGeometry(m.geometry), new THREE.LineBasicMaterial({ color: 0x5a6472, transparent: true, opacity: op }))); return m; };
+
+/* Une matrice 2×2 générique : points (x 0-1, y), seuils, noms de cases */
+function matrice(svg, cfg) {
+  svg.innerHTML = ""; const r = svg.getBoundingClientRect(), w = r.width, h = r.height; if (!w) return null;
+  svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
+  const g = { l: 64, r: 24, t: 30, b: 62 }, W = w - g.l - g.r, H = h - g.t - g.b;
+  const X = f => g.l + f * W, Y = v => g.t + H - v / cfg.ymax * H, sx = X(cfg.xseuil), sy = Y(cfg.yseuil);
+  const fond = S(svg, "g"), q = p => (p.y >= cfg.yseuil ? (p.x >= cfg.xseuil ? "rapides" : "chantiers") : (p.x >= cfg.xseuil ? "marge" : "pieges"));
+  [["rapides", sx, g.t, g.l + W - sx, sy - g.t, "end", "haut"], ["chantiers", g.l, g.t, sx - g.l, sy - g.t, "start", "haut"], ["marge", sx, sy, g.l + W - sx, g.t + H - sy, "end", "bas"], ["pieges", g.l, sy, sx - g.l, g.t + H - sy, "start", "bas"]].forEach(([id, x, y, ww, hh, ancre, pos]) => {
+    S(fond, "rect", { x, y, width: Math.max(0, ww), height: Math.max(0, hh), fill: id === "rapides" ? css("--ia-pale") : css("--plan"), "fill-opacity": id === "rapides" ? .55 : 1 });
+    const n = cfg.pts.filter(p => !p.creux && q(p) === id).length, tx = ancre === "end" ? x + ww - 12 : x + 12, ty = pos === "haut" ? y + 20 : y + hh - 24;
+    S(fond, "text", { x: tx, y: ty, "text-anchor": ancre, class: "mu", style: id === "rapides" ? `fill:${css("--ia")}` : "" }, cfg.noms[id]);
+    S(fond, "text", { x: tx, y: ty + 14, "text-anchor": ancre, class: "m" }, `${n} ${n > 1 ? cfg.unite + "s" : cfg.unite}`); });
+  S(fond, "rect", { x: g.l, y: g.t, width: W, height: H, fill: "none", stroke: css("--trait-fort") });
+  S(fond, "line", { x1: sx, x2: sx, y1: g.t, y2: g.t + H, stroke: css("--trait-fort"), "stroke-dasharray": "4 4" });
+  S(fond, "line", { x1: g.l, x2: g.l + W, y1: sy, y2: sy, stroke: css("--trait-fort"), "stroke-dasharray": "4 4" });
+  cfg.yticks.forEach(v => S(fond, "text", { x: g.l - 10, y: Y(v) + 4, "text-anchor": "end", class: "m" }, cfg.yfmt(v)));
+  S(fond, "text", { x: g.l, y: h - 18, class: "mu" }, cfg.ax);
+  const etroit = innerWidth <= 640;
+  if (cfg.axs && !etroit) S(fond, "text", { x: g.l + W, y: h - 18, "text-anchor": "end", class: "m" }, cfg.axs);
+  [0, .5, 1].forEach(f => S(fond, "text", { x: X(f), y: g.t + H + 16, "text-anchor": f === 0 ? "start" : f === 1 ? "end" : "middle", class: "m" }, pct(f)));
+  S(fond, "text", { x: 14, y: g.t + H / 2, transform: `rotate(-90 14 ${g.t + H / 2})`, "text-anchor": "middle", class: "mu" }, cfg.ay);
+  const pts = cfg.pts.map((p, k) => ({ ...p, px: X(p.x), py: Y(p.y), ...(etroit ? { lignes: [String(k + 1)], sous: "" } : {}) }));
+  const etq = pts.map(p => { const grp = S(svg, "g"); const tx = S(grp, "text", {}); p.lignes.forEach((l, k) => S(tx, "tspan", { x: 0, dy: k ? 15 : 0, "font-weight": p.creux ? 500 : 400 }, l));
+    S(grp, "text", { y: p.lignes.length * 15, class: "m" }, p.sous); const b = grp.getBBox(); return { p, grp, w: b.width, h: b.height, asc: -b.y }; });
+  etq.forEach(e => { e.droite = e.p.px + 14 + e.w < g.l + W - 4; e.x = e.droite ? e.p.px + 14 : e.p.px - 14 - e.w; e.y = e.p.py - e.h / 2; });
+  etq.sort((a, b) => a.y - b.y);
+  for (let k = 1; k < etq.length; k++) for (let j = 0; j < k; j++) { const a = etq[j], b = etq[k]; if (a.x < b.x + b.w && b.x < a.x + a.w && b.y < a.y + a.h + 6) b.y = a.y + a.h + 6; }
+  const recouvre = (a, b) => a.x < b.x + b.w && b.x < a.x + a.w;
+  for (let k = etq.length - 1; k >= 0; k--) { let lim = g.t + H - 2; for (let j = k + 1; j < etq.length; j++) if (recouvre(etq[k], etq[j])) lim = Math.min(lim, etq[j].y - 6); if (etq[k].y + etq[k].h > lim) etq[k].y = lim - etq[k].h; }
+  etq.forEach(e => { e.y = Math.max(g.t + 2, e.y); e.grp.setAttribute("transform", `translate(${e.x},${e.y + e.asc})`);
+    const cy = e.y + e.h / 2; if (Math.abs(cy - e.p.py) > 6) S(svg, "line", { x1: e.p.px + (e.droite ? 8 : -8), y1: e.p.py, x2: e.droite ? e.x - 3 : e.x + e.w + 3, y2: Math.min(Math.max(e.p.py, e.y + 4), e.y + e.h - 4), stroke: css("--trait-fort") }); });
+  const ronds = pts.map(p => S(svg, "circle", { cx: p.px, cy: p.py, r: p.creux ? 10 : 7.5, fill: p.creux ? css("--plan") : css(p.c), stroke: p.creux ? css("--encre") : css("--plan"), "stroke-width": p.creux ? 1.5 : 2 }));
+  return { ronds, etqs: etq.map(e => e.grp), fond };
+}
+const animerMatrice = d => { if (!d || !G || reduit) return; G.fromTo(d.fond, { opacity: 0 }, { opacity: 1, duration: .5 });
+  d.ronds.forEach((c, k) => G.fromTo(c, { attr: { r: 0 } }, { attr: { r: +c.getAttribute("r") }, duration: .6, ease: "back.out(2)", delay: .35 + k * .12 }));
+  G.fromTo(d.etqs, { opacity: 0 }, { opacity: 1, duration: .5, stagger: .12, delay: .55 }); };
+
+/* Une grille de cases notées (carte de chaleur) */
+const grille = (cols, lignes, legende) => `<div class="viz"><div class="pad"><div class="chaleur">
+  <div class="grille-c" style="--n:${cols.length};grid-template-columns:minmax(150px,1.5fr) repeat(${cols.length},minmax(0,1fr))">
+    <div></div>${cols.map(c => `<div class="ent${c.ia ? " ia" : ""}">${esc(c.nom)}</div>`).join("")}
+    ${lignes.map(l => `<div class="lib">${esc(l.lib)}${l.sous ? `<small>${esc(l.sous)}</small>` : ""}</div>${l.cases.map(c => c == null ? `<div class="case" style="background:transparent"></div>` : `<div class="case" style="background:${c.bg};color:${c.fonce ? "var(--plan)" : "var(--encre)"}"${c.titre ? ` title="${esc(c.titre)}"` : ""}><b>${esc(c.b)}</b>${c.s ? `<span>${esc(c.s)}</span>` : ""}</div>`).join("")}`).join("")}
+  </div>${legende || ""}</div></div></div>`;
+const initGrille = el => { const cases = [...el.querySelectorAll(".case")], libs = [...el.querySelectorAll(".lib")];
+  return { entrer() { if (!G || reduit) return; G.fromTo(libs, { opacity: 0, x: -8 }, { opacity: 1, x: 0, duration: .4, stagger: .06 }); G.fromTo(cases, { opacity: 0, scale: .85 }, { opacity: 1, scale: 1, duration: .35, ease: "power2.out", stagger: .025, delay: .2 }); } }; };
+
+/* Une liste d'éléments calculés (hypothèses, règles, contrôles, capacités, outils…) */
+const liste = (items, etiquette = 92) => `<div class="viz"><div class="pad"><div class="plan">${items.map(it => `<div class="reco" style="grid-template-columns:${etiquette}px minmax(0,1fr)"><div class="quand" style="color:${it.c || "var(--ia)"}">${esc(it.etiquette)}</div><div><h3>${esc(it.titre)}</h3><p>${esc(it.texte)}</p></div></div>`).join("")}</div></div></div>`;
+const initListe = el => { const rs = [...el.querySelectorAll(".reco")]; return { entrer() { apparaitre(rs, { s: .14 }); } }; };
+
+/* ==========================================================================================
+   Renderers : un par type de viz. Chacun reçoit (chapitre, variante) et renvoie
+   { html, init(el) → {entrer, sortir, redessiner}, defaut, legende, extra, sansChiffre }.
+   ========================================================================================== */
+const VIZ = {};
+
+VIZ["chiffre-cle"] = (ch, v, ids) => {
+  if (!ids.length) ids = ["temps_total", "part_ia", "postes"].filter(id => MET[id]);
+  if (!ids.length) return vide("Aucun chiffre disponible.", "au moins un poste observé.");
+  const [p, ...autres] = ids, m = MET[p];
+  const val = (id, x) => `<span class="val">${esc(x.t && x.t.length < 14 ? x.t : x.v)}</span>${uniteVisible(x) && !(x.t && x.t.length < 14) ? `<small>${esc(x.u)}</small>` : ""}`;
+  return { sansChiffre: true, html: `<div class="viz"><div class="pad"><div class="cle">
+      <div class="grand${m.c === "ia" ? " ia" : ""}" data-met="${p}">${val(p, m)}</div>
+      <div class="sous">${esc(m.l)}</div>
+      ${autres.length ? `<div class="tuiles">${autres.slice(0, 3).map(id => `<div class="tuile"><b class="${MET[id].c === "ia" ? "ia" : ""}" data-met="${id}">${val(id, MET[id])}</b><span>${esc(MET[id].l)}</span></div>`).join("")}</div>` : ""}
+    </div></div></div>`,
+    init(el) { const items = [...el.querySelectorAll(".cle > *, .tuile")]; return { entrer() { compter(el.querySelector(".viz")); apparaitre(items, { y: 18, d: .7 }); } }; } };
+};
+
+VIZ["bureau-3d"] = () => ({ defaut: "temps_total", legende: legCats(equipe), html: `
+  <div class="viz"><canvas data-r="bureau" aria-label="Maquette 3D du bureau animée sur la période"></canvas><svg class="fils"></svg><div class="etqs"></div>
+    <div class="horloge"></div>
+    ${frises.length ? `<div class="frise3d"><canvas data-r="frise" tabindex="0" aria-label="Frise de la période, glisser pour remonter le temps"></canvas></div>` : ""}</div>`,
+  init(el) {
+    const frise = el.querySelector('[data-r="frise"]'), fils = el.querySelector(".fils"), etqs = el.querySelector(".etqs"), horloge = el.querySelector(".horloge");
+    let temps = D0 + 60, glisse = false;
+    const p3 = monter3d(el.querySelector('[data-r="bureau"]'), (scene) => {
+      const sol = aretes(new THREE.Mesh(new THREE.BoxGeometry(22, .3, 15), mat(0xf0f2f5)), .35); sol.position.y = -.15; sol.receiveShadow = true; scene.add(sol);
+      const gr = new THREE.GridHelper(22, 44, 0xdfe3e8, 0xe9ecf0); gr.position.y = .01; gr.scale.z = 15 / 22; scene.add(gr);
+      [[0, 1, -7.5, 22, 2, .12], [-11, 1, 0, .12, 2, 15]].forEach(([x, y, z, w, h, d]) => { const m = aretes(new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat(0xe6e9ed)), .25); m.position.set(x, y, z); m.receiveShadow = true; scene.add(m); });
+      const table = aretes(new THREE.Mesh(new THREE.CylinderGeometry(1.6, 1.6, .1, 48), mat(0xffffff))); table.position.set(6.5, .78, 3); table.castShadow = true; scene.add(table);
+      const pied = new THREE.Mesh(new THREE.CylinderGeometry(.1, .18, .74, 12), mat(0xc8ced6)); pied.position.set(6.5, .37, 3); scene.add(pied);
+      for (let k = 0; k < 6; k++) { const a = k / 6 * Math.PI * 2, c = aretes(new THREE.Mesh(new THREE.BoxGeometry(.5, .45, .5), mat(0xf4f5f7)), .2); c.position.set(6.5 + Math.cos(a) * 2.3, .23, 3 + Math.sin(a) * 2.3); c.castShadow = true; scene.add(c); }
+      const places = [[-7.6, -4.4], [-3.8, -4.4], [0, -4.4], [-7.6, .8], [-3.8, .8], [0, .8]];
+      const objets = places.slice(0, Math.max(5, Math.min(6, postes.length))).map(([x, z], i) => {
+        const g = new THREE.Group(); g.position.set(x, 0, z); scene.add(g);
+        const b = aretes(new THREE.Mesh(new THREE.BoxGeometry(2.8, .1, 1.45), mat(0xffffff))); b.position.y = .86; b.castShadow = b.receiveShadow = true; g.add(b);
+        [[-1.25, -.58], [1.25, -.58], [-1.25, .58], [1.25, .58]].forEach(([a, c]) => { const l = new THREE.Mesh(new THREE.BoxGeometry(.05, .86, .05), mat(0xc8ced6)); l.position.set(a, .43, c); g.add(l); });
+        const em = new THREE.MeshStandardMaterial({ color: 0xe9ecf0, emissive: 0x000000, emissiveIntensity: .9, roughness: .4 });
+        const ecran = aretes(new THREE.Mesh(new THREE.BoxGeometry(1.45, .85, .05), em), .4); ecran.position.set(0, 1.4, -.45); ecran.castShadow = true; g.add(ecran);
+        const p = postes[i];
+        const corps = aretes(new THREE.Mesh(new THREE.CapsuleGeometry(.24, .48, 6, 14), mat(p ? 0x3a4656 : 0xe6e9ed)), .15); corps.position.set(0, .86, .98); corps.castShadow = true; g.add(corps);
+        const tete = aretes(new THREE.Mesh(new THREE.SphereGeometry(.21, 20, 14), mat(p ? 0x3a4656 : 0xe6e9ed)), .1); tete.position.set(0, 1.45, .98); tete.castShadow = true; g.add(tete);
+        return { em, corps, tete, ancre: new THREE.Vector3(x, 2, z - .45), poste: p };
+      });
+      const etiquettes = objets.map((o, i) => { const d = document.createElement("div"); d.className = "etq"; etqs.appendChild(d);
+        const l = document.createElementNS(NS, "polyline"); l.setAttribute("fill", "none"); l.setAttribute("stroke-width", "1"); fils.appendChild(l);
+        const pt = document.createElementNS(NS, "circle"); pt.setAttribute("r", "2.2"); fils.appendChild(pt);
+        return { o, d, l, pt, dx: [-60, 20, 70, -80, -10, 60][i], dy: [-55, -85, -40, 55, 85, 60][i] }; });
+      const maj = (t, dt) => {
+        if (!glisse && !reduit) { temps += dt * 9; if (temps >= D1) temps = D0; }
+        objets.forEach(o => { const p = o.poste;
+          if (!p) { o.em.emissive.setHex(0); o.em.color.setHex(0xe9ecf0); return; }
+          if (p.segments.length) { const s = segA(p, temps); const c = new THREE.Color(s ? coul(s[2]) : "#e9ecf0"); o.em.color.copy(c); o.em.emissive.copy(c).multiplyScalar(s && s[2] === "ia" ? .55 : .15); o.corps.visible = o.tete.visible = !!s; }
+          else { const dom = Object.entries(parCat(p)).sort((a, b) => b[1] - a[1])[0]; const c = new THREE.Color(coul(dom ? dom[0] : "systeme")); o.em.color.copy(c).lerp(new THREE.Color("#ffffff"), .45); o.em.emissive.setHex(0); } });
+        horloge.textContent = frises.length ? (dateCourte ? dateCourte + " · " : "") + hm(temps) : (A.parametres?.entreprise || "") + (nJours > 1 ? ` · ${nJours} jours observés` : "");
+        if (frise) dessinerFrise();
+      };
+      maj.vue = a => a > 1.4 ? 9 : 11.5;
+      maj.apres = r => { etiquettes.forEach(e => { const v = e.o.ancre.clone().project(p3.cam), x = (v.x + 1) / 2 * r.width, y = (1 - v.y) / 2 * r.height;
+        const p = e.o.poste; let html, vive = false;
+        if (!p) html = `Poste libre<small>pas encore audité</small>`;
+        else if (!p.segments.length) { const dom = Object.entries(parCat(p)).sort((a, b) => b[1] - a[1])[0]; html = `${p.id} · ${esc(p.qui)}<small>${dom ? `${esc(CATS[dom[0]] || dom[0])} · ` : ""}${actif(p) ? pct((parCat(p).ia || 0) / actif(p)) : "n.d."} avec l'IA</small>`; }
+        else { const s = segA(p, temps); vive = s && s[2] === "ia"; html = s ? `${p.id} · ${esc(p.qui)} · <b>${CATS[s[2]] || s[2]}</b><small>${esc(s[5])}${s[3] === "agent" ? " · agent" : ""}</small>` : `${p.id} · ${esc(p.qui)}<small>hors écran</small>`; }
+        if (e.d.innerHTML !== html) e.d.innerHTML = html; e.d.classList.toggle("vive", !!vive);
+        const w = e.d.offsetWidth, h = e.d.offsetHeight, lx = x + e.dx, ly = y + e.dy;
+        const gx = Math.min(Math.max(8, lx - (e.dx < 0 ? w : 0)), r.width - w - 8), gy = Math.min(Math.max(44, e.dy < 0 ? ly - h : ly), r.height - h - (frise ? 90 : 16));
+        e.d.style.left = gx + "px"; e.d.style.top = gy + "px";
+        const bx = e.dx < 0 ? gx + w : gx, by = e.dy < 0 ? gy + h : gy;
+        e.l.setAttribute("points", `${x},${y} ${x + e.dx * .45},${by} ${bx},${by}`); e.l.setAttribute("stroke", vive ? css("--ia") : css("--trait-fort"));
+        e.pt.setAttribute("cx", x); e.pt.setAttribute("cy", y); e.pt.setAttribute("fill", vive ? css("--ia") : css("--faible")); }); };
+      return maj;
+    });
+    function dessinerFrise() {
+      const { x, w, h } = toile(frise), X = m => (m - D0) / (D1 - D0) * w, lanes = Math.max(1, frises.length), hl = (h - 16) / lanes;
+      frises.forEach((p, k) => { const y = k * hl; x.fillStyle = css("--plan-2"); x.fillRect(0, y, w, hl - 3);
+        p.segments.forEach(s => { x.fillStyle = coul(s[2]); x.globalAlpha = s[0] <= temps ? 1 : .3; x.fillRect(X(s[0]), y, Math.max(1, X(s[1]) - X(s[0]) - .4), hl - 3); }); x.globalAlpha = 1; });
+      x.fillStyle = css("--faible"); x.font = "10px Geist Mono, monospace";
+      for (let m = Math.ceil(D0 / 60) * 60; m <= D1; m += 60) x.fillText(hm(m), Math.min(X(m) + 2, w - 34), h - 2);
+      const px = X(temps); x.fillStyle = css("--encre"); x.fillRect(px - .5, 0, 1, h - 12);
+    }
+    if (frise) { const versT = e => { const r = frise.getBoundingClientRect(); temps = D0 + Math.min(1, Math.max(0, (e.clientX - r.left) / r.width)) * (D1 - D0); };
+      frise.addEventListener("pointerdown", e => { glisse = true; frise.setPointerCapture(e.pointerId); versT(e); });
+      frise.addEventListener("pointermove", e => { if (glisse) versT(e); });
+      frise.addEventListener("pointerup", () => glisse = false);
+      frise.addEventListener("keydown", e => { if (e.key === "ArrowRight" || e.key === "ArrowLeft") { e.preventDefault(); e.stopPropagation(); temps = Math.min(D1 - .1, Math.max(D0, temps + (e.key === "ArrowRight" ? 5 : -5))); } }); }
+    return { entrer: () => p3.demarrer(), sortir: () => p3.arreter() };
+  } });
+
+/* Barres empilées : temps par catégorie et par poste ; variantes 10/20/70, gaspillages, trois niveaux */
+const barresHtml = lignes => `<div class="viz"><div class="pad"><div class="barres">${lignes.map((l, k) => `<div class="barre-l"><div class="tete"><b>${esc(l.nom)}</b><span>${esc(l.sous)}</span></div>
+  <div class="pile" style="${l.haut ? "height:38px;" : ""}${l.pointille ? "background:transparent;border:1px dashed var(--trait-fort)" : ""}">${l.parts.map(p => `<i data-w="${p.w}" style="background:${p.c}" title="${esc(p.titre || "")}"></i>`).join("")}</div></div>`).join("")}</div></div></div>`;
+const initBarres = el => { const is = [...el.querySelectorAll(".pile i")]; return { entrer() { is.forEach(i => i.style.width = "0%"); if (G && !reduit) G.to(is, { width: (k, i) => i.dataset.w + "%", duration: .9, ease: "power3.out", stagger: .03 }); else is.forEach(i => i.style.width = i.dataset.w + "%"); } }; };
+VIZ["barres-empilees"] = (ch, v) => {
+  if (v === "effort") { const T = { gens: ["Personnes et processus", "--projet"], tech: ["Technologie et données", "--comm"], algo: ["Algorithmes", "--veille"] };
+    const nous = ["gens", "tech", "algo"].map(k => ({ w: typesR[k] / recos.length * 100, c: `var(${T[k][1]})`, titre: T[k][0] }));
+    return { defaut: "part_gens", legende: Object.values(T).map(([n, c]) => `<span><i style="background:var(${c})"></i>${n}</span>`).join(""), html: barresHtml([
+      { nom: "Nos recommandations", sous: `${pluriel(recos.length, "action")} · ${["gens", "tech", "algo"].map(k => `${Math.round(typesR[k] / recos.length * 100)} %`).join(" / ")}`, parts: nous, haut: true },
+      { nom: "Repère BCG : règle 10/20/70", sous: "70 % / 20 % / 10 %", parts: [{ w: 70, c: "var(--projet)" }, { w: 20, c: "var(--comm)" }, { w: 10, c: "var(--veille)" }] }]), init: initBarres }; }
+  if (v === "gaspillages") { const max = Math.max(1, ...GASPILLAGES.map(g => g.m || 0));
+    return { defaut: "min_gaspillage", legende: `<span><i style="background:var(--perte)"></i>Minutes par semaine</span><span><i class="pointille"></i>Pas encore chronométré</span>`, html: barresHtml(GASPILLAGES.map(g => ({ nom: g.nom,
+      sous: g.m ? `${hmin(g.m)} / sem.` : g.txt ? g.txt : g.n ? `signalé sur ${pluriel(g.n, "tâche")} · durée non chronométrée` : "pas encore observé", pointille: !g.m, parts: g.m ? [{ w: g.m / max * 100, c: "var(--perte)" }] : [] }))), init: initBarres }; }
+  if (v === "niveaux") { if (!taches.length) return vide("Aucune tâche à classer.", "au moins un résumé validé avec ses tâches.");
+    const N = [["Déployer", "peut", "--ia", t => t.heures * t.gain], ["Refondre", "aide", "--projet", t => t.heures], ["Inventer", "flou", "--faible", () => 0], ["Déjà avec l'IA", "deja", "--ia-pale", t => t.heures]];
+    const max = Math.max(1, ...N.map(([, k, , f]) => taches.filter(t => t.cle === k).reduce((s, t) => s + f(t), 0)));
+    return { defaut: "h_deployer", legende: `<span>Déployer = l'outil sur la tâche telle quelle · Refondre = changer la façon de faire · Inventer = non chiffré</span>`, html: barresHtml(N.map(([nom, k, c, f]) => { const ts = taches.filter(t => t.cle === k), h = ts.reduce((s, t) => s + f(t), 0);
+      return { nom, sous: `${pluriel(ts.length, "tâche")}${h ? ` · ${hmin(h * 60)} / sem.` : k === "flou" && ts.length ? " · non chiffré" : ""}`, pointille: !h, parts: ts.map(t => ({ w: f(t) / max * 100, c: `var(${c})`, titre: t.titre })) }; })), init: initBarres }; }
+  if (!totalEquipe) return vide("Aucun temps mesuré.", "au moins un poste avec une frise ou un résumé validé.");
+  const lignes = [{ nom: "Équipe", sous: `${hmin(totalEquipe)} · ${pct((equipe.ia || 0) / totalEquipe)} IA`, cats: equipe, tot: totalEquipe, haut: true }, ...postes.filter(p => actif(p)).map(p => ({ nom: p.id + " · " + p.qui, sous: `${hmin(actif(p))}${p.segments.length ? "" : " · résumé"} · ${pct((parCat(p).ia || 0) / actif(p))} IA`, cats: parCat(p), tot: actif(p) }))];
+  return { defaut: (ch.metriques || []).includes("calc:part_coeur_metier") && MET.part_coeur ? "part_coeur" : "part_ia", legende: legCats(equipe), html: barresHtml(lignes.map(l => ({ ...l, parts: ORDRE.filter(c => l.cats[c]).map(c => ({ w: l.cats[c] / l.tot * 100, c: coul(c), titre: `${CATS[c]} · ${hmin(l.cats[c])}` })) }))), init: initBarres };
+};
+
+VIZ["frise"] = (ch, v) => {
+  if (v === "horizons") return VIZ.plan(ch, /horizon/i.test(`${ch.titre} ${ch.lecture} ${ch.id}`) ? "horizons" : "semaines");
+  if (!frises.length) return vide("Pas de frise minute par minute.", "un export complet de screenpipe d'au moins un poste : les résumés validés ne contiennent pas l'enchaînement minute par minute.");
+  return { defaut: "minutes_ensemble", legende: legCats(equipe) + (frises.length >= 2 ? `<span><i style="background:var(--plan-2)"></i>Minutes partagées</span>` : ""), html: `<div class="viz"><canvas aria-label="Frises superposées des postes"></canvas></div>`,
+  init(el) {
+    const c = el.querySelector("canvas"); let p = 1;
+    const dessiner = () => {
+      const { x, w, h } = toile(c), g = 90, X = m => g + (m - D0) / (D1 - D0) * (w - g - 28), lim = D0 + (D1 - D0) * p;
+      const lanes = postes.length, hl = Math.min(92, (h - 130) / lanes), top = Math.max(40, (h - lanes * hl) / 2);
+      for (let m = D0; m < Math.min(D1, lim); m++) { const act = frises.filter(f => segA(f, m + .5)); if (act.length >= 2) { x.fillStyle = css("--plan-2"); x.fillRect(X(m), top - 8, X(m + 1) - X(m) + .5, lanes * hl + 8); const [a, b] = act.map(f => segA(f, m + .5)); if (a[4] && a[4] === b[4]) { x.fillStyle = css("--ia"); x.fillRect(X(m), top - 14, X(m + 1) - X(m) + .5, 4); } } }
+      postes.forEach((pp, k) => { const y = top + k * hl;
+        x.fillStyle = css("--encre"); x.font = "500 12px Geist, sans-serif"; x.fillText(pp.id, 0, y + hl / 2); x.fillStyle = css("--doux"); x.font = "10px Geist Mono, monospace"; x.fillText(pp.qui, 0, y + hl / 2 + 14);
+        if (!pp.segments.length) { x.strokeStyle = css("--trait-fort"); x.setLineDash([4, 4]); x.strokeRect(g, y + 6, w - g - 28, hl - 18); x.setLineDash([]); x.fillStyle = css("--faible"); x.fillText("résumé validé · pas de frise minute par minute", g + 10, y + hl / 2 + 2); return; }
+        pp.segments.forEach(s => { if (s[0] > lim) return; x.fillStyle = coul(s[2]); x.fillRect(X(s[0]), y + 6, Math.max(1, X(Math.min(s[1], lim)) - X(s[0]) - .4), hl - 18); }); });
+      x.fillStyle = css("--faible"); x.font = "10px Geist Mono, monospace";
+      for (let m = Math.ceil(D0 / 60) * 60; m <= D1; m += 30) { const xx = X(m); x.fillRect(xx, top + lanes * hl - 6, 1, 5); if (m % 60 === 0) x.fillText(hm(m), xx - 14, top + lanes * hl + 12); }
+    };
+    return { entrer() { p = 0; tween(2.2, v => { p = v; dessiner(); }, "power2.inOut"); }, redessiner() { p = 1; dessiner(); } };
+  } };
+};
+
+VIZ["reseau"] = (ch, v) => {
+  if (v === "variantes") return vide("Une seule façon de faire observée par tâche.", "plusieurs exécutions observées de la même tâche, pour comparer les chemins (suite d'apps, durée). Le résumé validé n'en décrit qu'une par tâche.", ["n_etapes", "duree"]);
+  if (!outilsListe.length) return vide("Aucun outil recensé.", "des applications utilisées plus de 3 minutes, dans un export ou un résumé.");
+  return { defaut: "outils_partages", legende: `<span><i style="background:var(--ia)"></i>Outil partagé par plusieurs postes</span><span><i style="background:var(--trait-fort)"></i>Outil d'un seul poste</span><span>épaisseur = minutes</span>`,
+  html: `<div class="viz"><canvas aria-label="Réseau des postes et des outils qu'ils utilisent"></canvas></div>`,
+  init(el) {
+    const c = el.querySelector("canvas"); let p = 1;
+    const L = outilsListe.slice(0, 14);
+    const dessiner = () => { const { x, w, h } = toile(c);
+      const P = postes.map((pp, i) => ({ id: pp.id, qui: pp.qui, x: Math.max(110, w * .16), y: h * (postes.length > 4 ? .08 + i * .84 / (postes.length - 1) : .22 + i * .56 / Math.max(1, postes.length - 1)) }));
+      const O = L.map((o, i) => ({ ...o, x: o.postes >= 2 ? w * .48 : w * .7, y: h * (.08 + i * .84 / Math.max(1, L.length - 1)) }));
+      const maxV = Math.max(...L.flatMap(o => Object.values(o.v)));
+      O.forEach(o => Object.entries(o.v).forEach(([pid, m]) => { const a = P.find(q => q.id === pid); if (!a) return; const commun = o.postes >= 2;
+        x.strokeStyle = commun ? css("--ia") : css("--trait-fort"); x.globalAlpha = .25 + .75 * p; x.lineWidth = 1 + 9 * m / maxV * p;
+        x.beginPath(); x.moveTo(a.x + 8, a.y); x.bezierCurveTo((a.x + o.x) / 2, a.y, (a.x + o.x) / 2, o.y, o.x - 8, o.y); x.stroke(); x.globalAlpha = 1; }));
+      P.forEach(a => { x.fillStyle = css("--encre"); x.fillRect(a.x - 7, a.y - 7, 14, 14); x.font = "500 13px Geist, sans-serif"; x.textAlign = "right"; x.fillText(a.id, a.x - 16, a.y - 2); x.fillStyle = css("--doux"); x.font = "10px Geist Mono, monospace"; x.fillText(a.qui, a.x - 16, a.y + 12); x.textAlign = "start"; });
+      const maxT = Math.max(...L.map(o => o.tot));
+      O.forEach(o => { const commun = o.postes >= 2, r = 5 + Math.sqrt(o.tot / maxT) * 13;
+        x.fillStyle = css("--plan"); x.strokeStyle = commun ? css("--ia") : css("--trait-fort"); x.lineWidth = 1.5; x.beginPath(); x.arc(o.x, o.y, r, 0, 7); x.fill(); x.stroke();
+        if (commun) { x.fillStyle = css("--ia"); x.beginPath(); x.arc(o.x, o.y, r * .45, 0, 7); x.fill(); }
+        x.fillStyle = css("--encre"); x.font = "500 12px Geist, sans-serif"; x.fillText(o.n, o.x + r + 8, o.y - 1); x.fillStyle = css("--doux"); x.font = "10px Geist Mono, monospace"; x.fillText(hmin(o.tot) + " · " + pluriel(o.postes, "poste") + (o.ia ? " · IA" : ""), o.x + r + 8, o.y + 12); }); };
+    return { entrer() { p = 0; tween(1.4, v => { p = v; dessiner(); }); }, redessiner() { p = 1; dessiner(); } };
+  } };
+};
+
+/* Anneau : temps par catégorie ; variantes agents / conversation, rendement du flux (PCE) */
+VIZ["anneau"] = (ch, v) => {
+  let parts, centre, label, defaut = "cat_1_part", legende = "";
+  if (v === "agent") { if (!(agentT + chatT)) return vide("Aucun usage d'IA ventilé.", "le temps passé dans des agents (Orca, Claude Code…) et dans des conversations (ChatGPT, Claude…).");
+    parts = [{ nom: "Agents qui agissent seuls", m: agentT, c: css("--ia") }, { nom: "Conversation", m: chatT, c: css("--ia-pale") }, { nom: "Sans IA", m: Math.max(0, totalEquipe - agentT - chatT), c: css("--trait") }].filter(p => p.m > 0);
+    centre = partAgent; label = "délégué à des agents"; defaut = "part_agent"; }
+  else if (v === "pce") { if (!vsm) return vide("Pas de flux à mesurer.", "une tâche décrite avec ses étapes et sa durée.");
+    const s = k => vsm.etapes.filter(e => e.classe === k).reduce((a, e) => a + e.d, 0);
+    parts = [{ nom: "Valeur ajoutée", m: s("valeur"), c: css("--encre") }, { nom: "Nécessaire sans valeur", m: s("necessaire"), c: css("--trait-fort") }, { nom: "Gaspillage", m: s("gaspillage"), c: css("--perte") }].filter(p => p.m);
+    centre = vsm.pce; label = "rendement du flux"; defaut = "pce"; }
+  else { if (!totalEquipe) return vide("Aucun temps mesuré.", "au moins un poste avec une frise ou un résumé validé.");
+    parts = ORDRE.filter(c => equipe[c]).map(c => ({ nom: CATS[c], m: equipe[c], c: coul(c), ia: c === "ia" })); centre = partIA; label = "avec l'IA"; }
+  const tot = parts.reduce((s, p) => s + p.m, 0);
+  return { defaut, legende, html: `<div class="viz"><div class="pad"><div class="anneau">
+      <div class="rond"><svg viewBox="0 0 200 200" aria-label="Répartition en anneau"></svg><div class="centre"><b style="${v === "pce" ? "color:var(--encre)" : ""}">${centre != null ? pct(centre) : "n.d."}</b><span>${label}</span></div></div>
+      <div class="liste">${parts.map(x => `<div><i style="background:${x.c}"></i><span>${esc(x.nom)}</span><em>${v === "pce" ? nf(x.m, 1) + " min" : hmin(x.m)}</em><strong>${pct(x.m / tot)}</strong></div>`).join("")}</div>
+    </div>${v === "pce" ? `<div class="mono" style="margin-top:14px;text-transform:none;letter-spacing:.02em">${esc(vsm.t.titre)} · durée répartie à parts égales entre les étapes</div>` : ""}</div></div>`,
+  init(el) {
+    const svg = el.querySelector("svg"), R = 78, C = 2 * Math.PI * R, ecart = parts.length > 1 ? 1.6 : 0;
+    S(svg, "circle", { cx: 100, cy: 100, r: R, fill: "none", stroke: css("--plan-2"), "stroke-width": 26 });
+    let deb = 0;
+    const arcs = parts.map(x => { const len = x.m / tot * C; const a = S(svg, "circle", { cx: 100, cy: 100, r: R, fill: "none", stroke: x.c, "stroke-width": x.ia || x.c === css("--ia") ? 30 : 24, transform: "rotate(-90 100 100)", "stroke-dashoffset": -deb, "stroke-dasharray": `0 ${C}` }); const o = { a, len: Math.max(.5, len - ecart) }; deb += len; return o; });
+    const lignes = [...el.querySelectorAll(".liste > div")], cb = el.querySelector(".centre b");
+    return { entrer() {
+      arcs.forEach(o => o.a.setAttribute("stroke-dasharray", `0 ${C}`));
+      if (G && !reduit) { let t = 0; arcs.forEach(o => { const d = .25 + 1.1 * o.len / C, s = { v: 0 }; G.to(s, { v: 1, duration: d, delay: t, ease: "power1.inOut", onUpdate: () => o.a.setAttribute("stroke-dasharray", `${o.len * s.v} ${C}`) }); t += d; });
+        apparaitre(lignes, { y: 0, x: 10, d: .5, s: .08 });
+        const n = { v: 0 }; if (centre != null) G.to(n, { v: centre, duration: 1.4, ease: "power2.out", onUpdate: () => cb.textContent = pct(n.v) }); }
+      else arcs.forEach(o => o.a.setAttribute("stroke-dasharray", `${o.len} ${C}`)); } };
+  } };
+};
+
+/* Liste classée : les tâches ; variantes outils, hypothèses, règles, contrôles, capacités, décisions */
+VIZ["liste-classee"] = (ch, v) => {
+  if (v === "outils") { if (!outilsListe.length) return vide("Aucun outil recensé.", "des applications utilisées plus de 3 minutes.");
+    return { defaut: "outils_ia", legende: `<span><i style="background:var(--ia)"></i>Outil d'IA</span>${horsListe ? `<span><i style="background:var(--perte)"></i>Hors de la liste fournie</span>` : ""}`,
+      html: liste([...outilsListe.filter(o => o.ia), ...outilsListe.filter(o => !o.ia)].slice(0, 7).map(o => ({ etiquette: o.ia ? (horsListe?.includes(o.n) ? "IA · hors liste" : "IA") : "Outil", c: o.ia ? (horsListe?.includes(o.n) ? "var(--perte)" : "var(--ia)") : "var(--faible)", titre: o.n, texte: `${hmin(o.tot)} · ${pluriel(o.postes, "poste")} sur ${postes.length}` }))), init: initListe }; }
+  if (v === "hypotheses") { if (!hypotheses.length) return vide("Rien à tester.", "au moins une mesure de temps ou d'usage de l'IA.");
+    return { defaut: "part_ia", html: liste(hypotheses.map(h => ({ etiquette: h.vrai ? "Confirmée" : "Démentie", c: h.vrai ? "var(--ia)" : "var(--perte)", titre: `« ${h.h} »`, texte: h.preuve + "." }))), init: initListe }; }
+  if (v === "regles") { if (!regles.length) return vide("Aucune règle justifiée par les mesures.", "l'usage de l'IA et la sensibilité des tâches.");
+    return { defaut: "outils_ia", html: liste(regles.map((r, i) => ({ etiquette: `Règle ${i + 1}`, titre: r.titre, texte: `Motif : ${r.constat}` }))), init: initListe }; }
+  if (v === "controles") { if (!risques.length) return vide("Aucun risque noté au-dessus de « faible ».", "des tâches décrites avec leurs étapes et leurs applications.");
+    const vus = new Set(); const items = risques.filter(r => !vus.has(r.t.titre) && vus.add(r.t.titre)).slice(0, 4);
+    return { defaut: "taches_sensibles", legende: `<span>Responsable et date : à fixer avec vous</span>`, html: liste(items.map(r => ({ etiquette: `Risque ${r.note[0] >= 3 ? "élevé" : "moyen"}`, c: r.note[0] >= 3 ? "var(--perte)" : "var(--doux)", titre: `${CONTROLES[r.crit.id][0]} · « ${r.t.titre} »`, texte: `Contrôle : ${CONTROLES[r.crit.id][1]}` })), 104), init: initListe }; }
+  if (v === "capacites") return { defaut: "n_utilisateurs_ia", legende: `<span><i style="background:var(--ia)"></i>Mesuré à l'écran</span><span><i style="background:var(--faible)"></i>Pas visible à l'écran</span>`,
+    html: liste(capacites.map(c => ({ etiquette: c.ok ? "Mesuré" : "Non mesuré", c: c.ok ? "var(--ia)" : "var(--faible)", titre: c.nom, texte: c.txt }))), init: initListe };
+  if (!taches.length) return vide("Aucune tâche répétée décrite.", "au moins un résumé validé avec ses tâches (titre, fréquence, durée, étapes).");
+  const parHumain = v === "decisions";
+  const ts = parHumain ? taches.slice().sort((a, b) => (b.nDec + b.nChk) - (a.nDec + a.nChk) || b.heures - a.heures) : taches;
+  const max = Math.max(...ts.map(t => t.heures)) || 1, n = Math.min(ts.length, 8);
+  return { defaut: parHumain ? "taches" : "heures_taches", legende: legEtats(), html: `<div class="viz"><div class="pad"><div class="taches">${ts.slice(0, n).map((t, k) => `<div class="tache"><div class="rang">${String(k + 1).padStart(2, "0")}</div><div class="t">${esc(t.titre)}${t.postes.length > 1 ? ` <span class="mono" style="letter-spacing:.04em">· ${t.postes.length} postes</span>` : ""}</div><div class="h">${hmin(t.heures * 60)}/sem.</div>
+      <div class="rail"><i data-w="${t.heures / max * 100}" style="background:var(${t.expo.c})"></i></div><div class="etat" style="color:var(${t.expo.c})">${t.expo.etat}</div><div class="h">${parHumain ? `${pluriel(t.nDec, "décision")} · ${pluriel(t.nChk, "vérif.", "vérif.")}` : `${nfa(t.frequence_par_semaine)}× · ${nfa(t.duree_moyenne_min)} min`}</div></div>`).join("")}
+      ${ts.length > n ? `<div class="mono">+ ${ts.length - n} autres tâches</div>` : ""}</div></div></div>`,
+  init(el) { const is = [...el.querySelectorAll(".rail i")];
+    return { entrer() { is.forEach(i => i.style.width = "0%"); if (G && !reduit) G.to(is, { width: (k, i) => i.dataset.w + "%", duration: .9, ease: "power3.out", stagger: .07 }); else is.forEach(i => i.style.width = i.dataset.w + "%"); } }; } };
+};
+
+VIZ["course"] = () => {
+  if (!cible) return vide("Aucune tâche à rejouer.", "une tâche décrite dont des étapes de saisie, d'action ou de sortie peuvent passer à l'IA.");
+  return { defaut: "cible_gain", legende: `<span><i style="background:var(--perte)"></i>Saisie et allers-retours</span><span><i style="background:var(--projet)"></i>Jugement humain</span><span><i style="background:var(--ia)"></i>Pris en charge par l'IA</span>`,
+  extra: `<button type="button" class="bouton plein" data-r="rejouer">Rejouer la course</button>`,
+  html: `<div class="viz"><div class="pad"><div class="course"></div></div></div>`,
+  init(el) {
+    const box = el.querySelector(".course"), n = cible.etapes.length, dur = cible.duree_moyenne_min;
+    const etapes = cible.etapes.map(e => { const auto = AUTO.includes(e.type); return { ...e, auto, avant: dur / n, apres: auto ? dur / n * (1 - TAUX) : dur / n }; });
+    const piste = (nom, cle) => `<div class="piste"><div class="tete"><b>${nom}</b><span class="chrono" data-c="${cle}">0:00</span></div><div class="rangee">${etapes.map(e => `<div style="flex:${e.avant}"><i data-c="${cle}" data-f="${e[cle] / e.avant}" style="background:var(${cle === "apres" && e.auto ? "--ia" : (e.auto && cle === "avant" ? "--perte" : "--projet")})"></i><span>${esc(e.texte)}</span></div>`).join("")}</div></div>`;
+    box.innerHTML = `<div class="mono">${esc(cible.titre)} · ${nfa(cible.frequence_par_semaine)} fois par semaine · hypothèse : ${pct(TAUX)} des étapes automatisables</div>` + piste("Aujourd'hui", "avant") + piste("Avec l'IA", "apres");
+    const jouer = () => {
+      const segs = { avant: [...box.querySelectorAll('i[data-c="avant"]')], apres: [...box.querySelectorAll('i[data-c="apres"]')] };
+      Object.values(segs).flat().forEach(i => i.style.width = "0%");
+      ["avant", "apres"].forEach(cle => { const chrono = box.querySelector(`.chrono[data-c="${cle}"]`), total = etapes.reduce((s, e) => s + e[cle], 0);
+        if (!G || reduit) { segs[cle].forEach(i => i.style.width = i.dataset.f * 100 + "%"); chrono.textContent = nf(total, 1) + " min"; return; }
+        const tl = G.timeline(); let t = 0, k = 0;
+        segs[cle].forEach(i => { const d = Math.max(.05, etapes[k++][cle] * Math.min(.5, 6 / dur)); tl.to(i, { width: i.dataset.f * 100 + "%", duration: d, ease: "none" }, t); t += d; });
+        const o = { v: 0 }; G.to(o, { v: total, duration: t, ease: "none", onUpdate: () => chrono.textContent = nf(o.v, 1) + " min" }); });
+    };
+    el.querySelector('[data-r="rejouer"]')?.addEventListener("click", jouer);
+    return { entrer: jouer };
+  } };
+};
+
+/* Matrice 2×2 : tâches valeur × faisabilité ; variantes portefeuille (lancer / laisser), changement, confiance, profil des postes */
+const PRESETS = {
+  defaut: { fx: "faisab", ax: "Faisabilité IA →", axs: "étapes automatisables, goulots", noms: { rapides: "Gains rapides", chantiers: "Grands chantiers", marge: "À la marge", pieges: "Pièges" } },
+  portefeuille: { fx: "faisab", ax: "Facile à confier à l'IA →", axs: "étapes automatisables, goulots", noms: { rapides: "À lancer", chantiers: "À tester", marge: "À garder", pieges: "À laisser" } },
+  changement: { fx: "faisab", ax: "Bouleversement · exposition à l'IA →", ay: "Importance · heures par semaine →", noms: { rapides: "Prioritaires", chantiers: "Importantes, stables", marge: "Bousculées, secondaires", pieges: "Hors champ" } },
+  confiance: { fx: "confiance", ax: "Confiance →", axs: "inverse de la sensibilité des données", noms: { rapides: "Aller", chantiers: "Attendre un contrôle", marge: "Aller, sans urgence", pieges: "Attendre" } },
+};
+VIZ["matrice-2x2"] = (ch, v) => {
+  if (v === "profil") { const pts = iaPostes.filter(x => x.part != null && (x.a + x.c)).map(x => ({ x: x.part, y: x.a / (x.a + x.c), c: "--ia", lignes: [`${x.p.id} · ${x.p.qui}`], sous: `${pct(x.part)} IA · ${pct(x.a / (x.a + x.c))} agents` }));
+    if (!pts.length || partAgent == null) return vide("Profil IA non calculable.", "le temps passé avec l'IA par poste, ventilé entre agents et conversation.");
+    pts.push({ x: partIA, y: partAgent, creux: true, c: "--encre", lignes: ["Équipe"], sous: `profil « ${profil} »` });
+    const cfg = { pts, ymax: 1.08, yseuil: .5, xseuil: .5, yticks: [0, .5, 1], yfmt: y => pct(y), unite: "poste", ax: "Adoption · part du temps avec l'IA →", ay: "Autonomie · part déléguée à des agents →", noms: { rapides: "Délégation", chantiers: "Essais d'agents", marge: "Conversation", pieges: "Découverte" } };
+    return { defaut: "part_ia", legende: `<span><i style="background:var(--ia)"></i>Poste</span><span><i style="border:1.5px solid var(--encre);border-radius:50%"></i>Équipe</span>`, html: `<div class="viz"><svg class="sv plein" aria-label="Profil IA des postes"></svg><ol class="cle-mat">${pts.map(p => `<li>${esc(p.lignes.join(" "))} · ${esc(p.sous)}</li>`).join("")}</ol></div>`,
+      init(el) { const svg = el.querySelector("svg"); return { entrer() { animerMatrice(matrice(svg, cfg)); }, redessiner: () => matrice(svg, cfg) }; } }; }
+  if (!taches.length) return vide("Aucune tâche à placer.", "au moins une tâche décrite dans un résumé validé.");
+  const P = PRESETS[v] || PRESETS.defaut, maxH = Math.max(...taches.map(t => t.heures)) * 1.18, pas = maxH > 16 ? 4 : maxH > 8 ? 2 : 1;
+  const yticks = []; for (let y = 0; y <= maxH; y += pas) yticks.push(y);
+  const cfg = { pts: taches.slice(0, 9).map(t => ({ x: t[P.fx], y: t.heures, c: t.expo.c, lignes: taches.length > 6 ? [t.titre.length > 34 ? t.titre.slice(0, 32).trim() + "…" : t.titre] : coupe(t.titre, 30).slice(0, 2), sous: `${hmin(t.heures * 60)}/sem. · ${pct(t[P.fx])}` })), ymax: maxH, yseuil: seuilV, xseuil: SEUIL_F, yticks, yfmt: y => y ? `${y} h` : "0", unite: "tâche", ax: P.ax, axs: P.axs, ay: P.ay || "Valeur · heures par semaine →", noms: P.noms };
+  return { defaut: v === "confiance" ? "n_go" : v === "portefeuille" ? "n_a_lancer" : "gains_rapides", legende: legEtats(), html: `<div class="viz"><svg class="sv plein" aria-label="Matrice 2×2 des tâches"></svg><ol class="cle-mat">${cfg.pts.map(p => `<li>${esc(p.lignes.join(" "))} · ${esc(p.sous)}</li>`).join("")}</ol></div>`,
+    init(el) { const svg = el.querySelector("svg"); return { entrer() { animerMatrice(matrice(svg, cfg)); }, redessiner: () => matrice(svg, cfg) }; } };
+};
+
+VIZ["cascade"] = () => {
+  if (!taches.length) return vide("Aucune tâche à chiffrer.", "au moins une tâche décrite avec sa fréquence et sa durée.");
+  const zero = taches.filter(t => !t.gain), nMax = innerWidth <= 640 ? 3 : 6, pas = gains.slice(0, nMax), reste = gains.slice(nMax);
+  return { defaut: "heures_automatisables", legende: `<span><i style="background:var(--projet)"></i>Heures par semaine</span><span><i style="background:var(--ia)"></i>Reprises par l'IA</span><span>hypothèse : ${pct(TAUX)} des étapes automatisables</span>`,
+  html: `<div class="viz"><div class="pad" style="grid-template-rows:minmax(0,1fr) auto;gap:10px"><div class="cont-cascade" style="position:relative;min-height:300px"><svg class="sv plein" aria-label="Cascade des heures par semaine"></svg></div>
+    ${zero.length ? `<div class="inconnu"><div class="mono" style="padding:0;margin-bottom:2px">Comptées pour zéro</div>${zero.slice(0, 3).map(t => `<div>${esc(t.titre)} · ${t.expo.etat.toLowerCase()}</div>`).join("")}${zero.length > 3 ? `<div>et ${zero.length - 3} autres</div>` : ""}</div>` : ""}</div></div>`,
+  init(el) {
+    const svg = el.querySelector("svg");
+    const dessiner = () => {
+      svg.innerHTML = ""; const r = svg.getBoundingClientRect(), w = r.width, h = r.height; if (!w) return null; svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
+      let run = heuresTaches;
+      const rangs = [{ nom: "Aujourd'hui", sous: `${pluriel(taches.length, "tâche")} répétée${taches.length > 1 ? "s" : ""}`, a: 0, b: heuresTaches, type: "total" },
+        ...pas.map(t => { const g = t.heures * t.gain, o = { nom: t.titre, sous: `${hmin(t.heures * 60)}/sem. · ${pct(t.gain)} repris`, a: run - g, b: run, type: "gain", v: g }; run -= g; return o; }),
+        ...(reste.length ? [(() => { const g = reste.reduce((s, t) => s + t.heures * t.gain, 0), o = { nom: `${reste.length} autres tâches`, sous: "reprises en partie", a: run - g, b: run, type: "gain", v: g }; run -= g; return o; })()] : []),
+        { nom: "Après automatisation", sous: "reste humain", a: 0, b: run, type: "total" }];
+      const lab = Math.min(260, w * .36), x0 = lab + 16, x1 = w - 70, X = v => x0 + v / heuresTaches * (x1 - x0);
+      const rh = Math.min(74, h / rangs.length), bh = Math.min(30, rh * .5), top = Math.max(0, (h - rangs.length * rh) / 2), car = Math.max(18, Math.floor(lab / 7.2));
+      const barres = [], liens = [];
+      rangs.forEach((q, k) => { const y = top + k * rh, cy = y + rh / 2, lignes = coupe(q.nom, car).slice(0, 2);
+        const tx = S(svg, "text", { x: 0, y: lignes.length === 2 ? cy - 10 : cy - 3 }); lignes.forEach((l, i) => S(tx, "tspan", { x: 0, dy: i ? 15 : 0, "font-weight": q.type === "total" ? 500 : 400 }, l));
+        S(svg, "text", { x: 0, y: (lignes.length === 2 ? cy - 10 : cy - 3) + lignes.length * 15, class: "m" }, q.sous);
+        S(svg, "rect", { x: x0, y: cy - bh / 2, width: x1 - x0, height: bh, fill: css("--plan-2") });
+        const b = S(svg, "rect", { x: X(q.a), y: cy - bh / 2, width: Math.max(1, X(q.b) - X(q.a)), height: bh, fill: q.type === "gain" ? css("--ia") : css("--projet") });
+        const val = S(svg, "text", { x: q.type === "gain" ? X(q.a) - 8 : X(q.b) + 8, y: cy + 4.5, "text-anchor": q.type === "gain" ? "end" : "start", "font-weight": 500, style: q.type === "gain" ? `fill:${css("--ia")}` : "" }, (q.type === "gain" ? "−" : "") + hmin((q.type === "gain" ? q.v : q.b) * 60));
+        barres.push({ b, q, val });
+        if (k < rangs.length - 1) { const xl = X(q.type === "gain" ? q.a : q.b); liens.push(S(svg, "line", { x1: xl, x2: xl, y1: cy + bh / 2, y2: cy + rh - bh / 2, stroke: css("--faible"), "stroke-dasharray": "3 3" })); }
+      });
+      return { barres, liens };
+    };
+    return { entrer() { const d = dessiner(); if (!d || !G || reduit) return;
+        d.barres.forEach(({ b, q, val }, k) => { const xa = +b.getAttribute("x"), wa = +b.getAttribute("width");
+          if (q.type === "gain") G.fromTo(b, { attr: { x: xa + wa, width: 0 } }, { attr: { x: xa, width: wa }, duration: .7, delay: .2 + k * .4, ease: "power2.out" });
+          else G.fromTo(b, { attr: { width: 0 } }, { attr: { width: wa }, duration: .8, delay: .2 + k * .4, ease: "power3.out" });
+          G.fromTo(val, { opacity: 0 }, { opacity: 1, duration: .4, delay: .6 + k * .4 }); });
+        G.fromTo(d.liens, { opacity: 0 }, { opacity: 1, duration: .3, stagger: .4, delay: .7 }); },
+      redessiner: dessiner };
+  } };
+};
+
+VIZ["arbre"] = () => {
+  if (!totalEquipe) return vide("Aucun temps à décomposer.", "au moins un poste avec une frise ou un résumé validé.");
+  return { defaut: "cat_1_part", legende: legCats(equipe), html: `<div class="viz"><svg class="sv plein" aria-label="Arbre MECE du temps : total, catégories, applications"></svg></div>`,
+  init(el) {
+    const svg = el.querySelector("svg");
+    const cats = ORDRE.filter(c => equipe[c]).sort((a, b) => equipe[b] - equipe[a]);
+    const feuillesDe = k => cats.map(c => { const apps = Object.entries(arbre[c] || {}).sort((a, b) => b[1] - a[1]); const tot = equipe[c];
+      let top = apps.slice(0, k).filter(([, m]) => m >= .5); const reste = tot - top.reduce((s, [, m]) => s + m, 0);
+      if (reste >= .5) { const n = apps.length - top.length; top = [...top, [n > 0 ? `${n} autre${n > 1 ? "s" : ""} app${n > 1 ? "s" : ""}` : "Autres apps", reste]]; }
+      if (!top.length) top = [["Autres apps", tot]]; return { c, tot, apps: top }; });
+    let K = 3, arb = feuillesDe(K); while (arb.reduce((s, x) => s + x.apps.length, 0) > 15 && K > 1) arb = feuillesDe(--K);
+    const dessiner = () => {
+      svg.innerHTML = ""; const r = svg.getBoundingClientRect(), w = r.width, h = r.height; if (!w) return null; svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
+      const nF = arb.reduce((s, x) => s + x.apps.length, 0), pasF = Math.min(36, (h - 50) / (nF + (arb.length - 1) * .45)), haut = pasF * (nF + (arb.length - 1) * .45), y0 = (h - haut) / 2 + pasF / 2 + 10;
+      const c0 = 0, c1 = Math.max(150, w * .3), c2 = Math.max(c1 + 150, w * .63), bw = Math.min(110, w * .14);
+      let y = y0; const noeuds = [], liens = [];
+      const noeud = (x, yy, nom, m, couleur, niv) => { const g = S(svg, "g", { transform: `translate(${x},${yy})` });
+        S(g, "text", { y: -4, "font-weight": niv < 2 ? 500 : 400, style: niv === 0 ? "font-size:14px" : "" }, nom);
+        S(g, "rect", { x: 0, y: 2, width: bw, height: 3, fill: css("--plan-2") });
+        S(g, "rect", { x: 0, y: 2, width: Math.max(1.5, bw * m / totalEquipe), height: 3, fill: couleur });
+        S(g, "text", { x: bw + 8, y: 7, class: "m" }, `${hmin(m)} · ${pct(m / totalEquipe)}`);
+        noeuds.push({ g, niv }); return g; };
+      const coude = (xa, ya, xb, yb, couleur, niv) => { const mx = xa + (xb - xa) * .5; liens.push({ p: S(svg, "path", { d: `M${xa},${ya} H${mx} V${yb} H${xb}`, fill: "none", stroke: couleur, "stroke-width": 1 }), niv }); };
+      const posC = arb.map(x => { const ys = x.apps.map(() => { const v = y; y += pasF; return v; }); y += pasF * .45; return { ...x, ys, yc: (ys[0] + ys[ys.length - 1]) / 2 }; });
+      const yr = (posC[0].yc + posC[posC.length - 1].yc) / 2;
+      posC.forEach(x => { coude(Math.min(c0 + bw + 92, c1 - 24), yr, c1 - 10, x.yc, css("--trait-fort"), 1);
+        x.ys.forEach(yy => coude(Math.min(c1 + bw + 92, c2 - 24), x.yc, c2 - 10, yy, css("--trait"), 2)); });
+      noeud(c0, yr, "Temps à l'écran", totalEquipe, css("--encre"), 0);
+      S(svg, "text", { x: c0, y: yr + 24, class: "m" }, pluriel(postes.length, "poste"));
+      posC.forEach(x => { noeud(c1, x.yc, CATS[x.c] || x.c, x.tot, coul(x.c), 1); x.apps.forEach(([a, m], i) => noeud(c2, x.ys[i], a, m, coul(x.c), 2)); });
+      [[c0, "Total"], [c1, "Catégorie"], [c2, "Application"]].forEach(([x, t]) => S(svg, "text", { x, y: Math.max(14, y0 - pasF - 4), class: "mu" }, t));
+      return { noeuds, liens };
+    };
+    return { entrer() { const d = dessiner(); if (!d || !G || reduit) return;
+        [0, 1, 2].forEach(n => G.fromTo(d.noeuds.filter(x => x.niv === n).map(x => x.g), { opacity: 0 }, { opacity: 1, duration: .45, stagger: .04, delay: n * .55 }));
+        d.liens.forEach(({ p, niv }) => { const L = p.getTotalLength(); p.style.strokeDasharray = L; G.fromTo(p, { strokeDashoffset: L }, { strokeDashoffset: 0, duration: .5, delay: Math.max(0, niv * .55 - .3), ease: "power1.inOut" }); }); },
+      redessiner: dessiner };
+  } };
+};
+
+/* VSM : état actuel (valeur / nécessaire / gaspillage, PCE) ou état cible (étapes reprises par l'agent) */
+VIZ["vsm"] = (ch, v) => {
+  if (!vsm) return vide("Pas de chaîne de valeur à tracer.", "une tâche décrite avec ses étapes et sa durée moyenne.");
+  const cibleV = v === "cible";
+  const NOMS = { input: "Saisie", action: "Action", check: "Contrôle", output: "Sortie", decision: "Décision" }, CL = { valeur: "Valeur ajoutée", necessaire: "Nécessaire sans valeur", gaspillage: "Gaspillage" };
+  const GASP = { waiting: "Attente", switching: "Mouvements entre apps", unclear: "Processus flou", rework: "Reprises", handoff: "Passages de main" };
+  const et = cibleV ? vsm.apres : vsm.etapes, n = et.length;
+  const totalAff = cibleV ? vsm.cible : vsm.total;
+  return { defaut: cibleV ? "duree_cible" : "pce",
+  legende: cibleV ? `<span><i style="border:1.5px solid var(--ia);background:var(--ia-pale)"></i>Pris par l'agent</span><span><i style="border:1.5px solid var(--encre)"></i>Gardé par l'humain</span><span><i class="pointille"></i>Étape supposée</span>`
+    : `<span><i style="border:1.5px solid var(--encre)"></i>Valeur ajoutée</span><span><i style="border:1.5px solid var(--trait-fort)"></i>Nécessaire sans valeur</span><span><i style="border:1.5px solid var(--perte)"></i>Gaspillage</span><span><i class="pointille"></i>Étape supposée</span>`,
+  html: `<div class="viz"><div class="pad"><div class="vsm">
+    <div class="mono">${esc(vsm.t.titre)} · ${nfa(vsm.t.frequence_par_semaine)}× par semaine · ${cibleV ? "état cible" : "état actuel"}</div>
+    <div class="etapes" style="grid-template-columns:repeat(${n},minmax(0,1fr))">${et.map(e => { const cls = cibleV ? (e.agent ? "agent" : "valeur") : e.classe;
+      return `<div class="boite ${cls}${e.statut === "supposé" ? " suppose" : ""}"><div class="type">${NOMS[e.type] || e.type} · ${cibleV ? (e.agent ? "Agent IA" : "Humain") : CL[e.classe]}</div><div class="tx">${esc(e.texte)}</div><div class="app">${esc(e.app || "")}${e.statut === "supposé" ? " · supposé" : ""}</div></div>`; }).join("")}</div>
+    <div class="echelle"><svg preserveAspectRatio="none"></svg></div>
+    <div class="totaux">${cibleV ? `<span>Durée visée <b class="ia">${nf(vsm.cible, 1)} min</b></span><span>au lieu de <b>${nfa(vsm.total)} min</b></span><span>Étapes humaines <b>${et.filter(e => !e.agent).length}</b> sur ${n}</span>`
+      : `<span>Temps de traversée <b>${nfa(vsm.total)} min</b></span><span>Valeur ajoutée <b>${nf(vsm.va, 1)} min</b></span><span>PCE <b class="ia">${pct(vsm.pce)}</b></span>`}</div>
+    ${!cibleV && vsm.t.goulots.length ? `<div class="puces"><span class="neutre">Gaspillages signalés</span>${vsm.t.goulots.map(g => `<span>${GASP[g] || esc(g)}</span>`).join("")}</div>` : ""}
+    <div class="mono" style="text-transform:none;letter-spacing:.02em;color:var(--faible)">${cibleV ? `Hypothèse : l'agent prend ${pct(TAUX)} de la durée des étapes de saisie, d'action et de sortie.` : "Durée répartie à parts égales entre les étapes : le résumé ne chronomètre pas chaque étape."}</div>
+  </div></div></div>`,
+  init(el) {
+    const svg = el.querySelector(".echelle svg"), boites = [...el.querySelectorAll(".boite")];
+    const dessiner = () => { svg.innerHTML = ""; const r = svg.getBoundingClientRect(); if (!r.width) return null; svg.setAttribute("viewBox", `0 0 ${r.width} ${r.height}`);
+      const cw = (r.width + 10) / n, hautY = 14, basY = r.height - 18, segs = []; let px = 0, py = null;
+      et.forEach((e, k) => { const bas = cibleV ? !e.agent : e.classe === "valeur", x0 = k * cw, x1 = x0 + cw - 10, yy = bas ? basY : hautY, d = cibleV ? e.d2 : e.d;
+        const coulT = cibleV ? (e.agent ? css("--ia") : css("--encre")) : e.classe === "gaspillage" ? css("--perte") : css("--encre");
+        if (py != null && py !== yy) segs.push(S(svg, "line", { x1: x0 - 5, x2: x0 - 5, y1: py, y2: yy, stroke: css("--encre"), "stroke-width": 1.5 }));
+        else if (py != null) segs.push(S(svg, "line", { x1: px, x2: x0, y1: yy, y2: yy, stroke: css("--encre"), "stroke-width": 1.5 }));
+        segs.push(S(svg, "line", { x1: py != null && py !== yy ? x0 - 5 : x0, x2: x1 + 5, y1: yy, y2: yy, stroke: coulT, "stroke-width": bas || (cibleV && e.agent) ? 3 : 1.5 }));
+        segs.push(S(svg, "text", { x: (x0 + x1) / 2, y: yy === basY ? basY + 14 : hautY - 5, "text-anchor": "middle", class: "m", style: bas ? `fill:${css("--encre")}` : cibleV ? `fill:${css("--ia")}` : "" }, `${nf(d, 1)} min`));
+        px = x1 + 5; py = yy; });
+      return segs; };
+    return { entrer() { const segs = dessiner(); if (!G || reduit) return;
+        apparaitre(boites, { y: 16, s: .12 });
+        if (segs) G.fromTo(segs, { opacity: 0 }, { opacity: 1, duration: .25, stagger: .05, delay: .5 });
+        G.fromTo(el.querySelectorAll(".totaux, .puces"), { opacity: 0 }, { opacity: 1, duration: .5, delay: 1.1 }); },
+      redessiner: dessiner };
+  } };
+};
+
+/* Carte de chaleur : tâches × critères ; variantes frontière (tâches × étapes), terrain (postes × créneaux), tableau de bord */
+VIZ["carte-chaleur"] = (ch, v) => {
+  if (v === "tableau") return vide("Le tableau rouge, orange, vert a besoin de cibles et d'une deuxième semaine.", "des cibles fixées avec vous, puis la même mesure la semaine suivante. Les valeurs de départ sont prêtes :", ["part_ia", "heures_taches", "heures_automatisables", "bascules_heure"]);
+  if (v === "terrain") { if (!frises.length) return vide("Pas de terrain heure par heure.", "un export complet de screenpipe (frise minute par minute) d'au moins un poste.");
+    const max = Math.max(1, ...fragments.flatMap(f => f.n));
+    const lignes = fragments.map(f => ({ lib: `${f.p.id} · ${f.p.qui}`, sous: `${f.p.mesures?.bascules_par_heure ?? "n.d."} chgts/h · écran médian ${f.p.mesures?.ecran_median_s ?? "n.d."} s`,
+      cases: f.n.map((x, k) => { if (f.actif[k] < 1) return { bg: "transparent", b: "·" }; const lv = x === 0 ? 0 : Math.min(3, Math.ceil(x / max * 3)); return { bg: fondNiveau(lv, "--perte"), fonce: lv >= 2, b: String(x), s: hmin(f.actif[k]) }; }) }));
+    return { defaut: "ecran_median_s", legende: `<span>chiffre = changements d'application dans la demi-heure · plus c'est foncé, plus c'est haché</span>`,
+      html: grille(creneaux.map(m => ({ nom: hm(m) })), lignes, `<div class="echelle-c"><span>calme</span>${[0, 1, 2, 3].map(l => `<i style="background:${fondNiveau(l, "--perte")}"></i>`).join("")}<span>haché</span></div>`), init: initGrille }; }
+  if (!taches.length) return vide("Aucune tâche à noter.", "au moins une tâche décrite dans un résumé validé.");
+  if (v === "frontiere") { const maxE = Math.max(...taches.map(t => t.etapes.length)); const NOMS = { input: "Saisie", action: "Action", check: "Contrôle", output: "Sortie", decision: "Décision" };
+    const lignes = taches.slice(0, 8).map(t => ({ lib: t.titre, sous: `${hmin(t.heures * 60)}/sem. · IA ${t.iaEtapes}/${t.etapes.length}`, cases: Array.from({ length: maxE }, (_, k) => { const e = t.etapes[k]; if (!e) return null;
+      const ia = RE_IA.test(e.app || ""), hum = HUMAIN.includes(e.type);
+      return { bg: ia ? "var(--ia)" : hum ? "var(--projet)" : "color-mix(in srgb, var(--perte) 30%, var(--plan-2))", fonce: ia || hum, b: NOMS[e.type] || e.type, s: e.app || "", titre: e.texte }; }) }));
+    return { defaut: "n_taches_ia", legende: `<span><i style="background:var(--ia)"></i>Étape faite avec l'IA</span><span><i style="background:color-mix(in srgb, var(--perte) 30%, var(--plan-2))"></i>Saisie ou action sans IA</span><span><i style="background:var(--projet)"></i>Jugement humain</span>`,
+      html: grille(Array.from({ length: maxE }, (_, k) => ({ nom: `Étape ${k + 1}` })), lignes), init: initGrille }; }
+  const rangs = notes.slice().sort((a, b) => b.n.slice(0, 4).reduce((s, x) => s + x[0], 0) - a.n.slice(0, 4).reduce((s, x) => s + x[0], 0)).slice(0, 8);
+  return { defaut: "taches_sensibles", legende: "",
+    html: grille(CRITERES, rangs.map(({ t, n }) => ({ lib: t.titre, sous: `${hmin(t.heures * 60)}/sem.`, cases: n.map(([lv, l], k) => ({ bg: fondNiveau(lv, CRITERES[k].ia ? "--ia" : "--projet"), fonce: lv >= 2, b: String(lv), s: l })) })),
+      `<div class="echelle-c"><span>0</span>${[0, 1, 2, 3].map(l => `<i style="background:${fondNiveau(l)}"></i>`).join("")}<span>3</span><span style="margin-left:14px">maturité IA</span>${[0, 1, 2, 3].map(l => `<i style="background:${fondNiveau(l, "--ia")}"></i>`).join("")}<span style="margin-left:14px;color:var(--faible)">notes dérivées des étapes, apps et goulots</span></div>`), init: initGrille };
+};
+
+VIZ["plan"] = (ch, v) => {
+  const ET = { horizons: ["Horizon 1 · ce mois", "Horizon 2 · ce trimestre", "Horizon 3 · cette année"], semaines: ["Semaines 1 à 4", "Semaines 5 à 8", "Semaines 9 à 12"] }[v] || ["30 jours", "60 jours", "90 jours"];
+  const T = { gens: "personnes et processus", tech: "technologie", algo: "algorithmes" };
+  return { defaut: "actions", sansChiffre: true, extra: `<div class="inconnu"><div class="mono" style="margin-bottom:4px">Ce qu'on ne sait pas encore</div>${limites.map(l => `<div>${esc(l)}</div>`).join("")}</div>`,
+    html: liste(recos.map((r, k) => ({ etiquette: ET[k] || ET[2], titre: r.titre, texte: r.texte + ` (${T[r.type]})` })), 104), init: initListe };
+};
+
+/* ==========================================================================================
+   Variante de chaque viz, d'après ce que le chapitre demande (ses métriques et son texte)
+   ========================================================================================== */
+function variante(ch) {
+  const refs = ch.metriques || [], L = `${ch.id} ${ch.titre || ""} ${ch.lecture || ""}`, a = r => refs.includes(r);
+  switch (ch.viz) {
+    case "anneau": return a("calc:nps_salaries") ? "nps" : refs.length && refs.every(r => r === "calc:niveau_confiance") ? "indice" : a("calc:pce") ? "pce" : (a("ia_agent_min") || a("ia_chat_min")) && !a("par_categorie_min") ? "agent" : "categories";
+    case "matrice-2x2": return a("calc:jours_actifs_ia") || /profil/i.test(ch.id) ? "profil" : a("calc:niveau_confiance") || /\{n_go\}|attendre/i.test(L) ? "confiance" : /bousculé|changement/i.test(L) ? "changement" : /\{n_a_lancer\}|lancer/i.test(L) ? "portefeuille" : "defaut";
+    case "barres-empilees": return a("calc:recommandations_par_type") ? "effort" : a("calc:gaspillages") ? "gaspillages" : /\{h_deployer\}|déployer/i.test(L) ? "niveaux" : "categories";
+    case "liste-classee": return /\{hypothese\}/.test(L) ? "hypotheses" : /\{regle\}/.test(L) ? "regles" : /\{risque\}|\{controle\}/.test(L) ? "controles" : /capacit/i.test(L) ? "capacites" : /\{n_decisions\}/.test(L) ? "decisions" : a("outils") && !refs.some(r => r.startsWith("taches.")) ? "outils" : "taches";
+    case "carte-chaleur": return a("calc:tendance_semaine") ? "tableau" : a("calc:ia_dans_tache") ? "frontiere" : a("segments") || a("calc:fragmentation_horaire") ? "terrain" : "criteres";
+    case "frise": return /horizon|plan|semaine \{/i.test(L) && !a("segments") && !a("ensemble_min") ? "horizons" : "frise";
+    case "reseau": return a("calc:variantes_tache") ? "variantes" : "outils";
+    case "vsm": return /cible|demain/i.test(`${ch.id} ${ch.titre}`) ? "cible" : "actuel";
+    default: return "";
+  }
+}
+/* Les champs de données cités par la recherche → la métrique qui les montre */
+const REFS = { "calc:heures_recuperables": "heures_automatisables", "calc:cout_tache": COUT ? "euros_total" : "heures_taches", cout_horaire: "cout_horaire", "calc:exposition_ia": "taches_cibles", actif_min: "temps_total",
+  par_categorie_min: "cat_1_part", part_ia: "part_ia", "calc:heures_semaine_tache": "heures_taches", "calc:part_cumulee": "part_cumulee", bascules_par_heure: "bascules_heure", bascules: "bascules_heure", ecran_median_s: "ecran_median_s",
+  plongee: "plongee_max", outils: "outils", ia_agent_min: "part_agent", ia_chat_min: "part_chat", meme_sujet_min: "meme_sujet_min", ensemble_min: "minutes_ensemble", "calc:ia_dans_tache": "n_taches_ia", "calc:recommandations_par_type": "part_gens",
+  "calc:part_coeur_metier": "part_coeur", "calc:decisions_par_tache": "taches", "calc:donnees_sensibles_vers_ia": "taches_sensibles", "calc:pce": "pce", "calc:gaspillages": "min_gaspillage", "calc:fragmentation_horaire": "bascules_heure", "calc:ia_non_fournie": "n_hors_liste" };
+const metriquesDe = (ch, ctx) => { const ids = [];
+  const add = id => { if (id && MET[id] && MET[id].n != null && !ids.includes(id)) ids.push(id); };
+  const surFlux = /\{heures\}/.test(ch.lecture || ""), REF = r => surFlux && r === "calc:heures_semaine_tache" ? "heures" : surFlux && r === "calc:cout_tache" ? "euros" : REFS[r];
+  const refs = ch.metriques || []; [...refs.filter(r => r.startsWith("calc:")), ...refs.filter(r => !r.startsWith("calc:"))].forEach(r => add(MET[r] ? r : REF(r)));
+  if (ch.viz === "chiffre-cle") [...String(ch.lecture || "").matchAll(/\{([a-z0-9_]+)\}/g)].forEach(m => { const id = ALIAS[m[1]] || m[1]; if (!(m[1] in ctx)) add(id); });
+  return ids; };
+
+/* ==========================================================================================
+   Chapitres : construits depuis la spec de la méthode
+   ========================================================================================== */
+const ICONES = {
+  pyramide: `<path d="M11 3 L20 19 H2 Z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6.5 12 H15.5" stroke="currentColor" stroke-width="1.2"/>`,
+  matrice: `<rect x="3" y="3" width="7" height="7" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="12" y="3" width="7" height="7" fill="var(--ia)" stroke="var(--ia)" stroke-width="1.5"/><rect x="3" y="12" width="7" height="7" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="12" y="12" width="7" height="7" fill="none" stroke="currentColor" stroke-width="1.5"/>`,
+  flux: `<path d="M2 11 H16 M12 6 L17 11 L12 16" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="2" y="5" width="4" height="12" fill="none" stroke="currentColor" stroke-width="1.2"/>`,
+  confiance: `<path d="M11 2.5 L18.5 5.5 V11 C18.5 15.5 15 18.5 11 19.5 C7 18.5 3.5 15.5 3.5 11 V5.5 Z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M7.5 11 L10 13.5 L14.5 8.5" fill="none" stroke="var(--ia)" stroke-width="1.6"/>`,
+  resultats: `<path d="M3 19 V13 M8.5 19 V9 M14 19 V6 M19.5 19 V3" stroke="currentColor" stroke-width="2.2"/>`,
+};
+ICONES.frontiere = ICONES.matrice; ICONES.gemba = ICONES.flux; ICONES.gardefou = ICONES.confiance; ICONES.resultat = ICONES.resultats;
+document.getElementById("marque").innerHTML = `<svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true" style="color:var(--encre)">${ICONES[M.id] || `<rect x="6" y="6" width="10" height="10" transform="rotate(45 11 11)" fill="none" stroke="currentColor" stroke-width="1.5"/>`}</svg>
+  <div><div class="nom">Méthode ${esc(M.nom)}${PARAM.entreprise ? ` · ${esc(PARAM.entreprise)}` : ""}</div><div class="insp">inspirée de ${esc(String(M.inspire_de || "").replace(/\s*\(.*\)\s*$/, ""))}</div></div>`;
+document.getElementById("methodes").innerHTML = METHODES.map(m => `<a href="?methode=${encodeURIComponent(m.id)}" class="${m.id === M.id ? "actif" : ""}"${m.id === M.id ? ' aria-current="page"' : ""}>${esc(m.nom)}</a>`).join("");
+
+const lectureHtml = (ch, k, r, ctx, ids) => {
+  const manq = new Set();
+  const direct = (ch.metriques || []).some(x => MET[x]), defautOk = MET[r.defaut] && MET[r.defaut].n != null;
+  const principal = r.sansChiffre ? null : ids.includes(r.defaut) ? r.defaut : !direct && defautOk ? r.defaut : (ids[0] || (defautOk ? r.defaut : null));
+  const autres = r.sansChiffre ? [] : ids.filter(id => id !== principal).slice(0, 2);
+  const m = principal && MET[principal], court = x => x.t && x.t.length < 18;
+  const titre = remplir(ch.titre, ctx, manq), question = remplir(ch.question, ctx, manq), corps = remplir(ch.lecture, ctx, manq);
+  return `<div class="lecture"><div><div class="numero"><span>${String(k + 1).padStart(2, "0")}</span><em>${question}</em></div><h2>${titre}</h2></div>
+    <div style="display:grid;gap:14px">
+      ${m ? `<div class="chiffre${m.c === "ia" ? " ia" : m.c === "perte" ? " perte" : ""}" data-met="${principal}"><span class="val">${esc(court(m) ? m.t : m.v)}</span>${uniteVisible(m) && !court(m) ? `<small>${esc(m.u)}</small>` : ""}</div><div class="chiffre-l">${esc(m.l)}</div>` : ""}
+      ${corps ? `<p>${corps}</p>` : ""}
+      ${autres.length ? `<div class="kpis">${autres.map(id => { const x = MET[id]; return `<div class="kpi"><b class="${x.c === "ia" ? "ia" : ""}">${esc(court(x) ? x.t : x.v + (x.u ? " " + x.u : ""))}</b><span>${esc(x.l)}</span></div>`; }).join("")}</div>` : ""}
+      ${noteManque(manq)}
+      ${r.extra || ""}
+    </div></div>`;
+};
+
+const chapitres = (M.chapitres || []).map((ch, k) => {
+  const v = variante(ch), ctx = contexte(ch, v), ids = metriquesDe(ch, ctx);
+  let r;
+  try {
+    if (v === "nps") r = vide("Le score de recommandation des équipes n'est pas encore mesuré.", "une question de 0 à 10 posée dans la page de relecture (« recommanderiez-vous cet agent à un collègue ? »). L'écran ne la voit pas.");
+    else if (v === "indice") r = vide("L'indice de confiance par pilier ne se lit pas à l'écran.", "une notation de 1 à 5 par pilier (gouvernance, sécurité, données, équité), en entretien. L'écran ne voit que l'usage.", ["outils_ia", "taches_sensibles"]);
+    else r = (VIZ[ch.viz] || (() => vide(`Visualisation « ${esc(ch.viz)} » pas encore disponible.`, "un moteur de rendu pour ce type d'écran.")))(ch, v, ids);
+  } catch (e) { console.warn(e); r = vide("Ce chapitre n'a pas pu être calculé.", "des données d'audit complètes pour ce chapitre."); }
+  return { ch, r, nom: String(ch.question || ch.id).replace(/\{[^}]+\}/g, ""), html: () => r.html + lectureHtml(ch, k, r, ctx, ch.viz === "chiffre-cle" ? [] : ids) };
+});
+
+/* ---------- Mécanique de story ---------- */
+const story = document.getElementById("story"), prog = document.getElementById("progres"), legende = document.getElementById("legende");
+chapitres.forEach((c, k) => { const s = document.createElement("section"); s.className = "chap"; s.setAttribute("aria-label", c.nom); s.innerHTML = c.html(); story.appendChild(s); c.el = s;
+  const b = document.createElement("button"); b.type = "button"; b.setAttribute("aria-label", `Chapitre ${k + 1}`); b.innerHTML = "<span><b></b></span>"; b.addEventListener("click", () => aller(k)); prog.appendChild(b); });
+let i = -1, auto = !reduit && !/[?&]pause\b/.test(location.search), minuteur = null;
+const DUREE = 11;
+function aller(k) {
+  if (!chapitres.length) return;
+  k = (k + chapitres.length) % chapitres.length;
+  if (i >= 0) { chapitres[i].el.classList.remove("actif"); chapitres[i].api?.sortir?.(); }
+  i = k; const c = chapitres[i];
+  c.el.classList.add("actif");
+  if (!c.api) { try { c.api = c.r.init(c.el) || {}; } catch (e) { console.warn(e); c.api = {}; } }
+  try { c.api.entrer?.(); } catch (e) { console.warn(e); }
+  legende.innerHTML = c.r.legende || "";
+  compter(c.el.querySelector(".lecture"));
+  [...prog.querySelectorAll("b")].forEach((b, j) => { if (G) G.killTweensOf(b); b.style.width = j < i ? "100%" : "0%"; });
+  const barre = prog.querySelectorAll("b")[i];
+  apparaitre(c.el.querySelectorAll(".lecture > *"), { s: .08 });
+  clearTimeout(minuteur);
+  if (auto && G) { G.fromTo(barre, { width: "0%" }, { width: "100%", duration: DUREE, ease: "none" }); minuteur = setTimeout(() => aller(i + 1), DUREE * 1000); }
+  else barre.style.width = "100%";
+  try { history.replaceState(null, "", location.search + "#c" + (i + 1)); } catch (e) {}
+}
+document.getElementById("suiv").addEventListener("click", () => aller(i + 1));
+document.getElementById("prec").addEventListener("click", () => aller(i - 1));
+const bAuto = document.getElementById("auto");
+bAuto.textContent = auto ? "Pause" : "Lecture";
+bAuto.addEventListener("click", () => { auto = !auto; bAuto.textContent = auto ? "Pause" : "Lecture"; aller(i); });
+addEventListener("keydown", e => { if (e.target.closest("canvas")) return; if (e.key === "ArrowRight") aller(i + 1); if (e.key === "ArrowLeft") aller(i - 1); if (e.key === " ") { e.preventDefault(); bAuto.click(); } });
+let attente = null;
+addEventListener("resize", () => { clearTimeout(attente); attente = setTimeout(() => chapitres[i]?.api?.redessiner?.(), 120); });
+const depart = Math.max(0, (parseInt((location.hash.match(/^#c(\d+)$/) || [])[1]) || 1) - 1);
+(document.fonts?.ready || Promise.resolve()).then(() => aller(Math.min(depart, chapitres.length - 1)));
+</script>

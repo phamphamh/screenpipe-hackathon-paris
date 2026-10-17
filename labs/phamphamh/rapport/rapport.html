@@ -61,7 +61,7 @@ body { background: var(--fond); color: var(--encre); font-family: var(--f-texte)
   .chap.actif { display: grid; }
 }
 .viz { position: relative; min-width: 0; min-height: 440px; border-right: 1px solid var(--trait); }
-@media (max-width: 900px) { .viz { border-right: 0; border-bottom: 1px solid var(--trait); min-height: 400px; } }
+@media (max-width: 900px) { .viz { border-right: 0; border-bottom: 1px solid var(--trait); min-height: 400px; } .chap .viz .pad { position: relative; min-height: 400px; padding: 22px 16px; } .chap .viz .cont-cascade { min-height: 460px !important; } }
 .viz canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 .viz .pad { position: absolute; inset: 0; padding: 26px 28px; display: grid; overflow: auto; }
 .viz svg.plein { position: absolute; inset: 0; width: 100%; height: 100%; display: block; overflow: visible; }
@@ -211,7 +211,9 @@ svg.fils { position: absolute; inset: 0; width: 100%; height: 100%; pointer-even
 .grille-c .case span { font-family: var(--f-mono); font-size: 9.5px; letter-spacing: .02em; margin-top: 3px; opacity: .8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .echelle-c { display: flex; align-items: center; gap: 6px; font-family: var(--f-mono); font-size: 10px; color: var(--doux); letter-spacing: .04em; flex-wrap: wrap; }
 .echelle-c i { width: 22px; height: 12px; display: inline-block; }
-@media (max-width: 640px) { .grille-c .case span { display: none; } .grille-c .case { height: 40px; } }
+@media (max-width: 640px) { .grille-c .case span { display: none; } .grille-c .case { height: 40px; padding: 0 4px; } .grille-c .case b { font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .grille-c { grid-template-columns: minmax(96px, 1.3fr) repeat(var(--n, 5), minmax(0, 1fr)) !important; } .grille-c .lib { font-size: 11.5px; } .grille-c .ent { font-size: 8.5px; letter-spacing: .02em; } }
+.cle-mat { display: none; }
+@media (max-width: 640px) { .viz:has(.cle-mat) svg.plein { position: relative; height: 380px; } .cle-mat { display: block; margin: 0; padding: 4px 16px 16px 34px; font-size: 12.5px; color: var(--doux); } .cle-mat li { padding: 2px 0; } }
 
 .nd { font-size: 12.5px; color: var(--faible); border-left: 2px solid var(--trait-fort); padding-left: 10px; max-width: 46ch; }
 .nd span { display: block; font-family: var(--f-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--doux); margin-bottom: 2px; }
@@ -668,10 +670,11 @@ function matrice(svg, cfg) {
   S(fond, "line", { x1: g.l, x2: g.l + W, y1: sy, y2: sy, stroke: css("--trait-fort"), "stroke-dasharray": "4 4" });
   cfg.yticks.forEach(v => S(fond, "text", { x: g.l - 10, y: Y(v) + 4, "text-anchor": "end", class: "m" }, cfg.yfmt(v)));
   S(fond, "text", { x: g.l, y: h - 18, class: "mu" }, cfg.ax);
-  if (cfg.axs) S(fond, "text", { x: g.l + W, y: h - 18, "text-anchor": "end", class: "m" }, cfg.axs);
+  const etroit = innerWidth <= 640;
+  if (cfg.axs && !etroit) S(fond, "text", { x: g.l + W, y: h - 18, "text-anchor": "end", class: "m" }, cfg.axs);
   [0, .5, 1].forEach(f => S(fond, "text", { x: X(f), y: g.t + H + 16, "text-anchor": f === 0 ? "start" : f === 1 ? "end" : "middle", class: "m" }, pct(f)));
   S(fond, "text", { x: 14, y: g.t + H / 2, transform: `rotate(-90 14 ${g.t + H / 2})`, "text-anchor": "middle", class: "mu" }, cfg.ay);
-  const pts = cfg.pts.map(p => ({ ...p, px: X(p.x), py: Y(p.y) }));
+  const pts = cfg.pts.map((p, k) => ({ ...p, px: X(p.x), py: Y(p.y), ...(etroit ? { lignes: [String(k + 1)], sous: "" } : {}) }));
   const etq = pts.map(p => { const grp = S(svg, "g"); const tx = S(grp, "text", {}); p.lignes.forEach((l, k) => S(tx, "tspan", { x: 0, dy: k ? 15 : 0, "font-weight": p.creux ? 500 : 400 }, l));
     S(grp, "text", { y: p.lignes.length * 15, class: "m" }, p.sous); const b = grp.getBBox(); return { p, grp, w: b.width, h: b.height, asc: -b.y }; });
   etq.forEach(e => { e.droite = e.p.px + 14 + e.w < g.l + W - 4; e.x = e.droite ? e.p.px + 14 : e.p.px - 14 - e.w; e.y = e.p.py - e.h / 2; });
@@ -690,7 +693,7 @@ const animerMatrice = d => { if (!d || !G || reduit) return; G.fromTo(d.fond, { 
 
 /* Une grille de cases notées (carte de chaleur) */
 const grille = (cols, lignes, legende) => `<div class="viz"><div class="pad"><div class="chaleur">
-  <div class="grille-c" style="grid-template-columns:minmax(150px,1.5fr) repeat(${cols.length},minmax(0,1fr))">
+  <div class="grille-c" style="--n:${cols.length};grid-template-columns:minmax(150px,1.5fr) repeat(${cols.length},minmax(0,1fr))">
     <div></div>${cols.map(c => `<div class="ent${c.ia ? " ia" : ""}">${esc(c.nom)}</div>`).join("")}
     ${lignes.map(l => `<div class="lib">${esc(l.lib)}${l.sous ? `<small>${esc(l.sous)}</small>` : ""}</div>${l.cases.map(c => c == null ? `<div class="case" style="background:transparent"></div>` : `<div class="case" style="background:${c.bg};color:${c.fonce ? "var(--plan)" : "var(--encre)"}"${c.titre ? ` title="${esc(c.titre)}"` : ""}><b>${esc(c.b)}</b>${c.s ? `<span>${esc(c.s)}</span>` : ""}</div>`).join("")}`).join("")}
   </div>${legende || ""}</div></div></div>`;
@@ -952,21 +955,21 @@ VIZ["matrice-2x2"] = (ch, v) => {
     if (!pts.length || partAgent == null) return vide("Profil IA non calculable.", "le temps passé avec l'IA par poste, ventilé entre agents et conversation.");
     pts.push({ x: partIA, y: partAgent, creux: true, c: "--encre", lignes: ["Équipe"], sous: `profil « ${profil} »` });
     const cfg = { pts, ymax: 1.08, yseuil: .5, xseuil: .5, yticks: [0, .5, 1], yfmt: y => pct(y), unite: "poste", ax: "Adoption · part du temps avec l'IA →", ay: "Autonomie · part déléguée à des agents →", noms: { rapides: "Délégation", chantiers: "Essais d'agents", marge: "Conversation", pieges: "Découverte" } };
-    return { defaut: "part_ia", legende: `<span><i style="background:var(--ia)"></i>Poste</span><span><i style="border:1.5px solid var(--encre);border-radius:50%"></i>Équipe</span>`, html: `<div class="viz"><svg class="sv plein" aria-label="Profil IA des postes"></svg></div>`,
+    return { defaut: "part_ia", legende: `<span><i style="background:var(--ia)"></i>Poste</span><span><i style="border:1.5px solid var(--encre);border-radius:50%"></i>Équipe</span>`, html: `<div class="viz"><svg class="sv plein" aria-label="Profil IA des postes"></svg><ol class="cle-mat">${pts.map(p => `<li>${esc(p.lignes.join(" "))} · ${esc(p.sous)}</li>`).join("")}</ol></div>`,
       init(el) { const svg = el.querySelector("svg"); return { entrer() { animerMatrice(matrice(svg, cfg)); }, redessiner: () => matrice(svg, cfg) }; } }; }
   if (!taches.length) return vide("Aucune tâche à placer.", "au moins une tâche décrite dans un résumé validé.");
   const P = PRESETS[v] || PRESETS.defaut, maxH = Math.max(...taches.map(t => t.heures)) * 1.18, pas = maxH > 16 ? 4 : maxH > 8 ? 2 : 1;
   const yticks = []; for (let y = 0; y <= maxH; y += pas) yticks.push(y);
   const cfg = { pts: taches.slice(0, 9).map(t => ({ x: t[P.fx], y: t.heures, c: t.expo.c, lignes: taches.length > 6 ? [t.titre.length > 34 ? t.titre.slice(0, 32).trim() + "…" : t.titre] : coupe(t.titre, 30).slice(0, 2), sous: `${hmin(t.heures * 60)}/sem. · ${pct(t[P.fx])}` })), ymax: maxH, yseuil: seuilV, xseuil: SEUIL_F, yticks, yfmt: y => y ? `${y} h` : "0", unite: "tâche", ax: P.ax, axs: P.axs, ay: P.ay || "Valeur · heures par semaine →", noms: P.noms };
-  return { defaut: v === "confiance" ? "n_go" : v === "portefeuille" ? "n_a_lancer" : "gains_rapides", legende: legEtats(), html: `<div class="viz"><svg class="sv plein" aria-label="Matrice 2×2 des tâches"></svg></div>`,
+  return { defaut: v === "confiance" ? "n_go" : v === "portefeuille" ? "n_a_lancer" : "gains_rapides", legende: legEtats(), html: `<div class="viz"><svg class="sv plein" aria-label="Matrice 2×2 des tâches"></svg><ol class="cle-mat">${cfg.pts.map(p => `<li>${esc(p.lignes.join(" "))} · ${esc(p.sous)}</li>`).join("")}</ol></div>`,
     init(el) { const svg = el.querySelector("svg"); return { entrer() { animerMatrice(matrice(svg, cfg)); }, redessiner: () => matrice(svg, cfg) }; } };
 };
 
 VIZ["cascade"] = () => {
   if (!taches.length) return vide("Aucune tâche à chiffrer.", "au moins une tâche décrite avec sa fréquence et sa durée.");
-  const zero = taches.filter(t => !t.gain), pas = gains.slice(0, 6), reste = gains.slice(6);
+  const zero = taches.filter(t => !t.gain), nMax = innerWidth <= 640 ? 3 : 6, pas = gains.slice(0, nMax), reste = gains.slice(nMax);
   return { defaut: "heures_automatisables", legende: `<span><i style="background:var(--projet)"></i>Heures par semaine</span><span><i style="background:var(--ia)"></i>Reprises par l'IA</span><span>hypothèse : ${pct(TAUX)} des étapes automatisables</span>`,
-  html: `<div class="viz"><div class="pad" style="grid-template-rows:minmax(0,1fr) auto;gap:10px"><div style="position:relative;min-height:0"><svg class="sv plein" aria-label="Cascade des heures par semaine"></svg></div>
+  html: `<div class="viz"><div class="pad" style="grid-template-rows:minmax(0,1fr) auto;gap:10px"><div class="cont-cascade" style="position:relative;min-height:300px"><svg class="sv plein" aria-label="Cascade des heures par semaine"></svg></div>
     ${zero.length ? `<div class="inconnu"><div class="mono" style="padding:0;margin-bottom:2px">Comptées pour zéro</div>${zero.slice(0, 3).map(t => `<div>${esc(t.titre)} · ${t.expo.etat.toLowerCase()}</div>`).join("")}${zero.length > 3 ? `<div>et ${zero.length - 3} autres</div>` : ""}</div>` : ""}</div></div>`,
   init(el) {
     const svg = el.querySelector("svg");

@@ -250,10 +250,15 @@ def these_par_id(i):
 
 # ---------- étape 4 : le rapport ----------
 
-def rapport(id_):
-    propre = os.path.join(RACINE, "donnees", "rapport", f"{slug(id_)}.html")
+def rapport(id_, camp="equipe"):
+    dossier = os.path.join(RACINE, "donnees", "rapport", "demo") if camp == "demo" else os.path.join(RACINE, "donnees", "rapport")
+    propre = os.path.join(dossier, f"{slug(id_)}.html")
     if os.path.exists(propre):
         return propre, "methode"
+    # copie commitée (labs/phamphamh/rapport/genere/), pour qui clone le dépôt sans les exports
+    partage = os.path.join(LAB, "rapport", "genere", *(["demo"] if camp == "demo" else []), f"{slug(id_)}.html")
+    if os.path.exists(partage):
+        return partage, "methode"
     for chemin in (os.path.join(LAB, "audit", "rapport.html"), os.path.join(RACINE, "donnees", "audit", "audit.html")):
         if os.path.exists(chemin):
             return chemin, "repli"
@@ -582,10 +587,10 @@ class Handler(BaseHTTPRequestHandler):
             if p == "/api/suivi":
                 return self.envoyer(200, {"deploiements": [d for d in lire(os.path.join(ETAT, "deploiements.json")) or [] if d.get("campagne", "equipe") == camp], "postes": postes(camp)})
             if p.startswith("/api/rapport/"):
-                chemin, source = rapport(unquote(p[len("/api/rapport/"):]))
+                chemin, source = rapport(unquote(p[len("/api/rapport/"):]), camp)
                 return self.envoyer(200, {"source": source, "fichier": rel(chemin) if chemin else None})
             if p.startswith("/rapport/"):
-                chemin, _ = rapport(unquote(p[len("/rapport/"):]))
+                chemin, _ = rapport(unquote(p[len("/rapport/"):]), camp)
                 if chemin:
                     return self.fichier(chemin)
                 return self.envoyer(404, b"<p style='font-family:sans-serif'>Aucun rapport pour l'instant.</p>", "text/html; charset=utf-8")

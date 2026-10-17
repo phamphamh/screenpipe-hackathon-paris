@@ -1,0 +1,212 @@
+{
+ "genere_le": "2026-10-17T14:26:05+02:00",
+ "demo": false,
+ "methodes_source": "labs/phamphamh/recherche/methodes.json",
+ "rapports": [
+  {
+   "id": "pyramide",
+   "nom": "Sommet",
+   "inspire_de": "McKinsey (principe pyramidal de B. Minto, arbres MECE, résolution en 7 étapes, Rewired, trois horizons)",
+   "promesse": "La réponse d'abord : une recommandation en une phrase, puis seulement les preuves qui la portent.",
+   "fichier": "pyramide.html",
+   "chapitres": [
+    {
+     "id": "reponse",
+     "viz": "chiffre-cle"
+    },
+    {
+     "id": "scqa",
+     "viz": "barres-empilees"
+    },
+    {
+     "id": "arbre",
+     "viz": "arbre"
+    },
+    {
+     "id": "pareto",
+     "viz": "liste-classee"
+    },
+    {
+     "id": "hypotheses",
+     "viz": "liste-classee"
+    },
+    {
+     "id": "cascade",
+     "viz": "cascade"
+    },
+    {
+     "id": "horizons",
+     "viz": "frise"
+    },
+    {
+     "id": "capacites",
+     "viz": "liste-classee"
+    }
+   ]
+  },
+  {
+   "id": "frontiere",
+   "nom": "Frontière",
+   "inspire_de": "BCG (étude « jagged frontier » avec Harvard 2023, Deploy-Reshape-Invent, règle 10/20/70, matrice croissance/part de marché) et Accenture (profils de maturité IA)",
+   "promesse": "Montrer où l'IA aide vraiment vos équipes, où elle les piège, et où investir en premier.",
+   "fichier": "frontiere.html",
+   "chapitres": [
+    {
+     "id": "profil",
+     "viz": "matrice-2x2"
+    },
+    {
+     "id": "deleguer-converser",
+     "viz": "anneau"
+    },
+    {
+     "id": "frontiere",
+     "viz": "carte-chaleur"
+    },
+    {
+     "id": "portefeuille",
+     "viz": "matrice-2x2"
+    },
+    {
+     "id": "trois-niveaux",
+     "viz": "barres-empilees"
+    },
+    {
+     "id": "effort",
+     "viz": "barres-empilees"
+    },
+    {
+     "id": "outils",
+     "viz": "reseau"
+    },
+    {
+     "id": "pieges",
+     "viz": "liste-classee"
+    }
+   ]
+  },
+  {
+   "id": "resultat",
+   "nom": "Résultat net",
+   "inspire_de": "Bain (Results Delivery, décisions RAPID, Founder's Mentality, Net Promoter System)",
+   "promesse": "Chaque recommandation a un montant, un responsable et une date, et on voit tout de suite si ça dérape.",
+   "fichier": "resultat.html",
+   "chapitres": [
+    {
+     "id": "montant",
+     "viz": "chiffre-cle"
+    },
+    {
+     "id": "valeur",
+     "viz": "cascade"
+    },
+    {
+     "id": "terrain",
+     "viz": "barres-empilees"
+    },
+    {
+     "id": "decisions",
+     "viz": "liste-classee"
+    },
+    {
+     "id": "changement",
+     "viz": "matrice-2x2"
+    },
+    {
+     "id": "plan-90",
+     "viz": "frise"
+    },
+    {
+     "id": "tableau-de-bord",
+     "viz": "carte-chaleur"
+    },
+    {
+     "id": "adhesion",
+     "viz": "anneau"
+    }
+   ]
+  },
+  {
+   "id": "gardefou",
+   "nom": "Garde-fou",
+   "inspire_de": "Big Four : EY (indice de confiance IA), Deloitte (Trustworthy AI), PwC (Responsible AI), KPMG (Trusted AI, guide risques et contrôles)",
+   "promesse": "Savoir quelle IA tourne déjà chez vous, ce qu'elle touche, et quoi verrouiller avant d'aller plus loin.",
+   "fichier": "gardefou.html",
+   "chapitres": [
+    {
+     "id": "inventaire",
+     "viz": "liste-classee"
+    },
+    {
+     "id": "exposition",
+     "viz": "barres-empilees"
+    },
+    {
+     "id": "main",
+     "viz": "anneau"
+    },
+    {
+     "id": "carte-risques",
+     "viz": "carte-chaleur"
+    },
+    {
+     "id": "aller-attendre",
+     "viz": "matrice-2x2"
+    },
+    {
+     "id": "controles",
+     "viz": "liste-classee"
+    },
+    {
+     "id": "indice",
+     "viz": "anneau"
+    },
+    {
+     "id": "regles",
+     "viz": "liste-classee"
+    }
+   ]
+  },
+  {
+   "id": "gemba",
+   "nom": "Gemba",
+   "inspire_de": "Toyota et le Lean (cartographie de la chaîne de valeur, 8 gaspillages), Six Sigma (DMAIC, efficacité du cycle), process et task mining (Celonis, UiPath)",
+   "promesse": "Suivre le travail tel qu'il se fait vraiment, étape par étape, et chiffrer chaque minute perdue.",
+   "fichier": "gemba.html",
+   "chapitres": [
+    {
+     "id": "definir",
+     "viz": "chiffre-cle"
+    },
+    {
+     "id": "carte-actuelle",
+     "viz": "vsm"
+    },
+    {
+     "id": "rendement",
+     "viz": "anneau"
+    },
+    {
+     "id": "gaspillages",
+     "viz": "barres-empilees"
+    },
+    {
+     "id": "terrain",
+     "viz": "carte-chaleur"
+    },
+    {
+     "id": "variantes",
+     "viz": "reseau"
+    },
+    {
+     "id": "carte-cible",
+     "viz": "vsm"
+    },
+    {
+     "id": "controler",
+     "viz": "course"
+    }
+   ]
+  }
+ ]
+}

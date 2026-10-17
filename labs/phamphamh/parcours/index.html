@@ -690,11 +690,11 @@ $("#cartes-methodes").addEventListener("click", e => {
 async function entrerRapport() {
   if (!S.methodes) S.methodes = await api("/api/methodes");
   const m = S.methodes.methodes.find(x => x.id === memo.methode) || S.methodes.methodes[0];
-  const info = await api("/api/rapport/" + encodeURIComponent(m.id)).catch(() => ({ source: "absent" }));
-  $("#titre-rapport").textContent = `« ${m.nom} », sur vos vraies données.`;
+  const info = await api("/api/rapport/" + encodeURIComponent(m.id) + "?campagne=" + camp()).catch(() => ({ source: "absent" }));
+  $("#titre-rapport").textContent = camp() === "demo" ? `« ${m.nom} », sur Maison Corvo (démo).` : `« ${m.nom} », sur vos vraies données.`;
   const badge = info.source === "methode" ? `<span class="badge ia">Rapport de cette méthode</span>` : info.source === "repli" ? `<span class="badge perte">Rapport générique, en attendant celui de la méthode</span>` : `<span class="badge perte">Aucun rapport pour l'instant</span>`;
   $("#rapport-infos").innerHTML = `${badge}<span class="inspi" style="max-width:70ch"><b>Inspirée de</b>${esc(m.inspire_de || "—")}</span>`;
-  const url = "/rapport/" + encodeURIComponent(m.id);
+  const url = "/rapport/" + encodeURIComponent(m.id) + "?campagne=" + camp();
   $("#rapport-plein").href = url;
   const fr = $("#rapport");
   if (fr.dataset.url !== url) { fr.dataset.url = url; fr.src = url; }
