@@ -32,7 +32,20 @@ Durée annoncée, volontaires seulement, **relecture individuelle obligatoire** 
 - **Construit et montré au hackathon** : la boucle complète (dérush → relecture → fusion → Wrapped → skill) sur de vraies données de l'équipe.
 - **Suite SaaS** : multi-entreprises, exécution des skills directement, historique entre campagnes, marketplace de skills.
 
+## Combien ça coûte, un FDE — chiffres sourcés (relevé du 17/10, pour le pitch)
+La phrase « des semaines et des dizaines de milliers d'euros » tient sur ces repères de **marché** (pas des devis client — à présenter comme tels) :
+
+| Référence | Chiffre | Source |
+|---|---|---|
+| Forward deployed engineer (Palantir, US) | médiane **255 k$/an** de rémunération totale (185–620 k$) | Levels.fyi, 227 déclarations, relevé 06/10/2026 |
+| Freelance IA / LLM (France) | **800 €/jour** — TJM médian | TJMètre, relevé 21/09/2026 |
+| Consultant senior (France) | **600–1 200 €/jour** (jusqu'à 2 400 € sur missions complexes) | Indy, 07/03/2025 |
+| Data engineer / data scientist (France) | 640 € / 680 € par jour | TJMètre, 2026 |
+| **Un mois d'un profil IA déployé** (4 sem. × 5 j) | **≈ 16 000 € HT minimum** — avant marge d'un cabinet | calcul sur TJMètre |
+| Le rôle décolle | 401 offres FDE ouvertes, médiane 185–300 k$ | Rung, census oct. 2026 |
+
+Lecture pour le pitch : une mission « à la main » = **des semaines de facturation d'un profil rare** → dizaines de milliers d'euros, souvent avant la marge d'un cabinet. Notre produit : la même semaine de terrain, **zéro consultant sur place**. À l'oral comme à l'écran : « repères de marché 2026, sourcés » — jamais présenté comme un devis client ni comme un temps gagné.
+
 ## Non vérifié
-- Prix d'une mission FDE (à sourcer avant la finale, section 21) ;
 - ce que screenpipe Business/Enterprise couvre déjà (module team-memory) — à ne pas revendiquer à tort ;
 - validation du texte : 09125o ✅ ; phamphamh, adamaass, JA à relire avant le rendu.
