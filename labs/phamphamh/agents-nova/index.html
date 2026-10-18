@@ -9,11 +9,11 @@
 <style>
 /* Charte « salle de commandement » : monde gris, traits fins, une seule couleur vive pour l'IA (cyan), orange pour la perte. */
 :root {
-  color-scheme: dark;
-  --fond: #0a0c0f; --plan: #111418; --plan-2: #171b21;
-  --trait: #232830; --trait-fort: #343b46;
-  --texte: #e6e4df; --doux: #8b929d; --faible: #59606b;
-  --ia: #7ce3ff; --perte: #ffa24a;
+  color-scheme: light;
+  --fond: #ffffff; --plan: #f6f7f8; --plan-2: #eef0f2;
+  --trait: #d9dde3; --trait-fort: #c3c9d1;
+  --texte: #0a0c0f; --doux: #5b636e; --faible: #8a929c;
+  --ia: #0a84b8; --perte: #d9730d;
   --f-texte: "Geist", "Inter Tight", system-ui, sans-serif;
   --f-mono: "Geist Mono", ui-monospace, Menlo, monospace;
   --haut: 44px;
@@ -47,7 +47,7 @@ button { font: inherit; color: inherit; }
 .chiffre { font-weight: 300; letter-spacing: -.04em; line-height: .95; }
 
 /* ---------- Les données ---------- */
-.donnees { padding: 22px 40px 36px; }
+.donnees { padding: 24px 40px 24px; }
 .d-grille { height: 100%; display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 40px; }
 .d-gauche { display: grid; grid-template-rows: auto auto auto 1fr auto; gap: 18px; min-height: 0; }
 .donnees h1 { font-weight: 300; font-size: 40px; line-height: 1.05; letter-spacing: -.03em; margin: 8px 0 0; text-wrap: balance; }
@@ -84,13 +84,13 @@ button { font: inherit; color: inherit; }
 .trois .t b { font-weight: 500; }
 
 /* ---------- Les agents ---------- */
-.agents { padding: 16px 18px 34px; }
+.agents { padding: 16px 18px 16px; }
 .a-grille { height: 100%; display: grid; grid-template-columns: minmax(0, 1fr) 430px; gap: 16px; }
 .a-gauche { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: 0; min-height: 0; border: 1px solid var(--trait); background: var(--plan); }
 .scene { position: relative; overflow: hidden; background: var(--fond); min-height: 0; }
 .scene canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
 .scene svg.liens { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
-.etiquette { position: absolute; pointer-events: none; font-family: var(--f-mono); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--texte); background: rgba(10,12,15,.86); border: 1px solid var(--trait-fort); padding: 5px 9px 6px; white-space: nowrap; line-height: 1.35; }
+.etiquette { position: absolute; pointer-events: none; font-family: var(--f-mono); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--texte); background: rgba(255,255,255,.93); border: 1px solid var(--trait-fort); padding: 5px 9px 6px; white-space: nowrap; line-height: 1.35; }
 .etiquette small { display: block; color: var(--doux); font-size: 10.5px; max-width: 300px; white-space: normal; text-transform: none; letter-spacing: .02em; }
 .etiquette.vive { border-color: var(--ia); }
 .etiquette.vive b, .etiquette.vive small { color: var(--ia); }
@@ -126,7 +126,7 @@ button { font: inherit; color: inherit; }
 .boutons { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px; }
 .lancer { justify-self: start; font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; background: transparent; border: 1px solid var(--trait-fort); color: var(--texte); padding: 4px 8px; cursor: pointer; }
 .lancer:hover:not(:disabled) { border-color: var(--ia); color: var(--ia); }
-.lancer[data-visible] { border-color: rgba(124,227,255,.45); color: var(--ia); }
+.lancer[data-visible] { border-color: rgba(10,132,184,.45); color: var(--ia); }
 .lancer:disabled { opacity: .35; cursor: default; }
 .lancer:focus-visible { outline: 1px solid var(--ia); outline-offset: 2px; }
 .a-droite { display: grid; grid-template-rows: auto auto minmax(0, 1fr); gap: 16px; min-height: 0; }
@@ -147,7 +147,7 @@ button { font: inherit; color: inherit; }
 .journal li small { display: block; font-family: var(--f-mono); font-size: 11px; color: var(--faible); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .journal li.neuf { border-left-color: var(--ia); animation: neuf 3s ease-out; }
 .journal li.neuf .e { color: var(--ia); }
-@keyframes neuf { from { background: rgba(124,227,255,.12); } to { background: transparent; } }
+@keyframes neuf { from { background: rgba(10,132,184,.1); } to { background: transparent; } }
 .vide-txt { color: var(--faible); font-family: var(--f-mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; }
 @media (prefers-reduced-motion: reduce) { .direct i, .journal li.neuf { animation: none; } }
 </style>
@@ -162,7 +162,6 @@ button { font: inherit; color: inherit; }
 
 <main class="ecrans" id="ecrans">
   <section class="ecran donnees" id="e-donnees" data-titre="Les données">
-    <a class="lien-pitch" href="slides.html#contexte">← Pitch</a>
     <div class="d-grille">
       <div class="d-gauche">
         <div>
@@ -195,7 +194,6 @@ button { font: inherit; color: inherit; }
   </section>
 
   <section class="ecran agents" id="e-agents" data-titre="Les agents">
-    <a class="lien-pitch" href="slides.html#fin-1">Suite du pitch →</a>
     <div class="a-grille">
       <div class="a-gauche">
         <div class="demande" id="demande">
@@ -516,23 +514,23 @@ async function lancerScene() {
   const cam = new THREE.OrthographicCamera(-1, 1, 1, -1, .1, 200);
   const CIBLE = new THREE.Vector3(1.2, 0, -3.4);
   cam.position.set(22 + CIBLE.x, 20, 22 + CIBLE.z); cam.lookAt(CIBLE);
-  scene.add(new THREE.HemisphereLight(0xd8dde6, 0x0a0c0f, 1.7));
-  const soleil = new THREE.DirectionalLight(0xffffff, 1.3); soleil.position.set(-6, 18, 10); soleil.castShadow = true;
+  scene.add(new THREE.HemisphereLight(0xffffff, 0xc9ced5, 2.1));
+  const soleil = new THREE.DirectionalLight(0xffffff, 1.1); soleil.position.set(-6, 18, 10); soleil.castShadow = true;
   soleil.shadow.mapSize.set(2048, 2048); Object.assign(soleil.shadow.camera, { left: -16, right: 16, top: 16, bottom: -16 }); scene.add(soleil);
-  const IA = 0x7ce3ff;
+  const IA = 0x0a84b8;
   const mat = c => new THREE.MeshStandardMaterial({ color: c, roughness: .92, metalness: .05 });
-  const aretes = (mesh, op = .35, c = 0xc3c8d0) => { const l = new THREE.LineSegments(new THREE.EdgesGeometry(mesh.geometry), new THREE.LineBasicMaterial({ color: c, transparent: true, opacity: op })); mesh.add(l); mesh.userData.aretes = l; return mesh; };
+  const aretes = (mesh, op = .35, c = 0x7c848e) => { const l = new THREE.LineSegments(new THREE.EdgesGeometry(mesh.geometry), new THREE.LineBasicMaterial({ color: c, transparent: true, opacity: Math.min(1, op * 1.6) })); mesh.add(l); mesh.userData.aretes = l; return mesh; };
   const ajoute = (geo, couleur, x, y, z, op) => { const m = aretes(new THREE.Mesh(geo, mat(couleur)), op); m.position.set(x, y, z); m.castShadow = m.receiveShadow = true; scene.add(m); return m; };
 
   // sol, grille, murs
-  ajoute(new THREE.BoxGeometry(22, .3, 15), 0x1b2027, 0, -.15, 0, .5);
-  const grille = new THREE.GridHelper(22, 44, 0x2b313a, 0x1c2128); grille.position.y = .01; grille.scale.z = 15 / 22; scene.add(grille);
-  ajoute(new THREE.BoxGeometry(22, 2.2, .12), 0x1a1f26, 0, 1.1, -7.5, .4);
-  ajoute(new THREE.BoxGeometry(.12, 2.2, 15), 0x1a1f26, -11, 1.1, 0, .4);
+  ajoute(new THREE.BoxGeometry(22, .3, 15), 0xf1f3f5, 0, -.15, 0, .5);
+  const grille = new THREE.GridHelper(22, 44, 0xd9dde3, 0xe6e9ec); grille.position.y = .01; grille.scale.z = 15 / 22; scene.add(grille);
+  ajoute(new THREE.BoxGeometry(22, 2.2, .12), 0xe9ecef, 0, 1.1, -7.5, .4);
+  ajoute(new THREE.BoxGeometry(.12, 2.2, 15), 0xe9ecef, -11, 1.1, 0, .4);
 
   // zone des agents : plancher teinté, cadre cyan
   const ZA = { x0: 1.4, x1: 10.8, z0: -4.4, z1: 6.6 };
-  const plaque = new THREE.Mesh(new THREE.PlaneGeometry(ZA.x1 - ZA.x0, ZA.z1 - ZA.z0), new THREE.MeshBasicMaterial({ color: IA, transparent: true, opacity: .035 }));
+  const plaque = new THREE.Mesh(new THREE.PlaneGeometry(ZA.x1 - ZA.x0, ZA.z1 - ZA.z0), new THREE.MeshBasicMaterial({ color: IA, transparent: true, opacity: .06 }));
   plaque.rotation.x = -Math.PI / 2; plaque.position.set((ZA.x0 + ZA.x1) / 2, .02, (ZA.z0 + ZA.z1) / 2); scene.add(plaque);
   const cadre = new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints([[ZA.x0, ZA.z0], [ZA.x1, ZA.z0], [ZA.x1, ZA.z1], [ZA.x0, ZA.z1]].map(([x, z]) => new THREE.Vector3(x, .03, z))), new THREE.LineBasicMaterial({ color: IA, transparent: true, opacity: .45 }));
   scene.add(cadre);
@@ -540,18 +538,18 @@ async function lancerScene() {
   // un poste
   function poste(x, z, agent) {
     const g = new THREE.Group(); g.position.set(x, 0, z); scene.add(g);
-    const b = aretes(new THREE.Mesh(new THREE.BoxGeometry(2.5, .1, 1.3), mat(agent ? 0x2c333d : 0x3a414c))); b.position.y = .86; b.castShadow = b.receiveShadow = true; g.add(b);
-    [[-1.1, -.5], [1.1, -.5], [-1.1, .5], [1.1, .5]].forEach(([a, c]) => { const l = new THREE.Mesh(new THREE.BoxGeometry(.06, .86, .06), mat(0x1f242b)); l.position.set(a, .43, c); g.add(l); });
-    const em = new THREE.MeshStandardMaterial({ color: 0x0d1013, emissive: 0x14181d, emissiveIntensity: 1.6, roughness: .3 });
+    const b = aretes(new THREE.Mesh(new THREE.BoxGeometry(2.5, .1, 1.3), mat(agent ? 0xcfd6de : 0xdde1e6))); b.position.y = .86; b.castShadow = b.receiveShadow = true; g.add(b);
+    [[-1.1, -.5], [1.1, -.5], [-1.1, .5], [1.1, .5]].forEach(([a, c]) => { const l = new THREE.Mesh(new THREE.BoxGeometry(.06, .86, .06), mat(0xa7afb9)); l.position.set(a, .43, c); g.add(l); });
+    const em = new THREE.MeshStandardMaterial({ color: 0x3a414c, emissive: 0x000000, emissiveIntensity: 1.4, roughness: .3 });
     const ecran = aretes(new THREE.Mesh(new THREE.BoxGeometry(1.3, .78, .05), em), .5); ecran.position.set(0, 1.38, -.42); ecran.castShadow = true; g.add(ecran);
     const lueur = new THREE.PointLight(IA, 0, 4, 1.6); lueur.position.set(0, 1.4, 0); g.add(lueur);
     let corps, tete;
     if (agent) {
-      tete = aretes(new THREE.Mesh(new THREE.OctahedronGeometry(.3, 0), new THREE.MeshStandardMaterial({ color: 0x2a3039, emissive: 0x000000, emissiveIntensity: 1.4, roughness: .5 })), .6);
+      tete = aretes(new THREE.Mesh(new THREE.OctahedronGeometry(.3, 0), new THREE.MeshStandardMaterial({ color: 0xb7bec7, emissive: 0x000000, emissiveIntensity: 1.4, roughness: .5 })), .6);
       tete.position.set(0, 1.35, .9); tete.castShadow = true; g.add(tete);
     } else {
-      corps = aretes(new THREE.Mesh(new THREE.CapsuleGeometry(.24, .48, 6, 14), mat(0x2a3039)), .35); corps.position.set(0, .86, .9); corps.castShadow = true; g.add(corps);
-      tete = aretes(new THREE.Mesh(new THREE.SphereGeometry(.21, 20, 14), mat(0x2a3039)), .3); tete.position.set(0, 1.45, .9); tete.castShadow = true; g.add(tete);
+      corps = aretes(new THREE.Mesh(new THREE.CapsuleGeometry(.24, .48, 6, 14), mat(0xb7bec7)), .35); corps.position.set(0, .86, .9); corps.castShadow = true; g.add(corps);
+      tete = aretes(new THREE.Mesh(new THREE.SphereGeometry(.21, 20, 14), mat(0xc9ced5)), .3); tete.position.set(0, 1.45, .9); tete.castShadow = true; g.add(tete);
     }
     return { g, em, ecran, lueur, corps, tete, ancre: new THREE.Vector3(x, 2.05, z - .42), sortie: new THREE.Vector3(x, 1.9, z - .42) };
   }
@@ -563,11 +561,11 @@ async function lancerScene() {
 
   // serveur Magento (la boutique)
   const SV = new THREE.Vector3(-9.4, 0, -6.4);
-  const baie = ajoute(new THREE.BoxGeometry(2.4, 2.9, 1), 0x20262e, SV.x, 1.45, SV.z, .55);
+  const baie = ajoute(new THREE.BoxGeometry(2.4, 2.9, 1), 0xe2e6ea, SV.x, 1.45, SV.z, .55);
   const voyants = [];
-  for (let k = 0; k < 6; k++) { const v = new THREE.Mesh(new THREE.BoxGeometry(1.8, .06, .02), new THREE.MeshBasicMaterial({ color: 0x59606b })); v.position.set(SV.x, .45 + k * .4, SV.z + .51); scene.add(v); voyants.push(v); }
+  for (let k = 0; k < 6; k++) { const v = new THREE.Mesh(new THREE.BoxGeometry(1.8, .06, .02), new THREE.MeshBasicMaterial({ color: 0xaab2bc })); v.position.set(SV.x, .45 + k * .4, SV.z + .51); scene.add(v); voyants.push(v); }
   const entreeSV = new THREE.Vector3(SV.x, 3.0, SV.z);
-  const anneau = new THREE.Mesh(new THREE.RingGeometry(1.7, 1.77, 64), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: .12, side: THREE.DoubleSide }));
+  const anneau = new THREE.Mesh(new THREE.RingGeometry(1.7, 1.77, 64), new THREE.MeshBasicMaterial({ color: 0x5b636e, transparent: true, opacity: .12, side: THREE.DoubleSide }));
   anneau.rotation.x = -Math.PI / 2; anneau.position.set(SV.x, .03, SV.z); scene.add(anneau);
 
   // postes d'agents : 3 devant (en service), 2 derrière (en préparation)
@@ -615,10 +613,10 @@ async function lancerScene() {
     agents.forEach((a, k) => {
       const ag = liste[k]; const on = ag && ag.statut === "en service"; const actif = ag && ag.id === ETAT.actif;
       a.niveau += ((actif ? 1 : 0) - a.niveau) * Math.min(1, dt * 4);
-      const c = new THREE.Color(0x14181d).lerp(new THREE.Color(IA), a.niveau);
-      a.em.emissive.copy(on || actif ? c : new THREE.Color(0x07090b));
+      const c = new THREE.Color(0x000000).lerp(new THREE.Color(0x22b8f0), a.niveau);
+      a.em.emissive.copy(c); a.em.color.setHex(on || actif ? 0x3a414c : 0x8a929c);
       a.lueur.intensity = a.niveau * 10;
-      a.tete.material.emissive.copy(new THREE.Color(on ? 0x1b2e36 : 0x000000).lerp(new THREE.Color(IA), a.niveau));
+      a.tete.material.emissive.copy(new THREE.Color(0x000000).lerp(new THREE.Color(IA), a.niveau)); a.tete.material.color.setHex(on ? 0x9fc3d3 : 0xd5dae0);
       a.tete.rotation.y += dt * (actif ? 2.4 : on ? .5 : 0);
       a.tete.position.y = 1.35 + (on ? Math.sin(t / 700 + k) * .05 : -.15);
       a.trace.material.opacity = a.niveau * .7;
@@ -629,7 +627,7 @@ async function lancerScene() {
     flash = Math.max(0, flash - dt * 1.2);
     anneau.material.opacity = .12 + flash * .6; anneau.scale.setScalar(1 + flash * .12);
     const travail = !!ETAT.actif;
-    voyants.forEach((v, k) => v.material.color.setHex(travail && Math.sin(t / 120 + k * 1.7) > .2 ? 0xc3c8d0 : 0x3a414c));
+    voyants.forEach((v, k) => v.material.color.setHex(travail && Math.sin(t / 120 + k * 1.7) > .2 ? IA : 0xaab2bc));
     balayage.rotation.z = reduit ? 0 : -t / 2600;
     renderer.render(scene, cam);
     // étiquettes

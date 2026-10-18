@@ -23,7 +23,7 @@ const PALETTES = {
     rouges: ["#d93a40", "#b8333a", "#932a30"],
   },
 };
-let THEME = (() => { try { return localStorage.getItem("nova-theme") || "sombre"; } catch (e) { return "sombre"; } })();
+let THEME = (() => { try { return localStorage.getItem("nova-theme") || "clair"; } catch (e) { return "clair"; } })();
 let C = PALETTES[THEME];
 document.documentElement.dataset.theme = THEME;
 const EQUIPES = Object.keys(X.equipes), TYPES = Object.keys(C.type), SEMAINES = 46;

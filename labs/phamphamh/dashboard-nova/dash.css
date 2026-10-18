@@ -355,3 +355,11 @@ g[data-ouvre]:hover .seg { stroke: var(--cuivre); stroke-width: 2; }
   --radius: 2px; --radius-sm: 2px;
 }
 .card, .tile { box-shadow: none; }
+/* Thème clair de la charte (ouvert par défaut) : blanc, plans gris très clair, traits fins ; le cuivre reste l'argent. */
+:root[data-theme="clair"] {
+  --bg: #ffffff; --surface: #f6f7f8; --surface-2: #eef0f2; --surface-3: #e6e9ec;
+  --line: #d9dde3; --line-strong: #c3c9d1;
+  --text: #0a0c0f; --muted: #5b636e; --faint: #7c848e;
+  --eq1: #3a414c; --eq2: #9aa2ad;
+}
+:root[data-theme="clair"] .card, :root[data-theme="clair"] .tile { box-shadow: none; }

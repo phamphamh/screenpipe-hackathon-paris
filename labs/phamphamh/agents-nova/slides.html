@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-/* Ouverture : fond blanc, texte noir, brut. À partir de DeloAI : DA sombre « salle de commandement », cyan = l'IA. */
+/* Tout en clair. Slides 1 à 4 : blanc brut. Slides 5 à 10 : esprit « salle de commandement » en clair. */
 :root {
   --fond:#ffffff; --texte:#0a0a0a; --doux:#6e6e73; --faible:#a1a1a6; --trait:#0a0a0a; --leger:#e5e5e5;
   --mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -98,19 +98,20 @@ h1 strong, h2 strong { font-weight: 700; }
 .coches { display: flex; gap: 56px; margin-top: 30px; font-size: 32px; font-weight: 500; letter-spacing: -.02em; }
 .coches b { font-weight: 700; margin-right: 12px; }
 
-/* —— Slides sombres : DA « salle de commandement » (DeloAI → démo → fin) —— */
+/* —— Slides 5 à 10 : esprit « salle de commandement » en clair (Geist 300, Geist Mono, traits fins).
+   La couleur --ia ne sert qu'à « AI » et au « temps récupéré ». —— */
 :root.sombre {
-  --fond:#0a0c0f; --plan:#111418; --texte:#e6e4df; --doux:#8b929d; --faible:#59606b;
-  --trait:#343b46; --leger:#232830; --ia:#7ce3ff; --perte:#ffa24a;
-  color-scheme: dark;
+  --fond:#ffffff; --plan:#f6f6f7; --texte:#0a0a0a; --doux:#6e6e73; --faible:#8e8e93;
+  --trait:#d4d4d8; --leger:#e8e8eb; --ia:#0a84b8;
+  color-scheme: light;
 }
 .mono { font-family: var(--mono); font-size: 13px; letter-spacing: .1em; text-transform: uppercase; font-weight: 400; }
 .sombre-slide h1, .sombre-slide h2 { letter-spacing: -.035em; }
 .ia-t { color: var(--ia); }
 .etiquette { color: var(--doux); display: flex; align-items: center; gap: 14px; margin: 0 0 30px; }
 .etiquette::before { content: ""; width: 24px; height: 1px; background: var(--trait); }
-.etiquette.ia { color: var(--ia); }
-.etiquette.ia::before { background: var(--ia); }
+.etiquette.ia { color: var(--texte); }
+.etiquette.ia::before { background: var(--texte); }
 
 /* DeloAI */
 .marque { font-size: 210px; font-weight: 300; letter-spacing: -.055em; line-height: .92; margin: 0; }
@@ -127,39 +128,33 @@ h1 strong, h2 strong { font-weight: 700; }
 .ctx .val { font-size: 32px; font-weight: 300; letter-spacing: -.02em; line-height: 1.2; }
 .ctx .val b { font-weight: 500; }
 .ctx .val i { font-style: normal; color: var(--faible); padding: 0 .3em; }
-.ctx > div.vrai .quoi { color: var(--ia); }
+.ctx > div.vrai .quoi { color: var(--texte); font-weight: 500; }
 
 /* Démo */
 .demo { align-items: flex-start; }
-.point { display: inline-block; width: 8px; height: 8px; background: var(--ia); animation: clignote 1.6s steps(2, jump-none) infinite; }
+.point { display: inline-block; width: 8px; height: 8px; background: var(--texte); animation: clignote 1.6s steps(2, jump-none) infinite; }
 @keyframes clignote { 50% { opacity: .25; } }
 .etapes { margin-top: 52px; display: grid; grid-template-columns: repeat(4, 230px); border: 1px solid var(--leger); background: var(--plan); }
 .etapes div { padding: 18px 20px; border-right: 1px solid var(--leger); font-size: 24px; letter-spacing: -.015em; }
 .etapes div:last-child { border-right: 0; }
 .etapes span { display: block; margin-bottom: 8px; color: var(--faible); }
-.bouton {
-  margin-top: 44px; display: inline-flex; align-items: center; gap: 16px;
-  padding: 18px 28px; border: 1px solid var(--ia); color: var(--ia); background: transparent; text-decoration: none;
-  font-family: var(--mono); font-size: 15px; letter-spacing: .1em; text-transform: uppercase;
-}
-.bouton:hover, .bouton:focus-visible { background: var(--ia); color: var(--fond); outline: none; }
 
 /* Avant / après */
 .aa { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; }
 .aa > div { border-top: 1px solid var(--trait); padding-top: 22px; }
-.aa > div.apres { border-top-color: var(--ia); }
+.aa > div.apres { border-top-color: var(--texte); }
 .aa ul { list-style: none; margin: 22px 0 0; padding: 0; }
 .aa li { font-size: 36px; font-weight: 300; letter-spacing: -.025em; line-height: 1.2; padding: 10px 0; display: grid; grid-template-columns: 40px 1fr; }
 .aa li b { font-weight: 500; }
 .aa .avant li { color: var(--doux); }
 .aa .avant li span { color: var(--faible); }
-.aa .apres li span { color: var(--ia); }
+.aa .apres li span { color: var(--texte); font-weight: 600; }
 .chiffres { margin-top: 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 1px solid var(--leger); background: var(--plan); }
 .chiffres > div { padding: 18px 22px; }
 .chiffres > div + div { border-left: 1px solid var(--leger); }
 .chiffres .lab { color: var(--faible); }
 .chiffres .v { margin-top: 10px; font-size: 54px; font-weight: 300; letter-spacing: -.04em; line-height: 1; font-variant-numeric: tabular-nums; }
-.chiffres .v strong { color: var(--ia); font-weight: 500; }
+.chiffres .v strong { color: var(--texte); font-weight: 500; }
 .chiffres .v small { font-size: 22px; color: var(--doux); letter-spacing: -.01em; margin-left: 8px; }
 
 /* Question */
@@ -261,14 +256,13 @@ h1 strong, h2 strong { font-weight: 700; }
   <section data-id="demo" class="slide sombre-slide demo">
     <p class="etiquette ia mono"><span class="point"></span>Atelier Nova · démo en direct</p>
     <h1>Atelier <strong>Nova.</strong></h1>
-    <p class="def">Une boutique en ligne. 60 salariés.</p>
+    <p class="def">Une boutique en ligne. 60 salariés. <strong>Démo en direct.</strong></p>
     <div class="etapes">
       <div><span class="mono">01</span>Les données</div>
       <div><span class="mono">02</span>L'audit</div>
       <div><span class="mono">03</span>Les écarts</div>
       <div><span class="mono">04</span>Les agents</div>
     </div>
-    <a class="bouton" id="lien-demo" href="index.html#donnees">Ouvrir la démo <span aria-hidden="true">→</span></a>
   </section>
 
   <!-- 8 -->
@@ -324,7 +318,6 @@ h1 strong, h2 strong { font-weight: 700; }
   const integre = window.name === "integre";
   if (integre) {
     document.documentElement.classList.add("integre");
-    document.getElementById("lien-demo").target = "_top";
   }
 
   // Mise à l'échelle 16:9
@@ -368,8 +361,6 @@ h1 strong, h2 strong { font-weight: 700; }
     } else if (e.key === "f" || e.key === "F") {
       if (document.fullscreenElement) document.exitFullscreen();
       else document.documentElement.requestFullscreen?.();
-    } else if ((e.key === "d" || e.key === "D") && slides[s].classList.contains("demo")) {
-      location.href = document.getElementById("lien-demo").href;
     } else if (e.key === "Home") { montrer(0); }
     else if (e.key === "End") { montrer(total - 1, { toutes: true }); }
   });
