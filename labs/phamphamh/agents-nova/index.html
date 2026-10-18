@@ -35,6 +35,7 @@ button { font: inherit; color: inherit; }
 .ecrans { position: fixed; top: var(--haut); left: 0; right: 0; bottom: 0; }
 .ecran { position: absolute; inset: 0; display: none; }
 .ecran.on { display: block; }
+.ecran:not(.on) { display: none !important; }
 .coin { position: absolute; width: 14px; height: 14px; border-color: var(--trait-fort); border-style: solid; pointer-events: none; }
 .coin.a { left: 10px; top: 10px; border-width: 1px 0 0 1px; } .coin.b { right: 10px; top: 10px; border-width: 1px 1px 0 0; }
 .coin.c { left: 10px; bottom: 10px; border-width: 0 0 1px 1px; } .coin.d { right: 10px; bottom: 10px; border-width: 0 1px 1px 0; }
@@ -104,7 +105,7 @@ button { font: inherit; color: inherit; }
 .btn:disabled { opacity: .4; cursor: default; }
 .btn:focus-visible { outline: 2px solid var(--ia); outline-offset: 2px; }
 .terminal { list-style: none; margin: 0; padding: 12px 14px; background: var(--fond); border: 1px solid var(--trait); font-family: var(--f-mono); font-size: 12.5px; line-height: 1.6; color: var(--texte); min-height: 40px; }
-.terminal li { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.terminal li { white-space: normal; overflow-wrap: anywhere; }
 .terminal li::before { content: "› "; color: var(--ia); }
 .terminal li.ok::before { content: "✓ "; }
 .terminal li.ok { color: var(--ia); }
@@ -192,6 +193,8 @@ button { font: inherit; color: inherit; }
 </main>
 
 <script type="module">
+const NOM_AGENT = { "rapport-ventes": "Sales report", "prix-produit": "Product price", "commandes-annulees": "Canceled orders", "avis-produit": "Product reviews", "variantes-produit": "Product variants" };
+
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const nf = n => (n == null || isNaN(n)) ? "—" : Number(n).toLocaleString("en-US");
@@ -290,7 +293,7 @@ function afficher(n) {
   $("#m-depuis").textContent = hm(e.deploiement?.depuis);
   $("#journal").innerHTML = n.journal.slice(-6).reverse().map(l => {
     const k = `${l.run}|${l.n}|${l.ts}|${l.type}`; const neuf = !premier && !vus.has(k); vus.add(k);
-    return `<li class="${neuf ? "neuf" : ""}"><span class="t">${hms(l.ts)}</span><span><span class="e">${esc(masque(l.etape_en || l.etape || l.detail))}</span><small>${esc(l.agent || "")}${(l.detail_en || l.detail) && l.etape ? " · " + esc(masque(l.detail_en || (l.type === "demande" && l.demande) || l.detail)) : ""}</small></span></li>`;
+    return `<li class="${neuf ? "neuf" : ""}"><span class="t">${hms(l.ts)}</span><span><span class="e">${esc(masque(l.etape_en || l.etape || l.detail))}</span><small>${esc(NOM_AGENT[l.agent] || l.agent || "")}${(l.detail_en || l.detail) && l.etape ? " · " + esc(masque(l.detail_en || (l.type === "demande" && l.demande) || l.detail)) : ""}</small></span></li>`;
   }).join("") || `<li><span class="t">—</span><span class="e">No action yet</span></li>`;
   premier = false;
   suivreRun(n);
@@ -351,8 +354,8 @@ function rendrePanneau() {
       : `<div class="pn-wf"><div class="fois">No repeated workflow spotted yet.</div></div>`;
   } else {
     const w = P.wf, etapes = etapesDe(w);
-    h += `<div class="pn-wf"><div class="nom">${esc(w.nom)}</div><div class="fois">${P.phase === "creation" ? "Creating the workflow…" : "Workflow created · agent " + esc(w.agent)}</div></div>`;
-    h += `<ol class="terminal">${etapes.slice(0, P.ecrites).map(t => `<li>${esc(t)}</li>`).join("")}${P.phase !== "creation" ? `<li class="ok">Handed to agent ${esc(w.agent)}</li>` : ""}</ol>`;
+    h += `<div class="pn-wf"><div class="nom">${esc(w.nom)}</div><div class="fois">${P.phase === "creation" ? "Creating the workflow…" : "Workflow created · " + esc(NOM_AGENT[w.agent] || w.nom)}</div></div>`;
+    h += `<ol class="terminal">${etapes.slice(0, P.ecrites).map(t => `<li>${esc(t)}</li>`).join("")}${P.phase !== "creation" ? `<li class="ok">Handed to the ${esc(NOM_AGENT[w.agent] || w.nom)} agent</li>` : ""}</ol>`;
     if (P.phase === "pret") h += `<button class="btn ia" data-act="lancer">Run live</button>`;
     if (P.phase === "lance") {
       const lignes = (dernierN?.journal || []).filter(l => P.run ? l.run === P.run : (l.agent === w.agent && (date(l.ts)?.getTime() || 0) >= P.depuis - 2000)).slice(-3);
