@@ -12,8 +12,6 @@ Base : l'enregistrement du 18/10 (11h24), recalé sur les vrais chiffres du dash
 
 **Environ 320 mots** : environ 2 min 10 à voix haute, ce qui laisse 50 s pour les deux moments en direct.
 
-Les passages marqués **[À CONSTRUIRE]** n'existent pas encore : on ne les dit pas tant qu'ils ne tournent pas pour de vrai.
-
 ---
 
 ## 0:00 – 0:10 · La promesse
@@ -21,7 +19,7 @@ Les passages marqués **[À CONSTRUIRE]** n'existent pas encore : on ne les dit 
 
 > « Nous, c'est DeloAI. Ce matin, on a lancé des agents dans une entreprise. Ils tournent en ce moment. Dans trois minutes, vous verrez ce qu'ils ont fait. Mais d'abord, une question. »
 
-*Si les agents ne tournent pas encore pour de vrai, on garde seulement « Nous, c'est DeloAI » et on passe à l'écran A.* **[À CONSTRUIRE]**
+
 
 ## 0:10 – 0:45 · L'intro (`intro.html`)
 **Écran A — Louis.**
@@ -39,7 +37,7 @@ Les passages marqués **[À CONSTRUIRE]** n'existent pas encore : on ne les dit 
 ## 0:45 – 1:00 · L'entreprise et l'étude
 **À l'écran** : dashboard, écran 1. Pointer « Simulation ×10 » en bas à gauche.
 
-> « Notre premier cas : Atelier Nova. Une boutique en ligne, 60 salariés. Ce sont des gens réels : Stanford les a enregistrés au travail, c'est le jeu de données WONDERBREAD. On en a pris six, et on a multiplié par dix. »
+> « Notre premier cas : Atelier Nova. Une boutique en ligne, 60 salariés. Ce sont de vraies personnes, filmées par Stanford sur de vraies tâches de back-office : c'est le jeu de données WONDERBREAD. On en a pris six, et on a multiplié par dix. »
 
 ## 1:00 – 1:30 · La preuve qu'on n'a rien écrit en dur (la page « en direct »)
 **À l'écran** : `http://localhost:8797` (voir plus bas pour l'ouvrir). Le juré choisit un salarié, on clique sur son nom : son enregistrement brut défile à gauche, l'IA écrit à droite, et les tâches apparaissent une par une. Environ 30 s, pendant qu'on parle.
@@ -58,10 +56,10 @@ Les passages marqués **[À CONSTRUIRE]** n'existent pas encore : on ne les dit 
 
 > « Nos agents en tirent cinq automatisations. On prend la tâche la plus chère : le rapport de ventes. Un clic, et l'automatisation est écrite, à partir des étapes réellement observées. »
 
-## 2:10 – 2:45 · En direct : les agents déployés ce matin — **[À CONSTRUIRE]**
-**À l'écran** : le journal de l'agent, dans le vrai back-office Magento de test (`labs/phamphamh/agents-nova/`, construit par l'autre session).
+## 2:10 – 2:45 · En direct : les agents déployés ce matin
+**À l'écran** : http://localhost:8798, écran 4 « Les agents » (`python3 labs/phamphamh/agents-nova/serveur.py`). L'agent sort le rapport dans le vrai Magento de test toutes les 15 min.
 
-> « Et maintenant, ce que je vous ai promis. Cette automatisation, on l'a lancée ce matin. À la main, ce rapport prend 23 secondes. 790 fois par semaine, ça fait plus de 5 heures. Voici le journal de l'agent : [X] rapports sortis, [X] actions, chacune tracée. Et quand une information manquait, l'agent s'est arrêté pour demander à un humain. »
+> « Et maintenant, ce que je vous ai promis. Cette automatisation, on l'a lancée ce matin. Elle tourne dans le vrai logiciel de la boutique. Chaque action est tracée. Un rapport en 4 secondes, contre 23 à la main. 790 fois par semaine, c'est 5 heures rendues aux équipes. Et quand une information manquait, l'agent s'est arrêté pour demander à un humain. »
 
 ## 2:45 – 3:00 · La fin
 > « Louis, vos utilisateurs ont les données. DeloAI leur apporte le cabinet. Merci. »
@@ -83,7 +81,7 @@ Les passages marqués **[À CONSTRUIRE]** n'existent pas encore : on ne les dit 
 | « plusieurs centaines d'heures » (WONDERBREAD) | **Pas vérifié** | Ne pas le dire tant qu'on n'a pas le chiffre. |
 
 ## Les questions probables du jury (2 min)
-- **« C'est des vraies données ? »** De vraies personnes au travail (WONDERBREAD, Stanford, licence ouverte), dans une entreprise fictive. 6 personnes réelles, volumes ×10. Nos propres Mac ont aussi tourné tout le week-end : la chaîne marche sur de vraies captures screenpipe.
+- **« C'est des vraies données ? »** De vraies personnes, filmées sur de vraies tâches de back-office (WONDERBREAD, Stanford, licence ouverte), dans une entreprise fictive. 6 personnes réelles, volumes ×10. Nos propres Mac ont aussi tourné tout le week-end : la chaîne marche sur de vraies captures screenpipe.
 - **« Comment vous calculez les euros ? »** Heures par semaine × 46 semaines × 38 € de l'heure. Le gain d'une tâche = son coût × la part de son temps que la skill rend. Les deux formules sont dans l'annexe « Méthode ».
 - **« Et la vie privée ? »** Chaque salarié relit et valide son résumé, seul le résumé part (ni capture, ni texte d'écran). Aucun chiffre par personne, et tout ce qui touche moins de 3 personnes est masqué.
 - **« Ça coûte cher en IA, une semaine × 60 personnes ? »** On trie avant : garder 20 % des captures conserve 75 % des fenêtres de travail (mesuré sur nos Mac). Puis un seul appel à l'IA par jour et par personne.

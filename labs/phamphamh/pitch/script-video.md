@@ -12,7 +12,7 @@ Il manque le cabinet. Alors on l'a construit.
 
 DeloAI, un cabinet IA natif. Notre méthode d'analyse vient des grands cabinets de conseil. Notre façon de déployer les agents vient des meilleurs laboratoires de recherche.
 
-Notre premier client : Atelier Nova. Une boutique en ligne, 60 salariés. Des gens réels : Stanford les a enregistrés au travail. On en a pris six, multipliés par dix.
+Notre premier client : Atelier Nova. Une boutique en ligne, 60 salariés. Ses salariés sont de vraies personnes, filmées par Stanford sur de vraies tâches de back-office. Six personnes, multipliées par dix.
 
 Étape un : l'audit des données. 55 000 captures d'écran, lues par l'IA, salarié par salarié. Il en sort 19 tâches qui reviennent.
 
@@ -20,6 +20,6 @@ Coût : 72 000 euros par an. 40 % du temps dans un seul écran, le catalogue. Et
 
 Étape deux : nos agents en tirent cinq automatisations. On prend la tâche la plus chère : ce rapport de ventes. L'automatisation s'écrit en un clic, à partir des étapes réellement observées.
 
-Étape trois, ce qu'on vous a promis. On l'a lancée ce matin. À la main, ce rapport prend 23 secondes. 790 fois par semaine, ça fait plus de 5 heures. Voici le journal de l'agent : [X] rapports sortis, [X] actions, chacune tracée.
+Étape trois, ce qu'on vous a promis. On l'a déployée ce matin, dans le vrai logiciel de la boutique. Elle tourne en ce moment. Chaque action est tracée. Un rapport en 4 secondes, contre 23 à la main. 790 fois par semaine, c'est 5 heures rendues aux équipes.
 
 DeloAI. Votre cabinet et votre ESN, dans votre poche.

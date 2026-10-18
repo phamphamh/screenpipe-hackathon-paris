@@ -14,15 +14,15 @@ Nous, c'est DeloAI. Un cabinet IA natif. Notre méthode d'analyse vient des gran
 
 Laissez-moi vous montrer.
 
-Atelier Nova. Une boutique en ligne, 60 salariés. Des gens réels, enregistrés au travail par Stanford. Six, multipliés par dix.
+Atelier Nova. Une boutique en ligne. Ses salariés sont de vraies personnes, filmées par Stanford sur de vraies tâches de back-office. Six personnes, multipliées par dix : 60 salariés. Chez vous, ce seront vos captures screenpipe. Ici, des données publiques, pour ne montrer la vie de personne.
 
-Étape un : l'audit. 55 000 captures, lues par l'IA, salarié par salarié.
+Étape un : l'audit. 55 000 captures lues par l'IA, salarié par salarié.
 
-Résultat ? 72 000 euros par an partent dans des tâches répétées. Un rapport de ventes, toujours le même, sorti 790 fois par semaine. 790.
+Résultat ? 72 000 euros par an partent dans des tâches répétées. Et la première, c'est un rapport de ventes. Toujours le même, sorti 790 fois par semaine. 790.
 
-Étape deux : nos agents en tirent cinq automatisations. On prend la plus chère : ce rapport de ventes. L'automatisation s'écrit en un clic, à partir de ce que les salariés font vraiment.
+Étape deux : nos agents en tirent cinq automatisations. La première, ce rapport, s'écrit à partir de ce que les salariés font vraiment.
 
-Étape trois : on l'a lancée ce matin. À la main, ce rapport prend 23 secondes. Fois 790, chaque semaine. Plus de 5 heures. L'agent, lui : [X] rapports sortis, [X] actions, chacune tracée.
+Étape trois : on l'a déployée ce matin, dans le vrai logiciel de la boutique. Elle tourne en ce moment. Chaque action est tracée. Un rapport en 4 secondes, contre 23 à la main. 790 fois par semaine, c'est 5 heures rendues aux équipes, sans personne au clavier.
 
 Alors la question n'est plus : qu'est-ce que je fais de mes données ?
 
