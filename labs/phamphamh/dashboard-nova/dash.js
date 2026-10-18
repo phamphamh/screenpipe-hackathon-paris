@@ -23,7 +23,7 @@ const PALETTES = {
     rouges: ["#d93a40", "#b8333a", "#932a30"],
   },
 };
-let THEME = (() => { try { return localStorage.getItem("nova-theme") || "clair"; } catch (e) { return "clair"; } })();
+let THEME = (() => { try { return localStorage.getItem("deloai-theme") || "clair"; } catch (e) { return "clair"; } })();
 let C = PALETTES[THEME];
 document.documentElement.dataset.theme = THEME;
 const EQUIPES = Object.keys(X.equipes), TYPES = Object.keys(C.type), SEMAINES = 46;
@@ -468,7 +468,7 @@ document.addEventListener("click", e => {
   if (e.target.closest("#ferme") || e.target.id === "voile") return fermer();
   if (e.target.closest("#raz")) { F.equipe = "Toutes"; F.jour = "Tous"; F.type = "Tous"; return rendre(); }
   if (e.target.closest("#export")) return window.print();
-  if (e.target.closest("#theme")) { THEME = THEME === "sombre" ? "clair" : "sombre"; C = PALETTES[THEME]; document.documentElement.dataset.theme = THEME; try { localStorage.setItem("nova-theme", THEME); } catch (err) {} return rendre(); }
+  if (e.target.closest("#theme")) { THEME = THEME === "sombre" ? "clair" : "sombre"; C = PALETTES[THEME]; document.documentElement.dataset.theme = THEME; try { localStorage.setItem("deloai-theme", THEME); } catch (err) {} return rendre(); }
   if (e.target.closest("#presenter")) { PRESENTATION = !PRESENTATION; if (PRESENTATION) { F.equipe = "Toutes"; F.jour = "Tous"; F.type = "Tous"; location.hash = "#/" + ETAPES[0]; } return rendre(); }
   const sk = e.target.closest("[data-skill]");
   if (sk) {

@@ -98,7 +98,7 @@ def ouvrir_fenetre():
                              "--window-position=0,0", "--window-size=1280,800", "--no-first-run",
                              "--no-default-browser-check", "--disable-features=Translate", "about:blank"],
                             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    for _ in range(50):
+    for _ in range(150):  # premier lancement d’un profil neuf : jusqu’à 30 s
         try:
             urllib.request.urlopen(f"http://127.0.0.1:{PORT_CDP}/json/version", timeout=1)
             return proc
