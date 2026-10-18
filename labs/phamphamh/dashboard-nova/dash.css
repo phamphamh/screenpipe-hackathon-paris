@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap");
 /* Dashboard DeloAI · Atelier Nova — palette d'orja.io (noir #0a0a0b, cuivre #e5a276).
    Règles : chaque écran tient dans la fenêtre (grille de 12 colonnes) ; une barre de filtres pilote tout ;
    une couleur = un sens (cuivre = argent, vert = récupéré, rouge = perte, gris chauds = équipes, bleus = types). */
@@ -340,3 +341,17 @@ g[data-ouvre]:hover .seg { stroke: var(--cuivre); stroke-width: 2; }
 .picto b { font-size: 12.5px; }
 .anneau .t { color: var(--faint); }
 .segbar { flex: none; height: 24px; } .segbar > div { font-size: 13px; }
+
+/* Thème « salle de commandement » (charte DeloAI) : fond gris très sombre, traits fins, Geist / Geist Mono, coins droits.
+   Le cuivre reste la couleur de l'argent dans les graphes. */
+:root:not([data-theme="clair"]) {
+  --bg: #0a0c0f; --surface: #111418; --surface-2: #171b21; --surface-3: #1d222a;
+  --line: #232830; --line-strong: #343b46;
+  --text: #e6e4df; --muted: #a3a9b3; --faint: #7a818c;
+  --eq1: #c3c8d0; --eq2: #6b7380;
+}
+:root {
+  --display: "Geist", system-ui, sans-serif; --body: "Geist", system-ui, sans-serif; --mono: "Geist Mono", ui-monospace, Menlo, monospace;
+  --radius: 2px; --radius-sm: 2px;
+}
+.card, .tile { box-shadow: none; }
