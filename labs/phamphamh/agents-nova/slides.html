@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DeloAI · Pitch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* Charte « salle de commandement » : monde gris, traits 1px, coins carrés.
+   Une seule couleur vive qui s'allume : le cyan de l'IA. L'orange seulement pour une perte. */
+:root {
+  --fond:#0a0c0f; --plan:#111418; --plan-2:#171b21; --trait:#232830; --trait-fort:#343b46;
+  --texte:#e6e4df; --doux:#8b929d; --faible:#59606b; --ia:#7ce3ff; --perte:#ffa24a;
+  --sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --k: 1;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body {
+  background: var(--fond); color: var(--texte); font-family: var(--sans);
+  overflow: hidden; -webkit-font-smoothing: antialiased; cursor: default;
+}
+
+/* Scène fixe 1440×810 (16:9), mise à l'échelle de la fenêtre */
+.scene {
+  position: absolute; left: 50%; top: 50%; width: 1440px; height: 810px;
+  transform: translate(-50%, -50%) scale(var(--k)); transform-origin: center;
+  background: var(--fond);
+}
+
+/* Équerres aux 4 coins */
+.eq { position: absolute; width: 18px; height: 18px; border: 0 solid var(--trait-fort); }
+.eq.hg { left: 28px; top: 28px; border-left-width: 1px; border-top-width: 1px; }
+.eq.hd { right: 28px; top: 28px; border-right-width: 1px; border-top-width: 1px; }
+.eq.bg { left: 28px; bottom: 28px; border-left-width: 1px; border-bottom-width: 1px; }
+.eq.bd { right: 28px; bottom: 28px; border-right-width: 1px; border-bottom-width: 1px; }
+
+/* Étiquettes mono */
+.mono, .barre, .pied, .sur, .src, .lab {
+  font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; font-weight: 400;
+}
+
+/* Barre haute et pied */
+.barre, .pied {
+  position: absolute; left: 64px; right: 64px; display: flex; justify-content: space-between; align-items: center;
+  color: var(--faible);
+}
+.barre { top: 40px; padding-bottom: 14px; border-bottom: 1px solid var(--trait); }
+.barre b { color: var(--doux); font-weight: 400; }
+.barre .num { color: var(--doux); font-variant-numeric: tabular-nums; }
+.pied { bottom: 40px; display: grid; grid-template-columns: 1fr auto 1fr; }
+.pied > :last-child { justify-self: end; }
+.progres { display: flex; gap: 4px; }
+.progres i { display: block; width: 18px; height: 1px; background: var(--trait-fort); }
+.progres i.fait { background: var(--doux); }
+
+/* Slides */
+.slide {
+  position: absolute; left: 120px; right: 120px; top: 110px; bottom: 90px;
+  display: none; flex-direction: column; justify-content: center;
+}
+.slide.on { display: flex; }
+
+.sur { color: var(--doux); margin: 0 0 32px; display: flex; align-items: center; gap: 14px; }
+.sur::before { content: ""; width: 24px; height: 1px; background: var(--trait-fort); }
+.sur.ia { color: var(--ia); }
+.sur.ia::before { background: var(--ia); }
+
+h1, h2 {
+  font-weight: 300; letter-spacing: -.035em; line-height: 1.02; margin: 0; color: var(--texte);
+}
+h1 { font-size: 104px; max-width: 13.5em; }
+h2 { font-size: 72px; max-width: 18em; line-height: 1.06; }
+h1 strong, h2 strong { font-weight: 600; }
+.ia-t { color: var(--ia); }
+.doux { color: var(--doux); }
+
+.sous {
+  margin: 40px 0 0; font-size: 34px; font-weight: 300; letter-spacing: -.02em; color: var(--doux);
+}
+
+/* Apparition ligne par ligne */
+.l { opacity: 0; transform: translateY(6px); transition: opacity .32s ease-out, transform .32s ease-out; }
+.l.vu { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .l { transform: none; transition: opacity .01s; }
+}
+
+/* Mode intégré (iframe dans index.html) : pas d'aide clavier, courte entrée */
+.integre .pied .aide { visibility: hidden; }
+.integre .slide.on { animation: entree .36s ease-out both; }
+@keyframes entree { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  @keyframes entree { from { opacity: 0; } to { opacity: 1; } }
+}
+
+/* 02 — compteur */
+.deux { display: grid; grid-template-columns: 1.3fr 1fr; gap: 64px; align-items: end; }
+.compteur { border-top: 1px solid var(--trait-fort); padding-top: 18px; }
+.compteur .lab { color: var(--doux); display: flex; justify-content: space-between; }
+.compteur .val {
+  font-size: 132px; font-weight: 300; letter-spacing: -.045em; line-height: 1; margin: 18px 0 0;
+  font-variant-numeric: tabular-nums;
+}
+.flux { margin-top: 26px; border: 1px solid var(--trait); background: var(--plan); height: 156px; overflow: hidden; }
+.flux div {
+  display: grid; grid-template-columns: 92px 92px 1fr; gap: 12px; padding: 0 16px; height: 31px; align-items: center;
+  border-bottom: 1px solid var(--trait); font-family: var(--mono); font-size: 12px; color: var(--doux);
+  letter-spacing: .04em; white-space: nowrap;
+}
+.flux div span:first-child { color: var(--faible); }
+.flux div:first-child { color: var(--texte); background: var(--plan-2); }
+.relu {
+  margin-top: 14px; display: flex; justify-content: space-between; align-items: baseline;
+  font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--perte);
+}
+.relu b { font-weight: 500; font-size: 13px; }
+
+/* 03 — citation */
+.citation { border-left: 1px solid var(--trait-fort); padding-left: 48px; }
+.citation q { quotes: "« " " »"; }
+.citation h2 { font-size: 84px; max-width: 14em; }
+.auteur { margin-top: 40px; display: flex; gap: 18px; align-items: center; color: var(--doux); }
+.auteur .carre { width: 40px; height: 40px; border: 1px solid var(--trait-fort); display: grid; place-items: center; font-family: var(--mono); font-size: 13px; color: var(--texte); }
+.auteur .nom { font-family: var(--sans); font-size: 20px; letter-spacing: -.01em; color: var(--texte); text-transform: none; }
+.auteur .role { margin-top: 4px; }
+
+/* 04 / 06 — rangées */
+.rangees { margin-top: 56px; display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--trait-fort); }
+.rangees > div { padding: 22px 28px 0 0; border-right: 1px solid var(--trait); margin-right: 28px; }
+.rangees > div:last-child { border-right: 0; margin-right: 0; }
+.rangees .lab { color: var(--faible); }
+.rangees p { margin: 14px 0 0; font-size: 32px; font-weight: 400; letter-spacing: -.02em; line-height: 1.15; }
+.rangees.ia { border-top-color: var(--ia); }
+.rangees.ia .lab { color: var(--ia); }
+.rangees.ia p { font-size: 28px; }
+.rangees.ia p small { display: block; margin-top: 10px; font-size: 18px; color: var(--doux); font-weight: 300; letter-spacing: -.005em; }
+
+/* 05 — avant */
+.semaines { margin-top: 64px; }
+.semaines .lab { color: var(--faible); display: flex; justify-content: space-between; }
+.cases { margin-top: 14px; display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; }
+.cases i { height: 44px; border: 1px solid var(--trait-fort); background: var(--plan); display: flex; align-items: flex-end; padding: 6px 8px; font-style: normal; font-family: var(--mono); font-size: 11px; color: var(--faible); letter-spacing: .1em; }
+
+/* 06 — DeloAI */
+.marque { font-size: 168px; font-weight: 300; letter-spacing: -.05em; line-height: .95; margin: 0; }
+.marque strong { font-weight: 600; color: var(--ia); }
+.def { margin: 22px 0 0; font-size: 34px; font-weight: 300; letter-spacing: -.02em; color: var(--doux); }
+.def strong { color: var(--texte); font-weight: 500; }
+
+/* 08 — démo */
+.demo { align-items: flex-start; }
+.direct { display: flex; align-items: center; gap: 12px; color: var(--ia); }
+.point { width: 8px; height: 8px; background: var(--ia); animation: clignote 1.6s steps(2, jump-none) infinite; }
+@keyframes clignote { 50% { opacity: .25; } }
+@media (prefers-reduced-motion: reduce) { .point { animation: none; } }
+.ecrans { margin-top: 48px; display: grid; grid-template-columns: repeat(4, 220px); border: 1px solid var(--trait); }
+.ecrans div { padding: 16px 18px; border-right: 1px solid var(--trait); background: var(--plan); }
+.ecrans div:last-child { border-right: 0; }
+.ecrans .lab { color: var(--faible); }
+.ecrans p { margin: 8px 0 0; font-size: 20px; letter-spacing: -.01em; }
+.bouton {
+  margin-top: 40px; display: inline-flex; align-items: center; gap: 18px;
+  padding: 18px 26px; border: 1px solid var(--ia); color: var(--ia); background: transparent; text-decoration: none;
+  font-family: var(--mono); font-size: 13px; letter-spacing: .1em; text-transform: uppercase;
+}
+.bouton:hover, .bouton:focus-visible { background: var(--ia); color: var(--fond); outline: none; }
+.bouton kbd { font-family: var(--mono); font-size: 11px; border: 1px solid currentColor; padding: 2px 6px; opacity: .8; }
+
+/* 09 — question */
+.avant-q { font-size: 44px; font-weight: 300; letter-spacing: -.025em; color: var(--faible); margin: 0; }
+.avant-q s { text-decoration-thickness: 1px; text-decoration-color: var(--trait-fort); }
+.question { margin-top: 48px; }
+
+/* 10 — signature */
+.signature .marque { font-size: 200px; }
+.signature .def { font-size: 44px; color: var(--texte); margin-top: 28px; }
+.signature .def strong { font-weight: 600; }
+.signature .src { margin-top: 56px; color: var(--faible); display: flex; gap: 32px; }
+</style>
+</head>
+<body>
+<div class="scene" id="scene">
+  <span class="eq hg"></span><span class="eq hd"></span><span class="eq bg"></span><span class="eq bd"></span>
+
+  <div class="barre"><span><b>DeloAI</b> · Pitch · 18.10.2026</span><span class="num" id="num">01 / 10</span></div>
+
+  <!-- 01 -->
+  <section data-id="ouverture-1" class="slide" data-titre="Le constat">
+    <p class="sur">Le constat</p>
+    <h1>Si vous utilisez screenpipe, vous avez un <strong>problème.</strong></h1>
+    <p class="sous l">Et ce n'est pas de votre faute.</p>
+  </section>
+
+  <!-- 02 -->
+  <section data-id="ouverture-2" class="slide" data-titre="La donnée" data-compteur>
+    <p class="sur">Votre ordinateur enregistre tout</p>
+    <div class="deux">
+      <h1 style="font-size:88px">Chaque écran.<br>Chaque clic.<br>Chaque <strong>réunion.</strong></h1>
+      <div>
+        <div class="compteur">
+          <div class="lab"><span>Captures aujourd'hui</span><span>En local</span></div>
+          <div class="val" id="captures">0</div>
+        </div>
+        <div class="flux" id="flux"></div>
+        <div class="relu l"><span>Relues par un humain</span><b>0</b></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 -->
+  <section data-id="ouverture-3" class="slide" data-titre="Louis">
+    <p class="sur">Ce n'est pas nous qui le disons</p>
+    <div class="citation">
+      <h2><q>Ils ont plein de données. Ils ne savent pas <strong>quoi en faire.</strong></q></h2>
+      <div class="auteur l">
+        <span class="carre">L</span>
+        <div><div class="nom">Louis</div><div class="role mono">Fondateur de screenpipe</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 -->
+  <section data-id="ouverture-4" class="slide" data-titre="Le contexte">
+    <p class="sur">La vérité</p>
+    <h2><span class="doux">Le problème n'a jamais été la donnée.</span><br>C'est le <strong>contexte.</strong></h2>
+    <div class="rangees">
+      <div class="l"><span class="lab">01</span><p>Quoi regarder</p></div>
+      <div class="l"><span class="lab">02</span><p>Quoi automatiser</p></div>
+      <div class="l"><span class="lab">03</span><p>Par où commencer</p></div>
+    </div>
+  </section>
+
+  <!-- 05 -->
+  <section data-id="ouverture-5" class="slide" data-titre="Avant">
+    <p class="sur">Avant</p>
+    <h1>Un <strong>cabinet de conseil.</strong></h1>
+    <p class="sous">Des consultants sur place, pendant des semaines.</p>
+    <div class="semaines l">
+      <div class="lab"><span>Mission sur site</span><span>Semaines</span></div>
+      <div class="cases"><i>S1</i><i>S2</i><i>S3</i><i>S4</i><i>S5</i><i>S6</i><i>S7</i><i>S8</i></div>
+    </div>
+  </section>
+
+  <!-- 06 -->
+  <section data-id="ouverture-6" class="slide" data-titre="DeloAI">
+    <p class="sur ia">Nous</p>
+    <p class="marque">Delo<strong>AI</strong></p>
+    <p class="def">Un <strong>cabinet IA natif.</strong></p>
+    <div class="rangees ia">
+      <div class="l"><span class="lab">Méthode</span><p>L'analyse des grands cabinets<small>Ce que vos équipes font vraiment, salarié par salarié.</small></p></div>
+      <div class="l"><span class="lab">Agents</span><p>Le déploiement des meilleurs labos<small>Des agents construits sur le travail réel.</small></p></div>
+      <div class="l"><span class="lab">Sur place</span><p>Personne ne se déplace<small>Tout part de vos captures screenpipe.</small></p></div>
+    </div>
+  </section>
+
+  <!-- 07 -->
+  <section data-id="ouverture-7" class="slide" data-titre="Transition">
+    <p class="sur">Démonstration</p>
+    <h1>Laissez-moi vous <strong>montrer.</strong></h1>
+  </section>
+
+  <!-- 08 -->
+  <section data-id="demo" class="slide demo" data-titre="Démo">
+    <p class="sur ia direct"><span class="point"></span>Atelier Nova · démo en direct</p>
+    <h1>Atelier <strong>Nova.</strong></h1>
+    <p class="sous">Une boutique en ligne. 60 salariés.</p>
+    <div class="ecrans">
+      <div><span class="lab">01</span><p>Les données</p></div>
+      <div><span class="lab">02</span><p>L'audit</p></div>
+      <div><span class="lab">03</span><p>Les écarts</p></div>
+      <div><span class="lab">04</span><p>Les agents</p></div>
+    </div>
+    <a class="bouton" id="lien-demo" href="index.html#donnees">Ouvrir la démo <span aria-hidden="true">→</span> <kbd>D</kbd></a>
+  </section>
+
+  <!-- 09 -->
+  <section data-id="fin-1" class="slide" data-titre="La question">
+    <p class="avant-q">La question n'est plus : <s>qu'est-ce que je fais de mes données ?</s></p>
+    <h2 class="question l">La question, c'est : qu'est-ce que vous allez faire du <strong class="ia-t">temps récupéré ?</strong></h2>
+  </section>
+
+  <!-- 10 -->
+  <section data-id="fin-2" class="slide signature" data-titre="DeloAI">
+    <p class="marque">Delo<strong>AI</strong></p>
+    <p class="def l">Votre cabinet et votre ESN, <strong>dans votre poche.</strong></p>
+    <div class="src l"><span>screenpipe × 42 Paris</span><span>18.10.2026</span></div>
+  </section>
+
+  <div class="pied"><span id="titre-slide">Le constat</span><span class="progres" id="progres"></span><span class="aide">← → · Espace · F plein écran</span></div>
+</div>
+
+<script>
+(() => {
+  const slides = [...document.querySelectorAll(".slide")];
+  const total = slides.length;
+  const params = new URLSearchParams(location.search);
+  const toutVoir = params.has("tout"); // ?tout : toutes les lignes visibles (captures d'écran)
+  const pad = n => String(n).padStart(2, "0");
+  let s = 0;
+
+  // Mise à l'échelle 16:9
+  const scene = document.getElementById("scene");
+  const ajuster = () => {
+    const k = Math.min(innerWidth / 1440, innerHeight / 810);
+    scene.style.setProperty("--k", k);
+  };
+  addEventListener("resize", ajuster); ajuster();
+
+  // Barre de progression
+  const progres = document.getElementById("progres");
+  progres.innerHTML = slides.map(() => "<i></i>").join("");
+  const traits = [...progres.children];
+
+  function montrer(i, { toutes = false } = {}) {
+    s = Math.max(0, Math.min(total - 1, i));
+    slides.forEach((el, j) => el.classList.toggle("on", j === s));
+    slides[s].querySelectorAll(".l").forEach(l => l.classList.toggle("vu", toutes || toutVoir));
+    document.getElementById("num").textContent = `${pad(s + 1)} / ${pad(total)}`;
+    document.getElementById("titre-slide").textContent = slides[s].dataset.titre || "";
+    traits.forEach((t, j) => t.classList.toggle("fait", j <= s));
+    history.replaceState(null, "", `${location.pathname}${location.search}#${s + 1}`);
+    if (slides[s].hasAttribute("data-compteur")) demarrerCompteur(); else arreterCompteur();
+  }
+
+  function avancer() {
+    const suivante = slides[s].querySelector(".l:not(.vu)");
+    if (suivante) return suivante.classList.add("vu");
+    if (s < total - 1) montrer(s + 1);
+  }
+  function reculer() {
+    const vues = slides[s].querySelectorAll(".l.vu");
+    if (vues.length) return vues[vues.length - 1].classList.remove("vu");
+    if (s > 0) montrer(s - 1, { toutes: true });
+  }
+
+  document.addEventListener("keydown", e => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (["ArrowRight", " ", "PageDown", "Enter"].includes(e.key)) {
+      if (e.key === "Enter" && document.activeElement && document.activeElement.tagName === "A") return;
+      e.preventDefault(); avancer();
+    } else if (["ArrowLeft", "PageUp", "Backspace"].includes(e.key)) {
+      e.preventDefault(); reculer();
+    } else if (e.key === "f" || e.key === "F") {
+      if (document.fullscreenElement) document.exitFullscreen();
+      else document.documentElement.requestFullscreen?.();
+    } else if ((e.key === "d" || e.key === "D") && slides[s].classList.contains("demo")) {
+      location.href = document.getElementById("lien-demo").href;
+    } else if (e.key === "Home") { montrer(0); }
+    else if (e.key === "End") { montrer(total - 1, { toutes: true }); }
+  });
+  document.addEventListener("click", e => {
+    if (e.target.closest("a")) return;
+    avancer();
+  });
+
+  // Compteur de captures (slide 02)
+  const reduit = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const fmt = new Intl.NumberFormat("fr-FR");
+  const el = document.getElementById("captures");
+  const flux = document.getElementById("flux");
+  const evenements = [
+    ["Écran", "Excel · Rapport_ventes.xlsx"], ["Clic", "Back-office · Commandes"],
+    ["Réunion", "Meet · Point hebdo"], ["Écran", "Gmail · Relance client"],
+    ["Clic", "Back-office · Exporter"], ["Écran", "Slack · #logistique"],
+    ["Clic", "Excel · Copier"], ["Écran", "Back-office · Stocks"],
+    ["Réunion", "Zoom · Fournisseur"], ["Écran", "Notion · Process retours"]
+  ];
+  let base = 14286, depart = 0, raf = 0, minuterie = 0, n = 0, heure = 9 * 3600 + 41 * 60 + 12;
+  const hms = t => [Math.floor(t / 3600), Math.floor(t / 60) % 60, t % 60].map(pad).join(":");
+  function ligne() {
+    const [type, quoi] = evenements[n++ % evenements.length];
+    heure += 1 + (n % 3);
+    const d = document.createElement("div");
+    d.innerHTML = `<span>${hms(heure)}</span><span>${type}</span><span>${quoi}</span>`;
+    flux.prepend(d);
+    while (flux.children.length > 5) flux.lastChild.remove();
+  }
+  function tick(t) {
+    if (!depart) depart = t;
+    el.textContent = fmt.format(base + Math.floor((t - depart) / 1000 * 23));
+    raf = requestAnimationFrame(tick);
+  }
+  function demarrerCompteur() {
+    arreterCompteur();
+    for (let i = 0; i < 5; i++) ligne();
+    el.textContent = fmt.format(base);
+    if (reduit) { minuterie = setInterval(() => { base += 23; el.textContent = fmt.format(base); ligne(); }, 1000); return; }
+    depart = 0; raf = requestAnimationFrame(tick);
+    minuterie = setInterval(ligne, 420);
+  }
+  function arreterCompteur() { cancelAnimationFrame(raf); clearInterval(minuterie); }
+
+  const h = parseInt(location.hash.slice(1), 10);
+  montrer(Number.isFinite(h) ? h - 1 : 0);
+})();
+</script>
+</body>
+</html>
