@@ -1,0 +1,1048 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DeloAI · Atelier Nova</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+/* Charte « salle de commandement », version claire : monde gris, traits fins, une seule couleur vive pour l'IA (cyan), orange pour la perte. */
+:root {
+  color-scheme: light;
+  --fond: #ffffff; --plan: #f6f7f8; --plan-2: #eef0f2;
+  --trait: #d9dde3; --trait-fort: #c3c9d1;
+  --texte: #0a0c0f; --doux: #5b636e; --faible: #8a929c;
+  --ia: #0a84b8; --perte: #d9730d;
+  --f-texte: "Geist", "Inter Tight", system-ui, sans-serif;
+  --f-mono: "Geist Mono", ui-monospace, Menlo, monospace;
+  --haut: 64px; --side: 220px;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; overflow: hidden; }
+body { background: var(--fond); color: var(--texte); font-family: var(--f-texte); font-size: 16px; line-height: 1.45; }
+.mono { font-family: var(--f-mono); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--doux); font-weight: 400; }
+.ia { color: var(--ia); } .perte { color: var(--perte); }
+button { font: inherit; color: inherit; }
+
+/* Barre haute */
+/* Coquille d'application */
+.side { position: fixed; left: 0; top: 0; bottom: 0; width: var(--side); border-right: 1px solid var(--trait); background: var(--plan); display: flex; flex-direction: column; padding: 14px 12px; gap: 14px; z-index: 6; }
+.logo { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 17px; letter-spacing: -.01em; padding: 4px 6px; }
+.logo i { width: 22px; height: 22px; background: var(--texte); display: grid; place-items: center; }
+.logo i::after { content: ""; width: 8px; height: 8px; background: var(--ia); }
+.espace { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px; align-items: center; border: 1px solid var(--trait); background: var(--fond); padding: 8px 10px; }
+.pastille { width: 30px; height: 30px; display: grid; place-items: center; background: var(--texte); color: var(--fond); font-family: var(--f-mono); font-size: 11px; letter-spacing: .06em; }
+.espace b { display: block; font-size: 14px; font-weight: 500; }
+.espace small { display: block; font-size: 11.5px; color: var(--doux); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.espace .chev { color: var(--faible); font-size: 12px; }
+.side nav { display: grid; gap: 2px; }
+.side .grp { margin: 8px 8px 6px; font-size: 10.5px; color: var(--faible); }
+.nav { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border: 0; background: none; text-align: left; font-size: 14.5px; color: var(--doux); cursor: pointer; border-left: 2px solid transparent; }
+.nav svg { width: 16px; height: 16px; flex: none; stroke: currentColor; fill: none; stroke-width: 1.5; }
+.nav:hover { color: var(--texte); background: var(--plan-2); }
+.nav.on { color: var(--texte); background: var(--fond); border-left-color: var(--ia); font-weight: 500; }
+.nav.off { color: var(--faible); cursor: default; opacity: .7; }
+.nav.off:hover { background: none; color: var(--faible); }
+.nav .bientot { margin-left: auto; font-family: var(--f-mono); font-size: 9.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--faible); }
+.profil { margin-top: auto; display: flex; align-items: center; gap: 10px; border-top: 1px solid var(--trait); padding: 12px 6px 2px; }
+.av { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: var(--plan-2); border: 1px solid var(--trait-fort); font-family: var(--f-mono); font-size: 11px; }
+.profil b { display: block; font-size: 13.5px; font-weight: 500; }
+.profil small { display: block; font-size: 11.5px; color: var(--doux); }
+.barre { position: fixed; top: 0; right: 0; left: var(--side); height: var(--haut); display: flex; align-items: center; gap: 22px; padding: 0 22px; border-bottom: 1px solid var(--trait); background: var(--fond); z-index: 5; }
+.titre-app { margin: 0; font-size: 28px; font-weight: 300; letter-spacing: -.025em; white-space: nowrap; }
+.titre-app b { font-weight: 600; }
+#fil { padding-top: 6px; }
+.barre .fil b { color: var(--texte); font-weight: 500; }
+.barre .live { margin-left: auto; color: var(--ia); display: inline-flex; align-items: center; gap: 8px; }
+.barre .live i { width: 7px; height: 7px; border-radius: 50%; background: var(--ia); display: inline-block; animation: pouls 1.8s infinite; }
+@keyframes pouls { 0% { box-shadow: 0 0 0 0 rgba(10,132,184,.5); } 70% { box-shadow: 0 0 0 7px rgba(10,132,184,0); } 100% { box-shadow: 0 0 0 0 rgba(10,132,184,0); } }
+.ecrans { position: fixed; top: var(--haut); left: var(--side); right: 0; bottom: 0; }
+.ecran { position: absolute; inset: 0; display: none; }
+.ecran.on { display: block; }
+.ecran:not(.on) { display: none !important; }
+.coin { position: absolute; width: 14px; height: 14px; border-color: var(--trait-fort); border-style: solid; pointer-events: none; }
+.coin.a { left: 10px; top: 10px; border-width: 1px 0 0 1px; } .coin.b { right: 10px; top: 10px; border-width: 1px 1px 0 0; }
+.coin.c { left: 10px; bottom: 10px; border-width: 0 0 1px 1px; } .coin.d { right: 10px; bottom: 10px; border-width: 0 1px 1px 0; }
+.chiffre { font-weight: 300; letter-spacing: -.045em; line-height: .95; }
+
+/* ---------- L'audit ---------- */
+.audit { padding: 22px 26px 40px; overflow-y: auto; }
+.audit.ecran.on { display: block; }
+.audit .au-tuiles { height: calc(100vh - var(--haut) - 44px); min-height: 420px; }
+.suite { display: grid; gap: 22px; margin-top: 48px; }
+.suite h2 { margin: 0; font-size: 34px; font-weight: 300; letter-spacing: -.025em; }
+.suite h2 b { font-weight: 600; }
+.trio { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--trait); border: 1px solid var(--trait); }
+.top-t { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 10px; border-top: 1px solid var(--trait); padding-top: 10px; }
+.top-t .n { font-size: 17px; font-weight: 500; }
+.top-t .v { font-family: var(--f-mono); font-size: 12px; color: var(--doux); white-space: nowrap; align-self: center; }
+.top-t .p { grid-column: 1 / -1; height: 10px; background: var(--plan-2); }
+.top-t .p i { display: block; height: 100%; background: var(--perte); }
+.trio.quatre { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.trio > div { background: var(--fond); padding: 22px 24px; display: grid; gap: 12px; align-content: start; min-width: 0; }
+.trio .gros { font-size: 64px; font-weight: 300; letter-spacing: -.04em; line-height: 1; }
+.trio .phrase-s { margin: 0; font-size: 17px; color: var(--doux); line-height: 1.35; }
+.trio .barre-l { grid-template-columns: minmax(90px, 36%) minmax(0, 1fr) auto; font-size: 14px; }
+.trio .barre-l .v { white-space: nowrap; }
+.puces { display: flex; gap: 8px; flex-wrap: wrap; }
+.puce { font-family: var(--f-mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; border: 1px solid var(--trait-fort); background: var(--fond); padding: 8px 14px; cursor: pointer; }
+.puce:hover { border-color: var(--texte); }
+.puce.on { background: var(--texte); color: var(--fond); border-color: var(--texte); }
+.cas-nom { font-size: 52px; font-weight: 300; letter-spacing: -.035em; line-height: 1; }
+.cas-nom b { font-weight: 600; }
+.minis3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.minis3 b { display: block; font-size: 34px; font-weight: 300; letter-spacing: -.03em; line-height: 1.05; }
+.minis3 span { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--doux); }
+.fil-chrono { list-style: none; margin: 0; padding: 0; border-left: 1px solid var(--trait-fort); }
+.fil-chrono li { position: relative; padding: 0 0 14px 18px; }
+.fil-chrono li::before { content: ""; position: absolute; left: -4px; top: 6px; width: 7px; height: 7px; background: var(--fond); border: 1px solid var(--texte); border-radius: 50%; }
+.fil-chrono li.rep::before { background: var(--perte); border-color: var(--perte); }
+.fil-chrono .h { font-family: var(--f-mono); font-size: 12px; color: var(--doux); }
+.fil-chrono .a { display: block; font-size: 14.5px; }
+.fil-chrono .w { display: block; font-family: var(--f-mono); font-size: 11px; color: var(--faible); }
+.wf-cas { border-top: 1px solid var(--trait); padding-top: 12px; display: grid; gap: 6px; }
+.wf-cas .n { font-size: 20px; font-weight: 500; }
+.wf-cas .f { font-family: var(--f-mono); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--doux); }
+.au-tuiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: 1fr; gap: 1px; background: var(--trait); border: 1px solid var(--trait); min-height: 0; }
+.tu { background: var(--fond); padding: 36px 34px; display: flex; flex-direction: column; justify-content: center; gap: 28px; min-width: 0; }
+.tu .phrase { margin: 0; font-size: 26px; font-weight: 300; letter-spacing: -.015em; line-height: 1.25; color: var(--doux); max-width: 16ch; }
+.tu .chiffre { font-size: clamp(60px, 7.2vw, 132px); }
+.tu .mono b { color: var(--texte); font-weight: 500; }
+.tu-heros { grid-row: 1 / 3; background: var(--plan); }
+.tu-heros .chiffre { font-size: clamp(72px, 7.8vw, 150px); }
+.tu-heros .unite { font-size: 44px; font-weight: 300; color: var(--doux); letter-spacing: -.02em; margin-top: 8px; }
+.tu.tuile:hover { background: var(--plan-2); box-shadow: none; }
+.au-grille { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 40px; min-height: 0; }
+.au-gauche { display: grid; grid-template-rows: auto auto minmax(0, 1fr); gap: 28px; }
+.heros .chiffre { font-size: 116px; margin-top: 12px; }
+.heros .chiffre small { font-size: 44px; letter-spacing: -.02em; color: var(--doux); }
+.heros .mono { display: block; margin-top: 14px; font-size: 13px; }
+.cles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid var(--trait-fort); align-self: start; }
+.cle { padding: 18px 20px 18px 0; border-bottom: 1px solid var(--trait); }
+.cle:nth-child(2n) { padding-left: 24px; border-left: 1px solid var(--trait); }
+.cle .chiffre { font-size: 60px; }
+.cle .chiffre small { font-size: 24px; letter-spacing: -.01em; color: var(--doux); }
+.cle .mono { display: block; margin-top: 10px; line-height: 1.5; }
+.cle .mono b { color: var(--texte); font-weight: 500; }
+.au-droite { position: relative; border: 1px solid var(--trait); background: var(--plan); padding: 26px 28px; display: grid; grid-template-rows: auto auto minmax(0, 1fr); gap: 18px; align-self: start; }
+.au-droite h2 { margin: 0; font-weight: 300; font-size: 30px; letter-spacing: -.02em; line-height: 1.15; }
+.au-droite h2 b { font-weight: 500; }
+.wfs { list-style: none; margin: 0; padding: 0; }
+.wfs li { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; gap: 12px; align-items: baseline; padding: 18px 0; border-top: 1px solid var(--trait-fort); }
+.wfs .n { font-family: var(--f-mono); font-size: 12px; color: var(--ia); }
+.wfs .nom { font-size: 22px; font-weight: 500; letter-spacing: -.01em; }
+.wfs .nom small { display: block; font-family: var(--f-mono); font-size: 11.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--doux); font-weight: 400; margin-top: 4px; }
+.wfs .eur { font-size: 30px; font-weight: 300; letter-spacing: -.03em; text-align: right; }
+.wfs .eur small { display: block; font-family: var(--f-mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--faible); }
+.tuile { cursor: pointer; transition: background .2s ease, box-shadow .2s ease; position: relative; }
+.tuile:hover { background: var(--plan); box-shadow: inset 0 0 0 1px var(--trait-fort); }
+.tuile:focus-visible { outline: 2px solid var(--ia); outline-offset: 2px; }
+.tuile::after { content: "↗"; position: absolute; right: 12px; top: 12px; font-family: var(--f-mono); font-size: 12px; color: var(--faible); opacity: 0; transition: opacity .2s; }
+.tuile:hover::after { opacity: 1; }
+.voile { position: absolute; inset: 0; background: rgba(255,255,255,.72); opacity: 0; transition: opacity .3s ease; z-index: 3; }
+.voile.on { opacity: 1; }
+.detail { position: absolute; z-index: 4; background: var(--fond); border: 1px solid var(--trait-fort); box-shadow: 0 18px 50px -24px rgba(10,12,15,.35); overflow: hidden; transition: left .35s cubic-bezier(.2,.75,.2,1), top .35s cubic-bezier(.2,.75,.2,1), width .35s cubic-bezier(.2,.75,.2,1), height .35s cubic-bezier(.2,.75,.2,1); }
+.detail .dc { position: absolute; inset: 0; padding: 22px 28px 14px; display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto; gap: 16px; opacity: 0; transition: opacity .2s ease; }
+.detail.ouvert .dc { opacity: 1; transition-delay: .22s; }
+.detail .fermer { position: absolute; right: 14px; top: 12px; background: none; border: 0; font-size: 20px; color: var(--doux); cursor: pointer; z-index: 2; }
+.dt-titre { font-size: 40px; font-weight: 300; letter-spacing: -.03em; line-height: 1.05; margin-top: 6px; }
+.dt-titre small { font-size: 20px; color: var(--doux); }
+.dt-corps { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1px; background: var(--trait); border: 1px solid var(--trait); min-height: 0; }
+.dt-corps > .dt-bloc { background: var(--fond); padding: 16px 20px; grid-template-rows: auto minmax(0, 1fr) auto; align-content: stretch; min-height: 0; }
+.viz { min-height: 0; display: grid; }
+.viz .barres { height: 100%; grid-auto-rows: minmax(0, 1fr); align-items: center; gap: 4px; }
+.viz .barre-l { grid-template-columns: minmax(120px, 34%) minmax(0, 1fr) auto; font-size: 16px; }
+.viz .barre-l .v { white-space: nowrap; min-width: 70px; }
+.viz .barre-l .p { height: 20px; }
+.viz .barre-l .v { font-size: 13.5px; }
+.viz svg { width: 100%; height: 100%; }
+.viz .etapes-obs { align-content: space-evenly; height: 100%; }
+.viz .etapes-obs li { font-size: 17px; }
+.minis { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--trait); border: 1px solid var(--trait); }
+.minis div { background: var(--plan); padding: 12px 18px; }
+.minis b { display: block; font-size: 38px; font-weight: 300; letter-spacing: -.03em; line-height: 1.05; }
+.minis span { font-family: var(--f-mono); font-size: 11.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--doux); }
+.dt-tete { display: flex; justify-content: space-between; align-items: end; gap: 20px; padding-right: 30px; }
+.dt-bloc { display: grid; align-content: start; gap: 12px; min-width: 0; }
+.dt-bloc p { margin: 0; color: var(--doux); font-size: 15px; }
+.dt-bloc p b { color: var(--texte); font-weight: 500; }
+.formule { font-family: var(--f-mono); font-size: 12.5px; background: var(--plan); border: 1px solid var(--trait); padding: 10px 12px; line-height: 1.6; }
+.barres { display: grid; gap: 9px; }
+.barre-l { display: grid; grid-template-columns: 170px minmax(0, 1fr) 84px; gap: 12px; align-items: center; font-size: 14px; }
+.barre-l .k { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.barre-l .p { height: 12px; background: var(--plan-2); }
+.barre-l .p i { display: block; height: 100%; background: var(--trait-fort); }
+.barre-l.fort .p i { background: var(--texte); } .barre-l.ia .p i { background: var(--ia); } .barre-l.perte .p i { background: var(--perte); }
+.barre-l .v { font-family: var(--f-mono); font-size: 12px; text-align: right; color: var(--doux); }
+.barre-l.fort .k, .barre-l.perte .k { font-weight: 500; }
+.badge { font-family: var(--f-mono); font-size: 9.5px; letter-spacing: .1em; color: var(--ia); border: 1px solid var(--ia); padding: 0 5px; margin-left: 6px; vertical-align: 1px; }
+.etapes-obs { margin: 0; padding-left: 0; list-style: none; counter-reset: e; display: grid; gap: 6px; }
+.etapes-obs li { counter-increment: e; font-size: 14px; display: grid; grid-template-columns: 26px minmax(0, 1fr); }
+.etapes-obs li::before { content: counter(e, decimal-leading-zero); font-family: var(--f-mono); font-size: 11px; color: var(--ia); padding-top: 2px; }
+.courbe text { font-family: var(--f-mono); font-size: 10.5px; fill: var(--doux); }
+.legende { display: flex; gap: 16px; font-family: var(--f-mono); font-size: 11px; color: var(--doux); text-transform: uppercase; letter-spacing: .08em; }
+.legende i { display: inline-block; width: 10px; height: 2px; vertical-align: middle; margin-right: 6px; }
+.source-ligne { border-top: 1px solid var(--trait); padding-top: 12px; color: var(--faible); }
+
+/* ---------- Le bureau ---------- */
+.bureau { padding: 14px; }
+.b-grille { position: relative; height: 100%; }
+.b-grille > .scene { position: absolute; inset: 0; }
+.scene { position: relative; overflow: hidden; background: var(--fond); min-height: 0; border: 1px solid var(--trait); }
+.scene canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
+.scene svg.liens { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.scene-tete { position: absolute; left: 22px; top: 18px; pointer-events: none; }
+.scene-tete .t { font-size: 30px; font-weight: 300; letter-spacing: -.02em; margin-top: 6px; }
+.etiquette { position: absolute; pointer-events: none; font-family: var(--f-mono); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--texte); background: rgba(255,255,255,.93); border: 1px solid var(--trait-fort); padding: 5px 9px 6px; white-space: nowrap; line-height: 1.35; }
+.etiquette small { display: block; color: var(--doux); font-size: 10.5px; max-width: 280px; white-space: normal; text-transform: none; letter-spacing: .02em; }
+.etiquette.cliquable { pointer-events: auto; cursor: pointer; }
+.etiquette.cliquable:hover, .etiquette.choisie { border-color: var(--texte); box-shadow: 0 0 0 1px var(--texte); }
+.etiquette.vive { border-color: var(--ia); }
+.etiquette.vive b, .etiquette.vive small { color: var(--ia); }
+.etiquette b { font-weight: 500; }
+.etiquette.eteinte { color: var(--faible); border-color: var(--trait); }
+.etiquette.eteinte small { color: var(--faible); }
+.etiquette.zone { background: none; border: 0; padding: 0; color: var(--ia); }
+.mesures { position: absolute; left: 22px; top: 40px; pointer-events: none; }
+.mesures div { font-family: var(--f-mono); font-size: 11.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--doux); }
+.mesures b { display: inline; font-family: var(--f-mono); font-size: 12px; font-weight: 300; letter-spacing: -.03em; color: var(--texte); text-transform: none; line-height: 1.1; }
+.mesures b.ia { color: var(--ia); }
+.aide { position: absolute; left: 22px; bottom: 16px; pointer-events: none; }
+.b-droite { display: grid; grid-template-rows: minmax(0, 1fr) auto; gap: 16px; min-height: 0; }
+.panneau { position: absolute; right: 14px; top: 14px; bottom: 54px; width: 370px; z-index: 4; box-shadow: 0 16px 40px -24px rgba(10,12,15,.35); border: 1px solid var(--trait); background: var(--plan); padding: 18px 20px; display: grid; align-content: start; gap: 10px; min-height: 0; overflow: auto; }
+.panneau.vide-p { display: none; }
+.ag-runs { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+.ag-runs li { border-top: 1px solid var(--trait); padding: 8px 0; display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 8px; font-size: 13.5px; }
+.ag-runs .t { font-family: var(--f-mono); font-size: 11px; color: var(--doux); padding-top: 2px; }
+.ag-runs .d { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ag-runs small { display: block; color: var(--doux); font-size: 12.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ag-runs .ko small { color: var(--perte); }
+.idle { font-size: 16px; color: var(--doux); }
+.panneau .fermer { position: absolute; right: 12px; top: 10px; background: none; border: 0; font-family: var(--f-mono); font-size: 16px; color: var(--doux); cursor: pointer; padding: 4px 8px; }
+.pn-nom { font-size: 34px; font-weight: 300; letter-spacing: -.03em; line-height: 1; }
+.pn-wf { border-top: 1px solid var(--trait-fort); padding-top: 12px; display: grid; gap: 8px; }
+.pn-wf .nom { font-size: 21px; font-weight: 500; letter-spacing: -.01em; }
+.pn-wf.top { background: var(--fond); border: 1px solid var(--trait-fort); border-left: 2px solid var(--ia); padding: 12px 14px; }
+.reco { justify-self: start; font-family: var(--f-mono); font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--ia); border: 1px solid var(--ia); padding: 1px 6px; }
+.pourquoi { font-size: 13.5px; line-height: 1.4; color: var(--doux); }
+.pourquoi b { color: var(--texte); font-weight: 500; }
+.quoi { display: grid; grid-template-columns: 62px minmax(0, 1fr); gap: 3px 10px; margin: 0; font-size: 13.5px; line-height: 1.35; }
+.quoi dt { font-family: var(--f-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--faible); padding-top: 2px; }
+.quoi dd { margin: 0; }
+.pont { justify-self: start; font-family: var(--f-mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--ia); text-decoration: none; border: 1px solid var(--ia); padding: 8px 12px; }
+.pont:hover { background: var(--ia); color: #fff; }
+.wf-ligne { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 10px; align-items: center; width: 100%; text-align: left; background: var(--fond); border: 1px solid var(--trait); padding: 14px 14px; cursor: pointer; font: inherit; }
+.wf-ligne:hover { border-color: var(--texte); }
+.wf-ligne.top { border-left: 2px solid var(--ia); }
+.wf-ligne .n { font-size: 19px; font-weight: 500; letter-spacing: -.01em; }
+.wf-ligne .f { font-family: var(--f-mono); font-size: 12px; color: var(--doux); white-space: nowrap; }
+.g-carte { margin: 14px 22px 0; border: 1px solid var(--trait); background: var(--plan); padding: 12px 16px; display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+.g-carte .pourquoi { font-size: 15px; }
+.g-pied { display: flex; align-items: center; gap: 16px; border-top: 1px solid var(--trait); padding: 12px 22px; }
+.g-pied .g-detail { border: 0; padding: 0; min-height: 0; flex: 1; }
+.lien-graphe { background: none; border: 0; padding: 0; text-align: left; cursor: pointer; font: inherit; font-size: 21px; font-weight: 500; letter-spacing: -.01em; color: var(--texte); }
+.lien-graphe span { font-family: var(--f-mono); font-size: 13px; color: var(--ia); }
+.lien-graphe:hover { color: var(--ia); }
+.graphe-voile { position: fixed; inset: 0; background: rgba(10,12,15,.28); z-index: 20; display: grid; place-items: center; }
+.graphe { width: 85vw; height: 86vh; background: var(--fond); border: 1px solid var(--trait-fort); box-shadow: 0 30px 80px -30px rgba(10,12,15,.5); display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto; border-radius: 10px; overflow: hidden; }
+.g-tete { display: flex; align-items: center; gap: 16px; padding: 16px 22px; border-bottom: 1px solid var(--trait); }
+.g-tete .t { font-size: 22px; font-weight: 500; letter-spacing: -.01em; }
+.g-tete .btn { margin-left: auto; }
+.g-toile { position: relative; overflow: hidden; margin-top: 14px; background-color: #fafbfc; background-image: radial-gradient(#cfd5dc 1px, transparent 1px); background-size: 18px 18px; }
+.g-toile svg { position: absolute; left: 0; top: 0; pointer-events: none; }
+.noeud { position: absolute; width: 150px; min-height: 92px; background: #fff; border: 1px solid #c9cfd6; border-radius: 10px; box-shadow: 0 2px 6px rgba(10,12,15,.06); padding: 10px 12px; cursor: pointer; display: grid; gap: 4px; align-content: start; font: inherit; text-align: left; }
+.noeud:hover { border-color: var(--texte); }
+.noeud.on { border-color: var(--ia); box-shadow: 0 0 0 2px rgba(10,132,184,.25); }
+.noeud .ic { width: 26px; height: 26px; border-radius: 6px; display: grid; place-items: center; background: var(--plan-2); }
+.noeud .ic svg { position: static; width: 15px; height: 15px; stroke: var(--texte); fill: none; stroke-width: 1.6; }
+.noeud.agent .ic { background: var(--ia); } .noeud.agent .ic svg { stroke: #fff; }
+.noeud.trigger .ic { background: var(--perte); } .noeud.trigger .ic svg { stroke: #fff; }
+.noeud .tt { font-size: 13px; font-weight: 500; line-height: 1.25; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.noeud .st { font-family: var(--f-mono); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--faible); }
+.g-detail { border-top: 1px solid var(--trait); padding: 14px 22px 18px; min-height: 96px; display: grid; gap: 6px; }
+.g-detail .d1 { font-size: 19px; font-weight: 500; }
+.g-detail .d2 { color: var(--doux); font-size: 15px; }
+.pn-wf .fois { font-family: var(--f-mono); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--doux); }
+.btn { justify-self: start; font-family: var(--f-mono); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; background: var(--fond); border: 1px solid var(--texte); color: var(--texte); padding: 8px 14px; cursor: pointer; }
+.btn:hover:not(:disabled) { background: var(--texte); color: var(--fond); }
+.btn.ia { border-color: var(--ia); color: var(--ia); }
+.btn.ia:hover:not(:disabled) { background: var(--ia); color: #fff; }
+.btn:disabled { opacity: .4; cursor: default; }
+.btn:focus-visible { outline: 2px solid var(--ia); outline-offset: 2px; }
+.terminal { list-style: none; margin: 0; padding: 12px 14px; background: var(--fond); border: 1px solid var(--trait); font-family: var(--f-mono); font-size: 12.5px; line-height: 1.6; color: var(--texte); min-height: 40px; }
+.terminal li { white-space: normal; overflow-wrap: anywhere; }
+.terminal li::before { content: "› "; color: var(--ia); }
+.terminal li.ok::before { content: "✓ "; }
+.terminal li.ok { color: var(--ia); }
+.etat { font-size: 17px; font-weight: 400; display: flex; gap: 10px; align-items: center; }
+.etat i { width: 8px; height: 8px; background: var(--ia); display: inline-block; animation: clignote 1.2s infinite; flex: none; }
+.reponse { font-size: 19px; font-weight: 300; letter-spacing: -.01em; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; border-left: 2px solid var(--ia); padding-left: 12px; }
+.journal { position: absolute; left: 0; right: 0; bottom: 0; height: 40px; border-top: 1px solid var(--trait); background: rgba(246,247,248,.97); padding: 0 16px; transition: height .3s ease; overflow: hidden; z-index: 3; }
+.journal.ouvert { height: 35%; }
+.tiroir-tete { display: flex; align-items: center; gap: 14px; width: 100%; height: 40px; background: none; border: 0; padding: 0; cursor: pointer; text-align: left; }
+.tiroir-tete .derniere { color: var(--doux); text-transform: none; letter-spacing: .02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+.tiroir-tete .fleche { color: var(--doux); transition: transform .3s; }
+.journal.ouvert .fleche { transform: rotate(180deg); }
+.journal ul { overflow: auto; height: calc(100% - 44px); }
+.journal ul { list-style: none; margin: 8px 0 0; padding: 0; }
+.journal li { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 10px; padding: 6px 0 6px 8px; border-top: 1px solid var(--trait); border-left: 2px solid transparent; }
+.journal li .t { font-family: var(--f-mono); font-size: 11.5px; color: var(--doux); padding-top: 2px; }
+.journal li .e { font-size: 14.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
+.journal li small { display: block; font-family: var(--f-mono); font-size: 11px; color: var(--faible); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.journal li.neuf { border-left-color: var(--ia); animation: neuf 3s ease-out; }
+.journal li.neuf .e { color: var(--ia); }
+.direct { display: inline-flex; align-items: center; gap: 8px; }
+.direct i { width: 7px; height: 7px; background: var(--ia); display: inline-block; animation: clignote 1.6s infinite; }
+@keyframes clignote { 50% { opacity: .25; } }
+@keyframes neuf { from { background: rgba(10,132,184,.1); } to { background: transparent; } }
+@media (prefers-reduced-motion: reduce) { .direct i, .etat i, .journal li.neuf { animation: none; } }
+.logo-d { width: 26px; height: 24px; flex: none; }
+.logo .mot-logo { font-weight: 700; letter-spacing: -.03em; color: #11172b; }
+.logo .mot-logo b { color: #2f4bff; font-weight: 700; }
+</style>
+</head>
+<body>
+<aside class="side">
+  <div class="logo"><svg class="logo-d" viewBox="0 0 52 48" aria-hidden="true"><rect x="2" y="4" width="11" height="40" rx="3" fill="#2f4bff"/><path d="M19 4h7a20 20 0 0 1 0 40h-7V33h7a9 9 0 0 0 0-18h-7z" fill="#11172b"/></svg><span class="mot-logo">Delo<b>AI</b></span></div>
+  <div class="espace" title="Client workspace"><span class="pastille">AN</span><div><b>Atelier Nova</b><small>Online store · 60 seats</small></div><span class="chev">⌄</span></div>
+  <nav aria-label="Pages">
+    <div class="mono grp">Workspace</div>
+    <button class="nav" data-page="0"><svg viewBox="0 0 16 16"><rect x="2" y="2" width="5" height="5"/><rect x="9" y="2" width="5" height="5"/><rect x="2" y="9" width="5" height="5"/><rect x="9" y="9" width="5" height="5"/></svg>Audit</button>
+    <button class="nav" data-page="1"><svg viewBox="0 0 16 16"><path d="M2 14V6l6-4 6 4v8z"/><path d="M6 14v-4h4v4"/></svg>Office</button>
+  </nav>
+  <div class="profil"><span class="av">YB</span><div><b>Youssef</b><small>DeloAI consultant</small></div></div>
+</aside>
+<header class="barre">
+  <h1 class="titre-app"><b>Atelier Nova</b> — e-commerce company</h1><span class="mono" id="fil">Audit</span>
+</header>
+
+<main class="ecrans">
+  <section class="ecran audit" id="e-audit">
+    <div class="au-tuiles">
+      <div class="tu tuile" data-detail="cout" tabindex="0" role="button"><div class="chiffre">€71.7k</div><p class="phrase">lost every year to tasks people repeat by hand.</p></div>
+      <div class="tu tuile" data-detail="rapport" tabindex="0" role="button"><div class="chiffre perte">790×</div><p class="phrase">the same sales report, pulled every week. Karim alone: 17×.</p></div>
+      <div class="tu tuile" data-detail="gain" tabindex="0" role="button"><div class="chiffre ia">€30.1k</div><p class="phrase">recovered every year by automating 5 workflows.</p></div>
+    </div>
+    <div class="suite" id="suite"></div>
+  </section>
+
+  <section class="ecran bureau" id="e-bureau">
+    <div class="b-grille">
+      <div class="scene" id="scene">
+        <canvas id="c3d" aria-label="Atelier Nova's office in 3D: six clickable employee desks and five agent desks"></canvas>
+        <svg class="liens" id="liens"></svg>
+        <div id="etiquettes"></div>
+        <div class="scene-tete"><div class="mono">The office · Atelier Nova</div></div>
+        <div class="mesures"><div>Live since <b id="m-depuis">—</b> · <b id="m-passages">—</b> runs</div><span id="m-humain" hidden></span></div>
+        <div class="mono aide">Click an employee or a live agent · drag to rotate · scroll to zoom · double-click to reset</div>
+        <i class="coin a"></i><i class="coin b"></i><i class="coin c"></i><i class="coin d"></i>
+      </div>
+      <div class="panneau vide-p" id="panneau"></div>
+      <div class="journal" id="tiroir">
+        <button class="tiroir-tete mono" id="tiroir-tete" aria-expanded="false"><span class="direct"><i></i>Live log</span><span id="derniere" class="derniere"></span><span class="fleche">▴</span></button>
+        <ul id="journal"></ul>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js" } }</script>
+<script src="dashboard-nova/data.js"></script>
+<script type="module">
+const NOM_AGENT = { "rapport-ventes": "Sales report", "prix-produit": "Product price", "commandes-annulees": "Canceled orders", "avis-produit": "Product reviews", "variantes-produit": "Product variants" };
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const nf = n => (n == null || isNaN(n)) ? "—" : Number(n).toLocaleString("en-US");
+const date = v => { if (!v) return null; const d = new Date(v); return isNaN(d) ? null : d; };
+const hm = v => { const d = date(v); return d ? d.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }) : "—"; };
+const hms = v => { const d = date(v); return d ? d.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit" }) : "—"; };
+const duree = s => { if (s == null || isNaN(s)) return "—"; s = Math.round(s); if (s < 60) return s + " s"; if (s < 3600) return Math.floor(s / 60) + " min " + String(s % 60).padStart(2, "0"); return Math.floor(s / 3600) + " h " + String(Math.floor(s % 3600 / 60)).padStart(2, "0"); };
+const masque = v => v == null ? v : String(v).replace(/[\w.+-]+@[\w-]+(\.[\w-]+)+/g, "…");
+const sansAccent = s => String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+const attendre = ms => new Promise(r => setTimeout(r, ms));
+
+/* ---------- Deux écrans ---------- */
+const ETAPES = [{ id: "audit", titre: "Audit" }, { id: "bureau", titre: "Office" }];
+let courant = -1;
+function aller(i, garderHash) {
+  i = Math.max(0, Math.min(ETAPES.length - 1, i));
+  const st = ETAPES[i]; courant = i;
+  ETAPES.forEach((x, j) => document.getElementById("e-" + x.id).classList.toggle("on", j === i));
+  $("#fil").textContent = st.titre;
+  document.querySelectorAll(".nav[data-page]").forEach(b => b.classList.toggle("on", Number(b.dataset.page) === i));
+  if (i !== 0) fermerDetail(true);
+  if (!garderHash) history.replaceState(null, "", "#" + st.id);
+  surEtape(st.id);
+}
+addEventListener("keydown", e => {
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  if (e.target.closest && e.target.closest("button") && (e.key === " " || e.key === "Enter")) return;
+  if (["ArrowRight", " ", "PageDown"].includes(e.key)) { e.preventDefault(); aller(courant + 1); }
+  else if (["ArrowLeft", "PageUp"].includes(e.key)) { e.preventDefault(); aller(courant - 1); }
+  else if (e.key === "Escape") { if ($("#graphe")) fermerGraphe(); else if (detailOuvert) fermerDetail(); else fermerPanneau(); }
+  else if (e.key === "f" || e.key === "F") { if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen?.(); }
+});
+function depuisHash() {
+  const h = decodeURIComponent(location.hash.slice(1));
+  const m = h.match(/^bureau-(.+)$/);
+  if (m) { const [pid, ag] = m[1].split("~"); aller(1, true); ouvrirPersonne(sansAccent(pid)); if (ag) { P.focus = ag; rendrePanneau(); } return; }
+  const cs = h.match(/^cas-(.+)$/);
+  if (cs) { aller(0, true); CAS = cs[1]; setTimeout(() => { rendreSuite(); $("#suite .cas-nom")?.scrollIntoView({ block: "start" }); }, 1200); return; }
+  const gr = h.match(/^graphe-([a-z]+)-(.+)$/);
+  if (gr) { aller(1, true); ouvrirPersonne(gr[1]); setTimeout(() => window.ouvrirGraphe(gr[1], gr[2]), 1500); return; }
+  const g = h.match(/^agent-(.+)$/);
+  if (g) { aller(1, true); AG = g[1]; rendrePanneau(); history.replaceState(null, "", "#agent-" + g[1]); return; }
+  const a = h.match(/^audit-(.+)$/);
+  if (a) { aller(0, true); ouvrirDetail(a[1], false); return; }
+  const i = ETAPES.findIndex(x => x.id === h);
+  aller(i < 0 ? 0 : i);
+}
+addEventListener("hashchange", depuisHash);
+document.querySelectorAll(".nav[data-page]").forEach(b => b.addEventListener("click", () => aller(Number(b.dataset.page))));
+
+/* ---------- Audit : tuiles qui s'ouvrent en panneau de détail (FLIP) ---------- */
+const D = typeof DATA !== "undefined" ? DATA : null;
+const EN_TACHE = { "Rapport ventes": "Sales report", "Commandes annulées": "Canceled orders", "Prix produit": "Product price", "Avis produit": "Product reviews", "Variantes produit": "Product variants", "Filtre annulées": "Canceled-orders filter", "Adresse commande": "Order address", "Rapport commandes": "Orders report", "Recherche avis": "Review search", "Règle prix panier": "Cart price rule" };
+const EN_ECRAN = { "Rapports": "Reports", "Catalogue": "Catalog", "Commandes": "Orders", "Avis": "Reviews", "Clients": "Customers", "Marketing": "Marketing", "Accueil": "Dashboard" };
+const EN_EQUIPE = { "E-commerce": "E-commerce", "Opérations": "Operations" };
+const EN_JOUR = { Lun: "Mon", Mar: "Tue", Mer: "Wed", Jeu: "Thu", Ven: "Fri" };
+const EN_ETAPES_RAPPORT = ["Open a report (Bestsellers, Orders, Tax, Shipping, Coupons, Refunds, Product Views)", "Enter the start and end dates", "Pick the grouping (Day) for some reports", "Click Show Report", "Scroll and read the results"];
+const MODULES = [["Product price", "prix-produit"], ["Sales report", "rapport-ventes"], ["Canceled orders", "commandes-annulees"], ["Product reviews", "avis-produit"], ["Product variants", "variantes-produit"]];
+const eurk = v => "€" + (v / 1000).toFixed(1) + "k";
+const enDuree = s => String(s || "").replace("/ sem.", "/ wk").replace(" sem.", " wk");
+const SOURCE = `<div class="mono source-ligne">Source: screenpipe captures · 6 employees × 10 · WONDERBREAD (Stanford)</div>`;
+function barres(items, fmt) {
+  const max = Math.max(...items.map(x => x.v), 1);
+  return `<div class="barres">${items.map(x => `<div class="barre-l ${x.c || ""}"><span class="k" title="${esc(x.k)}">${x.k}</span><span class="p"><i style="width:${(x.v / max * 100).toFixed(1)}%"></i></span><span class="v">${esc(fmt(x))}</span></div>`).join("")}</div>`;
+}
+function courbe(series, labels) {
+  const W = 560, H = 300, g = 40, b = 26, max = Math.max(...series.flatMap(s => s.v), 1);
+  const X = i => g + i * (W - g - 16) / (labels.length - 1), Y = v => H - b - v / max * (H - b - 26);
+  let out = `<svg class="courbe" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Hours observed per day by team">`;
+  [0, .5, 1].forEach(f => { const y = Y(max * f); out += `<line x1="${g}" x2="${W - 16}" y1="${y}" y2="${y}" stroke="var(--trait)"/><text x="0" y="${y + 4}">${(max * f).toFixed(0)} h</text>`; });
+  labels.forEach((l, i) => out += `<text x="${X(i)}" y="${H - 6}" text-anchor="middle">${esc(l)}</text>`);
+  series.forEach(s => { out += `<polyline fill="none" stroke="${s.c}" stroke-width="2.5" points="${s.v.map((v, i) => `${X(i)},${Y(v)}`).join(" ")}"/>` + s.v.map((v, i) => `<circle cx="${X(i)}" cy="${Y(v)}" r="4" fill="${s.c}"/><text x="${X(i)}" y="${Y(v) - 9}" text-anchor="middle">${v.toFixed(1)}</text>`).join(""); });
+  return out + "</svg>";
+}
+const heuresDe = t => { const m = String(t || "").match(/(\d+)\s*h\s*(\d+)?/); return m ? Number(m[1]) + (Number(m[2] || 0) / 60) : 0; };
+function gabarit({ sur, titre, extra = "", minis, g, d }) {
+  return `<div class="dt-tete"><div><div class="mono">${sur}</div><div class="dt-titre">${titre}</div></div>${extra}</div>
+  <div class="minis">${minis.map(([v, k]) => `<div><b>${v}</b><span>${k}</span></div>`).join("")}</div>
+  <div class="dt-corps">${[g, d].map(([t, html, pied]) => `<div class="dt-bloc"><div class="mono">${t}</div><div class="viz">${html}</div>${pied ? `<p>${pied}</p>` : "<span></span>"}</div>`).join("")}</div>${SOURCE}`;
+}
+function contenuDetail(id) {
+  if (!D) return `<div class="dt-titre">Data unavailable</div><div></div><div></div>${SOURCE}`;
+  const T = D.dash;
+  const taches = T.taches.filter(t => t.cout_an > 0).slice().sort((a, b) => b.cout_an - a.cout_an);
+  const EN_CAT = { "Ressaisie": "Re-keying", "Recherche": "Searching", "Répétition": "Repetition" };
+  if (id === "cout") {
+    const r = taches[0];
+    const cats = {}; taches.forEach(t => cats[t.categorie] = (cats[t.categorie] || 0) + t.cout_an);
+    return gabarit({ sur: "Audit · cost of repetitive tasks", titre: `${eurk(T.cout_an)} <small>/ year</small>`,
+      extra: `<div class="formule">cost = hours / week × 46 weeks × €${nf(T.cout_horaire)}/h<br>${esc(EN_TACHE[r.court] || r.court)}: ${r.heures_semaine} h × 46 × €${nf(T.cout_horaire)} = €${nf(r.cout_an)}</div>`,
+      minis: [[nf(T.heures_semaine) + " h", "lost per week"], [String(T.taches.length), "repetitive tasks"], ["€" + nf(T.cout_horaire), "per hour, loaded cost"]],
+      g: ["Cost per task · top 8 · € / year", barres(taches.slice(0, 8).map((t, i) => ({ k: esc(EN_TACHE[t.court] || t.court), v: t.cout_an, c: i === 0 ? "perte" : "fort" })), x => "€" + nf(x.v))],
+      d: ["Cost by kind of waste · € / year", barres(Object.entries(cats).sort((a, b) => b[1] - a[1]).map(([k, v], i) => ({ k: esc(EN_CAT[k] || k), v, c: i === 0 ? "perte" : "fort" })), x => "€" + nf(x.v))] });
+  }
+  if (id === "heures") {
+    const eq = Object.keys(T.heures_par_jour), coul = ["var(--texte)", "var(--faible)"];
+    const causes = T.goulots.map((g, i) => ({ k: esc({ "Travail refait": "Rework", "Allers-retours": "Back-and-forth", "Passage de relais": "Handoffs" }[g.type] || g.type), v: g.heures_semaine, c: i === 0 ? "perte" : "fort" }));
+    return gabarit({ sur: "Audit · time lost", titre: `${nf(T.heures_semaine)} h <small>/ week lost, whole team</small>`,
+      minis: [[nf(T.heures_semaine) + " h", "lost per week"], [nf(T.heures_observees) + " h", "observed on screen"], [Math.round(T.heures_gagnees_semaine) + " h", "per week we can hand back"]],
+      g: ["Hours observed per day · by team", courbe(eq.map((e, i) => ({ v: T.heures_par_jour[e], c: coul[i] })), T.jours.map(j => j.replace(/^\w+/, m => EN_JOUR[m] || m))),
+        `<span class="legende">${eq.map((e, i) => `<span><i style="background:${coul[i]}"></i>${esc(EN_EQUIPE[e] || e)} · ${nf(Math.round(T.heures_par_jour[e].reduce((a, b) => a + b, 0)))} h</span>`).join("")}</span>`],
+      d: ["Why the time is lost · h / week", barres(causes, x => x.v + " h · " + Math.round(x.v / T.heures_semaine * 100) + " %"), "A task can add up several causes."] });
+  }
+  if (id === "ecran") {
+    const eq = Object.keys(T.minutes_ecran);
+    const tot = T.ecrans.map((e, i) => eq.reduce((a, k) => a + T.minutes_ecran[k][i], 0)), somme = tot.reduce((a, b) => a + b, 0), iC = T.ecrans.indexOf("Catalogue");
+    return gabarit({ sur: "Audit · where the time goes", titre: `${Math.round(tot[iC] / somme * 100)} % <small>of time in one screen · Catalog</small>`,
+      minis: [[(tot[iC] / 60).toFixed(1) + " h", "in the Catalog"], [(somme / 60).toFixed(1) + " h", "observed in total"], [nf(T.bascules), "screen switches / week"]],
+      g: ["Hours per screen · observed week", barres(T.ecrans.map((e, i) => ({ k: esc(EN_ECRAN[e] || e), v: tot[i], c: e === "Catalogue" ? "fort" : "" })).sort((a, b) => b.v - a.v), x => (x.v / 60).toFixed(1) + " h · " + Math.round(x.v / somme * 100) + " %")],
+      d: ["Catalog hours · by team", barres(eq.map(k => ({ k: esc(EN_EQUIPE[k] || k), v: T.minutes_ecran[k][iC], c: "fort" })), x => (x.v / 60).toFixed(1) + " h")] });
+  }
+  if (id === "rapport") {
+    const r = T.taches.find(t => t.court === "Rapport ventes") || taches[0];
+    const qui = SALARIES.map(s => { const w = (PERS[s.id]?.workflows || []).find(w => w.agent === "rapport-ventes"); return { k: esc(s.prenom) + ` <span style="color:var(--faible)">· ${esc(s.role)}</span>`, v: w?.fois || 0, c: w?.fois ? "perte" : "" }; }).sort((a, b) => b.v - a.v);
+    return gabarit({ sur: "Audit · task no. 1", titre: "Sales report", extra: `<a class="pont" href="#bureau-karim">See who does it most → Karim</a>`,
+      minis: [[nf(r.frequence) + "×", "per week, 60 seats"], [r.heures_semaine + " h", "per week"], ["€" + nf(r.cout_an), "per year"]],
+      g: ["Steps observed on screen", `<ol class="etapes-obs">${(r.etapes || []).map((e, i) => `<li>${esc(EN_ETAPES_RAPPORT[i] || e)}</li>`).join("")}</ol>`],
+      d: ["Who does it · times this week", barres(qui, x => x.v ? x.v + "×" : "—"), "Measured on 6 employees, then × 10 for 60 seats."] });
+  }
+  if (id === "gain") {
+    const mods = D.businessCase.modules, total = mods.reduce((a, m) => a + m.gain, 0);
+    const items = mods.map((m, i) => { const [nom, ag] = MODULES[i] || [m.name, ""]; const live = ETAT.agents.some(a => a.id === ag && a.statut === "en service");
+      return { k: esc(nom) + (live ? `<span class="badge">LIVE</span>` : ""), v: m.gain, h: heuresDe(m.recovered), rec: enDuree(m.recovered), delai: enDuree(m.delay), c: live ? "ia" : "" }; });
+    return gabarit({ sur: "Audit · what we get back", titre: `<span class="ia">${eurk(total)}</span> <small>/ year recoverable</small>`,
+      minis: [[String(mods.length), "workflows to automate"], [String(items.filter(x => x.c).length), "already live"], [items.reduce((a, x) => a + x.h, 0).toFixed(1) + " h", "handed back / week"]],
+      g: ["Time handed back · per week · build time", barres(items.map(x => ({ ...x, v: x.h })), x => `${x.rec.replace(" / wk", "")} · ${x.delai}`)],
+      d: ["Annual gain per workflow · € / year", barres(items, x => "€" + nf(x.v))] });
+  }
+  return "";
+}
+let detailOuvert = null, tuileSource = null, detailId = null;
+let CAS = "sophie", EXTRAIT = null;
+fetch("donnees.json").then(r => r.json()).then(d => { EXTRAIT = d.extrait || null; rendreSuite(); }).catch(() => {});
+const actionEn = a => String(a).split(" · ").filter(x => !/^clic « (input|Day) »$/.test(x)).join(" · ").replace(/ dans « input »/g, "").replace(/clic « ([^»]+) »/g, "click “$1”").replace(/saisie « ([^»]+) »/g, "type “$1”").replace(/défilement/g, "scroll");
+function rendreSuite() {
+  const el = $("#suite"); if (!el || !D) return;
+  const T = D.dash;
+  const eq = Object.keys(T.minutes_ecran);
+  const tot = T.ecrans.map((e, i) => eq.reduce((a, k) => a + T.minutes_ecran[k][i], 0)), somme = tot.reduce((a, b) => a + b, 0), iC = T.ecrans.indexOf("Catalogue");
+  const taches = T.taches.filter(t => t.cout_an > 0).slice().sort((a, b) => b.cout_an - a.cout_an);
+  const coul = ["var(--texte)", "var(--faible)"], eqH = Object.keys(T.heures_par_jour);
+  let h = `<div class="mono">More from the audit</div><div class="trio">
+  <div><div class="gros">${nf(T.heures_semaine)} h</div><p class="phrase-s">lost every week across the team. Hours observed per day, by team:</p>${courbe(eqH.map((e, i) => ({ v: T.heures_par_jour[e], c: coul[i] })), T.jours.map(j => j.replace(/^\w+/, m => EN_JOUR[m] || m)))}<span class="legende">${eqH.map((e, i) => `<span><i style="background:${coul[i]}"></i>${esc(EN_EQUIPE[e] || e)}</span>`).join("")}</span></div>
+  <div><div class="gros">${Math.round(tot[iC] / somme * 100)} %</div><p class="phrase-s">of all screen time is spent in one screen: the Catalog.</p>${barres(T.ecrans.map((e, i) => ({ k: esc(EN_ECRAN[e] || e), v: tot[i], c: e === "Catalogue" ? "fort" : "" })).sort((a, b) => b.v - a.v).slice(0, 6), x => Math.round(x.v / somme * 100) + " %")}</div>
+  <div><div class="gros perte">${eurk(taches[0].cout_an)}</div><p class="phrase-s">a year for the sales report alone. The six most expensive tasks:</p>${barres(taches.slice(0, 6).map((t, i) => ({ k: esc(EN_TACHE[t.court] || t.court), v: t.cout_an, c: i === 0 ? "perte" : "fort" })), x => eurk(x.v))}</div></div>`;
+  const p = PERS[CAS], act = p.activite || {};
+  const src = (typeof DONNEES_PERS !== "undefined" ? DONNEES_PERS : {})[CAS] || {};
+  const elle = ["sophie", "lea", "nadia", "emma"].includes(CAS) ? "she" : "he";
+  h += `<div class="mono" style="margin-top:26px">One employee, step by step</div>
+  <div class="puces">${SALARIES.map(s => `<button class="puce ${s.id === CAS ? "on" : ""}" data-cas="${s.id}">${esc(s.prenom)}</button>`).join("")}</div>
+  <div class="cas-nom"><b>${esc(p.prenom)}</b> — ${esc(p.role)}</div>
+  <div class="trio quatre">
+  <div><div class="mono">What we captured</div><div class="minis3"><div><b>${nf(act.minutes ?? src.minutes)}</b><span>minutes</span></div><div><b>${nf(act.captures ?? src.captures)}</b><span>captures</span></div><div><b>${nf(act.moments ?? src.moments)}</b><span>moments</span></div></div>
+    ${act.jours ? `<div class="mono">Minutes per day</div>${barres(act.jours.map(j => ({ k: esc(j.jour), v: j.minutes, c: "fort" })), x => x.v.toFixed(1) + " min")}` : ""}</div>
+  <div><div class="mono">What ${elle} does</div>${act.repartition ? barres(act.repartition.map((r, i) => ({ k: esc(r.nom_en || r.nom), v: r.minutes, c: i === 0 ? "" : "perte" })), x => x.v.toFixed(1) + " min") : ""}
+    ${act.ecrans_top ? `<div class="mono">Top screens</div>${barres(act.ecrans_top.map(e => ({ k: esc(e.ecran), v: e.minutes, c: "fort" })), x => x.v.toFixed(1) + " min")}` : ""}</div>
+  <div><div class="mono">Top repetitive tasks</div>${(() => { const l = (act.repartition || []).filter(r => !/other/i.test(r.nom_en || "")).slice().sort((a, b) => (b.fois || 0) - (a.fois || 0));
+      const src2 = l.length ? l.map(r => ({ nom: r.nom_en || r.nom, fois: r.fois, minutes: r.minutes })) : (p.workflows || []).map(w => ({ nom: w.nom, fois: w.fois, minutes: w.minutes }));
+      const mx = Math.max(1, ...src2.map(r => r.fois || 0));
+      return src2.map((r, i) => `<div class="top-t"><span class="n">${String(i + 1).padStart(2, "0")} · ${esc(r.nom)}</span><span class="v">${nf(r.fois)}× · ${r.minutes != null ? Number(r.minutes).toFixed(1) : "—"} min</span><span class="p"><i style="width:${((r.fois || 0) / mx * 100).toFixed(1)}%"></i></span></div>`).join(""); })()}<p class="phrase-s">Ranked by how often ${elle} repeats them this week.</p></div>
+  <div><div class="mono">What we'll automate</div><p class="phrase-s">From these, we automate:</p>${wfsTries(p).map(w => `<div class="wf-cas"><span class="n">${esc(w.nom)}</span><span class="f">${w.fois != null ? nf(w.fois) + "× / week" : ""}${w.minutes != null ? " · " + nf(w.minutes) + " min" : ""}</span><a class="pont" href="#bureau-${esc(CAS)}~${esc(w.agent)}">Open in the office →</a></div>`).join("") || `<p class="phrase-s">Nothing repeated enough yet.</p>`}</div></div>`;
+  if (CAS === "sophie" && EXTRAIT) {
+    h += `<div class="mono">A real morning, as screenpipe saw it</div><ol class="fil-chrono">${EXTRAIT.map(l => `<li class="${/Show Report/.test(l.action) ? "rep" : ""}"><span class="h">${esc(l.heure)}</span><span class="a">${esc(actionEn(l.action))}</span><span class="w">${esc(l.fenetre)}</span></li>`).join("")}</ol>`;
+  }
+  el.innerHTML = h;
+}
+document.addEventListener("click", e => { const b = e.target.closest && e.target.closest(".puce"); if (b) { CAS = b.dataset.cas; rendreSuite(); } });
+function ouvrirDetail(id, anime = true) {
+  const sec = $("#e-audit"), tuile = sec.querySelector(`.tuile[data-detail="${id}"]`); if (!tuile) return;
+  fermerDetail(true);
+  sec.scrollTop = 0;
+  const r0 = sec.getBoundingClientRect(), r = tuile.getBoundingClientRect();
+  const voile = document.createElement("div"); voile.className = "voile"; voile.addEventListener("click", () => fermerDetail());
+  const d = document.createElement("div"); d.className = "detail"; d.setAttribute("role", "dialog");
+  d.innerHTML = `<button class="fermer" aria-label="Close">×</button><div class="dc">${contenuDetail(id)}</div>`;
+  d.querySelector(".fermer").addEventListener("click", () => fermerDetail());
+  const depart = { left: r.left - r0.left, top: r.top - r0.top, width: r.width, height: r.height };
+  const fin = { left: "28px", top: "22px", width: "calc(100% - 56px)", height: "calc(100% - 44px)" };
+  const pose = o => Object.entries(o).forEach(([k, v]) => d.style[k] = typeof v === "number" ? v + "px" : v);
+  pose(anime ? depart : fin);
+  sec.append(voile, d);
+  detailOuvert = d; detailId = id; tuileSource = { tuile, depart };
+  history.replaceState(null, "", "#audit-" + id);
+  if (anime) { d.getBoundingClientRect(); requestAnimationFrame(() => { pose(fin); voile.classList.add("on"); d.classList.add("ouvert"); }); }
+  else { voile.classList.add("on"); d.classList.add("ouvert"); }
+}
+function fermerDetail(immediat) {
+  const d = detailOuvert; if (!d) return;
+  const voile = d.previousElementSibling; detailOuvert = null;
+  if (courant === 0) history.replaceState(null, "", "#audit");
+  if (immediat) { d.remove(); voile?.remove(); return; }
+  d.classList.remove("ouvert"); voile?.classList.remove("on");
+  Object.entries(tuileSource.depart).forEach(([k, v]) => d.style[k] = v + "px");
+  setTimeout(() => { d.remove(); voile?.remove(); }, 380);
+}
+document.querySelectorAll(".tuile").forEach(t => {
+  t.addEventListener("click", () => ouvrirDetail(t.dataset.detail));
+  t.addEventListener("keydown", e => { if (e.key === "Enter") ouvrirDetail(t.dataset.detail); });
+});
+
+/* ---------- Personnes et leurs workflows ---------- */
+const SALARIES = [
+  { id: "lea", prenom: "Léa", role: "E-commerce lead" }, { id: "karim", prenom: "Karim", role: "Catalog manager" },
+  { id: "sophie", prenom: "Sophie", role: "Sales analyst" }, { id: "nadia", prenom: "Nadia", role: "Customer service" },
+  { id: "julien", prenom: "Julien", role: "Orders & logistics" }, { id: "emma", prenom: "Emma", role: "Marketing & promotions" },
+];
+const REPLI = {
+  sophie: [{ agent: "rapport-ventes", nom: "Sales report", etapes: ["Open Reports › Sales", "Pick the period", "Run the report", "Read the totals and answer"] }],
+  karim: [{ agent: "prix-produit", nom: "Product price", etapes: ["Open Catalog › Products", "Find the product", "Change the price", "Save and check"] }],
+  nadia: [{ agent: "commandes-annulees", nom: "Canceled orders", etapes: ["Open Sales › Orders", "Filter on “canceled”", "Read the orders", "Answer"] }],
+};
+const PERS = Object.fromEntries(SALARIES.map(s => [s.id, { ...s, workflows: REPLI[s.id] || [] }]));
+async function chargerPersonnes() {
+  for (const url of ["../api/personnes", "personnes.json"]) {
+    try {
+      const r = await fetch(url, { cache: "no-store" }); if (!r.ok) continue;
+      const liste = await r.json(); if (!Array.isArray(liste)) continue;
+      liste.forEach(p => { const id = sansAccent(p.id || p.prenom); if (!PERS[id]) return; PERS[id] = { ...PERS[id], ...p, id, role: p.role_en || PERS[id].role, workflows: Array.isArray(p.workflows) ? p.workflows.map(w => ({ ...w, nom: w.nom_en || w.name || w.nom })) : PERS[id].workflows }; });
+      rendrePanneau(); rendreSuite();
+      if (detailOuvert && detailId) { const dc = detailOuvert.querySelector(".dc"); if (dc) dc.innerHTML = contenuDetail(detailId); }
+      return;
+    } catch (_) {}
+  }
+}
+chargerPersonnes();
+
+/* ---------- État des agents (API, ou instantané etat.json rejoué) ---------- */
+const AGENTS_DEFAUT = [
+  { id: "prix-produit", nom: "Product price", statut: "en service" }, { id: "rapport-ventes", nom: "Sales report", statut: "en service" },
+  { id: "commandes-annulees", nom: "Canceled orders", statut: "en service" }, { id: "avis-produit", nom: "Product reviews", statut: "en préparation" },
+  { id: "variantes-produit", nom: "Product variants", statut: "en préparation" },
+];
+// lu par la scène 3D
+const ETAT = { agents: AGENTS_DEFAUT, actif: null, demande: "", choisi: null, lien: null };
+let mode = "serveur", instantane = null, dernierN = null;
+
+function normaliser(e) {
+  const journal = Array.isArray(e.journal) ? e.journal : [];
+  const runs = Array.isArray(e.runs) ? e.runs : [];
+  let agents = Array.isArray(e.agents) && e.agents.length ? e.agents : AGENTS_DEFAUT;
+  const NOM_EN = Object.fromEntries(AGENTS_DEFAUT.map(a => [a.id, a.nom]));
+  agents = agents.map(a => ({ ...a, nom: a.nom_en || NOM_EN[a.id] || a.nom, passages: a.passages ?? runs.filter(r => r.agent === a.id).length }));
+  let enCours = null;
+  if (e.en_cours && typeof e.en_cours === "object") enCours = e.en_cours;
+  else if (e.en_cours === true) { const l = journal[journal.length - 1]; enCours = { agent: e.deploiement?.agent || l?.agent, run: l?.run }; }
+  const dernier = e.dernier || runs[0] || null;
+  const humain = e.humain_s_economise ?? (e.reussis != null && e.duree_humain_s != null ? e.reussis * e.duree_humain_s : null);
+  return { brut: e, journal, runs, agents, enCours, dernier, humain };
+}
+const vus = new Set(); let premier = true;
+function afficher(n) {
+  dernierN = n;
+  const e = n.brut;
+  ETAT.agents = n.agents; ETAT.actif = n.enCours ? n.enCours.agent : null;
+  ETAT.demande = n.enCours ? (n.enCours.demande_en || n.enCours.demande || n.journal.find(l => l.run === n.enCours.run && l.type === "demande")?.demande || "") : "";
+  $("#m-passages").textContent = nf(e.passages ?? n.runs.length);
+  $("#m-humain").textContent = duree(n.humain);
+  $("#m-depuis").textContent = hm(e.deploiement?.depuis);
+  const der = n.journal[n.journal.length - 1];
+  $("#derniere").textContent = der ? `${hms(der.ts)} · ${der.agent || ""} · ${masque(der.etape_en || der.etape || der.detail || "")}${der.detail && der.etape ? " · " + masque(der.detail) : ""}` : "";
+  $("#journal").innerHTML = n.journal.slice(-14).reverse().map(l => {
+    const k = `${l.run}|${l.n}|${l.ts}|${l.type}`; const neuf = !premier && !vus.has(k); vus.add(k);
+    return `<li class="${neuf ? "neuf" : ""}"><span class="t">${hms(l.ts)}</span><span><span class="e">${esc(masque(l.etape_en || l.etape || l.detail))}</span><small>${esc(NOM_AGENT[l.agent] || l.agent || "")}${(l.detail_en || l.detail) && l.etape ? " · " + esc(masque(l.detail_en || (l.type === "demande" && l.demande) || l.detail)) : ""}</small></span></li>`;
+  }).join("") || `<li><span class="t">—</span><span class="e">No action yet</span></li>`;
+  premier = false;
+  suivreRun(n);
+  if (AG) rendrePanneau();
+}
+let minuteur = 0;
+async function rafraichir() {
+  clearTimeout(minuteur);
+  if (mode !== "serveur") return;
+  try {
+    const r = await fetch("../api/etat", { cache: "no-store" }); if (!r.ok) throw 0;
+    const n = normaliser(await r.json()); afficher(n);
+    minuteur = setTimeout(rafraichir, n.enCours || P.phase === "lance" ? 700 : 4000);
+  } catch (_) {
+    try { const r = await fetch("etat.json", { cache: "no-store" }); if (!r.ok) throw 0; instantane = await r.json(); mode = "instantane"; afficher(normaliser(instantane)); }
+    catch (_) { minuteur = setTimeout(rafraichir, 4000); }
+  }
+}
+// rejeu hors ligne : le dernier passage de l'agent se déroule ligne à ligne
+function rejouer(agent) {
+  clearTimeout(minuteur);
+  const base = instantane; if (!base) return;
+  const journal = Array.isArray(base.journal) ? base.journal : [], runs = Array.isArray(base.runs) ? base.runs : [];
+  const cible = runs.find(r => r.agent === agent && (!r.statut || r.statut === "ok")) || runs.find(r => r.agent === agent) || base.dernier;
+  const lignes = journal.filter(l => l.run === cible?.run), avant = journal.filter(l => l.run !== cible?.run);
+  let k = 0;
+  const pas = () => {
+    const fini = k > lignes.length;
+    const e = { ...base, journal: [...avant, ...lignes.slice(0, k)], dernier: fini ? cible : base.dernier, en_cours: fini ? null : { run: cible?.run, agent, demande_fr: cible?.fr } };
+    afficher(normaliser(e));
+    k++; if (!fini) minuteur = setTimeout(pas, 1000);
+  };
+  pas();
+}
+rafraichir();
+
+/* ---------- Le panneau d'une personne ---------- */
+const P = { id: null, wf: null, phase: "liste", ecrites: 0, depuis: 0, run: null, reponse: "" };
+let AG = null;
+function ouvrirAgent(id) {
+  const a = ETAT.agents.find(x => x.id === id); if (!a || a.statut !== "en service") return;
+  Object.assign(P, { id: null, wf: null, phase: "liste" }); ETAT.choisi = null; ETAT.lien = null; AG = id;
+  if (courant === 1) history.replaceState(null, "", "#agent-" + id);
+  rendrePanneau();
+}
+window.ouvrirAgent = ouvrirAgent;
+function rendreAgent(el) {
+  const n = dernierN, a = ETAT.agents.find(x => x.id === AG) || { id: AG, nom: AG };
+  const e = n?.brut || {};
+  const runs = (n?.runs || []).filter(r => r.agent === AG).slice().sort((x, y) => String(y.fini || y.run).localeCompare(String(x.fini || x.run)));
+  const ok = a.reussis ?? runs.filter(r => !r.statut || r.statut === "ok").length;
+  let h = `<button class="fermer" data-act="fermer" aria-label="Close">×</button><div class="mono">Agent · live</div><div class="pn-nom">${esc(a.nom || a.id)}</div>
+  <div class="fois">Live since ${hm(e.deploiement?.depuis)} · ${nf(a.passages ?? runs.length)} runs · ${nf(ok)} succeeded</div>`;
+  if (ETAT.actif === AG) {
+    const run = n.enCours?.run, lignes = n.journal.filter(l => run ? l.run === run : l.agent === AG).slice(-5);
+    h += `<div class="pn-wf"><div class="etat"><i></i>Working now</div><div class="pourquoi"><b>${esc(masque(ETAT.demande) || "Run in progress")}</b></div>${lignes.length ? `<ol class="terminal">${lignes.map(l => `<li>${esc(masque(l.etape_en || l.etape || l.detail))}${l.detail && l.etape ? " · " + esc(masque(l.detail)) : ""}</li>`).join("")}</ol>` : ""}</div>`;
+  } else {
+    let proch = date(e.prochain);
+    if (!proch && e.intervalle_min && n?.dernier?.fini) proch = new Date(date(n.dernier.fini).getTime() + e.intervalle_min * 60000);
+    const min = proch ? Math.max(0, Math.round((proch - Date.now()) / 60000)) : null;
+    h += `<div class="pn-wf"><div class="idle">Idle${min != null ? ` · next scheduled run in ${min} min` : ""}</div></div>`;
+  }
+  h += `<div class="mono">Last runs</div><ul class="ag-runs">${runs.slice(0, 5).map(r => { const ko = /echec|échec/i.test(r.statut || ""); return `<li class="${ko ? "ko" : ""}"><span class="t">${hm(r.fini)}</span><span><span class="d">${esc(masque(r.demande_en || r.demande || r.fr || "—"))}</span><small>${esc(masque(ko ? "Failed: " + (r.erreur || "") : (r.reponse_en || r.reponse || (r.totaux ? `${r.totaux.commandes} orders · ${r.totaux.ventes}` : "Done"))))}</small></span></li>`; }).join("") || `<li><span class="t">—</span><span>No run yet</span></li>`}</ul>`;
+  h += `<button class="btn ia" data-act="lancer-agent" ${ETAT.actif ? "disabled" : ""}>Run it live</button>`;
+  el.className = "panneau"; el.innerHTML = h;
+}
+function ouvrirPersonne(id) {
+  if (!PERS[id]) return;
+  AG = null;
+  Object.assign(P, { id, wf: null, phase: "liste", ecrites: 0, run: null, reponse: "" });
+  ETAT.choisi = id; ETAT.lien = null;
+  if (courant === 1) history.replaceState(null, "", "#bureau-" + id);
+  rendrePanneau();
+}
+function fermerPanneau() {
+  AG = null;
+  Object.assign(P, { id: null, wf: null, phase: "liste" }); ETAT.choisi = null; ETAT.lien = null;
+  if (courant === 1) history.replaceState(null, "", "#bureau");
+  rendrePanneau();
+}
+window.ouvrirPersonne = ouvrirPersonne;
+function rendrePanneau() {
+  const el = $("#panneau");
+  if (AG) return rendreAgent(el);
+  if (!P.id) { el.className = "panneau vide-p"; el.innerHTML = `<div class="mono">Click an employee</div><div style="font-size:22px;font-weight:300;letter-spacing:-.01em">to see what they redo every week, and hand it to an agent.</div>`; return; }
+  const p = PERS[P.id]; el.className = "panneau";
+  let h = `<button class="fermer" data-act="fermer" aria-label="Close">×</button><div class="mono">Employee · ${esc(p.role)}</div><div class="pn-nom">${esc(p.prenom)}</div>`;
+  if (!P.wf) {
+    const liste = wfsTries(p);
+    h += liste.length ? `<div class="mono" style="margin-top:6px">Workflows</div>` + liste.map((w, i) => `<button class="wf-ligne ${i === 0 ? "top" : ""}" data-act="graphe" data-i="${i}"><span class="n">${esc(w.nom)}</span>${i === 0 ? `<span class="reco">Recommended</span>` : ""}<span class="f">${w.fois != null ? nf(w.fois) + "× / week" : ""}</span></button>`).join("")
+      : `<div class="pn-wf"><div class="fois">No repeated workflow spotted yet.</div></div>`;
+  } else {
+    const w = P.wf, etapes = etapesDe(w);
+    h += `<div class="pn-wf"><div class="nom">${esc(w.nom)}</div><div class="fois">${P.phase === "creation" ? "Creating the workflow…" : "Workflow created · " + esc(NOM_AGENT[w.agent] || w.nom)}</div></div>`;
+    h += `<ol class="terminal">${etapes.slice(0, P.ecrites).map(t => `<li>${esc(t)}</li>`).join("")}${P.phase !== "creation" ? `<li class="ok">Handed to the ${esc(NOM_AGENT[w.agent] || w.nom)} agent</li>` : ""}</ol>`;
+    if (P.phase === "pret") h += `<button class="btn ia" data-act="lancer">Run it live</button>`;
+    if (P.phase === "lance") {
+      const lignes = (dernierN?.journal || []).filter(l => P.run ? l.run === P.run : (l.agent === w.agent && (date(l.ts)?.getTime() || 0) >= P.depuis - 2000)).slice(-3);
+      h += `<div class="etat"><i></i>The agent is working in the back-office…</div>`;
+      h += lignes.length ? `<ol class="terminal">${lignes.map(l => `<li>${esc(masque(l.etape_en || l.etape || l.detail))}${(l.detail_en || l.detail) && l.etape ? " · " + esc(masque(l.detail_en || l.detail)) : ""}</li>`).join("")}</ol>` : "";
+    }
+    if (P.phase === "fini") h += `<div class="mono">Agent's answer</div><div class="reponse">${esc(masque(P.reponse) || "Run finished.")}</div>`;
+  }
+  el.innerHTML = h;
+}
+$("#tiroir-tete").addEventListener("click", () => { const t = $("#tiroir"); t.classList.toggle("ouvert"); $("#tiroir-tete").setAttribute("aria-expanded", t.classList.contains("ouvert")); });
+$("#panneau").addEventListener("click", async e => {
+  const b = e.target.closest("[data-act]"); if (!b) return;
+  if (b.dataset.act === "fermer") return fermerPanneau();
+  if (b.dataset.act === "lancer-agent") {
+    b.disabled = true;
+    if (mode === "serveur") { try { await fetch(`../api/lancer?agent=${encodeURIComponent(AG)}&visible=1`, { method: "POST" }); } catch (_) {} setTimeout(rafraichir, 300); }
+    else rejouer(AG);
+    return;
+  }
+  if (b.dataset.act === "creer") {
+    const w = wfsTries(PERS[P.id])[Number(b.dataset.i)]; if (!w) return;
+    creerWorkflow(w);
+  }
+});
+async function creerWorkflow(w) {
+  {
+    Object.assign(P, { wf: w, phase: "creation", ecrites: 0 });
+    ETAT.lien = { personne: P.id, agent: w.agent, t0: performance.now() };
+    rendrePanneau();
+    const n = etapesDe(w).length;
+    for (let k = 1; k <= n; k++) { await attendre(2000 / (n + 1)); if (P.wf !== w) return; P.ecrites = k; rendrePanneau(); }
+    await attendre(300); if (P.wf !== w) return;
+    P.phase = "pret"; rendrePanneau();
+  }
+}
+$("#panneau").addEventListener("click", async e => {
+  const b = e.target.closest("[data-act]"); if (!b) return;
+  if (b.dataset.act === "graphe") { const w = wfsTries(PERS[P.id])[Number(b.dataset.i)]; if (w) ouvrirGraphe(PERS[P.id], w); return; }
+  if (b.dataset.act === "lancer") {
+    const w = P.wf; Object.assign(P, { phase: "lance", depuis: Date.now(), run: null }); rendrePanneau();
+    if (mode === "serveur") {
+      try { await fetch(`../api/lancer?agent=${encodeURIComponent(w.agent)}&visible=1&personne=${encodeURIComponent(P.id)}`, { method: "POST" }); } catch (_) {}
+      setTimeout(rafraichir, 300);
+    } else rejouer(w.agent);
+  }
+});
+// le pourquoi (chiffres de l'audit) et le quoi de chaque workflow
+const TACHE_AGENT = { "rapport-ventes": "Rapport ventes", "commandes-annulees": "Commandes annulées", "prix-produit": "Prix produit", "avis-produit": "Avis produit", "variantes-produit": "Variantes produit" };
+const audit = ag => D?.dash?.taches?.find(t => t.court === TACHE_AGENT[ag]) || null;
+const QUOI = {
+  "rapport-ventes": ["When {p} needs a sales report", "opens Reports, sets the period, runs it, reads the totals", "the figures, ready to send"],
+  "commandes-annulees": ["When {p} has to check canceled orders", "opens Sales › Orders, filters on canceled, reads the orders", "the answer, with the order numbers"],
+  "prix-produit": ["When {p} has to change a product price", "opens the product in the Catalog, changes the price, saves and checks", "the new price, live in the store"],
+};
+const wfsTries = p => { const l = wfsTries0(p); const i = P.focus ? l.findIndex(w => w.agent === P.focus) : -1; if (i > 0) l.unshift(l.splice(i, 1)[0]); return l; };
+const wfsTries0 = p => (p.workflows || []).slice().sort((a, b) => ((audit(b.agent)?.cout_an || 0) - (audit(a.agent)?.cout_an || 0)) || ((b.fois || 0) - (a.fois || 0)));
+// vue du workflow façon n8n (lecture seule)
+const ICONES = { trigger: '<path d="M9 1 3 9h4l-1 6 6-8H8z"/>', etape: '<rect x="2" y="3" width="12" height="10" rx="1.5"/><path d="M2 6h12"/>', agent: '<path d="M8 1v4M8 11v4M1 8h4M11 8h4M3.5 3.5l2.5 2.5M10 10l2.5 2.5M3.5 12.5 6 10M10 6l2.5-2.5"/>', sortie: '<path d="M4 2h6l3 3v9H4z"/><path d="M6 8h5M6 11h5"/>' };
+let grapheNoeuds = [];
+function ouvrirGraphe(p, w) {
+  fermerGraphe();
+  const q = QUOI[w.agent] || ["When " + p.prenom + " needs it", "does the task", "the result"];
+  const etapes = etapesDe(w).slice(0, 7);
+  const preuve = w.fois != null ? `Observed ${nf(w.fois)}× this week on ${p.prenom}'s screen${w.minutes != null ? ` · ${nf(w.minutes)} min` : ""}` : "Observed this week";
+  grapheNoeuds = [
+    { type: "trigger", t: q[0].replace("{p}", p.prenom), st: "Trigger", d: `Starts ${q[0].replace("{p}", p.prenom).replace(/^When/, "when")}.`, d2: preuve },
+    ...etapes.map((e, i) => ({ type: "etape", t: e, st: "Magento · step " + (i + 1), d: e, d2: preuve })),
+    { type: "agent", t: "Claude · DeloAI agent", st: "Agent", d: "Claude does these steps itself, in the store's real back-office, and logs every action.", d2: "Agent: " + (w.agent || "") },
+    { type: "sortie", t: q[2].charAt(0).toUpperCase() + q[2].slice(1), st: "Output", d: "Output: " + q[2] + ".", d2: "Sent back to " + p.prenom + "." },
+  ];
+  const dispo = Math.round(innerWidth * .85) - 4, nN = grapheNoeuds.length, X0 = 24, G = 26;
+  const W = Math.max(96, Math.min(150, Math.floor((dispo - 2 * X0 - (nN - 1) * G) / nN))), Yb = 40, dy = 40;
+  const pos = grapheNoeuds.map((n, i) => ({ x: X0 + i * (W + G), y: Yb + (i % 2 ? dy : 0) }));
+  const largeur = X0 * 2 + nN * W + (nN - 1) * G, hauteur = Yb + dy + 150;
+  let chemins = "";
+  for (let i = 0; i < pos.length - 1; i++) {
+    const a = { x: pos[i].x + W, y: pos[i].y + 46 }, b = { x: pos[i + 1].x, y: pos[i + 1].y + 46 };
+    const d = `M${a.x},${a.y} C${a.x + 30},${a.y} ${b.x - 30},${b.y} ${b.x},${b.y}`;
+    chemins += `<path id="gc${i}" d="${d}" fill="none" stroke="#9aa2ad" stroke-width="1.6"/><circle r="3.2" fill="var(--ia)" opacity="0"><set attributeName="opacity" to="1" begin="${(i * .2).toFixed(1)}s"/><animateMotion dur="1.6s" begin="${(i * .2).toFixed(1)}s" repeatCount="indefinite"><mpath href="#gc${i}"/></animateMotion></circle>`;
+  }
+  const v = document.createElement("div"); v.className = "graphe-voile"; v.id = "graphe";
+  v.innerHTML = `<div class="graphe" role="dialog" aria-label="Workflow">
+    <div class="g-tete"><span class="mono">Workflow</span><span class="t">${esc(w.nom)}</span><span class="mono">${esc(p.prenom)} · ${esc(p.role)}</span><button class="btn" data-g="fermer">Close</button></div>
+    <div class="g-carte"><div class="pourquoi"><b>Found in the audit:</b> ${esc(p.prenom)} ran this ${esc(w.nom.toLowerCase())} ${w.fois != null ? `${nf(w.fois)}× this week` : "this week"}${w.minutes != null ? ` (${nf(w.minutes)} min)` : ""}.${audit(w.agent) ? ` Company-wide: <b>${nf(audit(w.agent).frequence)}× / week, ${eurk(audit(w.agent).cout_an)} / year</b>.` : ""}</div>
+      <dl class="quoi"><dt>Trigger</dt><dd>${esc(q[0].replace("{p}", p.prenom))}</dd><dt>Does</dt><dd>${esc(q[1])}</dd><dt>Output</dt><dd>${esc(q[2])}</dd></dl></div>
+    <div class="g-toile" style="display:grid;place-items:center"><div style="position:relative;width:${largeur}px;height:${hauteur}px"><svg width="${largeur}" height="${hauteur}">${chemins}</svg>
+      ${grapheNoeuds.map((n, i) => `<button class="noeud ${n.type}" data-n="${i}" style="left:${pos[i].x}px;top:${pos[i].y}px;width:${W}px"><span class="ic"><svg viewBox="0 0 16 16">${ICONES[n.type]}</svg></span><span class="tt">${esc(n.t)}</span><span class="st">${esc(n.st)}</span></button>`).join("")}</div></div>
+    <div class="g-pied"><div class="g-detail" id="g-detail"><span class="mono">Click a node to see its detail</span></div><button class="btn ia" data-g="deployer">Deploy workflow</button></div></div>`;
+  v.addEventListener("click", e => {
+    if (e.target === v || e.target.closest("[data-g=fermer]")) return fermerGraphe();
+    if (e.target.closest("[data-g=deployer]")) { fermerGraphe(); creerWorkflow(w); return; }
+    const nd = e.target.closest(".noeud"); if (!nd) return;
+    v.querySelectorAll(".noeud").forEach(x => x.classList.toggle("on", x === nd));
+    const n = grapheNoeuds[Number(nd.dataset.n)];
+    $("#g-detail").innerHTML = `<span class="mono">${esc(n.st)}</span><span class="d1">${esc(n.d)}</span><span class="d2">${esc(n.d2)}</span>`;
+  });
+  document.body.appendChild(v);
+}
+function fermerGraphe() { $("#graphe")?.remove(); }
+window.ouvrirGraphe = (id, agent) => { const p = PERS[id]; const w = p && (p.workflows || []).find(x => x.agent === agent); if (w) ouvrirGraphe(p, w); };
+const etapesDe = w => (w.etapes_en && w.etapes_en.length ? w.etapes_en : w.etapes && w.etapes.length ? w.etapes : ["Open the back-office", "Do the task", "Answer"]);
+let vuEnCours = false;
+function suivreRun(n) {
+  if (P.phase !== "lance" || !P.wf) return;
+  const w = P.wf;
+  if (n.enCours && n.enCours.agent === w.agent) { P.run = n.enCours.run || P.run; vuEnCours = true; }
+  const d = n.dernier;
+  const fini = d && d.agent === w.agent && (P.run ? d.run === P.run : vuEnCours) && !n.enCours;
+  if (fini) { P.phase = "fini"; vuEnCours = false; P.reponse = /echec|échec/i.test(d.statut || "") ? "The run failed: " + (d.erreur || "") : (d.reponse_en || d.reponse || n.agents.find(a => a.id === w.agent)?.derniere_reponse || (d.totaux ? `${d.totaux.commandes} orders · ${d.totaux.ventes}` : "")); }
+  rendrePanneau();
+}
+
+/* ---------- Scène 3D ---------- */
+let sceneLancee = false, visible = false, relance = null;
+function surEtape(id) {
+  visible = id === "bureau";
+  if (visible && !sceneLancee) { sceneLancee = true; lancerScene().catch(err => console.warn("scène 3D indisponible", err)); }
+  if (visible && relance) relance();
+}
+rendrePanneau();
+depuisHash();
+
+async function lancerScene() {
+  const THREE = await import("three");
+  let OrbitControls = null;
+  try { ({ OrbitControls } = await import("https://cdn.jsdelivr.net/npm/three@0.164.1/examples/jsm/controls/OrbitControls.js")); } catch (_) {}
+  const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  const reduit = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const canvas = $("#c3d"), zoneScene = $("#scene");
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+  renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  const scene = new THREE.Scene(); scene.background = new THREE.Color(css("--fond"));
+  const cam = new THREE.OrthographicCamera(-1, 1, 1, -1, .1, 200);
+  const CIBLE = new THREE.Vector3(1.2, 0, -3.4);
+  cam.position.set(22 + CIBLE.x, 20, 22 + CIBLE.z); cam.lookAt(CIBLE);
+  let controles = null;
+  if (OrbitControls) {
+    controles = new OrbitControls(cam, canvas);
+    controles.target.copy(CIBLE); controles.enablePan = false; controles.enableDamping = true; controles.dampingFactor = .08;
+    controles.minZoom = .7; controles.maxZoom = 2.6;
+    const polaire = Math.acos((cam.position.y - CIBLE.y) / cam.position.distanceTo(CIBLE));
+    controles.minPolarAngle = controles.maxPolarAngle = polaire;
+    controles.update(); controles.saveState();
+    canvas.addEventListener("dblclick", () => { controles.reset(); });
+  }
+  scene.add(new THREE.HemisphereLight(0xffffff, 0xc9ced5, 2.1));
+  const soleil = new THREE.DirectionalLight(0xffffff, 1.1); soleil.position.set(-6, 18, 10); soleil.castShadow = true;
+  soleil.shadow.mapSize.set(2048, 2048); Object.assign(soleil.shadow.camera, { left: -16, right: 16, top: 16, bottom: -16 }); scene.add(soleil);
+  const IA = 0x0a84b8;
+  const mat = c => new THREE.MeshStandardMaterial({ color: c, roughness: .92, metalness: .05 });
+  const aretes = (mesh, op = .35, c = 0x7c848e) => { const l = new THREE.LineSegments(new THREE.EdgesGeometry(mesh.geometry), new THREE.LineBasicMaterial({ color: c, transparent: true, opacity: Math.min(1, op * 1.6) })); mesh.add(l); return mesh; };
+  const ajoute = (geo, couleur, x, y, z, op) => { const m = aretes(new THREE.Mesh(geo, mat(couleur)), op); m.position.set(x, y, z); m.castShadow = m.receiveShadow = true; scene.add(m); return m; };
+
+  ajoute(new THREE.BoxGeometry(22, .3, 15), 0xf1f3f5, 0, -.15, 0, .5);
+  const grille = new THREE.GridHelper(22, 44, 0xd9dde3, 0xe6e9ec); grille.position.y = .01; grille.scale.z = 15 / 22; scene.add(grille);
+  ajoute(new THREE.BoxGeometry(22, 2.2, .12), 0xe9ecef, 0, 1.1, -7.5, .4);
+  ajoute(new THREE.BoxGeometry(.12, 2.2, 15), 0xe9ecef, -11, 1.1, 0, .4);
+  const ZA = { x0: 1.4, x1: 10.8, z0: -4.4, z1: 6.6 };
+  const plaque = new THREE.Mesh(new THREE.PlaneGeometry(ZA.x1 - ZA.x0, ZA.z1 - ZA.z0), new THREE.MeshBasicMaterial({ color: IA, transparent: true, opacity: .06 }));
+  plaque.rotation.x = -Math.PI / 2; plaque.position.set((ZA.x0 + ZA.x1) / 2, .02, (ZA.z0 + ZA.z1) / 2); scene.add(plaque);
+  scene.add(new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints([[ZA.x0, ZA.z0], [ZA.x1, ZA.z0], [ZA.x1, ZA.z1], [ZA.x0, ZA.z1]].map(([x, z]) => new THREE.Vector3(x, .03, z))), new THREE.LineBasicMaterial({ color: IA, transparent: true, opacity: .45 })));
+
+  function poste(x, z, agent) {
+    const g = new THREE.Group(); g.position.set(x, 0, z); scene.add(g);
+    const plateau = mat(agent ? 0xcfd6de : 0xdde1e6);
+    const b = aretes(new THREE.Mesh(new THREE.BoxGeometry(2.5, .1, 1.3), plateau)); b.position.y = .86; b.castShadow = b.receiveShadow = true; g.add(b);
+    [[-1.1, -.5], [1.1, -.5], [-1.1, .5], [1.1, .5]].forEach(([a, c]) => { const l = new THREE.Mesh(new THREE.BoxGeometry(.06, .86, .06), mat(0xa7afb9)); l.position.set(a, .43, c); g.add(l); });
+    const em = new THREE.MeshStandardMaterial({ color: 0x3a414c, emissive: 0x000000, emissiveIntensity: 1.4, roughness: .3 });
+    const ecran = aretes(new THREE.Mesh(new THREE.BoxGeometry(1.3, .78, .05), em), .5); ecran.position.set(0, 1.38, -.42); ecran.castShadow = true; g.add(ecran);
+    const lueur = new THREE.PointLight(IA, 0, 4, 1.6); lueur.position.set(0, 1.4, 0); g.add(lueur);
+    let corps = null, tete;
+    if (agent) {
+      tete = aretes(new THREE.Mesh(new THREE.OctahedronGeometry(.3, 0), new THREE.MeshStandardMaterial({ color: 0xb7bec7, emissive: 0x000000, emissiveIntensity: 1.4, roughness: .5 })), .6);
+      tete.position.set(0, 1.35, .9); tete.castShadow = true; g.add(tete);
+    } else {
+      corps = aretes(new THREE.Mesh(new THREE.CapsuleGeometry(.24, .48, 6, 14), mat(0xb7bec7)), .35); corps.position.set(0, .86, .9); corps.castShadow = true; g.add(corps);
+      tete = aretes(new THREE.Mesh(new THREE.SphereGeometry(.21, 20, 14), mat(0xc9ced5)), .3); tete.position.set(0, 1.45, .9); tete.castShadow = true; g.add(tete);
+    }
+    return { g, em, plateau, lueur, corps, tete, ancre: new THREE.Vector3(x, 2.05, z - .42), sortie: new THREE.Vector3(x, 1.9, z - .42) };
+  }
+  const posSal = [[-8.6, -3.4], [-5.4, -3.4], [-2.2, -3.4], [-8.6, 1.6], [-5.4, 1.6], [-2.2, 1.6]];
+  const salaries = posSal.map(([x, z], k) => { const p = poste(x, z, false); p.g.userData.personne = SALARIES[k].id; return p; });
+
+  const SV = new THREE.Vector3(-9.4, 0, -6.4);
+  ajoute(new THREE.BoxGeometry(2.4, 2.9, 1), 0xe2e6ea, SV.x, 1.45, SV.z, .55);
+  const voyants = [];
+  for (let k = 0; k < 6; k++) { const v = new THREE.Mesh(new THREE.BoxGeometry(1.8, .06, .02), new THREE.MeshBasicMaterial({ color: 0xaab2bc })); v.position.set(SV.x, .45 + k * .4, SV.z + .51); scene.add(v); voyants.push(v); }
+  const entreeSV = new THREE.Vector3(SV.x, 3.0, SV.z);
+  const anneau = new THREE.Mesh(new THREE.RingGeometry(1.7, 1.77, 64), new THREE.MeshBasicMaterial({ color: 0x5b636e, transparent: true, opacity: .12, side: THREE.DoubleSide }));
+  anneau.rotation.x = -Math.PI / 2; anneau.position.set(SV.x, .03, SV.z); scene.add(anneau);
+
+  const posAg = [[3.3, 3.6], [6.3, 3.6], [9.3, 3.6], [4.8, -1.4], [7.8, -1.4]];
+  const agents = posAg.map(([x, z]) => {
+    const p = poste(x, z, true);
+    const courbe = new THREE.QuadraticBezierCurve3(p.sortie.clone(), new THREE.Vector3((x + SV.x) / 2, 6.2, (z + SV.z) / 2), entreeSV);
+    const trace = new THREE.Line(new THREE.BufferGeometry().setFromPoints(courbe.getPoints(60)), new THREE.LineDashedMaterial({ color: IA, dashSize: .2, gapSize: .14, transparent: true, opacity: 0 }));
+    trace.computeLineDistances(); scene.add(trace);
+    const pulses = Array.from({ length: 3 }, (_, k) => { const m = new THREE.Mesh(new THREE.SphereGeometry(.11, 12, 8), new THREE.MeshBasicMaterial({ color: IA })); m.visible = false; scene.add(m); return { m, p: k / 3 }; });
+    return { ...p, courbe, trace, pulses, niveau: 0 };
+  });
+  // trait cyan salarié → agent, tracé à la création du workflow
+  const N_LIEN = 80;
+  const lienGeo = new THREE.BufferGeometry().setFromPoints(Array.from({ length: N_LIEN }, () => new THREE.Vector3()));
+  const lien = new THREE.Line(lienGeo, new THREE.LineBasicMaterial({ color: IA, transparent: true, opacity: .95 })); lien.visible = false; scene.add(lien);
+  const lienPulse = new THREE.Mesh(new THREE.SphereGeometry(.13, 12, 8), new THREE.MeshBasicMaterial({ color: IA })); lienPulse.visible = false; scene.add(lienPulse);
+  let lienCle = null, lienCourbe = null;
+  const balayage = new THREE.Mesh(new THREE.RingGeometry(0, 6.2, 64, 1, 0, .5), new THREE.MeshBasicMaterial({ color: IA, transparent: true, opacity: .05, side: THREE.DoubleSide }));
+  balayage.rotation.x = -Math.PI / 2; balayage.position.set((ZA.x0 + ZA.x1) / 2, .025, (ZA.z0 + ZA.z1) / 2); scene.add(balayage);
+
+  // étiquettes reliées
+  const boite = $("#etiquettes"), svg = $("#liens");
+  const mk = (ancre, dx, dy, opt = {}) => {
+    const d = document.createElement("div"); d.className = "etiquette" + (opt.zone ? " zone" : ""); boite.appendChild(d);
+    let l = null, p = null;
+    if (!opt.zone) { l = document.createElementNS("http://www.w3.org/2000/svg", "polyline"); l.setAttribute("fill", "none"); l.setAttribute("stroke-width", "1"); svg.appendChild(l);
+      p = document.createElementNS("http://www.w3.org/2000/svg", "circle"); p.setAttribute("r", "2.4"); svg.appendChild(p); }
+    return { ancre, dx, dy, d, l, p, ...opt };
+  };
+  const decal = [[-70, 26], [20, -96], [40, -40], [-50, 40], [-30, 100], [30, 50]];
+  const etSal = salaries.map((s, k) => { const e = mk(s.ancre, decal[k][0], decal[k][1], { html: `${esc(SALARIES[k].prenom)} · ${esc(SALARIES[k].role)}`, personne: SALARIES[k].id }); e.d.classList.add("cliquable"); e.d.addEventListener("click", () => ouvrirPersonne(SALARIES[k].id)); return e; });
+  const decalAg = [[-80, 50], [-20, 88], [60, 60], [100, 0], [100, 60]];
+  const etAg = agents.map((a, k) => { const e = mk(a.ancre, decalAg[k][0], decalAg[k][1]); e.d.addEventListener("click", () => { if (a.liste && a.liste.statut === "en service") ouvrirAgent(a.liste.id); }); return e; });
+  const etSv = mk(new THREE.Vector3(SV.x, 2.9, SV.z), -40, -16, { html: `Store · Magento<small>the real back-office</small>` });
+  const zIA = mk(new THREE.Vector3(ZA.x1, 0, ZA.z1), -40, 14, { zone: true, html: "Deployed agents" });
+  const toutes = [...etSal, ...etAg, etSv, zIA];
+
+  // clic sur un poste de salarié
+  const ray = new THREE.Raycaster(), souris = new THREE.Vector2();
+  const personneSous = ev => {
+    const r = canvas.getBoundingClientRect();
+    souris.set((ev.clientX - r.left) / r.width * 2 - 1, -((ev.clientY - r.top) / r.height) * 2 + 1);
+    ray.setFromCamera(souris, cam);
+    const hit = ray.intersectObjects(salaries.map(s => s.g), true)[0];
+    let o = hit?.object; while (o && !o.userData.personne) o = o.parent;
+    return o?.userData.personne || null;
+  };
+  const agentSous = ev => {
+    const r = canvas.getBoundingClientRect();
+    souris.set((ev.clientX - r.left) / r.width * 2 - 1, -((ev.clientY - r.top) / r.height) * 2 + 1);
+    ray.setFromCamera(souris, cam);
+    const hit = ray.intersectObjects(agents.map(a => a.g), true)[0];
+    if (!hit) return null;
+    const a = agents.find(a => { let o = hit.object; while (o) { if (o === a.g) return true; o = o.parent; } return false; });
+    return a && a.liste && a.liste.statut === "en service" ? a.liste.id : null;
+  };
+  let appui = null;
+  canvas.addEventListener("pointerdown", ev => { appui = [ev.clientX, ev.clientY]; });
+  canvas.addEventListener("click", ev => {
+    if (appui && Math.hypot(ev.clientX - appui[0], ev.clientY - appui[1]) > 5) return;
+    const id = personneSous(ev); if (id) return ouvrirPersonne(id);
+    const ag = agentSous(ev); if (ag) ouvrirAgent(ag);
+  });
+  canvas.addEventListener("mousemove", ev => { canvas.style.cursor = personneSous(ev) || agentSous(ev) ? "pointer" : "grab"; });
+
+  let largeur = 0, hauteur = 0, prec = null, flash = 0;
+  const coupe = (s, n) => s && s.length > n ? s.slice(0, n - 1) + "…" : s;
+  function rendu(t) {
+    const r = zoneScene.getBoundingClientRect();
+    if (!r.width) { prec = null; tourne = false; return; }
+    if (r.width !== largeur || r.height !== hauteur) { largeur = r.width; hauteur = r.height; renderer.setSize(r.width, r.height, false);
+      const a = r.width / r.height, v = Math.max(9.2, 14.6 / a); cam.left = -v * a; cam.right = v * a; cam.top = v; cam.bottom = -v; cam.updateProjectionMatrix(); }
+    const dt = prec === null ? 0 : Math.min(.05, (t - prec) / 1000); prec = t;
+    const liste = ETAT.agents.slice().sort((a, b) => (b.statut === "en service") - (a.statut === "en service")).slice(0, 5);
+    const lienAgent = ETAT.lien?.agent;
+    let arrive = false;
+    agents.forEach((a, k) => {
+      const ag = liste[k]; const on = ag && ag.statut === "en service"; const actif = ag && ag.id === ETAT.actif;
+      const allume = actif || (ag && ag.id === lienAgent && ETAT.lien && performance.now() - ETAT.lien.t0 > 1200);
+      a.niveau += ((allume ? 1 : 0) - a.niveau) * Math.min(1, dt * 4);
+      a.em.emissive.copy(new THREE.Color(0x000000).lerp(new THREE.Color(0x22b8f0), a.niveau)); a.em.color.setHex(on || allume ? 0x3a414c : 0x8a929c);
+      a.lueur.intensity = a.niveau * 10;
+      a.tete.material.emissive.copy(new THREE.Color(0x000000).lerp(new THREE.Color(IA), Math.max(a.niveau, on && !reduit ? .25 + .25 * Math.sin(t / 450 + k) : on ? .3 : 0))); a.tete.material.color.setHex(on ? 0x9fc3d3 : 0xd5dae0);
+      a.tete.rotation.y += dt * (actif ? 2.4 : on ? .5 : 0);
+      a.tete.position.y = 1.35 + (on ? Math.sin(t / 700 + k) * .05 : -.15);
+      a.trace.material.opacity = actif ? .7 : Math.max(0, a.trace.material.opacity - dt);
+      a.pulses.forEach(p => { p.m.visible = actif && !reduit; if (!p.m.visible) return; const av = p.p; p.p = (p.p + dt * .7) % 1; if (p.p < av) arrive = true; p.m.position.copy(a.courbe.getPoint(p.p)); });
+      a.liste = ag;
+    });
+    // lien salarié → agent
+    if (ETAT.lien) {
+      const s = salaries[SALARIES.findIndex(x => x.id === ETAT.lien.personne)], k = agents.findIndex(a => a.liste?.id === ETAT.lien.agent);
+      if (s && k >= 0) {
+        const cle = ETAT.lien.personne + ETAT.lien.agent + ETAT.lien.t0;
+        if (cle !== lienCle) { lienCle = cle; const a = agents[k]; lienCourbe = new THREE.QuadraticBezierCurve3(s.sortie.clone(), new THREE.Vector3((s.sortie.x + a.sortie.x) / 2, 5.5, (s.sortie.z + a.sortie.z) / 2), a.sortie.clone()); lienGeo.setFromPoints(lienCourbe.getPoints(N_LIEN - 1)); }
+        const q = Math.min(1, (performance.now() - ETAT.lien.t0) / 1300);
+        lien.visible = true; lienGeo.setDrawRange(0, Math.max(2, Math.round(q * N_LIEN)));
+        lienPulse.visible = !reduit; lienPulse.position.copy(lienCourbe.getPoint(q < 1 ? q : (t / 1600) % 1));
+      }
+    } else { lien.visible = false; lienPulse.visible = false; lienCle = null; }
+    salaries.forEach((s, k) => s.plateau.color.setHex(SALARIES[k].id === ETAT.choisi ? 0xb9c1ca : 0xdde1e6));
+    if (arrive) flash = 1;
+    flash = Math.max(0, flash - dt * 1.2);
+    anneau.material.opacity = .12 + flash * .6; anneau.scale.setScalar(1 + flash * .12);
+    voyants.forEach((v, k) => v.material.color.setHex(ETAT.actif && Math.sin(t / 120 + k * 1.7) > .2 ? IA : 0xaab2bc));
+    balayage.rotation.z = reduit ? 0 : -t / 2600;
+    if (controles) controles.update();
+    renderer.render(scene, cam);
+    const W = r.width, H = r.height;
+    toutes.forEach(e => {
+      const v = e.ancre.clone().project(cam), x = (v.x + 1) / 2 * W, y = (1 - v.y) / 2 * H;
+      let html = e.html, vive = false, eteinte = false;
+      const k = etAg.indexOf(e);
+      if (k >= 0) {
+        const ag = agents[k].liste;
+        if (!ag) { html = "Free desk"; eteinte = true; }
+        else if (ag.id === ETAT.actif) { vive = true; html = `<b>Agent · ${esc(ag.nom || ag.id)}</b> · working<small>${esc(coupe(masque(ETAT.demande), 70) || "run in progress…")}</small>`; }
+        else if (ag.id === lienAgent) { vive = true; html = `<b>Agent · ${esc(ag.nom || ag.id)}</b><small>new workflow received</small>`; }
+        else if (ag.statut === "en service") html = `Agent · ${esc(ag.nom || ag.id)}<small>live · ${nf(ag.passages ?? 0)} runs</small>`;
+        else { html = `Agent · ${esc(ag.nom || ag.id)}<small>coming soon</small>`; eteinte = true; }
+      }
+      if (e.d.innerHTML !== html) e.d.innerHTML = html;
+      e.d.classList.toggle("vive", vive); e.d.classList.toggle("eteinte", eteinte);
+      if (k >= 0) e.d.classList.toggle("cliquable", !!(agents[k].liste && agents[k].liste.statut === "en service"));
+      if (e.personne) e.d.classList.toggle("choisie", e.personne === ETAT.choisi);
+      const w = e.d.offsetWidth, h = e.d.offsetHeight;
+      if (e.zone) { e.d.style.left = Math.min(Math.max(8, x + e.dx - (e.dx < 0 ? w : 0)), W - w - 8) + "px"; e.d.style.top = Math.min(Math.max(8, y + e.dy), H - h - 8) + "px"; return; }
+      const lx = x + e.dx, ly = y + e.dy;
+      const gx = Math.min(Math.max(8, lx - (e.dx < 0 ? w : 0)), W - w - 8), gy = Math.min(Math.max(8, e.dy < 0 ? ly - h : ly), H - h - 8);
+      e.d.style.left = gx + "px"; e.d.style.top = gy + "px";
+      const bx = e.dx < 0 ? gx + w : gx, by = e.dy < 0 ? gy + h : gy;
+      const choisie = e.personne && e.personne === ETAT.choisi;
+      const trait = vive ? css("--ia") : choisie ? css("--texte") : eteinte ? css("--trait") : css("--trait-fort");
+      e.l.setAttribute("points", `${x},${y} ${x + e.dx * .5},${by} ${bx},${by}`); e.l.setAttribute("stroke", trait);
+      e.p.setAttribute("cx", x); e.p.setAttribute("cy", y); e.p.setAttribute("fill", vive ? css("--ia") : css("--doux"));
+    });
+    if (visible) requestAnimationFrame(rendu); else { prec = null; tourne = false; }
+  }
+  let tourne = false;
+  relance = () => { if (!tourne) { tourne = true; requestAnimationFrame(rendu); } };
+  relance();
+}
+</script>
+</body>
+</html>

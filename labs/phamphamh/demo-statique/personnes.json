@@ -1,0 +1,907 @@
+[
+ {
+  "id": "lea",
+  "prenom": "Léa",
+  "role": "Responsable e-commerce",
+  "role_en": "E-commerce manager",
+  "workflows": [
+   {
+    "agent": "rapport-ventes",
+    "nom": "Rapport de ventes",
+    "nom_en": "Sales report",
+    "fois": 9,
+    "minutes": 5.8,
+    "etapes": [
+     "Ouvrir un rapport (Bestsellers, Orders ou Order Count) dans le menu Reports",
+     "Saisir les dates de début et de fin de la période et choisir la granularité (jour)",
+     "Pour le rapport Orders, choisir un statut de commande (ex. Payment Review)",
+     "Lancer le rapport (Show Report ou Refresh)",
+     "Faire défiler les résultats pour les lire",
+     "Relancer avec une autre période ou un autre rapport selon le résultat"
+    ],
+    "etapes_en": [
+     "Open a report (Bestsellers, Orders or Order Count) in the Reports menu",
+     "Enter the start and end dates and pick the granularity (day)",
+     "For the Orders report, pick an order status (e.g. Payment Review)",
+     "Run the report (Show Report or Refresh)",
+     "Scroll through the results to read them",
+     "Run it again with another period or report if needed"
+    ],
+    "demande": {
+     "en": "Create a best sellers report from 05/01/2022 to 05/31/2023",
+     "fr": "Rapport des meilleures ventes du 01/05/2022 au 31/05/2023",
+     "sienne": true
+    }
+   },
+   {
+    "agent": "commandes-annulees",
+    "nom": "Commandes annulées",
+    "nom_en": "Cancelled orders",
+    "fois": 8,
+    "minutes": 12.5,
+    "etapes": [
+     "Ouvrir Sales > Orders",
+     "Ouvrir Filters et sélectionner le statut Canceled",
+     "Appliquer les filtres",
+     "Trier par Purchase Date",
+     "Parcourir la liste des commandes annulées (défilement)",
+     "Ouvrir le détail d'une commande ou passer à la fiche client"
+    ],
+    "etapes_en": [
+     "Open Sales > Orders",
+     "Open Filters and select the Canceled status",
+     "Apply the filters",
+     "Sort by Purchase Date",
+     "Browse the list of cancelled orders (scrolling)",
+     "Open an order's details or go to the customer page"
+    ],
+    "demande": {
+     "en": "Get the customer name of the most recent cancelled order",
+     "fr": "Quel client a passé la commande annulée la plus récente ?",
+     "sienne": true
+    }
+   },
+   {
+    "agent": "prix-produit",
+    "nom": "Prix produit",
+    "nom_en": "Product pricing",
+    "fois": 6,
+    "minutes": 12.4,
+    "etapes": [
+     "Ouvrir le catalogue Produits et chercher le produit par mot-clé",
+     "Choisir la variante à modifier dans la liste de résultats (taille/couleur)",
+     "Saisir la nouvelle valeur (prix ou quantité) dans le champ de la fiche",
+     "Enregistrer la fiche",
+     "Revenir à la liste et répéter pour chaque variante avec la même valeur",
+     "Vérifier que toutes les variantes sont enregistrées"
+    ],
+    "etapes_en": [
+     "Open the Products catalog and search the product by keyword",
+     "Pick the variant to change in the results (size/color)",
+     "Type the new value (price or quantity) in the product form",
+     "Save the product",
+     "Go back to the list and repeat for each variant",
+     "Check that every variant is saved"
+    ],
+    "demande": {
+     "en": "Reduce the price of yellow shirts from Gwyn Endurance in all size below L by 15%",
+     "fr": "Baisser de 15 % le prix des t-shirts jaunes Gwyn Endurance, toutes tailles sous le L",
+     "sienne": true
+    }
+   }
+  ],
+  "activite": {
+   "minutes": 74.9,
+   "captures": 1094,
+   "moments": 272,
+   "jours": [
+    {
+     "jour": "Mon",
+     "minutes": 5.0
+    },
+    {
+     "jour": "Tue",
+     "minutes": 23.1
+    },
+    {
+     "jour": "Wed",
+     "minutes": 14.7
+    },
+    {
+     "jour": "Thu",
+     "minutes": 13.4
+    },
+    {
+     "jour": "Fri",
+     "minutes": 18.6
+    }
+   ],
+   "repartition": [
+    {
+     "nom_en": "Other back-office work",
+     "minutes": 44.1,
+     "fois": 73
+    },
+    {
+     "nom_en": "Cancelled orders",
+     "minutes": 12.5,
+     "fois": 8
+    },
+    {
+     "nom_en": "Product price",
+     "minutes": 12.4,
+     "fois": 6
+    },
+    {
+     "nom_en": "Sales report",
+     "minutes": 5.8,
+     "fois": 9
+    }
+   ],
+   "ecrans_top": [
+    {
+     "ecran": "Catalog",
+     "minutes": 33.2
+    },
+    {
+     "ecran": "Orders",
+     "minutes": 15.3
+    },
+    {
+     "ecran": "Reports",
+     "minutes": 10.8
+    },
+    {
+     "ecran": "Dashboard",
+     "minutes": 6.4
+    }
+   ]
+  }
+ },
+ {
+  "id": "karim",
+  "prenom": "Karim",
+  "role": "Gestionnaire catalogue",
+  "role_en": "Catalog manager",
+  "workflows": [
+   {
+    "agent": "rapport-ventes",
+    "nom": "Rapport de ventes",
+    "nom_en": "Sales report",
+    "fois": 17,
+    "minutes": 6.4,
+    "etapes": [
+     "Ouvrir un rapport (Bestsellers, Orders ou Order Count) dans le menu Reports",
+     "Saisir les dates de début et de fin de la période et choisir la granularité (jour)",
+     "Pour le rapport Orders, choisir un statut de commande (ex. Payment Review)",
+     "Lancer le rapport (Show Report ou Refresh)",
+     "Faire défiler les résultats pour les lire",
+     "Relancer avec une autre période ou un autre rapport selon le résultat"
+    ],
+    "etapes_en": [
+     "Open a report (Bestsellers, Orders or Order Count) in the Reports menu",
+     "Enter the start and end dates and pick the granularity (day)",
+     "For the Orders report, pick an order status (e.g. Payment Review)",
+     "Run the report (Show Report or Refresh)",
+     "Scroll through the results to read them",
+     "Run it again with another period or report if needed"
+    ],
+    "demande": {
+     "en": "Today is 3/15/2023, generate a sales order report for last month",
+     "fr": "Nous sommes le 15/03/2023 : rapport des commandes du mois dernier",
+     "sienne": true
+    }
+   },
+   {
+    "agent": "prix-produit",
+    "nom": "Prix produit",
+    "nom_en": "Product pricing",
+    "fois": 5,
+    "minutes": 3.9,
+    "etapes": [
+     "Ouvrir le catalogue Produits et chercher le produit par mot-clé",
+     "Choisir la variante à modifier dans la liste de résultats (taille/couleur)",
+     "Saisir la nouvelle valeur (prix ou quantité) dans le champ de la fiche",
+     "Enregistrer la fiche",
+     "Revenir à la liste et répéter pour chaque variante avec la même valeur",
+     "Vérifier que toutes les variantes sont enregistrées"
+    ],
+    "etapes_en": [
+     "Open the Products catalog and search the product by keyword",
+     "Pick the variant to change in the results (size/color)",
+     "Type the new value (price or quantity) in the product form",
+     "Save the product",
+     "Go back to the list and repeat for each variant",
+     "Check that every variant is saved"
+    ],
+    "demande": {
+     "en": "Reduce the price of yellow shirts from Gwyn Endurance in all size below L by 15%",
+     "fr": "Baisser de 15 % le prix des t-shirts jaunes Gwyn Endurance, toutes tailles sous le L",
+     "sienne": true
+    }
+   },
+   {
+    "agent": "commandes-annulees",
+    "nom": "Commandes annulées",
+    "nom_en": "Cancelled orders",
+    "fois": 1,
+    "minutes": 0.3,
+    "etapes": [
+     "Ouvrir Sales > Orders",
+     "Ouvrir Filters et sélectionner le statut Canceled",
+     "Appliquer les filtres",
+     "Trier par Purchase Date",
+     "Parcourir la liste des commandes annulées (défilement)",
+     "Ouvrir le détail d'une commande ou passer à la fiche client"
+    ],
+    "etapes_en": [
+     "Open Sales > Orders",
+     "Open Filters and select the Canceled status",
+     "Apply the filters",
+     "Sort by Purchase Date",
+     "Browse the list of cancelled orders (scrolling)",
+     "Open an order's details or go to the customer page"
+    ],
+    "demande": {
+     "en": "Lookup orders that are canceled",
+     "fr": "Retrouver les commandes annulées",
+     "sienne": true
+    }
+   }
+  ],
+  "activite": {
+   "minutes": 43.1,
+   "captures": 1006,
+   "moments": 244,
+   "jours": [
+    {
+     "jour": "Mon",
+     "minutes": 0.9
+    },
+    {
+     "jour": "Tue",
+     "minutes": 7.3
+    },
+    {
+     "jour": "Wed",
+     "minutes": 9.5
+    },
+    {
+     "jour": "Thu",
+     "minutes": 13.8
+    },
+    {
+     "jour": "Fri",
+     "minutes": 11.5
+    }
+   ],
+   "repartition": [
+    {
+     "nom_en": "Other back-office work",
+     "minutes": 32.4,
+     "fois": 67
+    },
+    {
+     "nom_en": "Sales report",
+     "minutes": 6.5,
+     "fois": 17
+    },
+    {
+     "nom_en": "Product price",
+     "minutes": 3.9,
+     "fois": 5
+    },
+    {
+     "nom_en": "Cancelled orders",
+     "minutes": 0.3,
+     "fois": 1
+    }
+   ],
+   "ecrans_top": [
+    {
+     "ecran": "Catalog",
+     "minutes": 13.7
+    },
+    {
+     "ecran": "Reports",
+     "minutes": 11.9
+    },
+    {
+     "ecran": "Reviews",
+     "minutes": 5.8
+    },
+    {
+     "ecran": "Orders",
+     "minutes": 5.0
+    }
+   ]
+  }
+ },
+ {
+  "id": "sophie",
+  "prenom": "Sophie",
+  "role": "Analyste ventes",
+  "role_en": "Sales analyst",
+  "workflows": [
+   {
+    "agent": "commandes-annulees",
+    "nom": "Commandes annulées",
+    "nom_en": "Cancelled orders",
+    "fois": 8,
+    "minutes": 8.3,
+    "etapes": [
+     "Ouvrir Sales > Orders",
+     "Ouvrir Filters et sélectionner le statut Canceled",
+     "Appliquer les filtres",
+     "Trier par Purchase Date",
+     "Parcourir la liste des commandes annulées (défilement)",
+     "Ouvrir le détail d'une commande ou passer à la fiche client"
+    ],
+    "etapes_en": [
+     "Open Sales > Orders",
+     "Open Filters and select the Canceled status",
+     "Apply the filters",
+     "Sort by Purchase Date",
+     "Browse the list of cancelled orders (scrolling)",
+     "Open an order's details or go to the customer page"
+    ],
+    "demande": {
+     "en": "Get the customer name of the most recent cancelled order",
+     "fr": "Quel client a passé la commande annulée la plus récente ?",
+     "sienne": true
+    }
+   },
+   {
+    "agent": "rapport-ventes",
+    "nom": "Rapport de ventes",
+    "nom_en": "Sales report",
+    "fois": 7,
+    "minutes": 3.7,
+    "etapes": [
+     "Ouvrir un rapport (Bestsellers, Orders ou Order Count) dans le menu Reports",
+     "Saisir les dates de début et de fin de la période et choisir la granularité (jour)",
+     "Pour le rapport Orders, choisir un statut de commande (ex. Payment Review)",
+     "Lancer le rapport (Show Report ou Refresh)",
+     "Faire défiler les résultats pour les lire",
+     "Relancer avec une autre période ou un autre rapport selon le résultat"
+    ],
+    "etapes_en": [
+     "Open a report (Bestsellers, Orders or Order Count) in the Reports menu",
+     "Enter the start and end dates and pick the granularity (day)",
+     "For the Orders report, pick an order status (e.g. Payment Review)",
+     "Run the report (Show Report or Refresh)",
+     "Scroll through the results to read them",
+     "Run it again with another period or report if needed"
+    ],
+    "demande": {
+     "en": "What is the top-1 best-selling product in 2022",
+     "fr": "Quel est le produit le plus vendu en 2022 ?",
+     "sienne": true
+    }
+   }
+  ],
+  "activite": {
+   "minutes": 39.2,
+   "captures": 667,
+   "moments": 221,
+   "jours": [
+    {
+     "jour": "Tue",
+     "minutes": 9.0
+    },
+    {
+     "jour": "Wed",
+     "minutes": 7.2
+    },
+    {
+     "jour": "Thu",
+     "minutes": 12.3
+    },
+    {
+     "jour": "Fri",
+     "minutes": 10.8
+    }
+   ],
+   "repartition": [
+    {
+     "nom_en": "Other back-office work",
+     "minutes": 27.3,
+     "fois": 71
+    },
+    {
+     "nom_en": "Cancelled orders",
+     "minutes": 8.3,
+     "fois": 8
+    },
+    {
+     "nom_en": "Sales report",
+     "minutes": 3.7,
+     "fois": 7
+    }
+   ],
+   "ecrans_top": [
+    {
+     "ecran": "Orders",
+     "minutes": 15.4
+    },
+    {
+     "ecran": "Reports",
+     "minutes": 9.0
+    },
+    {
+     "ecran": "Reviews",
+     "minutes": 7.0
+    },
+    {
+     "ecran": "Catalog",
+     "minutes": 2.5
+    }
+   ]
+  }
+ },
+ {
+  "id": "nadia",
+  "prenom": "Nadia",
+  "role": "Service client (back-office)",
+  "role_en": "Customer service (back office)",
+  "workflows": [
+   {
+    "agent": "prix-produit",
+    "nom": "Prix produit",
+    "nom_en": "Product pricing",
+    "fois": 12,
+    "minutes": 8.8,
+    "etapes": [
+     "Ouvrir le catalogue Produits et chercher le produit par mot-clé",
+     "Choisir la variante à modifier dans la liste de résultats (taille/couleur)",
+     "Saisir la nouvelle valeur (prix ou quantité) dans le champ de la fiche",
+     "Enregistrer la fiche",
+     "Revenir à la liste et répéter pour chaque variante avec la même valeur",
+     "Vérifier que toutes les variantes sont enregistrées"
+    ],
+    "etapes_en": [
+     "Open the Products catalog and search the product by keyword",
+     "Pick the variant to change in the results (size/color)",
+     "Type the new value (price or quantity) in the product form",
+     "Save the product",
+     "Go back to the list and repeat for each variant",
+     "Check that every variant is saved"
+    ],
+    "demande": {
+     "en": "Reduce the price of yellow shirts from Gwyn Endurance in all size below L by 15%",
+     "fr": "Baisser de 15 % le prix des t-shirts jaunes Gwyn Endurance, toutes tailles sous le L",
+     "sienne": true
+    }
+   },
+   {
+    "agent": "rapport-ventes",
+    "nom": "Rapport de ventes",
+    "nom_en": "Sales report",
+    "fois": 8,
+    "minutes": 4.3,
+    "etapes": [
+     "Ouvrir un rapport (Bestsellers, Orders ou Order Count) dans le menu Reports",
+     "Saisir les dates de début et de fin de la période et choisir la granularité (jour)",
+     "Pour le rapport Orders, choisir un statut de commande (ex. Payment Review)",
+     "Lancer le rapport (Show Report ou Refresh)",
+     "Faire défiler les résultats pour les lire",
+     "Relancer avec une autre période ou un autre rapport selon le résultat"
+    ],
+    "etapes_en": [
+     "Open a report (Bestsellers, Orders or Order Count) in the Reports menu",
+     "Enter the start and end dates and pick the granularity (day)",
+     "For the Orders report, pick an order status (e.g. Payment Review)",
+     "Run the report (Show Report or Refresh)",
+     "Scroll through the results to read them",
+     "Run it again with another period or report if needed"
+    ],
+    "demande": {
+     "en": "Today is 3/15/2023, generate a sales order report for last month",
+     "fr": "Nous sommes le 15/03/2023 : rapport des commandes du mois dernier",
+     "sienne": true
+    }
+   },
+   {
+    "agent": "commandes-annulees",
+    "nom": "Commandes annulées",
+    "nom_en": "Cancelled orders",
+    "fois": 1,
+    "minutes": 0.3,
+    "etapes": [
+     "Ouvrir Sales > Orders",
+     "Ouvrir Filters et sélectionner le statut Canceled",
+     "Appliquer les filtres",
+     "Trier par Purchase Date",
+     "Parcourir la liste des commandes annulées (défilement)",
+     "Ouvrir le détail d'une commande ou passer à la fiche client"
+    ],
+    "etapes_en": [
+     "Open Sales > Orders",
+     "Open Filters and select the Canceled status",
+     "Apply the filters",
+     "Sort by Purchase Date",
+     "Browse the list of cancelled orders (scrolling)",
+     "Open an order's details or go to the customer page"
+    ],
+    "demande": {
+     "en": "Lookup orders that are canceled",
+     "fr": "Retrouver les commandes annulées",
+     "sienne": true
+    }
+   }
+  ],
+  "activite": {
+   "minutes": 68.7,
+   "captures": 1142,
+   "moments": 277,
+   "jours": [
+    {
+     "jour": "Tue",
+     "minutes": 11.4
+    },
+    {
+     "jour": "Wed",
+     "minutes": 20.9
+    },
+    {
+     "jour": "Thu",
+     "minutes": 14.7
+    },
+    {
+     "jour": "Fri",
+     "minutes": 21.7
+    }
+   ],
+   "repartition": [
+    {
+     "nom_en": "Other back-office work",
+     "minutes": 55.4,
+     "fois": 63
+    },
+    {
+     "nom_en": "Product price",
+     "minutes": 8.8,
+     "fois": 12
+    },
+    {
+     "nom_en": "Sales report",
+     "minutes": 4.3,
+     "fois": 8
+    },
+    {
+     "nom_en": "Cancelled orders",
+     "minutes": 0.3,
+     "fois": 1
+    }
+   ],
+   "ecrans_top": [
+    {
+     "ecran": "Catalog",
+     "minutes": 37.3
+    },
+    {
+     "ecran": "Orders",
+     "minutes": 12.9
+    },
+    {
+     "ecran": "Reports",
+     "minutes": 3.9
+    },
+    {
+     "ecran": "Promotions",
+     "minutes": 3.3
+    }
+   ]
+  }
+ },
+ {
+  "id": "julien",
+  "prenom": "Julien",
+  "role": "Commandes et logistique",
+  "role_en": "Orders and logistics",
+  "workflows": [
+   {
+    "agent": "rapport-ventes",
+    "nom": "Rapport de ventes",
+    "nom_en": "Sales report",
+    "fois": 7,
+    "minutes": 3.0,
+    "etapes": [
+     "Ouvrir un rapport (Bestsellers, Orders ou Order Count) dans le menu Reports",
+     "Saisir les dates de début et de fin de la période et choisir la granularité (jour)",
+     "Pour le rapport Orders, choisir un statut de commande (ex. Payment Review)",
+     "Lancer le rapport (Show Report ou Refresh)",
+     "Faire défiler les résultats pour les lire",
+     "Relancer avec une autre période ou un autre rapport selon le résultat"
+    ],
+    "etapes_en": [
+     "Open a report (Bestsellers, Orders or Order Count) in the Reports menu",
+     "Enter the start and end dates and pick the granularity (day)",
+     "For the Orders report, pick an order status (e.g. Payment Review)",
+     "Run the report (Show Report or Refresh)",
+     "Scroll through the results to read them",
+     "Run it again with another period or report if needed"
+    ],
+    "demande": {
+     "en": "What is the top-1 best-selling product in 2022",
+     "fr": "Quel est le produit le plus vendu en 2022 ?",
+     "sienne": true
+    }
+   },
+   {
+    "agent": "prix-produit",
+    "nom": "Prix produit",
+    "nom_en": "Product pricing",
+    "fois": 6,
+    "minutes": 5.9,
+    "etapes": [
+     "Ouvrir le catalogue Produits et chercher le produit par mot-clé",
+     "Choisir la variante à modifier dans la liste de résultats (taille/couleur)",
+     "Saisir la nouvelle valeur (prix ou quantité) dans le champ de la fiche",
+     "Enregistrer la fiche",
+     "Revenir à la liste et répéter pour chaque variante avec la même valeur",
+     "Vérifier que toutes les variantes sont enregistrées"
+    ],
+    "etapes_en": [
+     "Open the Products catalog and search the product by keyword",
+     "Pick the variant to change in the results (size/color)",
+     "Type the new value (price or quantity) in the product form",
+     "Save the product",
+     "Go back to the list and repeat for each variant",
+     "Check that every variant is saved"
+    ],
+    "demande": {
+     "en": "Reduce the price of yellow shirts from Gwyn Endurance in all size below L by 15%",
+     "fr": "Baisser de 15 % le prix des t-shirts jaunes Gwyn Endurance, toutes tailles sous le L",
+     "sienne": true
+    }
+   },
+   {
+    "agent": "commandes-annulees",
+    "nom": "Commandes annulées",
+    "nom_en": "Cancelled orders",
+    "fois": 3,
+    "minutes": 1.1,
+    "etapes": [
+     "Ouvrir Sales > Orders",
+     "Ouvrir Filters et sélectionner le statut Canceled",
+     "Appliquer les filtres",
+     "Trier par Purchase Date",
+     "Parcourir la liste des commandes annulées (défilement)",
+     "Ouvrir le détail d'une commande ou passer à la fiche client"
+    ],
+    "etapes_en": [
+     "Open Sales > Orders",
+     "Open Filters and select the Canceled status",
+     "Apply the filters",
+     "Sort by Purchase Date",
+     "Browse the list of cancelled orders (scrolling)",
+     "Open an order's details or go to the customer page"
+    ],
+    "demande": {
+     "en": "Get the customer name of the most recent cancelled order",
+     "fr": "Quel client a passé la commande annulée la plus récente ?",
+     "sienne": true
+    }
+   }
+  ],
+  "activite": {
+   "minutes": 33.9,
+   "captures": 736,
+   "moments": 222,
+   "jours": [
+    {
+     "jour": "Tue",
+     "minutes": 7.6
+    },
+    {
+     "jour": "Wed",
+     "minutes": 9.7
+    },
+    {
+     "jour": "Thu",
+     "minutes": 7.2
+    },
+    {
+     "jour": "Fri",
+     "minutes": 9.3
+    }
+   ],
+   "repartition": [
+    {
+     "nom_en": "Other back-office work",
+     "minutes": 23.8,
+     "fois": 61
+    },
+    {
+     "nom_en": "Product price",
+     "minutes": 5.9,
+     "fois": 6
+    },
+    {
+     "nom_en": "Sales report",
+     "minutes": 3.0,
+     "fois": 7
+    },
+    {
+     "nom_en": "Cancelled orders",
+     "minutes": 1.1,
+     "fois": 3
+    }
+   ],
+   "ecrans_top": [
+    {
+     "ecran": "Reports",
+     "minutes": 8.9
+    },
+    {
+     "ecran": "Orders",
+     "minutes": 7.5
+    },
+    {
+     "ecran": "Catalog",
+     "minutes": 7.4
+    },
+    {
+     "ecran": "Reviews",
+     "minutes": 6.2
+    }
+   ]
+  }
+ },
+ {
+  "id": "emma",
+  "prenom": "Emma",
+  "role": "Marketing et promotions",
+  "role_en": "Marketing and promotions",
+  "workflows": [
+   {
+    "agent": "rapport-ventes",
+    "nom": "Rapport de ventes",
+    "nom_en": "Sales report",
+    "fois": 9,
+    "minutes": 4.9,
+    "etapes": [
+     "Ouvrir un rapport (Bestsellers, Orders ou Order Count) dans le menu Reports",
+     "Saisir les dates de début et de fin de la période et choisir la granularité (jour)",
+     "Pour le rapport Orders, choisir un statut de commande (ex. Payment Review)",
+     "Lancer le rapport (Show Report ou Refresh)",
+     "Faire défiler les résultats pour les lire",
+     "Relancer avec une autre période ou un autre rapport selon le résultat"
+    ],
+    "etapes_en": [
+     "Open a report (Bestsellers, Orders or Order Count) in the Reports menu",
+     "Enter the start and end dates and pick the granularity (day)",
+     "For the Orders report, pick an order status (e.g. Payment Review)",
+     "Run the report (Show Report or Refresh)",
+     "Scroll through the results to read them",
+     "Run it again with another period or report if needed"
+    ],
+    "demande": {
+     "en": "Today is 3/15/2023, generate a sales order report for last month",
+     "fr": "Nous sommes le 15/03/2023 : rapport des commandes du mois dernier",
+     "sienne": true
+    }
+   },
+   {
+    "agent": "prix-produit",
+    "nom": "Prix produit",
+    "nom_en": "Product pricing",
+    "fois": 4,
+    "minutes": 1.8,
+    "etapes": [
+     "Ouvrir le catalogue Produits et chercher le produit par mot-clé",
+     "Choisir la variante à modifier dans la liste de résultats (taille/couleur)",
+     "Saisir la nouvelle valeur (prix ou quantité) dans le champ de la fiche",
+     "Enregistrer la fiche",
+     "Revenir à la liste et répéter pour chaque variante avec la même valeur",
+     "Vérifier que toutes les variantes sont enregistrées"
+    ],
+    "etapes_en": [
+     "Open the Products catalog and search the product by keyword",
+     "Pick the variant to change in the results (size/color)",
+     "Type the new value (price or quantity) in the product form",
+     "Save the product",
+     "Go back to the list and repeat for each variant",
+     "Check that every variant is saved"
+    ],
+    "demande": {
+     "en": "Reduce the price of yellow shirts from Gwyn Endurance in all size below L by 15%",
+     "fr": "Baisser de 15 % le prix des t-shirts jaunes Gwyn Endurance, toutes tailles sous le L",
+     "sienne": false
+    }
+   },
+   {
+    "agent": "commandes-annulees",
+    "nom": "Commandes annulées",
+    "nom_en": "Cancelled orders",
+    "fois": 1,
+    "minutes": 0.4,
+    "etapes": [
+     "Ouvrir Sales > Orders",
+     "Ouvrir Filters et sélectionner le statut Canceled",
+     "Appliquer les filtres",
+     "Trier par Purchase Date",
+     "Parcourir la liste des commandes annulées (défilement)",
+     "Ouvrir le détail d'une commande ou passer à la fiche client"
+    ],
+    "etapes_en": [
+     "Open Sales > Orders",
+     "Open Filters and select the Canceled status",
+     "Apply the filters",
+     "Sort by Purchase Date",
+     "Browse the list of cancelled orders (scrolling)",
+     "Open an order's details or go to the customer page"
+    ],
+    "demande": {
+     "en": "Lookup orders that are canceled",
+     "fr": "Retrouver les commandes annulées",
+     "sienne": true
+    }
+   }
+  ],
+  "activite": {
+   "minutes": 62.9,
+   "captures": 906,
+   "moments": 211,
+   "jours": [
+    {
+     "jour": "Tue",
+     "minutes": 10.1
+    },
+    {
+     "jour": "Wed",
+     "minutes": 20.1
+    },
+    {
+     "jour": "Thu",
+     "minutes": 11.1
+    },
+    {
+     "jour": "Fri",
+     "minutes": 21.5
+    }
+   ],
+   "repartition": [
+    {
+     "nom_en": "Other back-office work",
+     "minutes": 55.8,
+     "fois": 56
+    },
+    {
+     "nom_en": "Sales report",
+     "minutes": 4.9,
+     "fois": 9
+    },
+    {
+     "nom_en": "Product price",
+     "minutes": 1.8,
+     "fois": 4
+    },
+    {
+     "nom_en": "Cancelled orders",
+     "minutes": 0.4,
+     "fois": 1
+    }
+   ],
+   "ecrans_top": [
+    {
+     "ecran": "Catalog",
+     "minutes": 33.5
+    },
+    {
+     "ecran": "Orders",
+     "minutes": 17.6
+    },
+    {
+     "ecran": "Reports",
+     "minutes": 4.4
+    },
+    {
+     "ecran": "Content",
+     "minutes": 2.9
+    }
+   ]
+  }
+ }
+]

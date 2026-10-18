@@ -1,0 +1,94 @@
+{
+ "source": {
+  "nom": "WONDERBREAD",
+  "qui": "Stanford (NeurIPS 2024)",
+  "licence": "CC-BY-4.0",
+  "demos": 2929,
+  "lien": "https://hazyresearch.stanford.edu/wonderbread-website"
+ },
+ "boutique": "back-office Magento de WebArena (Carnegie Mellon)",
+ "echelle": 10,
+ "personnes": [
+  {
+   "prenom": "Léa",
+   "role": "Responsable e-commerce",
+   "minutes": 75,
+   "captures": 1094,
+   "moments": 272
+  },
+  {
+   "prenom": "Karim",
+   "role": "Gestionnaire catalogue",
+   "minutes": 43,
+   "captures": 1006,
+   "moments": 244
+  },
+  {
+   "prenom": "Sophie",
+   "role": "Analyste ventes",
+   "minutes": 39,
+   "captures": 667,
+   "moments": 221
+  },
+  {
+   "prenom": "Nadia",
+   "role": "Service client (back-office)",
+   "minutes": 69,
+   "captures": 1142,
+   "moments": 277
+  },
+  {
+   "prenom": "Julien",
+   "role": "Commandes et logistique",
+   "minutes": 34,
+   "captures": 736,
+   "moments": 222
+  },
+  {
+   "prenom": "Emma",
+   "role": "Marketing et promotions",
+   "minutes": 63,
+   "captures": 906,
+   "moments": 211
+  }
+ ],
+ "captures": 5551,
+ "minutes": 323,
+ "extrait": [
+  {
+   "heure": "09:00:04",
+   "fenetre": "Dashboard / Magento Admin",
+   "action": "clic « REPORTS »"
+  },
+  {
+   "heure": "09:00:07",
+   "fenetre": "Bestsellers Report / Products / Reports / Magento Admin",
+   "action": "clic « Bestsellers » · clic « Day » · clic « Day » · clic « input » · saisie « 01/01/2022 » dans « input » · clic « input » · saisie « 12/31/2022 » dans « input » · clic « Show Report »"
+  },
+  {
+   "heure": "09:22:23",
+   "fenetre": "Dashboard / Magento Admin",
+   "action": "clic « REPORTS »"
+  },
+  {
+   "heure": "09:22:25",
+   "fenetre": "Bestsellers Report / Products / Reports / Magento Admin",
+   "action": "clic « Bestsellers » · clic « input » · saisie « 01/01/2022 » dans « input » · clic « input » · saisie « 03/31/2022 » dans « input » · clic « Show Report » · défilement"
+  },
+  {
+   "heure": "09:48:34",
+   "fenetre": "Dashboard / Magento Admin",
+   "action": "clic « REPORTS »"
+  },
+  {
+   "heure": "09:48:36",
+   "fenetre": "Bestsellers Report / Products / Reports / Magento Admin",
+   "action": "clic « Bestsellers » · clic « Day » · clic « Day » · clic « input » · saisie « 01/01/2022 » dans « input » · clic « input » · saisie « 12/31/2022 » dans « input » · clic « Show Report »"
+  },
+  {
+   "heure": "10:07:02",
+   "fenetre": "Dashboard / Magento Admin",
+   "action": "clic « REPORTS »"
+  }
+ ]
+}

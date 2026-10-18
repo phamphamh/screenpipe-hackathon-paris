@@ -6,6 +6,11 @@
 
 screenpipe × 42 Paris hackathon, 16–18 October 2026. Pitch deck in English, live demo below, the French write-up further down.
 
+### ▶ Quick demo, nothing to install
+- **Live demo (online)**: https://claude.ai/artifact/CtLUkz619Yk81w7mjWV4A2 — the audit, one employee step by step, the 3D office; agents replay their real runs.
+- **Pitch deck**: https://claude.ai/artifact/JRtx9pRtEfhgrDfK1sEPJf
+- **Same demo from a clone**: `python3 -m http.server 8000 --directory labs/phamphamh/demo-statique` → http://localhost:8000
+
 | 1 · Audit | 2 · The office | 3 · An agent, live in Magento |
 |---|---|---|
 | ![audit](docs/captures/deloai-audit.png) | ![office](docs/captures/deloai-bureau-karim.png) | ![agent](docs/captures/deloai-agent-live.png) |
@@ -37,7 +42,7 @@ flowchart LR
 
 Each employee's screenpipe capture (window titles, URLs, clicks, typed values) is filtered down to the work moments that matter, then summarised by Claude into tasks, steps and time spent; the employee reviews that summary before anything is shared. A fusion step merges the validated summaries across the team, groups identical tasks by the screens they touch, and prices them (hours × 46 weeks × hourly cost) to rank what to automate. For the demo, we replayed six real people from Stanford's [WONDERBREAD](https://hazyresearch.stanford.edu/wonderbread-website) dataset (CC-BY-4.0) as a one-week screenpipe campaign at **Atelier Nova**, an online store running the [WebArena](https://github.com/web-arena-x/webarena) Magento back-office, scaled ×10 to 60 seats. Each recommended workflow is written from the observed steps and handed to a Claude agent (`claude -p`), which receives a real recorded request and acts through a small tool layer ([`boutique.py`](labs/phamphamh/agents-nova/boutique.py)): the Magento REST API to read, Playwright driving a visible Chrome window to edit. Agents run on a schedule, all on a single laptop. Only the "hands" depend on the software: the same agent works with Gmail, an ERP or any app that has an API or a connector.
 
-**Honest limits**: the company is fictional and the volumes are ×10 a real sample of 6 people; only Magento is wired today (Gmail + Sage were tested in a sandbox, [`labs/natsuwy/tester-en-vrai/`](labs/natsuwy/tester-en-vrai/)); the live mode is slowed down on purpose so the audience can follow.
+**Honest limits**: the Atelier Nova data is not a screenpipe capture: it is Stanford's recordings converted to the same format our pipeline reads from screenpipe (the pipeline itself ran on our own screenpipe captures during the hackathon, see the French section); the company is fictional and the volumes are ×10 a real sample of 6 people; only Magento is wired today (Gmail + Sage were tested in a sandbox, [`labs/natsuwy/tester-en-vrai/`](labs/natsuwy/tester-en-vrai/)); the live mode is slowed down on purpose so the audience can follow.
 
 **Team**: [`docs/contribution-equipe.md`](docs/contribution-equipe.md) · adamaass (the audit), 09125o, natsuwy, tmschrib, phamphamh.
 
