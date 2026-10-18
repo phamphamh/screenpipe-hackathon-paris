@@ -20,9 +20,9 @@ Atelier Nova. Une boutique en ligne, 60 salariés. Des gens réels, enregistrés
 
 Résultat ? 72 000 euros par an partent dans des tâches répétées. Un rapport de ventes, toujours le même, sorti 790 fois par semaine. 790.
 
-Étape deux : nos agents en tirent cinq automatisations. La première s'écrit en un clic, à partir de ce que les salariés font vraiment.
+Étape deux : nos agents en tirent cinq automatisations. On prend la plus chère : ce rapport de ventes. L'automatisation s'écrit en un clic, à partir de ce que les salariés font vraiment.
 
-Étape trois : on l'a lancée ce matin. [X] actions. [X] prix modifiés en [X] secondes, contre [X] minutes à la main.
+Étape trois : on l'a lancée ce matin. À la main, ce rapport prend 23 secondes. Fois 790, chaque semaine. Plus de 5 heures. L'agent, lui : [X] rapports sortis, [X] actions, chacune tracée.
 
 Alors la question n'est plus : qu'est-ce que je fais de mes données ?
 

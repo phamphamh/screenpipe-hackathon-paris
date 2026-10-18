@@ -8,7 +8,7 @@ Base : l'enregistrement du 18/10 (11h24), recalé sur les vrais chiffres du dash
 
 **Le style** (inspiré de Tugan Bara) : une promesse dans les 10 premières secondes, tenue à la fin ; des phrases courtes ; un ennemi clair (l'agent que personne n'utilise) ; des chiffres précis ; on parle au jury (« vous »).
 
-**Le dispositif** : une personne parle, une autre clique. Trois onglets, dans l'ordre : `labs/phamphamh/pitch/intro.html` (4 écrans, la flèche → fait apparaître les lignes une par une) ; le dashboard Atelier Nova (bouton **☀︎ Clair**, mode Présenter) ; la page « en direct » (`python3 labs/phamphamh/pitch/en-direct/serveur.py`, puis http://localhost:8797). La page « en direct » a besoin du Mac de phamphamh (les enregistrements bruts y sont) et d'internet.
+**Le dispositif** : une personne parle, une autre clique. Trois onglets, dans l'ordre : `labs/phamphamh/pitch/intro.html` (4 écrans, la flèche → fait apparaître les lignes une par une) ; le dashboard Atelier Nova renommé DeloAI, `labs/phamphamh/dashboard-nova/` (bouton **☀︎ Clair**, mode Présenter) ; la page « en direct » (`python3 labs/phamphamh/pitch/en-direct/serveur.py`, puis http://localhost:8797). La page « en direct » a besoin du Mac de phamphamh (les enregistrements bruts y sont) et d'internet.
 
 **Environ 320 mots** : environ 2 min 10 à voix haute, ce qui laisse 50 s pour les deux moments en direct.
 
@@ -54,14 +54,14 @@ Les passages marqués **[À CONSTRUIRE]** n'existent pas encore : on ne les dit 
 > « 55 000 captures. 19 tâches qui reviennent. Coût : 72 000 euros par an. 40 % du temps dans un seul écran, le catalogue. Et un rapport de ventes, toujours le même, sorti 790 fois par semaine. »
 
 ## 1:45 – 2:10 · Ce que nos agents recommandent
-**À l'écran** : écran 5. Cliquer **Prix produit**, puis **Créer la skill (SKILL.md)**.
+**À l'écran** : écran 4, cliquer **Rapport ventes**, puis **Créer la skill (SKILL.md)** dans le panneau qui s'ouvre.
 
-> « Nos agents en tirent cinq automatisations. On commence par la modification des prix : c'est elle qui rend le plus d'heures. Un clic, et elle est écrite, à partir des étapes réellement observées. »
+> « Nos agents en tirent cinq automatisations. On prend la tâche la plus chère : le rapport de ventes. Un clic, et l'automatisation est écrite, à partir des étapes réellement observées. »
 
 ## 2:10 – 2:45 · En direct : les agents déployés ce matin — **[À CONSTRUIRE]**
-**À l'écran** : le journal des actions de l'agent, dans une copie de Magento.
+**À l'écran** : le journal de l'agent, dans le vrai back-office Magento de test (`labs/phamphamh/agents-nova/`, construit par l'autre session).
 
-> « Et maintenant, ce que je vous ai promis. Cette automatisation, on l'a lancée ce matin. Voici son journal : [X] actions, chacune tracée. [X] prix modifiés en [X] secondes, contre [X] minutes à la main. Et quand une information manquait, l'agent s'est arrêté pour demander à un humain. »
+> « Et maintenant, ce que je vous ai promis. Cette automatisation, on l'a lancée ce matin. À la main, ce rapport prend 23 secondes. 790 fois par semaine, ça fait plus de 5 heures. Voici le journal de l'agent : [X] rapports sortis, [X] actions, chacune tracée. Et quand une information manquait, l'agent s'est arrêté pour demander à un humain. »
 
 ## 2:45 – 3:00 · La fin
 > « Louis, vos utilisateurs ont les données. DeloAI leur apporte le cabinet. Merci. »
@@ -95,6 +95,6 @@ Les passages marqués **[À CONSTRUIRE]** n'existent pas encore : on ne les dit 
 - [ ] Page « en direct » ouverte, et une lecture faite le matin même sur chaque salarié (pour avoir une lecture de secours).
 - [ ] `intro.html` ouvert en plein écran sur l'écran A ; le dashboard ouvert dans un 2e onglet.
 - [ ] Dashboard : bouton **☀︎ Clair** cliqué (il s'ouvre en sombre), **mode Présenter**, écran 1 affiché.
-- [ ] Répéter les 2 clics : Rapport ventes (écran 4) ; Prix produit puis Créer la skill (écran 5). Vérifiés le 18/10 : ils marchent.
+- [ ] Répéter le clic : Rapport ventes (écran 4), puis Créer la skill dans le panneau. Vérifié le 18/10 : il marche.
 - [ ] Chronométrer une fois en entier : viser 2 min 50.
 - [ ] Choisir qui parle et qui clique.

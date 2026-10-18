@@ -2,8 +2,6 @@ Nous, c'est DeloAI.
 
 Ce matin, on a lancé des agents dans une entreprise. Ils tournent en ce moment. Dans deux minutes, vous verrez ce qu'ils ont fait.
 
-Mais d'abord, une question.
-
 Au début du hackathon, on a demandé à Louis le plus gros problème de ses utilisateurs. Sa réponse : ils ont plein de données, et ils ne savent pas quoi en faire.
 
 screenpipe enregistre tout ce qui se passe sur l'ordinateur. En local.
@@ -20,8 +18,8 @@ Notre premier client : Atelier Nova. Une boutique en ligne, 60 salariés. Des ge
 
 Coût : 72 000 euros par an. 40 % du temps dans un seul écran, le catalogue. Et un rapport de ventes, toujours le même, sorti 790 fois par semaine.
 
-Étape deux : nos agents en tirent cinq automatisations. La première, les prix produits, s'écrit en un clic, à partir des étapes réellement observées.
+Étape deux : nos agents en tirent cinq automatisations. On prend la tâche la plus chère : ce rapport de ventes. L'automatisation s'écrit en un clic, à partir des étapes réellement observées.
 
-Étape trois, ce qu'on vous a promis. On l'a lancée ce matin. Voici son journal : [X] actions, chacune tracée. [X] prix modifiés en [X] secondes, contre [X] minutes à la main.
+Étape trois, ce qu'on vous a promis. On l'a lancée ce matin. À la main, ce rapport prend 23 secondes. 790 fois par semaine, ça fait plus de 5 heures. Voici le journal de l'agent : [X] rapports sortis, [X] actions, chacune tracée.
 
 DeloAI. Votre cabinet et votre ESN, dans votre poche.
