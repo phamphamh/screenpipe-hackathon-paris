@@ -3,10 +3,12 @@
   "id": "lea",
   "prenom": "Léa",
   "role": "Responsable e-commerce",
+  "role_en": "E-commerce manager",
   "workflows": [
    {
     "agent": "rapport-ventes",
     "nom": "Rapport de ventes",
+    "nom_en": "Sales report",
     "fois": 9,
     "minutes": 5.8,
     "etapes": [
@@ -17,6 +19,14 @@
      "Faire défiler les résultats pour les lire",
      "Relancer avec une autre période ou un autre rapport selon le résultat"
     ],
+    "etapes_en": [
+     "Open a report (Bestsellers, Orders or Order Count) in the Reports menu",
+     "Enter the start and end dates and pick the granularity (day)",
+     "For the Orders report, pick an order status (e.g. Payment Review)",
+     "Run the report (Show Report or Refresh)",
+     "Scroll through the results to read them",
+     "Run it again with another period or report if needed"
+    ],
     "demande": {
      "en": "Create a best sellers report from 05/01/2022 to 05/31/2023",
      "fr": "Rapport des meilleures ventes du 01/05/2022 au 31/05/2023",
@@ -26,6 +36,7 @@
    {
     "agent": "commandes-annulees",
     "nom": "Commandes annulées",
+    "nom_en": "Cancelled orders",
     "fois": 8,
     "minutes": 12.5,
     "etapes": [
@@ -36,6 +47,14 @@
      "Parcourir la liste des commandes annulées (défilement)",
      "Ouvrir le détail d'une commande ou passer à la fiche client"
     ],
+    "etapes_en": [
+     "Open Sales > Orders",
+     "Open Filters and select the Canceled status",
+     "Apply the filters",
+     "Sort by Purchase Date",
+     "Browse the list of cancelled orders (scrolling)",
+     "Open an order's details or go to the customer page"
+    ],
     "demande": {
      "en": "Get the customer name of the most recent cancelled order",
      "fr": "Quel client a passé la commande annulée la plus récente ?",
@@ -45,6 +64,7 @@
    {
     "agent": "prix-produit",
     "nom": "Prix produit",
+    "nom_en": "Product pricing",
     "fois": 6,
     "minutes": 12.4,
     "etapes": [
@@ -54,6 +74,14 @@
      "Enregistrer la fiche",
      "Revenir à la liste et répéter pour chaque variante avec la même valeur",
      "Vérifier que toutes les variantes sont enregistrées"
+    ],
+    "etapes_en": [
+     "Open the Products catalog and search the product by keyword",
+     "Pick the variant to change in the results (size/color)",
+     "Type the new value (price or quantity) in the product form",
+     "Save the product",
+     "Go back to the list and repeat for each variant",
+     "Check that every variant is saved"
     ],
     "demande": {
      "en": "Reduce the price of yellow shirts from Gwyn Endurance in all size below L by 15%",
@@ -67,10 +95,12 @@
   "id": "karim",
   "prenom": "Karim",
   "role": "Gestionnaire catalogue",
+  "role_en": "Catalog manager",
   "workflows": [
    {
     "agent": "rapport-ventes",
     "nom": "Rapport de ventes",
+    "nom_en": "Sales report",
     "fois": 17,
     "minutes": 6.4,
     "etapes": [
@@ -81,6 +111,14 @@
      "Faire défiler les résultats pour les lire",
      "Relancer avec une autre période ou un autre rapport selon le résultat"
     ],
+    "etapes_en": [
+     "Open a report (Bestsellers, Orders or Order Count) in the Reports menu",
+     "Enter the start and end dates and pick the granularity (day)",
+     "For the Orders report, pick an order status (e.g. Payment Review)",
+     "Run the report (Show Report or Refresh)",
+     "Scroll through the results to read them",
+     "Run it again with another period or report if needed"
+    ],
     "demande": {
      "en": "Today is 3/15/2023, generate a sales order report for last month",
      "fr": "Nous sommes le 15/03/2023 : rapport des commandes du mois dernier",
@@ -90,6 +128,7 @@
    {
     "agent": "prix-produit",
     "nom": "Prix produit",
+    "nom_en": "Product pricing",
     "fois": 5,
     "minutes": 3.9,
     "etapes": [
@@ -100,6 +139,14 @@
      "Revenir à la liste et répéter pour chaque variante avec la même valeur",
      "Vérifier que toutes les variantes sont enregistrées"
     ],
+    "etapes_en": [
+     "Open the Products catalog and search the product by keyword",
+     "Pick the variant to change in the results (size/color)",
+     "Type the new value (price or quantity) in the product form",
+     "Save the product",
+     "Go back to the list and repeat for each variant",
+     "Check that every variant is saved"
+    ],
     "demande": {
      "en": "Reduce the price of yellow shirts from Gwyn Endurance in all size below L by 15%",
      "fr": "Baisser de 15 % le prix des t-shirts jaunes Gwyn Endurance, toutes tailles sous le L",
@@ -109,6 +156,7 @@
    {
     "agent": "commandes-annulees",
     "nom": "Commandes annulées",
+    "nom_en": "Cancelled orders",
     "fois": 1,
     "minutes": 0.3,
     "etapes": [
@@ -118,6 +166,14 @@
      "Trier par Purchase Date",
      "Parcourir la liste des commandes annulées (défilement)",
      "Ouvrir le détail d'une commande ou passer à la fiche client"
+    ],
+    "etapes_en": [
+     "Open Sales > Orders",
+     "Open Filters and select the Canceled status",
+     "Apply the filters",
+     "Sort by Purchase Date",
+     "Browse the list of cancelled orders (scrolling)",
+     "Open an order's details or go to the customer page"
     ],
     "demande": {
      "en": "Lookup orders that are canceled",
@@ -131,10 +187,12 @@
   "id": "sophie",
   "prenom": "Sophie",
   "role": "Analyste ventes",
+  "role_en": "Sales analyst",
   "workflows": [
    {
     "agent": "commandes-annulees",
     "nom": "Commandes annulées",
+    "nom_en": "Cancelled orders",
     "fois": 8,
     "minutes": 8.3,
     "etapes": [
@@ -145,6 +203,14 @@
      "Parcourir la liste des commandes annulées (défilement)",
      "Ouvrir le détail d'une commande ou passer à la fiche client"
     ],
+    "etapes_en": [
+     "Open Sales > Orders",
+     "Open Filters and select the Canceled status",
+     "Apply the filters",
+     "Sort by Purchase Date",
+     "Browse the list of cancelled orders (scrolling)",
+     "Open an order's details or go to the customer page"
+    ],
     "demande": {
      "en": "Get the customer name of the most recent cancelled order",
      "fr": "Quel client a passé la commande annulée la plus récente ?",
@@ -154,6 +220,7 @@
    {
     "agent": "rapport-ventes",
     "nom": "Rapport de ventes",
+    "nom_en": "Sales report",
     "fois": 7,
     "minutes": 3.7,
     "etapes": [
@@ -163,6 +230,14 @@
      "Lancer le rapport (Show Report ou Refresh)",
      "Faire défiler les résultats pour les lire",
      "Relancer avec une autre période ou un autre rapport selon le résultat"
+    ],
+    "etapes_en": [
+     "Open a report (Bestsellers, Orders or Order Count) in the Reports menu",
+     "Enter the start and end dates and pick the granularity (day)",
+     "For the Orders report, pick an order status (e.g. Payment Review)",
+     "Run the report (Show Report or Refresh)",
+     "Scroll through the results to read them",
+     "Run it again with another period or report if needed"
     ],
     "demande": {
      "en": "What is the top-1 best-selling product in 2022",
@@ -176,10 +251,12 @@
   "id": "nadia",
   "prenom": "Nadia",
   "role": "Service client (back-office)",
+  "role_en": "Customer service (back office)",
   "workflows": [
    {
     "agent": "prix-produit",
     "nom": "Prix produit",
+    "nom_en": "Product pricing",
     "fois": 12,
     "minutes": 8.8,
     "etapes": [
@@ -190,6 +267,14 @@
      "Revenir à la liste et répéter pour chaque variante avec la même valeur",
      "Vérifier que toutes les variantes sont enregistrées"
     ],
+    "etapes_en": [
+     "Open the Products catalog and search the product by keyword",
+     "Pick the variant to change in the results (size/color)",
+     "Type the new value (price or quantity) in the product form",
+     "Save the product",
+     "Go back to the list and repeat for each variant",
+     "Check that every variant is saved"
+    ],
     "demande": {
      "en": "Reduce the price of yellow shirts from Gwyn Endurance in all size below L by 15%",
      "fr": "Baisser de 15 % le prix des t-shirts jaunes Gwyn Endurance, toutes tailles sous le L",
@@ -199,6 +284,7 @@
    {
     "agent": "rapport-ventes",
     "nom": "Rapport de ventes",
+    "nom_en": "Sales report",
     "fois": 8,
     "minutes": 4.3,
     "etapes": [
@@ -209,6 +295,14 @@
      "Faire défiler les résultats pour les lire",
      "Relancer avec une autre période ou un autre rapport selon le résultat"
     ],
+    "etapes_en": [
+     "Open a report (Bestsellers, Orders or Order Count) in the Reports menu",
+     "Enter the start and end dates and pick the granularity (day)",
+     "For the Orders report, pick an order status (e.g. Payment Review)",
+     "Run the report (Show Report or Refresh)",
+     "Scroll through the results to read them",
+     "Run it again with another period or report if needed"
+    ],
     "demande": {
      "en": "Today is 3/15/2023, generate a sales order report for last month",
      "fr": "Nous sommes le 15/03/2023 : rapport des commandes du mois dernier",
@@ -218,6 +312,7 @@
    {
     "agent": "commandes-annulees",
     "nom": "Commandes annulées",
+    "nom_en": "Cancelled orders",
     "fois": 1,
     "minutes": 0.3,
     "etapes": [
@@ -227,6 +322,14 @@
      "Trier par Purchase Date",
      "Parcourir la liste des commandes annulées (défilement)",
      "Ouvrir le détail d'une commande ou passer à la fiche client"
+    ],
+    "etapes_en": [
+     "Open Sales > Orders",
+     "Open Filters and select the Canceled status",
+     "Apply the filters",
+     "Sort by Purchase Date",
+     "Browse the list of cancelled orders (scrolling)",
+     "Open an order's details or go to the customer page"
     ],
     "demande": {
      "en": "Lookup orders that are canceled",
@@ -240,10 +343,12 @@
   "id": "julien",
   "prenom": "Julien",
   "role": "Commandes et logistique",
+  "role_en": "Orders and logistics",
   "workflows": [
    {
     "agent": "rapport-ventes",
     "nom": "Rapport de ventes",
+    "nom_en": "Sales report",
     "fois": 7,
     "minutes": 3.0,
     "etapes": [
@@ -254,6 +359,14 @@
      "Faire défiler les résultats pour les lire",
      "Relancer avec une autre période ou un autre rapport selon le résultat"
     ],
+    "etapes_en": [
+     "Open a report (Bestsellers, Orders or Order Count) in the Reports menu",
+     "Enter the start and end dates and pick the granularity (day)",
+     "For the Orders report, pick an order status (e.g. Payment Review)",
+     "Run the report (Show Report or Refresh)",
+     "Scroll through the results to read them",
+     "Run it again with another period or report if needed"
+    ],
     "demande": {
      "en": "What is the top-1 best-selling product in 2022",
      "fr": "Quel est le produit le plus vendu en 2022 ?",
@@ -263,6 +376,7 @@
    {
     "agent": "prix-produit",
     "nom": "Prix produit",
+    "nom_en": "Product pricing",
     "fois": 6,
     "minutes": 5.9,
     "etapes": [
@@ -273,6 +387,14 @@
      "Revenir à la liste et répéter pour chaque variante avec la même valeur",
      "Vérifier que toutes les variantes sont enregistrées"
     ],
+    "etapes_en": [
+     "Open the Products catalog and search the product by keyword",
+     "Pick the variant to change in the results (size/color)",
+     "Type the new value (price or quantity) in the product form",
+     "Save the product",
+     "Go back to the list and repeat for each variant",
+     "Check that every variant is saved"
+    ],
     "demande": {
      "en": "Reduce the price of yellow shirts from Gwyn Endurance in all size below L by 15%",
      "fr": "Baisser de 15 % le prix des t-shirts jaunes Gwyn Endurance, toutes tailles sous le L",
@@ -282,6 +404,7 @@
    {
     "agent": "commandes-annulees",
     "nom": "Commandes annulées",
+    "nom_en": "Cancelled orders",
     "fois": 3,
     "minutes": 1.1,
     "etapes": [
@@ -291,6 +414,14 @@
      "Trier par Purchase Date",
      "Parcourir la liste des commandes annulées (défilement)",
      "Ouvrir le détail d'une commande ou passer à la fiche client"
+    ],
+    "etapes_en": [
+     "Open Sales > Orders",
+     "Open Filters and select the Canceled status",
+     "Apply the filters",
+     "Sort by Purchase Date",
+     "Browse the list of cancelled orders (scrolling)",
+     "Open an order's details or go to the customer page"
     ],
     "demande": {
      "en": "Get the customer name of the most recent cancelled order",
@@ -304,10 +435,12 @@
   "id": "emma",
   "prenom": "Emma",
   "role": "Marketing et promotions",
+  "role_en": "Marketing and promotions",
   "workflows": [
    {
     "agent": "rapport-ventes",
     "nom": "Rapport de ventes",
+    "nom_en": "Sales report",
     "fois": 9,
     "minutes": 4.9,
     "etapes": [
@@ -318,6 +451,14 @@
      "Faire défiler les résultats pour les lire",
      "Relancer avec une autre période ou un autre rapport selon le résultat"
     ],
+    "etapes_en": [
+     "Open a report (Bestsellers, Orders or Order Count) in the Reports menu",
+     "Enter the start and end dates and pick the granularity (day)",
+     "For the Orders report, pick an order status (e.g. Payment Review)",
+     "Run the report (Show Report or Refresh)",
+     "Scroll through the results to read them",
+     "Run it again with another period or report if needed"
+    ],
     "demande": {
      "en": "Today is 3/15/2023, generate a sales order report for last month",
      "fr": "Nous sommes le 15/03/2023 : rapport des commandes du mois dernier",
@@ -327,6 +468,7 @@
    {
     "agent": "prix-produit",
     "nom": "Prix produit",
+    "nom_en": "Product pricing",
     "fois": 4,
     "minutes": 1.8,
     "etapes": [
@@ -337,6 +479,14 @@
      "Revenir à la liste et répéter pour chaque variante avec la même valeur",
      "Vérifier que toutes les variantes sont enregistrées"
     ],
+    "etapes_en": [
+     "Open the Products catalog and search the product by keyword",
+     "Pick the variant to change in the results (size/color)",
+     "Type the new value (price or quantity) in the product form",
+     "Save the product",
+     "Go back to the list and repeat for each variant",
+     "Check that every variant is saved"
+    ],
     "demande": {
      "en": "Reduce the price of yellow shirts from Gwyn Endurance in all size below L by 15%",
      "fr": "Baisser de 15 % le prix des t-shirts jaunes Gwyn Endurance, toutes tailles sous le L",
@@ -346,6 +496,7 @@
    {
     "agent": "commandes-annulees",
     "nom": "Commandes annulées",
+    "nom_en": "Cancelled orders",
     "fois": 1,
     "minutes": 0.4,
     "etapes": [
@@ -355,6 +506,14 @@
      "Trier par Purchase Date",
      "Parcourir la liste des commandes annulées (défilement)",
      "Ouvrir le détail d'une commande ou passer à la fiche client"
+    ],
+    "etapes_en": [
+     "Open Sales > Orders",
+     "Open Filters and select the Canceled status",
+     "Apply the filters",
+     "Sort by Purchase Date",
+     "Browse the list of cancelled orders (scrolling)",
+     "Open an order's details or go to the customer page"
     ],
     "demande": {
      "en": "Lookup orders that are canceled",

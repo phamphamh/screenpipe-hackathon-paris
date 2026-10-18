@@ -178,9 +178,9 @@ def commandes(statut=None, client=None, limite=10):
                       "client": f"{c.get('customer_firstname') or ''} {c.get('customer_lastname') or ''}".strip(),
                       "email": c.get("customer_email"), "statut": c["status"], "total": c.get("grand_total"), "skus": skus})
     capture = montrer_commandes(statut, client) if (CDP or VISIBLE) else None
-    filtre = " · ".join(x for x in [f"statut {statut}" if statut else "", f"client « {client} »" if client else ""] if x)
-    journal("Consulte les commandes", f"{filtre or 'toutes'} · {r.get('total_count', len(liste))} trouvée(s), "
-            f"{len(liste)} lue(s)" + (f" · la plus récente : n° {liste[0]['numero']} ({liste[0]['client']})" if liste else ""),
+    filtre = " · ".join(x for x in [f"status {statut}" if statut else "", f"customer “{client}”" if client else ""] if x)
+    journal("Opens the Orders list", f"{filtre or 'all'} · {r.get('total_count', len(liste))} found, "
+            f"{len(liste)} read" + (f" · most recent: #{liste[0]['numero']} ({liste[0]['client']})" if liste else ""),
             capture=capture)
     return {"total": r.get("total_count"), "commandes": liste}
 

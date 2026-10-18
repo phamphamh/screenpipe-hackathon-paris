@@ -13,9 +13,36 @@ from datetime import datetime
 ICI = os.path.dirname(os.path.abspath(__file__))
 RACINE = os.path.dirname(os.path.dirname(os.path.dirname(ICI)))
 # prénoms et rôles inventés (wb_salaries.py) : les vrais annotateurs ne sortent jamais
-PERSONNES = [("lea", "Léa", "Responsable e-commerce"), ("karim", "Karim", "Gestionnaire catalogue"),
-             ("sophie", "Sophie", "Analyste ventes"), ("nadia", "Nadia", "Service client (back-office)"),
-             ("julien", "Julien", "Commandes et logistique"), ("emma", "Emma", "Marketing et promotions")]
+PERSONNES = [("lea", "Léa", "Responsable e-commerce", "E-commerce manager"),
+             ("karim", "Karim", "Gestionnaire catalogue", "Catalog manager"),
+             ("sophie", "Sophie", "Analyste ventes", "Sales analyst"),
+             ("nadia", "Nadia", "Service client (back-office)", "Customer service (back office)"),
+             ("julien", "Julien", "Commandes et logistique", "Orders and logistics"),
+             ("emma", "Emma", "Marketing et promotions", "Marketing and promotions")]
+# versions anglaises (démo devant le jury) : nom du workflow et étapes observées, dans l'ordre de nova-backoffice.json
+EN = {
+    "prix-produit": ("Product pricing", [
+        "Open the Products catalog and search the product by keyword",
+        "Pick the variant to change in the results (size/color)",
+        "Type the new value (price or quantity) in the product form",
+        "Save the product",
+        "Go back to the list and repeat for each variant",
+        "Check that every variant is saved"]),
+    "rapport-ventes": ("Sales report", [
+        "Open a report (Bestsellers, Orders or Order Count) in the Reports menu",
+        "Enter the start and end dates and pick the granularity (day)",
+        "For the Orders report, pick an order status (e.g. Payment Review)",
+        "Run the report (Show Report or Refresh)",
+        "Scroll through the results to read them",
+        "Run it again with another period or report if needed"]),
+    "commandes-annulees": ("Cancelled orders", [
+        "Open Sales > Orders",
+        "Open Filters and select the Canceled status",
+        "Apply the filters",
+        "Sort by Purchase Date",
+        "Browse the list of cancelled orders (scrolling)",
+        "Open an order's details or go to the customer page"]),
+}
 AGENTS = {  # agent → (nom, tâche observée, motif qui classe une intention)
     "prix-produit": ("Prix produit", "t1", r"(reduce|increase) the price of"),
     "rapport-ventes": ("Rapport de ventes", "t2", r"report|best-selling"),
@@ -35,7 +62,7 @@ def main():
     demandes = json.load(open(os.path.join(ICI, "demandes.json")))["agents"]
     taches = {t["id"]: t for t in json.load(open(os.path.join(RACINE, "labs", "adamaass", "exemples", "nova-backoffice.json")))["taches"]}
     sortie = []
-    for pid, prenom, role in PERSONNES:
+    for pid, prenom, role, role_en in PERSONNES:
         verite = json.load(open(os.path.join(RACINE, "donnees", "nova", pid, "verite.json")))
         workflows = []
         for agent, (nom, tache, motif) in AGENTS.items():
@@ -47,11 +74,11 @@ def main():
             connues = {d["intention"]: d["fr"] for d in demandes[agent]} | EN_PLUS
             choix = next(((i, connues[i]) for i in list(connues) if i in intentions), None)  # la sienne, faisable
             en, fr = choix or (demandes[agent][0]["intention"], demandes[agent][0]["fr"])
-            workflows.append({"agent": agent, "nom": nom, "fois": len(siennes), "minutes": round(secondes / 60, 1),
-                              "etapes": [e["texte"] for e in taches[tache]["etapes"]][:6],
+            workflows.append({"agent": agent, "nom": nom, "nom_en": EN[agent][0], "fois": len(siennes), "minutes": round(secondes / 60, 1),
+                              "etapes": [e["texte"] for e in taches[tache]["etapes"]][:6], "etapes_en": EN[agent][1],
                               "demande": {"en": en, "fr": fr, "sienne": bool(choix)}})
         workflows.sort(key=lambda w: -w["fois"])
-        sortie.append({"id": pid, "prenom": prenom, "role": role, "workflows": workflows})
+        sortie.append({"id": pid, "prenom": prenom, "role": role, "role_en": role_en, "workflows": workflows})
     json.dump(sortie, open(os.path.join(ICI, "personnes.json"), "w"), ensure_ascii=False, indent=1)
     return sortie
 

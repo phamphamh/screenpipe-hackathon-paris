@@ -23,14 +23,14 @@ TRAVAIL = os.path.expanduser("~/.cache/deloai-agents")
 
 # skill de l'audit → tâche observée chez les salariés (labs/adamaass/exemples/nova-backoffice.json)
 SKILLS = {
-    "prix-produit": {"tache": "t1", "nom": "Prix produit", "consigne": (
+    "prix-produit": {"tache": "t1", "nom": "Prix produit", "nom_en": "Product pricing", "consigne": (
         "Les variantes sont des produits simples nommés « Nom-TAILLE-Couleur » (ex. « Gwyn Endurance Tee-XS-Yellow »). "
         "Ordre des tailles : XS < S < M < L < XL (pantalons : tailles numériques). Ne change que les variantes simples "
         "qui correspondent exactement à la demande, une par une, avec `prix <sku> <nouveau_prix>` (arrondi au centime).")},
-    "rapport-ventes": {"tache": "t2", "nom": "Rapport de ventes", "consigne": (
+    "rapport-ventes": {"tache": "t2", "nom": "Rapport de ventes", "nom_en": "Sales report", "consigne": (
         "Dates au format MM/JJ/AAAA. Rapport des commandes = `rapport orders`, meilleures ventes = `rapport bestsellers`, "
         "remboursements = `rapport refunded`, taxes = `rapport tax`. « Le mois dernier » = le mois civil précédent entier.")},
-    "commandes-annulees": {"tache": "t5", "nom": "Commandes annulées", "consigne": (
+    "commandes-annulees": {"tache": "t5", "nom": "Commandes annulées", "nom_en": "Cancelled orders", "consigne": (
         "Statuts Magento : canceled (annulée), complete (terminée), pending, processing. Les commandes sortent triées "
         "de la plus récente à la plus ancienne. Pour compter sur tout l'historique, prends --limite 200.")},
 }
@@ -80,8 +80,8 @@ Ton seul outil : la commande Bash `python3 {OUTIL} …` (rien d'autre, pas de cd
 {s['consigne']}
 
 Règles : tu es autonome, ne pose aucune question. Fais le minimum d'appels nécessaires.
-Réponds en français, en 2 phrases courtes maximum, avec le résultat chiffré (ce que tu as fait ou trouvé).
-Texte simple sans markdown, montants en dollars ($) comme dans la boutique, aucun commentaire sur ta méthode."""
+Answer in ENGLISH, in 2 short sentences maximum, with the figures (what you did or found).
+Plain text, no markdown, amounts in dollars ($) as in the shop, no comment on your method."""
 
 
 PORT_CDP = int(os.environ.get("PORT_CDP", 9333))
@@ -135,12 +135,12 @@ def passage(agent_id, visible=None, personne=None):
     en_cours = {"run": run, "agent": agent_id, "demande_fr": d["fr"], "depuis": maintenant(),
                 "personne": personne}
     env = {**os.environ, "AGENT_ID": agent_id, "AGENT_RUN": run, "BOUTIQUE_VISIBLE": "1" if visible else "0",
-           "AGENT_BANDEAU": (f"DeloAI · {SKILLS[agent_id]['nom']} · pour {qui['prenom']}" if qui else
-                             f"DeloAI · {SKILLS[agent_id]['nom']} · demande Stanford : {d['intention']}")}
+           "AGENT_BANDEAU": (f"DeloAI agent · {SKILLS[agent_id]['nom_en']} · for {qui['prenom']}" if qui else
+                             f"DeloAI agent · {SKILLS[agent_id]['nom_en']} · Stanford request: {d['intention']}")}
     env.pop("BOUTIQUE_CDP", None)
     ecrire_jsonl("journal.jsonl", {"ts": maintenant(), "agent": agent_id, "run": run, "n": 0, "type": "demande",
-                                   "etape": f"{qui['prenom']} · {SKILLS[agent_id]['nom']}" if qui else "Reçoit une demande",
-                                   "detail": d["fr"], "demande": d["intention"], "demande_id": d["id"],
+                                   "etape": f"{qui['prenom']} · {SKILLS[agent_id]['nom_en']}" if qui else "Receives a request",
+                                   "detail": d["intention"], "fr": d["fr"], "demande": d["intention"], "demande_id": d["id"],
                                    "personne": personne, "capture": None})
     if agent_id == "prix-produit" and i == 0 and os.path.exists(os.path.join(SORTIE, "prix-origine.json")):
         # nouveau tour de rotation : on remet les prix d'origine, pour que les baisses ne s'empilent pas
@@ -170,7 +170,7 @@ def passage(agent_id, visible=None, personne=None):
         except json.JSONDecodeError:
             reponse = (p.stderr or p.stdout or "sortie illisible").strip()[:300]
     except subprocess.TimeoutExpired:
-        reponse = f"Délai dépassé : l'agent n'a pas fini."
+        reponse = "Timed out: the agent did not finish."
     except Exception as e:
         reponse = f"Lancement impossible : {e}"[:300]
     finally:
@@ -180,7 +180,7 @@ def passage(agent_id, visible=None, personne=None):
     duree = round(time.time() - t0, 1)
     actions = sum(1 for l in lire_jsonl("journal.jsonl") if l.get("run") == run and l.get("type") == "outil")
     ecrire_jsonl("journal.jsonl", {"ts": maintenant(), "agent": agent_id, "run": run, "n": actions + 1,
-                                   "type": "resultat", "etape": "Répond" if statut == "ok" else "Échec",
+                                   "type": "resultat", "etape": "Answers" if statut == "ok" else "Failed",
                                    "detail": reponse, "statut": statut, "capture": None})
     bilan = {"run": run, "agent": agent_id, "demande_id": d["id"], "demande": d["intention"], "fr": d["fr"],
              "statut": statut, "reponse": reponse, "duree_s": duree, "actions": actions, "cout_usd": cout,
