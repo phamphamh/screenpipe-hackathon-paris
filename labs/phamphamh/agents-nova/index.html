@@ -74,6 +74,12 @@ button { font: inherit; color: inherit; }
 .suite h2 { margin: 0; font-size: 34px; font-weight: 300; letter-spacing: -.025em; }
 .suite h2 b { font-weight: 600; }
 .trio { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--trait); border: 1px solid var(--trait); }
+.top-t { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 10px; border-top: 1px solid var(--trait); padding-top: 10px; }
+.top-t .n { font-size: 17px; font-weight: 500; }
+.top-t .v { font-family: var(--f-mono); font-size: 12px; color: var(--doux); white-space: nowrap; align-self: center; }
+.top-t .p { grid-column: 1 / -1; height: 10px; background: var(--plan-2); }
+.top-t .p i { display: block; height: 100%; background: var(--perte); }
+.trio.quatre { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 .trio > div { background: var(--fond); padding: 22px 24px; display: grid; gap: 12px; align-content: start; min-width: 0; }
 .trio .gros { font-size: 64px; font-weight: 300; letter-spacing: -.04em; line-height: 1; }
 .trio .phrase-s { margin: 0; font-size: 17px; color: var(--doux); line-height: 1.35; }
@@ -226,15 +232,24 @@ button { font: inherit; color: inherit; }
 .quoi dd { margin: 0; }
 .pont { justify-self: start; font-family: var(--f-mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--ia); text-decoration: none; border: 1px solid var(--ia); padding: 8px 12px; }
 .pont:hover { background: var(--ia); color: #fff; }
+.wf-ligne { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 10px; align-items: center; width: 100%; text-align: left; background: var(--fond); border: 1px solid var(--trait); padding: 14px 14px; cursor: pointer; font: inherit; }
+.wf-ligne:hover { border-color: var(--texte); }
+.wf-ligne.top { border-left: 2px solid var(--ia); }
+.wf-ligne .n { font-size: 19px; font-weight: 500; letter-spacing: -.01em; }
+.wf-ligne .f { font-family: var(--f-mono); font-size: 12px; color: var(--doux); white-space: nowrap; }
+.g-carte { margin: 14px 22px 0; border: 1px solid var(--trait); background: var(--plan); padding: 12px 16px; display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+.g-carte .pourquoi { font-size: 15px; }
+.g-pied { display: flex; align-items: center; gap: 16px; border-top: 1px solid var(--trait); padding: 12px 22px; }
+.g-pied .g-detail { border: 0; padding: 0; min-height: 0; flex: 1; }
 .lien-graphe { background: none; border: 0; padding: 0; text-align: left; cursor: pointer; font: inherit; font-size: 21px; font-weight: 500; letter-spacing: -.01em; color: var(--texte); }
 .lien-graphe span { font-family: var(--f-mono); font-size: 13px; color: var(--ia); }
 .lien-graphe:hover { color: var(--ia); }
 .graphe-voile { position: fixed; inset: 0; background: rgba(10,12,15,.28); z-index: 20; display: grid; place-items: center; }
-.graphe { width: 85vw; height: 82vh; background: var(--fond); border: 1px solid var(--trait-fort); box-shadow: 0 30px 80px -30px rgba(10,12,15,.5); display: grid; grid-template-rows: auto minmax(0, 1fr) auto; border-radius: 10px; overflow: hidden; }
+.graphe { width: 85vw; height: 86vh; background: var(--fond); border: 1px solid var(--trait-fort); box-shadow: 0 30px 80px -30px rgba(10,12,15,.5); display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto; border-radius: 10px; overflow: hidden; }
 .g-tete { display: flex; align-items: center; gap: 16px; padding: 16px 22px; border-bottom: 1px solid var(--trait); }
 .g-tete .t { font-size: 22px; font-weight: 500; letter-spacing: -.01em; }
 .g-tete .btn { margin-left: auto; }
-.g-toile { position: relative; overflow: auto; background-color: #fafbfc; background-image: radial-gradient(#cfd5dc 1px, transparent 1px); background-size: 18px 18px; }
+.g-toile { position: relative; overflow: hidden; margin-top: 14px; background-color: #fafbfc; background-image: radial-gradient(#cfd5dc 1px, transparent 1px); background-size: 18px 18px; }
 .g-toile svg { position: absolute; left: 0; top: 0; pointer-events: none; }
 .noeud { position: absolute; width: 150px; min-height: 92px; background: #fff; border: 1px solid #c9cfd6; border-radius: 10px; box-shadow: 0 2px 6px rgba(10,12,15,.06); padding: 10px 12px; cursor: pointer; display: grid; gap: 4px; align-content: start; font: inherit; text-align: left; }
 .noeud:hover { border-color: var(--texte); }
@@ -488,12 +503,16 @@ function rendreSuite() {
   h += `<div class="mono" style="margin-top:26px">One employee, step by step</div>
   <div class="puces">${SALARIES.map(s => `<button class="puce ${s.id === CAS ? "on" : ""}" data-cas="${s.id}">${esc(s.prenom)}</button>`).join("")}</div>
   <div class="cas-nom"><b>${esc(p.prenom)}</b> — ${esc(p.role)}</div>
-  <div class="trio">
+  <div class="trio quatre">
   <div><div class="mono">What we captured</div><div class="minis3"><div><b>${nf(act.minutes ?? src.minutes)}</b><span>minutes</span></div><div><b>${nf(act.captures ?? src.captures)}</b><span>captures</span></div><div><b>${nf(act.moments ?? src.moments)}</b><span>moments</span></div></div>
     ${act.jours ? `<div class="mono">Minutes per day</div>${barres(act.jours.map(j => ({ k: esc(j.jour), v: j.minutes, c: "fort" })), x => x.v.toFixed(1) + " min")}` : ""}</div>
   <div><div class="mono">What ${elle} does</div>${act.repartition ? barres(act.repartition.map((r, i) => ({ k: esc(r.nom_en || r.nom), v: r.minutes, c: i === 0 ? "" : "perte" })), x => x.v.toFixed(1) + " min") : ""}
     ${act.ecrans_top ? `<div class="mono">Top screens</div>${barres(act.ecrans_top.map(e => ({ k: esc(e.ecran), v: e.minutes, c: "fort" })), x => x.v.toFixed(1) + " min")}` : ""}</div>
-  <div><div class="mono">What we'll automate</div>${wfsTries(p).map(w => `<div class="wf-cas"><span class="n">${esc(w.nom)}</span><span class="f">${w.fois != null ? nf(w.fois) + "× / week" : ""}${w.minutes != null ? " · " + nf(w.minutes) + " min" : ""}</span><a class="pont" href="#bureau-${esc(CAS)}~${esc(w.agent)}">Open in the office →</a></div>`).join("") || `<p class="phrase-s">Nothing repeated enough yet.</p>`}</div></div>`;
+  <div><div class="mono">Top repetitive tasks</div>${(() => { const l = (act.repartition || []).filter(r => !/other/i.test(r.nom_en || "")).slice().sort((a, b) => (b.fois || 0) - (a.fois || 0));
+      const src2 = l.length ? l.map(r => ({ nom: r.nom_en || r.nom, fois: r.fois, minutes: r.minutes })) : (p.workflows || []).map(w => ({ nom: w.nom, fois: w.fois, minutes: w.minutes }));
+      const mx = Math.max(1, ...src2.map(r => r.fois || 0));
+      return src2.map((r, i) => `<div class="top-t"><span class="n">${String(i + 1).padStart(2, "0")} · ${esc(r.nom)}</span><span class="v">${nf(r.fois)}× · ${r.minutes != null ? Number(r.minutes).toFixed(1) : "—"} min</span><span class="p"><i style="width:${((r.fois || 0) / mx * 100).toFixed(1)}%"></i></span></div>`).join(""); })()}<p class="phrase-s">Ranked by how often ${elle} repeats them this week.</p></div>
+  <div><div class="mono">What we'll automate</div><p class="phrase-s">From these, we automate:</p>${wfsTries(p).map(w => `<div class="wf-cas"><span class="n">${esc(w.nom)}</span><span class="f">${w.fois != null ? nf(w.fois) + "× / week" : ""}${w.minutes != null ? " · " + nf(w.minutes) + " min" : ""}</span><a class="pont" href="#bureau-${esc(CAS)}~${esc(w.agent)}">Open in the office →</a></div>`).join("") || `<p class="phrase-s">Nothing repeated enough yet.</p>`}</div></div>`;
   if (CAS === "sophie" && EXTRAIT) {
     h += `<div class="mono">A real morning, as screenpipe saw it</div><ol class="fil-chrono">${EXTRAIT.map(l => `<li class="${/Show Report/.test(l.action) ? "rep" : ""}"><span class="h">${esc(l.heure)}</span><span class="a">${esc(actionEn(l.action))}</span><span class="w">${esc(l.fenetre)}</span></li>`).join("")}</ol>`;
   }
@@ -685,11 +704,7 @@ function rendrePanneau() {
   let h = `<button class="fermer" data-act="fermer" aria-label="Close">×</button><div class="mono">Employee · ${esc(p.role)}</div><div class="pn-nom">${esc(p.prenom)}</div>`;
   if (!P.wf) {
     const liste = wfsTries(p);
-    h += liste.length ? liste.map((w, i) => { const c = audit(w.agent), q = QUOI[w.agent];
-      return `<div class="pn-wf ${i === 0 ? "top" : ""}"><span class="reco">${i === 0 ? "★ " : ""}Recommended by the audit</span><button class="nom lien-graphe" data-act="graphe" data-i="${i}" title="See the workflow">${esc(w.nom)} <span>↗</span></button>
-      <div class="pourquoi"><b>Found in the audit:</b> ${esc(p.prenom)} ran this ${esc(w.nom.toLowerCase())} ${w.fois != null ? `${nf(w.fois)}× this week` : "this week"}${w.minutes != null ? ` (${nf(w.minutes)} min)` : ""}.${c ? ` Company-wide: <b>${nf(c.frequence)}× / week, ${eurk(c.cout_an)} / year</b>.` : ""}</div>
-      ${q ? `<dl class="quoi"><dt>Trigger</dt><dd>${esc(q[0].replace("{p}", p.prenom))}</dd><dt>Does</dt><dd>${esc(q[1])}</dd><dt>Output</dt><dd>${esc(q[2])}</dd></dl>` : ""}
-      <button class="btn ${i === 0 ? "ia" : ""}" data-act="creer" data-i="${i}">Deploy workflow</button></div>`; }).join("")
+    h += liste.length ? `<div class="mono" style="margin-top:6px">Workflows</div>` + liste.map((w, i) => `<button class="wf-ligne ${i === 0 ? "top" : ""}" data-act="graphe" data-i="${i}"><span class="n">${esc(w.nom)}</span>${i === 0 ? `<span class="reco">Recommended</span>` : ""}<span class="f">${w.fois != null ? nf(w.fois) + "× / week" : ""}</span></button>`).join("")
       : `<div class="pn-wf"><div class="fois">No repeated workflow spotted yet.</div></div>`;
   } else {
     const w = P.wf, etapes = etapesDe(w);
@@ -717,6 +732,11 @@ $("#panneau").addEventListener("click", async e => {
   }
   if (b.dataset.act === "creer") {
     const w = wfsTries(PERS[P.id])[Number(b.dataset.i)]; if (!w) return;
+    creerWorkflow(w);
+  }
+});
+async function creerWorkflow(w) {
+  {
     Object.assign(P, { wf: w, phase: "creation", ecrites: 0 });
     ETAT.lien = { personne: P.id, agent: w.agent, t0: performance.now() };
     rendrePanneau();
@@ -725,6 +745,9 @@ $("#panneau").addEventListener("click", async e => {
     await attendre(300); if (P.wf !== w) return;
     P.phase = "pret"; rendrePanneau();
   }
+}
+$("#panneau").addEventListener("click", async e => {
+  const b = e.target.closest("[data-act]"); if (!b) return;
   if (b.dataset.act === "graphe") { const w = wfsTries(PERS[P.id])[Number(b.dataset.i)]; if (w) ouvrirGraphe(PERS[P.id], w); return; }
   if (b.dataset.act === "lancer") {
     const w = P.wf; Object.assign(P, { phase: "lance", depuis: Date.now(), run: null }); rendrePanneau();
@@ -758,23 +781,27 @@ function ouvrirGraphe(p, w) {
     { type: "agent", t: "Claude · DeloAI agent", st: "Agent", d: "Claude does these steps itself, in the store's real back-office, and logs every action.", d2: "Agent: " + (w.agent || "") },
     { type: "sortie", t: q[2].charAt(0).toUpperCase() + q[2].slice(1), st: "Output", d: "Output: " + q[2] + ".", d2: "Sent back to " + p.prenom + "." },
   ];
-  const W = 150, G = 40, X0 = 36, Yb = 150, dy = 46;
+  const dispo = Math.round(innerWidth * .85) - 4, nN = grapheNoeuds.length, X0 = 24, G = 26;
+  const W = Math.max(96, Math.min(150, Math.floor((dispo - 2 * X0 - (nN - 1) * G) / nN))), Yb = 40, dy = 40;
   const pos = grapheNoeuds.map((n, i) => ({ x: X0 + i * (W + G), y: Yb + (i % 2 ? dy : 0) }));
-  const largeur = X0 * 2 + grapheNoeuds.length * (W + G), hauteur = Yb + dy + 160;
+  const largeur = X0 * 2 + nN * W + (nN - 1) * G, hauteur = Yb + dy + 150;
   let chemins = "";
   for (let i = 0; i < pos.length - 1; i++) {
     const a = { x: pos[i].x + W, y: pos[i].y + 46 }, b = { x: pos[i + 1].x, y: pos[i + 1].y + 46 };
     const d = `M${a.x},${a.y} C${a.x + 30},${a.y} ${b.x - 30},${b.y} ${b.x},${b.y}`;
-    chemins += `<path id="gc${i}" d="${d}" fill="none" stroke="#9aa2ad" stroke-width="1.6"/><circle r="3.2" fill="var(--ia)"><animateMotion dur="1.6s" begin="${(i * .2).toFixed(1)}s" repeatCount="indefinite"><mpath href="#gc${i}"/></animateMotion></circle>`;
+    chemins += `<path id="gc${i}" d="${d}" fill="none" stroke="#9aa2ad" stroke-width="1.6"/><circle r="3.2" fill="var(--ia)" opacity="0"><set attributeName="opacity" to="1" begin="${(i * .2).toFixed(1)}s"/><animateMotion dur="1.6s" begin="${(i * .2).toFixed(1)}s" repeatCount="indefinite"><mpath href="#gc${i}"/></animateMotion></circle>`;
   }
   const v = document.createElement("div"); v.className = "graphe-voile"; v.id = "graphe";
   v.innerHTML = `<div class="graphe" role="dialog" aria-label="Workflow">
     <div class="g-tete"><span class="mono">Workflow</span><span class="t">${esc(w.nom)}</span><span class="mono">${esc(p.prenom)} · ${esc(p.role)}</span><button class="btn" data-g="fermer">Close</button></div>
-    <div class="g-toile"><div style="position:relative;width:${largeur}px;height:${hauteur}px"><svg width="${largeur}" height="${hauteur}">${chemins}</svg>
-      ${grapheNoeuds.map((n, i) => `<button class="noeud ${n.type}" data-n="${i}" style="left:${pos[i].x}px;top:${pos[i].y}px"><span class="ic"><svg viewBox="0 0 16 16">${ICONES[n.type]}</svg></span><span class="tt">${esc(n.t)}</span><span class="st">${esc(n.st)}</span></button>`).join("")}</div></div>
-    <div class="g-detail" id="g-detail"><span class="mono">Click a node to see its detail</span></div></div>`;
+    <div class="g-carte"><div class="pourquoi"><b>Found in the audit:</b> ${esc(p.prenom)} ran this ${esc(w.nom.toLowerCase())} ${w.fois != null ? `${nf(w.fois)}× this week` : "this week"}${w.minutes != null ? ` (${nf(w.minutes)} min)` : ""}.${audit(w.agent) ? ` Company-wide: <b>${nf(audit(w.agent).frequence)}× / week, ${eurk(audit(w.agent).cout_an)} / year</b>.` : ""}</div>
+      <dl class="quoi"><dt>Trigger</dt><dd>${esc(q[0].replace("{p}", p.prenom))}</dd><dt>Does</dt><dd>${esc(q[1])}</dd><dt>Output</dt><dd>${esc(q[2])}</dd></dl></div>
+    <div class="g-toile" style="display:grid;place-items:center"><div style="position:relative;width:${largeur}px;height:${hauteur}px"><svg width="${largeur}" height="${hauteur}">${chemins}</svg>
+      ${grapheNoeuds.map((n, i) => `<button class="noeud ${n.type}" data-n="${i}" style="left:${pos[i].x}px;top:${pos[i].y}px;width:${W}px"><span class="ic"><svg viewBox="0 0 16 16">${ICONES[n.type]}</svg></span><span class="tt">${esc(n.t)}</span><span class="st">${esc(n.st)}</span></button>`).join("")}</div></div>
+    <div class="g-pied"><div class="g-detail" id="g-detail"><span class="mono">Click a node to see its detail</span></div><button class="btn ia" data-g="deployer">Deploy workflow</button></div></div>`;
   v.addEventListener("click", e => {
     if (e.target === v || e.target.closest("[data-g=fermer]")) return fermerGraphe();
+    if (e.target.closest("[data-g=deployer]")) { fermerGraphe(); creerWorkflow(w); return; }
     const nd = e.target.closest(".noeud"); if (!nd) return;
     v.querySelectorAll(".noeud").forEach(x => x.classList.toggle("on", x === nd));
     const n = grapheNoeuds[Number(nd.dataset.n)];
