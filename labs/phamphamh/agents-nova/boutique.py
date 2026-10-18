@@ -296,7 +296,7 @@ def ouvrir(page, ctx, etat, chemin):
 def accueil():
     """Début d'un passage visible : la fenêtre se connecte et montre le tableau de bord."""
     with admin() as (page, ctx, etat):
-        ouvrir(page, ctx, etat, "dashboard/")
+        ouvrir(page, ctx, etat, "admin/dashboard/")
         page.wait_for_timeout(800)
     journal("Opens the admin panel", BOUTIQUE.replace("http://", "") + "/admin")
     return {"ok": True}

@@ -92,11 +92,26 @@ def ouvrir_fenetre():
     boutique.py s'y reconnecte à chaque appel grâce à BOUTIQUE_CDP."""
     import urllib.request
     from playwright.sync_api import sync_playwright
-    with sync_playwright() as p:
-        exe = p.chromium.executable_path
+    # le vrai Chrome s'il est installé : pas de bandeau « Chrome for Testing » à l'écran pendant la démo
+    exe = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+    if not os.path.exists(exe):
+        with sync_playwright() as p:
+            exe = p.chromium.executable_path
+    # pas de bulle « Enregistrer le mot de passe ? » ni « Restaurer les pages ? » pendant la démo
+    prefs = os.path.join(TRAVAIL, "chromium-profil", "Default", "Preferences")
+    os.makedirs(os.path.dirname(prefs), exist_ok=True)
+    try:
+        pr = json.load(open(prefs))
+    except Exception:
+        pr = {}
+    pr["credentials_enable_service"] = False
+    pr.setdefault("profile", {}).update({"password_manager_enabled": False, "exit_type": "Normal", "exited_cleanly": True})
+    pr.setdefault("translate", {})["enabled"] = False
+    json.dump(pr, open(prefs, "w"))
     proc = subprocess.Popen([exe, f"--remote-debugging-port={PORT_CDP}", f"--user-data-dir={TRAVAIL}/chromium-profil",
                              "--window-position=0,0", "--window-size=1280,800", "--no-first-run",
-                             "--no-default-browser-check", "--disable-features=Translate", "about:blank"],
+                             "--no-default-browser-check", "--disable-features=Translate,TranslateUI", "--hide-crash-restore-bubble",
+                             "--disable-session-crashed-bubble", "--lang=en-US", "about:blank"],
                             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     for _ in range(150):  # premier lancement d’un profil neuf : jusqu’à 30 s
         try:

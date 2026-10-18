@@ -16,7 +16,7 @@
   --ia: #0a84b8; --perte: #d9730d;
   --f-texte: "Geist", "Inter Tight", system-ui, sans-serif;
   --f-mono: "Geist Mono", ui-monospace, Menlo, monospace;
-  --haut: 44px;
+  --haut: 44px; --side: 220px;
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; height: 100%; overflow: hidden; }
@@ -26,13 +26,36 @@ body { background: var(--fond); color: var(--texte); font-family: var(--f-texte)
 button { font: inherit; color: inherit; }
 
 /* Barre haute */
-.barre { position: fixed; inset: 0 0 auto 0; height: var(--haut); display: flex; align-items: center; gap: 28px; padding: 0 24px; border-bottom: 1px solid var(--trait); background: var(--fond); z-index: 5; }
-.barre .marque { color: var(--texte); font-weight: 500; display: flex; gap: 10px; align-items: center; letter-spacing: .16em; }
-.barre .marque i { width: 8px; height: 8px; background: var(--ia); display: inline-block; }
-.barre .etape { margin-left: auto; color: var(--texte); }
-.barre .etape b { color: var(--doux); font-weight: 400; }
-.barre .prog { position: absolute; left: 0; bottom: -1px; height: 2px; background: var(--ia); transition: width .35s ease; }
-.ecrans { position: fixed; top: var(--haut); left: 0; right: 0; bottom: 0; }
+/* Coquille d'application */
+.side { position: fixed; left: 0; top: 0; bottom: 0; width: var(--side); border-right: 1px solid var(--trait); background: var(--plan); display: flex; flex-direction: column; padding: 14px 12px; gap: 14px; z-index: 6; }
+.logo { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 17px; letter-spacing: -.01em; padding: 4px 6px; }
+.logo i { width: 22px; height: 22px; background: var(--texte); display: grid; place-items: center; }
+.logo i::after { content: ""; width: 8px; height: 8px; background: var(--ia); }
+.espace { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px; align-items: center; border: 1px solid var(--trait); background: var(--fond); padding: 8px 10px; }
+.pastille { width: 30px; height: 30px; display: grid; place-items: center; background: var(--texte); color: var(--fond); font-family: var(--f-mono); font-size: 11px; letter-spacing: .06em; }
+.espace b { display: block; font-size: 14px; font-weight: 500; }
+.espace small { display: block; font-size: 11.5px; color: var(--doux); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.espace .chev { color: var(--faible); font-size: 12px; }
+.side nav { display: grid; gap: 2px; }
+.side .grp { margin: 8px 8px 6px; font-size: 10.5px; color: var(--faible); }
+.nav { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border: 0; background: none; text-align: left; font-size: 14.5px; color: var(--doux); cursor: pointer; border-left: 2px solid transparent; }
+.nav svg { width: 16px; height: 16px; flex: none; stroke: currentColor; fill: none; stroke-width: 1.5; }
+.nav:hover { color: var(--texte); background: var(--plan-2); }
+.nav.on { color: var(--texte); background: var(--fond); border-left-color: var(--ia); font-weight: 500; }
+.nav.off { color: var(--faible); cursor: default; opacity: .7; }
+.nav.off:hover { background: none; color: var(--faible); }
+.nav .bientot { margin-left: auto; font-family: var(--f-mono); font-size: 9.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--faible); }
+.profil { margin-top: auto; display: flex; align-items: center; gap: 10px; border-top: 1px solid var(--trait); padding: 12px 6px 2px; }
+.av { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: var(--plan-2); border: 1px solid var(--trait-fort); font-family: var(--f-mono); font-size: 11px; }
+.profil b { display: block; font-size: 13.5px; font-weight: 500; }
+.profil small { display: block; font-size: 11.5px; color: var(--doux); }
+.barre { position: fixed; top: 0; right: 0; left: var(--side); height: var(--haut); display: flex; align-items: center; gap: 22px; padding: 0 22px; border-bottom: 1px solid var(--trait); background: var(--fond); z-index: 5; }
+.barre .fil { color: var(--doux); }
+.barre .fil b { color: var(--texte); font-weight: 500; }
+.barre .live { margin-left: auto; color: var(--ia); display: inline-flex; align-items: center; gap: 8px; }
+.barre .live i { width: 7px; height: 7px; border-radius: 50%; background: var(--ia); display: inline-block; animation: pouls 1.8s infinite; }
+@keyframes pouls { 0% { box-shadow: 0 0 0 0 rgba(10,132,184,.5); } 70% { box-shadow: 0 0 0 7px rgba(10,132,184,0); } 100% { box-shadow: 0 0 0 0 rgba(10,132,184,0); } }
+.ecrans { position: fixed; top: var(--haut); left: var(--side); right: 0; bottom: 0; }
 .ecran { position: absolute; inset: 0; display: none; }
 .ecran.on { display: block; }
 .ecran:not(.on) { display: none !important; }
@@ -42,10 +65,10 @@ button { font: inherit; color: inherit; }
 .chiffre { font-weight: 300; letter-spacing: -.045em; line-height: .95; }
 
 /* ---------- L'audit ---------- */
-.audit { padding: 40px 56px 28px; display: grid; grid-template-rows: minmax(0, 1fr) auto; gap: 20px; }
-.au-grille { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 56px; min-height: 0; }
+.audit { padding: 30px 40px 22px; display: grid; grid-template-rows: minmax(0, 1fr) auto; gap: 20px; }
+.au-grille { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 40px; min-height: 0; }
 .au-gauche { display: grid; grid-template-rows: auto auto minmax(0, 1fr); gap: 28px; }
-.heros .chiffre { font-size: 132px; margin-top: 14px; }
+.heros .chiffre { font-size: 116px; margin-top: 12px; }
 .heros .chiffre small { font-size: 44px; letter-spacing: -.02em; color: var(--doux); }
 .heros .mono { display: block; margin-top: 14px; font-size: 13px; }
 .cles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid var(--trait-fort); align-self: start; }
@@ -55,7 +78,7 @@ button { font: inherit; color: inherit; }
 .cle .chiffre small { font-size: 24px; letter-spacing: -.01em; color: var(--doux); }
 .cle .mono { display: block; margin-top: 10px; line-height: 1.5; }
 .cle .mono b { color: var(--texte); font-weight: 500; }
-.au-droite { position: relative; border: 1px solid var(--trait); background: var(--plan); padding: 30px 32px; display: grid; grid-template-rows: auto auto minmax(0, 1fr); gap: 18px; align-self: start; }
+.au-droite { position: relative; border: 1px solid var(--trait); background: var(--plan); padding: 26px 28px; display: grid; grid-template-rows: auto auto minmax(0, 1fr); gap: 18px; align-self: start; }
 .au-droite h2 { margin: 0; font-weight: 300; font-size: 30px; letter-spacing: -.02em; line-height: 1.15; }
 .au-droite h2 b { font-weight: 500; }
 .wfs { list-style: none; margin: 0; padding: 0; }
@@ -65,11 +88,46 @@ button { font: inherit; color: inherit; }
 .wfs .nom small { display: block; font-family: var(--f-mono); font-size: 11.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--doux); font-weight: 400; margin-top: 4px; }
 .wfs .eur { font-size: 30px; font-weight: 300; letter-spacing: -.03em; text-align: right; }
 .wfs .eur small { display: block; font-family: var(--f-mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--faible); }
+.tuile { cursor: pointer; transition: background .2s ease, box-shadow .2s ease; position: relative; }
+.tuile:hover { background: var(--plan); box-shadow: inset 0 0 0 1px var(--trait-fort); }
+.tuile:focus-visible { outline: 2px solid var(--ia); outline-offset: 2px; }
+.tuile::after { content: "↗"; position: absolute; right: 12px; top: 12px; font-family: var(--f-mono); font-size: 12px; color: var(--faible); opacity: 0; transition: opacity .2s; }
+.tuile:hover::after { opacity: 1; }
+.heros.tuile { padding: 6px 12px 12px; margin: -6px -12px 0; }
+.cle.tuile { padding-left: 12px; }
+.voile { position: absolute; inset: 0; background: rgba(255,255,255,.72); opacity: 0; transition: opacity .3s ease; z-index: 3; }
+.voile.on { opacity: 1; }
+.detail { position: absolute; z-index: 4; background: var(--fond); border: 1px solid var(--trait-fort); box-shadow: 0 18px 50px -24px rgba(10,12,15,.35); overflow: hidden; transition: left .35s cubic-bezier(.2,.75,.2,1), top .35s cubic-bezier(.2,.75,.2,1), width .35s cubic-bezier(.2,.75,.2,1), height .35s cubic-bezier(.2,.75,.2,1); }
+.detail .dc { position: absolute; inset: 0; padding: 26px 30px 18px; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: 18px; opacity: 0; transition: opacity .2s ease; }
+.detail.ouvert .dc { opacity: 1; transition-delay: .22s; }
+.detail .fermer { position: absolute; right: 14px; top: 12px; background: none; border: 0; font-size: 20px; color: var(--doux); cursor: pointer; z-index: 2; }
+.dt-titre { font-size: 40px; font-weight: 300; letter-spacing: -.03em; line-height: 1.05; margin-top: 6px; }
+.dt-titre small { font-size: 20px; color: var(--doux); }
+.dt-corps { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 36px; min-height: 0; }
+.dt-bloc { display: grid; align-content: start; gap: 12px; min-width: 0; }
+.dt-bloc p { margin: 0; color: var(--doux); font-size: 15px; }
+.dt-bloc p b { color: var(--texte); font-weight: 500; }
+.formule { font-family: var(--f-mono); font-size: 12.5px; background: var(--plan); border: 1px solid var(--trait); padding: 10px 12px; line-height: 1.6; }
+.barres { display: grid; gap: 9px; }
+.barre-l { display: grid; grid-template-columns: 170px minmax(0, 1fr) 84px; gap: 12px; align-items: center; font-size: 14px; }
+.barre-l .k { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.barre-l .p { height: 12px; background: var(--plan-2); }
+.barre-l .p i { display: block; height: 100%; background: var(--trait-fort); }
+.barre-l.fort .p i { background: var(--texte); } .barre-l.ia .p i { background: var(--ia); } .barre-l.perte .p i { background: var(--perte); }
+.barre-l .v { font-family: var(--f-mono); font-size: 12px; text-align: right; color: var(--doux); }
+.barre-l.fort .k, .barre-l.perte .k { font-weight: 500; }
+.badge { font-family: var(--f-mono); font-size: 9.5px; letter-spacing: .1em; color: var(--ia); border: 1px solid var(--ia); padding: 0 5px; margin-left: 6px; vertical-align: 1px; }
+.etapes-obs { margin: 0; padding-left: 0; list-style: none; counter-reset: e; display: grid; gap: 6px; }
+.etapes-obs li { counter-increment: e; font-size: 14px; display: grid; grid-template-columns: 26px minmax(0, 1fr); }
+.etapes-obs li::before { content: counter(e, decimal-leading-zero); font-family: var(--f-mono); font-size: 11px; color: var(--ia); padding-top: 2px; }
+.courbe text { font-family: var(--f-mono); font-size: 10.5px; fill: var(--doux); }
+.legende { display: flex; gap: 16px; font-family: var(--f-mono); font-size: 11px; color: var(--doux); text-transform: uppercase; letter-spacing: .08em; }
+.legende i { display: inline-block; width: 10px; height: 2px; vertical-align: middle; margin-right: 6px; }
 .source-ligne { border-top: 1px solid var(--trait); padding-top: 12px; color: var(--faible); }
 
 /* ---------- Le bureau ---------- */
-.bureau { padding: 16px 18px; }
-.b-grille { height: 100%; display: grid; grid-template-columns: minmax(0, 1fr) 420px; gap: 16px; }
+.bureau { padding: 14px; }
+.b-grille { height: 100%; display: grid; grid-template-columns: minmax(0, 1fr) 370px; gap: 14px; }
 .scene { position: relative; overflow: hidden; background: var(--fond); min-height: 0; border: 1px solid var(--trait); }
 .scene canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
 .scene svg.liens { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
@@ -91,12 +149,21 @@ button { font: inherit; color: inherit; }
 .mesures b.ia { color: var(--ia); }
 .aide { position: absolute; left: 22px; bottom: 16px; pointer-events: none; }
 .b-droite { display: grid; grid-template-rows: minmax(0, 1fr) auto; gap: 16px; min-height: 0; }
-.panneau { position: relative; border: 1px solid var(--trait); background: var(--plan); padding: 18px 20px; display: grid; align-content: start; gap: 12px; min-height: 0; overflow: hidden; }
+.panneau { position: relative; border: 1px solid var(--trait); background: var(--plan); padding: 18px 20px; display: grid; align-content: start; gap: 10px; min-height: 0; overflow: auto; }
 .panneau.vide-p { align-content: center; justify-items: start; }
 .panneau .fermer { position: absolute; right: 12px; top: 10px; background: none; border: 0; font-family: var(--f-mono); font-size: 16px; color: var(--doux); cursor: pointer; padding: 4px 8px; }
-.pn-nom { font-size: 38px; font-weight: 300; letter-spacing: -.03em; line-height: 1; }
+.pn-nom { font-size: 34px; font-weight: 300; letter-spacing: -.03em; line-height: 1; }
 .pn-wf { border-top: 1px solid var(--trait-fort); padding-top: 12px; display: grid; gap: 8px; }
 .pn-wf .nom { font-size: 21px; font-weight: 500; letter-spacing: -.01em; }
+.pn-wf.top { background: var(--fond); border: 1px solid var(--trait-fort); border-left: 2px solid var(--ia); padding: 12px 14px; }
+.reco { justify-self: start; font-family: var(--f-mono); font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--ia); border: 1px solid var(--ia); padding: 1px 6px; }
+.pourquoi { font-size: 13.5px; line-height: 1.4; color: var(--doux); }
+.pourquoi b { color: var(--texte); font-weight: 500; }
+.quoi { display: grid; grid-template-columns: 62px minmax(0, 1fr); gap: 3px 10px; margin: 0; font-size: 13.5px; line-height: 1.35; }
+.quoi dt { font-family: var(--f-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--faible); padding-top: 2px; }
+.quoi dd { margin: 0; }
+.pont { justify-self: start; font-family: var(--f-mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--ia); text-decoration: none; border: 1px solid var(--ia); padding: 8px 12px; }
+.pont:hover { background: var(--ia); color: #fff; }
 .pn-wf .fois { font-family: var(--f-mono); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--doux); }
 .btn { justify-self: start; font-family: var(--f-mono); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; background: var(--fond); border: 1px solid var(--texte); color: var(--texte); padding: 8px 14px; cursor: pointer; }
 .btn:hover:not(:disabled) { background: var(--texte); color: var(--fond); }
@@ -128,27 +195,40 @@ button { font: inherit; color: inherit; }
 </style>
 </head>
 <body>
+<aside class="side">
+  <div class="logo"><i></i>DeloAI</div>
+  <div class="espace" title="Client workspace"><span class="pastille">AN</span><div><b>Atelier Nova</b><small>Online store · 60 seats</small></div><span class="chev">⌄</span></div>
+  <nav aria-label="Pages">
+    <div class="mono grp">Workspace</div>
+    <button class="nav" data-page="0"><svg viewBox="0 0 16 16"><rect x="2" y="2" width="5" height="5"/><rect x="9" y="2" width="5" height="5"/><rect x="2" y="9" width="5" height="5"/><rect x="9" y="9" width="5" height="5"/></svg>Audit</button>
+    <button class="nav" data-page="1"><svg viewBox="0 0 16 16"><path d="M2 14V6l6-4 6 4v8z"/><path d="M6 14v-4h4v4"/></svg>Office</button>
+    <span class="nav off"><svg viewBox="0 0 16 16"><circle cx="4" cy="4" r="2"/><circle cx="12" cy="12" r="2"/><path d="M4 6v3a3 3 0 0 0 3 3h3"/></svg>Workflows<span class="bientot">soon</span></span>
+    <span class="nav off"><svg viewBox="0 0 16 16"><rect x="3" y="5" width="10" height="8"/><path d="M8 2v3M6 9h0M10 9h0"/></svg>Agents<span class="bientot">soon</span></span>
+    <span class="nav off"><svg viewBox="0 0 16 16"><path d="M4 2h6l3 3v9H4z"/><path d="M6 8h5M6 11h5"/></svg>Reports<span class="bientot">soon</span></span>
+    <span class="nav off"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="2.5"/><path d="M8 1.5v2M8 12.5v2M1.5 8h2M12.5 8h2M3.4 3.4l1.4 1.4M11.2 11.2l1.4 1.4M3.4 12.6l1.4-1.4M11.2 4.8l1.4-1.4"/></svg>Settings<span class="bientot">soon</span></span>
+  </nav>
+  <div class="profil"><span class="av">YB</span><div><b>Youssef</b><small>DeloAI consultant</small></div></div>
+</aside>
 <header class="barre">
-  <span class="mono marque"><i></i>DeloAI</span>
-  <span class="mono">Client · Atelier Nova</span>
-  <span class="mono etape" id="etape">01 / 02</span>
-  <span class="prog" id="prog"></span>
+  <span class="mono fil">Atelier Nova / <b id="fil">Audit</b></span>
+  <span class="mono live"><i></i><span id="nb-live">3</span>&nbsp;agents live</span>
+  <span class="mono" id="date"></span>
 </header>
 
 <main class="ecrans">
   <section class="ecran audit" id="e-audit">
     <div class="au-grille">
       <div class="au-gauche">
-        <div class="heros">
+        <div class="heros tuile" data-detail="cout" tabindex="0" role="button">
           <div class="mono">The audit · one week observed</div>
           <div class="chiffre">€71.7k <small>/ year</small></div>
           <span class="mono">lost to repetitive tasks</span>
         </div>
         <div class="cles">
-          <div class="cle"><div class="chiffre">41 <small>h / week</small></div><span class="mono">hours lost / week, whole team</span></div>
-          <div class="cle"><div class="chiffre">40 <small>%</small></div><span class="mono">of time in one screen · <b>Catalog</b></span></div>
-          <div class="cle"><div class="chiffre perte">790× <small>/ week</small></div><span class="mono">No. 1 · <b>Sales report</b> · €10.5k / year</span></div>
-          <div class="cle"><div class="chiffre ia">€30.1k <small>/ year</small></div><span class="mono">recoverable · <b>5 workflows</b> to automate</span></div>
+          <div class="cle tuile" data-detail="heures" tabindex="0" role="button"><div class="chiffre">41 <small>h / week</small></div><span class="mono">hours lost / week, whole team</span></div>
+          <div class="cle tuile" data-detail="ecran" tabindex="0" role="button"><div class="chiffre">40 <small>%</small></div><span class="mono">of time in one screen · <b>Catalog</b></span></div>
+          <div class="cle tuile" data-detail="rapport" tabindex="0" role="button"><div class="chiffre perte">790× <small>/ week</small></div><span class="mono">No. 1 · <b>Sales report</b> · €10.5k / year</span></div>
+          <div class="cle tuile" data-detail="gain" tabindex="0" role="button"><div class="chiffre ia">€30.1k <small>/ year</small></div><span class="mono">recoverable · <b>5 workflows</b> to automate</span></div>
         </div>
         <div></div>
       </div>
@@ -192,6 +272,7 @@ button { font: inherit; color: inherit; }
   </section>
 </main>
 
+<script src="../dashboard-nova/data.js"></script>
 <script type="module">
 const NOM_AGENT = { "rapport-ventes": "Sales report", "prix-produit": "Product price", "commandes-annulees": "Canceled orders", "avis-produit": "Product reviews", "variantes-produit": "Product variants" };
 
@@ -207,14 +288,15 @@ const sansAccent = s => String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "")
 const attendre = ms => new Promise(r => setTimeout(r, ms));
 
 /* ---------- Deux écrans ---------- */
-const ETAPES = [{ id: "audit", titre: "The audit" }, { id: "bureau", titre: "The office" }];
+const ETAPES = [{ id: "audit", titre: "Audit" }, { id: "bureau", titre: "Office" }];
 let courant = -1;
 function aller(i, garderHash) {
   i = Math.max(0, Math.min(ETAPES.length - 1, i));
   const st = ETAPES[i]; courant = i;
   ETAPES.forEach((x, j) => document.getElementById("e-" + x.id).classList.toggle("on", j === i));
-  $("#etape").innerHTML = `${String(i + 1).padStart(2, "0")} / ${String(ETAPES.length).padStart(2, "0")} <b>·</b> ${esc(st.titre)}`;
-  $("#prog").style.width = ((i + 1) / ETAPES.length * 100) + "%";
+  $("#fil").textContent = st.titre;
+  document.querySelectorAll(".nav[data-page]").forEach(b => b.classList.toggle("on", Number(b.dataset.page) === i));
+  if (i !== 0) fermerDetail(true);
   if (!garderHash) history.replaceState(null, "", "#" + st.id);
   surEtape(st.id);
 }
@@ -223,17 +305,129 @@ addEventListener("keydown", e => {
   if (e.target.closest && e.target.closest("button") && (e.key === " " || e.key === "Enter")) return;
   if (["ArrowRight", " ", "PageDown"].includes(e.key)) { e.preventDefault(); aller(courant + 1); }
   else if (["ArrowLeft", "PageUp"].includes(e.key)) { e.preventDefault(); aller(courant - 1); }
-  else if (e.key === "Escape") fermerPanneau();
+  else if (e.key === "Escape") { if (detailOuvert) fermerDetail(); else fermerPanneau(); }
   else if (e.key === "f" || e.key === "F") { if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen?.(); }
 });
 function depuisHash() {
   const h = decodeURIComponent(location.hash.slice(1));
   const m = h.match(/^bureau-(.+)$/);
   if (m) { aller(1, true); ouvrirPersonne(sansAccent(m[1])); return; }
+  const a = h.match(/^audit-(.+)$/);
+  if (a) { aller(0, true); ouvrirDetail(a[1], false); return; }
   const i = ETAPES.findIndex(x => x.id === h);
   aller(i < 0 ? 0 : i);
 }
 addEventListener("hashchange", depuisHash);
+document.querySelectorAll(".nav[data-page]").forEach(b => b.addEventListener("click", () => aller(Number(b.dataset.page))));
+$("#date").textContent = new Date().toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric" });
+
+/* ---------- Audit : tuiles qui s'ouvrent en panneau de détail (FLIP) ---------- */
+const D = typeof DATA !== "undefined" ? DATA : null;
+const EN_TACHE = { "Rapport ventes": "Sales report", "Commandes annulées": "Canceled orders", "Prix produit": "Product price", "Avis produit": "Product reviews", "Variantes produit": "Product variants", "Filtre annulées": "Canceled-orders filter", "Adresse commande": "Order address", "Rapport commandes": "Orders report", "Recherche avis": "Review search", "Règle prix panier": "Cart price rule" };
+const EN_ECRAN = { "Rapports": "Reports", "Catalogue": "Catalog", "Commandes": "Orders", "Avis": "Reviews", "Clients": "Customers", "Marketing": "Marketing", "Accueil": "Dashboard" };
+const EN_EQUIPE = { "E-commerce": "E-commerce", "Opérations": "Operations" };
+const EN_JOUR = { Lun: "Mon", Mar: "Tue", Mer: "Wed", Jeu: "Thu", Ven: "Fri" };
+const EN_ETAPES_RAPPORT = ["Open a report (Bestsellers, Orders, Tax, Shipping, Coupons, Refunds, Product Views)", "Enter the start and end dates", "Pick the grouping (Day) for some reports", "Click Show Report", "Scroll and read the results"];
+const MODULES = [["Product price", "prix-produit"], ["Sales report", "rapport-ventes"], ["Canceled orders", "commandes-annulees"], ["Product reviews", "avis-produit"], ["Product variants", "variantes-produit"]];
+const eurk = v => "€" + (v / 1000).toFixed(1) + "k";
+const enDuree = s => String(s || "").replace("/ sem.", "/ wk").replace(" sem.", " wk");
+const SOURCE = `<div class="mono source-ligne">Source: screenpipe captures · 6 employees × 10 · WONDERBREAD (Stanford)</div>`;
+function barres(items, fmt) {
+  const max = Math.max(...items.map(x => x.v), 1);
+  return `<div class="barres">${items.map(x => `<div class="barre-l ${x.c || ""}"><span class="k" title="${esc(x.k)}">${x.k}</span><span class="p"><i style="width:${(x.v / max * 100).toFixed(1)}%"></i></span><span class="v">${esc(fmt(x))}</span></div>`).join("")}</div>`;
+}
+function courbe(series, labels) {
+  const W = 520, H = 170, g = 34, b = 22, max = Math.max(...series.flatMap(s => s.v), 1);
+  const X = i => g + i * (W - g - 10) / (labels.length - 1), Y = v => H - b - v / max * (H - b - 10);
+  let out = `<svg class="courbe" viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Hours observed per day by team">`;
+  [0, .5, 1].forEach(f => { const y = Y(max * f); out += `<line x1="${g}" x2="${W - 10}" y1="${y}" y2="${y}" stroke="var(--trait)"/><text x="0" y="${y + 4}">${(max * f).toFixed(0)} h</text>`; });
+  labels.forEach((l, i) => out += `<text x="${X(i)}" y="${H - 4}" text-anchor="middle">${esc(l)}</text>`);
+  series.forEach(s => { out += `<polyline fill="none" stroke="${s.c}" stroke-width="2" points="${s.v.map((v, i) => `${X(i)},${Y(v)}`).join(" ")}"/>` + s.v.map((v, i) => `<circle cx="${X(i)}" cy="${Y(v)}" r="3" fill="${s.c}"/>`).join(""); });
+  return out + "</svg>";
+}
+function contenuDetail(id) {
+  if (!D) return `<div class="dt-titre">Data unavailable</div><div></div>${SOURCE}`;
+  const T = D.dash;
+  const taches = T.taches.filter(t => t.cout_an > 0).slice().sort((a, b) => b.cout_an - a.cout_an);
+  if (id === "cout") {
+    const top = taches.slice(0, 8).map((t, i) => ({ k: esc(EN_TACHE[t.court] || t.court), v: t.cout_an, h: t.heures_semaine, c: i === 0 ? "perte" : "fort" }));
+    const r = taches[0];
+    return `<div><div class="mono">Audit · cost of repetitive tasks</div><div class="dt-titre">${eurk(T.cout_an)} <small>/ year · ${T.taches.length} tasks · ${nf(T.heures_semaine)} h / week</small></div></div>
+    <div class="dt-corps"><div class="dt-bloc"><div class="mono">How it is computed</div><div class="formule">cost = hours / week × 46 weeks × €${nf(T.cout_horaire)}/h<br>${esc(EN_TACHE[r.court] || r.court)}: ${r.heures_semaine} h × 46 × €${nf(T.cout_horaire)} = €${nf(r.cout_an)}</div>
+    <p>Every task was seen on screen, then counted across <b>${nf(T.postes)} seats</b>. No survey, no estimate from a manager.</p></div>
+    <div class="dt-bloc"><div class="mono">Cost per task · top 8 · € / year</div>${barres(top, x => "€" + nf(x.v))}</div></div>${SOURCE}`;
+  }
+  if (id === "heures") {
+    const eq = Object.keys(T.heures_par_jour);
+    const coul = ["var(--texte)", "var(--faible)"];
+    const causes = T.goulots.map((g, i) => ({ k: esc({ "Travail refait": "Rework", "Allers-retours": "Back-and-forth", "Passage de relais": "Handoffs" }[g.type] || g.type), v: g.heures_semaine, c: i === 0 ? "perte" : "fort" }));
+    return `<div><div class="mono">Audit · time lost</div><div class="dt-titre">${nf(T.heures_semaine)} h <small>/ week lost, whole team</small></div></div>
+    <div class="dt-corps"><div class="dt-bloc"><div class="mono">Hours observed per day · by team</div>${courbe(eq.map((e, i) => ({ v: T.heures_par_jour[e], c: coul[i] })), T.jours.map(j => j.replace(/^\w+/, m => EN_JOUR[m] || m)))}
+    <div class="legende">${eq.map((e, i) => `<span><i style="background:${coul[i]}"></i>${esc(EN_EQUIPE[e] || e)} · ${nf(Math.round(T.heures_par_jour[e].reduce((a, b) => a + b, 0)))} h observed</span>`).join("")}</div></div>
+    <div class="dt-bloc"><div class="mono">Why the time is lost · h / week</div>${barres(causes, x => x.v + " h · " + Math.round(x.v / T.heures_semaine * 100) + " %")}<p>A task can add up several causes: <b>rework</b> alone explains ${Math.round(T.goulots[0].heures_semaine / T.heures_semaine * 100)} % of the time lost.</p></div></div>${SOURCE}`;
+  }
+  if (id === "ecran") {
+    const eq = Object.keys(T.minutes_ecran);
+    const tot = T.ecrans.map((e, i) => eq.reduce((a, k) => a + T.minutes_ecran[k][i], 0));
+    const somme = tot.reduce((a, b) => a + b, 0);
+    const items = T.ecrans.map((e, i) => ({ k: esc(EN_ECRAN[e] || e), v: tot[i], c: e === "Catalogue" ? "fort" : "" })).sort((a, b) => b.v - a.v);
+    const iC = T.ecrans.indexOf("Catalogue");
+    return `<div><div class="mono">Audit · where the time goes</div><div class="dt-titre">${Math.round(tot[iC] / somme * 100)} % <small>of time in one screen · Catalog</small></div></div>
+    <div class="dt-corps"><div class="dt-bloc"><div class="mono">Catalog · by team</div>${barres(eq.map(k => ({ k: esc(EN_EQUIPE[k] || k), v: T.minutes_ecran[k][iC], c: "fort" })), x => (x.v / 60).toFixed(1) + " h")}
+    <p><b>${(tot[iC] / 60).toFixed(1)} h</b> in the Catalog out of <b>${(somme / 60).toFixed(1)} h</b> observed, and <b>${nf(T.bascules)}</b> screen switches a week.</p></div>
+    <div class="dt-bloc"><div class="mono">Hours per screen · observed week</div>${barres(items, x => (x.v / 60).toFixed(1) + " h · " + Math.round(x.v / somme * 100) + " %")}</div></div>${SOURCE}`;
+  }
+  if (id === "rapport") {
+    const r = T.taches.find(t => t.court === "Rapport ventes") || taches[0];
+    const qui = SALARIES.map(s => { const w = (PERS[s.id]?.workflows || []).find(w => w.agent === "rapport-ventes"); return { id: s.id, nom: s.prenom, k: esc(s.prenom) + ` <span style="color:var(--faible)">· ${esc(s.role)}</span>`, v: w?.fois || 0, c: w?.fois ? "perte" : "" }; }).sort((a, b) => b.v - a.v || (b.id === "sophie") - (a.id === "sophie"));
+    const etapes = (r.etapes || []).map((e, i) => EN_ETAPES_RAPPORT[i] || e);
+    return `<div><div class="mono">Audit · task no. 1</div><div class="dt-titre">Sales report <small>· ${nf(r.frequence)}× / week · ${r.heures_semaine} h / week · €${nf(r.cout_an)} / year</small></div></div>
+    <div class="dt-corps"><div class="dt-bloc"><div class="mono">Steps observed on screen</div><ol class="etapes-obs">${etapes.map(e => `<li>${esc(e)}</li>`).join("")}</ol></div>
+    <div class="dt-bloc"><div class="mono">Who does it · times this week</div>${barres(qui, x => x.v ? x.v + "×" : "—")}<p>Measured on 6 employees, then <b>× 10</b> for Atelier Nova's 60 seats.</p><a class="pont" href="#bureau-karim">See who does it most → Karim</a></div></div>${SOURCE}`;
+  }
+  if (id === "gain") {
+    const mods = D.businessCase.modules;
+    const total = mods.reduce((a, m) => a + m.gain, 0);
+    const items = mods.map((m, i) => { const [nom, ag] = MODULES[i] || [m.name, ""]; const live = ETAT.agents.some(a => a.id === ag && a.statut === "en service");
+      return { k: esc(nom) + (live ? `<span class="badge">LIVE</span>` : ""), v: m.gain, c: live ? "ia" : "", d: `${enDuree(m.recovered)} · ${enDuree(m.delay)}` }; });
+    return `<div><div class="mono">Audit · what we get back</div><div class="dt-titre ia">${eurk(total)} <small>/ year recoverable · ${mods.length} workflows</small></div></div>
+    <div class="dt-corps"><div class="dt-bloc"><div class="mono">Time handed back / week · build time</div><div class="barres">${items.map(x => `<div class="barre-l ${x.c}" style="grid-template-columns:minmax(0,1fr) auto"><span class="k">${x.k}</span><span class="v">${esc(x.d)}</span></div>`).join("")}</div><p>The first three run <b>live</b> since this morning, in the store's real back-office.</p></div>
+    <div class="dt-bloc"><div class="mono">Annual gain per workflow · € / year</div>${barres(items, x => "€" + nf(x.v))}</div></div>${SOURCE}`;
+  }
+  return "";
+}
+let detailOuvert = null, tuileSource = null, detailId = null;
+function ouvrirDetail(id, anime = true) {
+  const sec = $("#e-audit"), tuile = sec.querySelector(`.tuile[data-detail="${id}"]`); if (!tuile) return;
+  fermerDetail(true);
+  const r0 = sec.getBoundingClientRect(), r = tuile.getBoundingClientRect();
+  const voile = document.createElement("div"); voile.className = "voile"; voile.addEventListener("click", () => fermerDetail());
+  const d = document.createElement("div"); d.className = "detail"; d.setAttribute("role", "dialog");
+  d.innerHTML = `<button class="fermer" aria-label="Close">×</button><div class="dc">${contenuDetail(id)}</div>`;
+  d.querySelector(".fermer").addEventListener("click", () => fermerDetail());
+  const depart = { left: r.left - r0.left, top: r.top - r0.top, width: r.width, height: r.height };
+  const fin = { left: 28, top: 22, width: r0.width - 56, height: r0.height - 44 };
+  const pose = o => Object.entries(o).forEach(([k, v]) => d.style[k] = v + "px");
+  pose(anime ? depart : fin);
+  sec.append(voile, d);
+  detailOuvert = d; detailId = id; tuileSource = { tuile, depart };
+  history.replaceState(null, "", "#audit-" + id);
+  if (anime) { d.getBoundingClientRect(); requestAnimationFrame(() => { pose(fin); voile.classList.add("on"); d.classList.add("ouvert"); }); }
+  else { voile.classList.add("on"); d.classList.add("ouvert"); }
+}
+function fermerDetail(immediat) {
+  const d = detailOuvert; if (!d) return;
+  const voile = d.previousElementSibling; detailOuvert = null;
+  if (courant === 0) history.replaceState(null, "", "#audit");
+  if (immediat) { d.remove(); voile?.remove(); return; }
+  d.classList.remove("ouvert"); voile?.classList.remove("on");
+  Object.entries(tuileSource.depart).forEach(([k, v]) => d.style[k] = v + "px");
+  setTimeout(() => { d.remove(); voile?.remove(); }, 380);
+}
+document.querySelectorAll(".tuile").forEach(t => {
+  t.addEventListener("click", () => ouvrirDetail(t.dataset.detail));
+  t.addEventListener("keydown", e => { if (e.key === "Enter") ouvrirDetail(t.dataset.detail); });
+});
 
 /* ---------- Personnes et leurs workflows ---------- */
 const SALARIES = [
@@ -253,7 +447,9 @@ async function chargerPersonnes() {
       const r = await fetch(url, { cache: "no-store" }); if (!r.ok) continue;
       const liste = await r.json(); if (!Array.isArray(liste)) continue;
       liste.forEach(p => { const id = sansAccent(p.id || p.prenom); if (!PERS[id]) return; PERS[id] = { ...PERS[id], ...p, id, role: p.role_en || PERS[id].role, workflows: Array.isArray(p.workflows) ? p.workflows.map(w => ({ ...w, nom: w.nom_en || w.name || w.nom })) : PERS[id].workflows }; });
-      rendrePanneau(); return;
+      rendrePanneau();
+      if (detailOuvert && detailId) { const dc = detailOuvert.querySelector(".dc"); if (dc) dc.innerHTML = contenuDetail(detailId); }
+      return;
     } catch (_) {}
   }
 }
@@ -287,6 +483,7 @@ function afficher(n) {
   dernierN = n;
   const e = n.brut;
   ETAT.agents = n.agents; ETAT.actif = n.enCours ? n.enCours.agent : null;
+  $("#nb-live").textContent = n.agents.filter(a => a.statut === "en service").length;
   ETAT.demande = n.enCours ? (n.enCours.demande_en || n.enCours.demande || n.journal.find(l => l.run === n.enCours.run && l.type === "demande")?.demande || "") : "";
   $("#m-passages").textContent = nf(e.passages ?? n.runs.length);
   $("#m-humain").textContent = duree(n.humain);
@@ -350,13 +547,18 @@ function rendrePanneau() {
   const p = PERS[P.id]; el.className = "panneau";
   let h = `<button class="fermer" data-act="fermer" aria-label="Close">×</button><div class="mono">Employee · ${esc(p.role)}</div><div class="pn-nom">${esc(p.prenom)}</div>`;
   if (!P.wf) {
-    h += p.workflows.length ? p.workflows.map((w, i) => `<div class="pn-wf"><div class="nom">${esc(w.nom)}</div><div class="fois">${w.fois != null ? `Observed ${nf(w.fois)} times this week` : "Observed this week"}${w.minutes != null ? ` · ${nf(w.minutes)} min` : ""}</div>${w.demande?.en ? `<div class="fois" style="text-transform:none;letter-spacing:.02em;color:var(--faible)">“${esc(w.demande.en)}”</div>` : ""}<button class="btn" data-act="creer" data-i="${i}">Create workflow</button></div>`).join("")
+    const liste = wfsTries(p);
+    h += liste.length ? liste.map((w, i) => { const c = audit(w.agent), q = QUOI[w.agent];
+      return `<div class="pn-wf ${i === 0 ? "top" : ""}"><span class="reco">${i === 0 ? "★ " : ""}Recommended by the audit</span><div class="nom">${esc(w.nom)}</div>
+      <div class="pourquoi"><b>Found in the audit:</b> ${esc(p.prenom)} ran this ${esc(w.nom.toLowerCase())} ${w.fois != null ? `${nf(w.fois)}× this week` : "this week"}${w.minutes != null ? ` (${nf(w.minutes)} min)` : ""}.${c ? ` Company-wide: <b>${nf(c.frequence)}× / week, ${eurk(c.cout_an)} / year</b>.` : ""}</div>
+      ${q ? `<dl class="quoi"><dt>Trigger</dt><dd>${esc(q[0].replace("{p}", p.prenom))}</dd><dt>Does</dt><dd>${esc(q[1])}</dd><dt>Output</dt><dd>${esc(q[2])}</dd></dl>` : ""}
+      <button class="btn ${i === 0 ? "ia" : ""}" data-act="creer" data-i="${i}">Deploy workflow</button></div>`; }).join("")
       : `<div class="pn-wf"><div class="fois">No repeated workflow spotted yet.</div></div>`;
   } else {
     const w = P.wf, etapes = etapesDe(w);
     h += `<div class="pn-wf"><div class="nom">${esc(w.nom)}</div><div class="fois">${P.phase === "creation" ? "Creating the workflow…" : "Workflow created · " + esc(NOM_AGENT[w.agent] || w.nom)}</div></div>`;
     h += `<ol class="terminal">${etapes.slice(0, P.ecrites).map(t => `<li>${esc(t)}</li>`).join("")}${P.phase !== "creation" ? `<li class="ok">Handed to the ${esc(NOM_AGENT[w.agent] || w.nom)} agent</li>` : ""}</ol>`;
-    if (P.phase === "pret") h += `<button class="btn ia" data-act="lancer">Run live</button>`;
+    if (P.phase === "pret") h += `<button class="btn ia" data-act="lancer">Run it live</button>`;
     if (P.phase === "lance") {
       const lignes = (dernierN?.journal || []).filter(l => P.run ? l.run === P.run : (l.agent === w.agent && (date(l.ts)?.getTime() || 0) >= P.depuis - 2000)).slice(-3);
       h += `<div class="etat"><i></i>The agent is working in the back-office…</div>`;
@@ -370,7 +572,7 @@ $("#panneau").addEventListener("click", async e => {
   const b = e.target.closest("[data-act]"); if (!b) return;
   if (b.dataset.act === "fermer") return fermerPanneau();
   if (b.dataset.act === "creer") {
-    const w = PERS[P.id].workflows[Number(b.dataset.i)]; if (!w) return;
+    const w = wfsTries(PERS[P.id])[Number(b.dataset.i)]; if (!w) return;
     Object.assign(P, { wf: w, phase: "creation", ecrites: 0 });
     ETAT.lien = { personne: P.id, agent: w.agent, t0: performance.now() };
     rendrePanneau();
@@ -387,6 +589,15 @@ $("#panneau").addEventListener("click", async e => {
     } else rejouer(w.agent);
   }
 });
+// le pourquoi (chiffres de l'audit) et le quoi de chaque workflow
+const TACHE_AGENT = { "rapport-ventes": "Rapport ventes", "commandes-annulees": "Commandes annulées", "prix-produit": "Prix produit", "avis-produit": "Avis produit", "variantes-produit": "Variantes produit" };
+const audit = ag => D?.dash?.taches?.find(t => t.court === TACHE_AGENT[ag]) || null;
+const QUOI = {
+  "rapport-ventes": ["When {p} needs a sales report", "opens Reports, sets the period, runs it, reads the totals", "the figures, ready to send"],
+  "commandes-annulees": ["When {p} has to check canceled orders", "opens Sales › Orders, filters on canceled, reads the orders", "the answer, with the order numbers"],
+  "prix-produit": ["When {p} has to change a product price", "opens the product in the Catalog, changes the price, saves and checks", "the new price, live in the store"],
+};
+const wfsTries = p => (p.workflows || []).slice().sort((a, b) => ((audit(b.agent)?.cout_an || 0) - (audit(a.agent)?.cout_an || 0)) || ((b.fois || 0) - (a.fois || 0)));
 const etapesDe = w => (w.etapes_en && w.etapes_en.length ? w.etapes_en : w.etapes && w.etapes.length ? w.etapes : ["Open the back-office", "Do the task", "Answer"]);
 let vuEnCours = false;
 function suivreRun(n) {
