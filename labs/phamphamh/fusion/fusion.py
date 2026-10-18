@@ -4,7 +4,8 @@ Règles de confidentialité appliquées ici, pas dans le site :
 - seuls les résumés où "valide_par_la_personne" vaut true comptent ;
 - moins de 3 participants → pas de Wrapped du tout ;
 - une app, une catégorie ou un outil d'IA utilisé par moins de 3 personnes est fondu dans « Autres » ;
-- le nombre de personnes d'une tâche est donné en tranche (« moins de 3 ») sous 3 ; aucun nom n'apparaît.
+- le nombre de personnes d'une tâche est donné en tranche (« moins de 3 ») sous 3 ; aucun nom n'apparaît ;
+- chaque tâche porte ses déclencheurs (« dès que… » : événement, voie technique, info à partager), chaque ligne avec sa preuve.
 Usage : python3 fusion.py <dossier ou fichiers de résumés> --onboarding onboarding.json [-o insights.json] [--ia]
 Uniquement la bibliothèque standard de Python.
 """
@@ -155,6 +156,98 @@ def agreger_lignes(lignes, cle):
     return out
 
 
+# ---------- les déclencheurs « dès que… » de chaque tâche ----------
+# Ce qu'il faut brancher pour qu'une tâche parte toute seule : l'événement qui la lance
+# (étapes d'entrée), le cas qui doit tout arrêter (exceptions : quelqu'un est prévenu) et
+# l'info à partager (étapes de sortie). Chaque déclencheur garde sa preuve (le texte de
+# l'étape, son app, observé ou supposé) — même règle que le reste du Wrapped.
+
+LOCALES = {"Excel"}  # un fichier, pas un service à appeler
+ROLES = ("client", "commercial", "direction", "fournisseur", "transporteur", "adv", "équipe", "dirigeant")
+ARTICLES = {"le": "un", "la": "une", "les": "des", "l'": "un"}
+
+
+def roles_dans(texte):
+    """Les personnes citées (« appel au commercial », « répondre au client ») — jamais un nom."""
+    bas = (texte or "").lower()
+    return [r for r in ROLES if re.search(rf"\b{r}\b", bas)]
+
+
+def reformuler_entree(texte):
+    """L'étape d'entrée relue → une phrase « dès que… », pour la montrer telle quelle dans le Wrapped."""
+    t = (texte or "").strip()
+    m = re.match(r"^(?:Ouvrir|Lire|Consulter)\s+(le|la|les|l['’])\s*(.+)$", t, re.I)
+    if m:
+        art = m.group(1).lower().replace("’", "'")
+        reste = m.group(2).strip()
+        par_mail = bool(re.search(r"re[çc]u[e]?s?\s+par\s+mail", reste, re.I))
+        reste = re.sub(r"\s*re[çc]u[e]?s?\s+par\s+mail\s*$", "", reste, flags=re.I)
+        fin = "arrive par mail" if par_mail else ("arrivent" if " et " in reste else "arrive")
+        return f"{ARTICLES.get(art, 'un')} {reste} {fin}", "événement"
+    m = re.match(r"^Recevoir\s+(.+)$", t, re.I)
+    if m:
+        return f"{m.group(1)} arrive", "événement"
+    m = re.match(r"^(?:Lister|Filtrer|Exporter|Parcourir)\s+(?:les?\s+)?(.+)$", t, re.I)
+    if m:
+        return f"le balayage tourne — {m.group(1)}", "balayage"
+    return f"« {t} »", "à préciser"
+
+
+def app_cible(tache, source):
+    """L'app où l'action a lieu : la première étape d'action sur une autre app que la source."""
+    for e in tache.get("etapes") or []:
+        if e.get("type") == "action" and app_propre(e.get("app")) != source:
+            return app_propre(e.get("app"))
+    for a in tache.get("apps") or []:
+        if app_propre(a) != source:
+            return app_propre(a)
+    return source
+
+
+def voie_connecteur(source, cible):
+    """Ce qu'il faut brancher pour lire la source et agir sur la cible."""
+    if not source or source == "Inconnue":
+        return "à préciser"
+    if source in LOCALES:
+        return "local"
+    if not cible or cible == source:
+        return f"API {source}"
+    return f"connecteur {source} → {cible}"
+
+
+def declencheurs(tache):
+    """Les « dès que… » de la tâche : événements d'entrée, exceptions (arrêt net + qui prévenir),
+    sorties (l'info à partager). Vide si la tâche n'a rien de détectable — on ne force jamais."""
+    out = []
+    for e in tache.get("etapes") or []:
+        if e.get("type") != "input":
+            continue
+        phrase, genre = reformuler_entree(e.get("texte"))
+        source = app_propre(e.get("app"))
+        out.append({"genre": genre, "dès_que": phrase,
+                    "preuve": {"texte": e.get("texte"), "app": source, "statut": e.get("statut") or "observé"},
+                    "lancer": {"genre": "action", "texte": "démarrer la tâche (la skill) sans attendre"},
+                    "voie": voie_connecteur(source, app_cible(tache, source)), "partager": None})
+    for ex in tache.get("exceptions") or []:
+        cond, _, action = (ex or "").partition("→")
+        cond, action = cond.strip(), (action.strip() or "s'arrêter et demander")
+        out.append({"genre": "exception", "dès_que": cond,
+                    "preuve": {"texte": ex, "app": None, "statut": "observé"},
+                    "lancer": {"genre": "humain", "texte": f"{action} (rien d'automatique)"},
+                    "voie": "notification",
+                    "partager": {"info": action, "qui": roles_dans(f"{cond} {action}")}})
+    for e in tache.get("etapes") or []:
+        if e.get("type") != "output":
+            continue
+        app = app_propre(e.get("app"))
+        out.append({"genre": "sortie", "dès_que": "la tâche est finie",
+                    "preuve": {"texte": e.get("texte"), "app": app, "statut": e.get("statut") or "observé"},
+                    "lancer": {"genre": "partage", "texte": e.get("texte") or ""},
+                    "voie": "local" if app in LOCALES else f"API {app}",
+                    "partager": {"info": e.get("texte") or "", "qui": roles_dans(e.get("texte"))}})
+    return out
+
+
 def fusionner(resumes, onboarding, regroupement="heuristique", modele="sonnet"):
     tous = len(resumes)
     valides = [r for r in resumes if r.get("valide_par_la_personne") is True]
@@ -247,6 +340,8 @@ def fusionner(resumes, onboarding, regroupement="heuristique", modele="sonnet"):
     groupes.sort(key=lambda t: t["cout_par_mois"], reverse=True)
     for i, t in enumerate(groupes):
         t["rang_cout"] = i + 1
+    for t in groupes:  # « dès que… » : l'événement, la voie technique et l'info à partager — pour le Wrapped et la skill
+        t["declencheurs"] = declencheurs(t)
     a_automatiser = sorted(groupes, key=lambda t: t["gain_par_mois"], reverse=True)
 
     # --- goulots ---

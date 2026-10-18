@@ -2,7 +2,7 @@
 import copy, json, os, sys, unittest
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from fusion import fusionner, charger, regrouper_heuristique  # noqa: E402
+from fusion import fusionner, charger, regrouper_heuristique, declencheurs  # noqa: E402
 
 DEMO = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "demo")
 RESUMES = charger([os.path.join(DEMO, "resumes")])
@@ -88,6 +88,22 @@ class Fusion(unittest.TestCase):
         g = regrouper_heuristique(taches, [], [])
         for grp in g["taches"]:
             self.assertEqual(len({taches[i]["_personne"] for i in grp["membres"]}), len(grp["membres"]))
+
+    def test_declencheurs_tache_commande(self):
+        """Chaque tâche porte ses « dès que… » : l'événement, le cas d'arrêt, l'info à partager — avec preuve."""
+        ins = fusionner(RESUMES, ONB)
+        t = next(x for x in ins["taches"] if "commande" in x["titre"].lower())
+        d = {x["genre"]: x for x in t["declencheurs"]}
+        self.assertEqual(d["événement"]["dès_que"], "un bon de commande PDF arrive par mail")
+        self.assertEqual(d["événement"]["voie"], "connecteur Gmail → Sage")
+        self.assertIn("commercial", d["exception"]["partager"]["qui"])
+        self.assertIn("client", d["sortie"]["partager"]["qui"])
+        for x in t["declencheurs"]:
+            self.assertTrue(x["preuve"]["texte"])
+            self.assertIn("statut", x["preuve"])
+
+    def test_declencheurs_tache_vide(self):
+        self.assertEqual(declencheurs({"etapes": [], "exceptions": []}), [])
 
     def test_vrai_resume_produit_par_la_brique_B(self):
         """Le format de resume.py (preuves en horaires, apps avec caractères invisibles) passe sans erreur."""
