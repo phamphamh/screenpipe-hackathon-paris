@@ -130,6 +130,15 @@ h1 strong, h2 strong { font-weight: 700; }
 .ctx .val i { font-style: normal; color: var(--faible); padding: 0 .3em; }
 .ctx > div.vrai .quoi { color: var(--texte); font-weight: 500; }
 
+.nova { margin-top: 56px; display: grid; grid-template-columns: auto auto auto 1fr; border-top: 1px solid var(--texte); }
+.nova > div { padding: 22px 32px 0 0; margin-right: 30px; border-right: 1px solid var(--leger); display: flex; flex-direction: column; }
+.nova > div:last-child { border-right: 0; margin-right: 0; }
+.nova .lab { color: var(--doux); }
+.nova b { margin-top: 18px; font-size: 76px; font-weight: 300; letter-spacing: -.045em; line-height: 1; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.nova b.mot { font-size: 46px; letter-spacing: -.035em; line-height: 1.74; }
+.nova .pt { margin-top: 10px; font-size: 18px; white-space: nowrap; color: var(--doux); letter-spacing: -.01em; }
+.nova-src { margin: 48px 0 0; color: var(--faible); }
+
 /* Démo */
 .demo { align-items: flex-start; }
 .point { display: inline-block; width: 8px; height: 8px; background: var(--texte); animation: clignote 1.6s steps(2, jump-none) infinite; }
@@ -241,15 +250,14 @@ h1 strong, h2 strong { font-weight: 700; }
 
   <!-- 6 -->
   <section data-id="contexte" class="slide sombre-slide">
-    <p class="etiquette mono">Démo · le contexte</p>
-    <h2 class="ctx-titre">Le <strong>contexte.</strong></h2>
-    <div class="ctx">
-      <div><span class="n mono">01</span><span class="quoi mono">Le client</span><span class="val"><b>Atelier Nova</b><i>·</i>boutique en ligne<i>·</i>60 salariés<i>·</i>back-office Magento</span></div>
-      <div><span class="n mono">02</span><span class="quoi mono">La collecte</span><span class="val">screenpipe sur chaque poste, <b>en local</b><i>·</i>1 semaine</span></div>
-      <div><span class="n mono">03</span><span class="quoi mono">La source</span><span class="val"><b>WONDERBREAD</b><i>·</i>Stanford<i>·</i>6 vraies personnes × 10</span></div>
-      <div><span class="n mono">04</span><span class="quoi mono">Récupéré</span><span class="val"><b>55 510</b> captures<i>·</i><b>54 h</b><i>·</i><b>19</b> tâches répétées</span></div>
-      <div class="vrai"><span class="n mono">05</span><span class="quoi mono">En vrai</span><span class="val">des salariés volontaires avec screenpipe pendant une semaine</span></div>
+    <h2 class="ctx-titre">Atelier <strong>Nova.</strong></h2>
+    <div class="nova">
+      <div><span class="lab mono">Ce qu'elle fait</span><b class="mot">Boutique en ligne</b><span class="pt">vêtements de sport · back-office Magento</span></div>
+      <div><span class="lab mono">Salariés</span><b>60</b></div>
+      <div><span class="lab mono">screenpipe sur chaque poste</span><b>1 semaine</b></div>
+      <div><span class="lab mono">Captures</span><b>55 510</b></div>
     </div>
+    <p class="nova-src mono">6 vraies personnes filmées par Stanford (WONDERBREAD) × 10</p>
   </section>
 
   <!-- 7 -->
