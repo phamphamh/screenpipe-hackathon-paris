@@ -65,7 +65,16 @@ button { font: inherit; color: inherit; }
 .chiffre { font-weight: 300; letter-spacing: -.045em; line-height: .95; }
 
 /* ---------- L'audit ---------- */
-.audit { padding: 30px 40px 22px; display: grid; grid-template-rows: minmax(0, 1fr) auto; gap: 20px; }
+.audit { padding: 22px 26px 16px; display: grid; grid-template-rows: minmax(0, 1fr) auto; gap: 14px; }
+.audit.ecran.on { display: grid; }
+.au-tuiles { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: 1fr 1fr; gap: 1px; background: var(--trait); border: 1px solid var(--trait); min-height: 0; }
+.tu { background: var(--fond); padding: 24px 28px; display: flex; flex-direction: column; justify-content: space-between; min-width: 0; }
+.tu .chiffre { font-size: clamp(56px, 6.3vw, 112px); }
+.tu .mono b { color: var(--texte); font-weight: 500; }
+.tu-heros { grid-row: 1 / 3; background: var(--plan); }
+.tu-heros .chiffre { font-size: clamp(72px, 7.8vw, 150px); }
+.tu-heros .unite { font-size: 44px; font-weight: 300; color: var(--doux); letter-spacing: -.02em; margin-top: 8px; }
+.tu.tuile:hover { background: var(--plan-2); box-shadow: none; }
 .au-grille { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 40px; min-height: 0; }
 .au-gauche { display: grid; grid-template-rows: auto auto minmax(0, 1fr); gap: 28px; }
 .heros .chiffre { font-size: 116px; margin-top: 12px; }
@@ -93,17 +102,30 @@ button { font: inherit; color: inherit; }
 .tuile:focus-visible { outline: 2px solid var(--ia); outline-offset: 2px; }
 .tuile::after { content: "↗"; position: absolute; right: 12px; top: 12px; font-family: var(--f-mono); font-size: 12px; color: var(--faible); opacity: 0; transition: opacity .2s; }
 .tuile:hover::after { opacity: 1; }
-.heros.tuile { padding: 6px 12px 12px; margin: -6px -12px 0; }
-.cle.tuile { padding-left: 12px; }
 .voile { position: absolute; inset: 0; background: rgba(255,255,255,.72); opacity: 0; transition: opacity .3s ease; z-index: 3; }
 .voile.on { opacity: 1; }
 .detail { position: absolute; z-index: 4; background: var(--fond); border: 1px solid var(--trait-fort); box-shadow: 0 18px 50px -24px rgba(10,12,15,.35); overflow: hidden; transition: left .35s cubic-bezier(.2,.75,.2,1), top .35s cubic-bezier(.2,.75,.2,1), width .35s cubic-bezier(.2,.75,.2,1), height .35s cubic-bezier(.2,.75,.2,1); }
-.detail .dc { position: absolute; inset: 0; padding: 26px 30px 18px; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: 18px; opacity: 0; transition: opacity .2s ease; }
+.detail .dc { position: absolute; inset: 0; padding: 22px 28px 14px; display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto; gap: 16px; opacity: 0; transition: opacity .2s ease; }
 .detail.ouvert .dc { opacity: 1; transition-delay: .22s; }
 .detail .fermer { position: absolute; right: 14px; top: 12px; background: none; border: 0; font-size: 20px; color: var(--doux); cursor: pointer; z-index: 2; }
 .dt-titre { font-size: 40px; font-weight: 300; letter-spacing: -.03em; line-height: 1.05; margin-top: 6px; }
 .dt-titre small { font-size: 20px; color: var(--doux); }
-.dt-corps { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 36px; min-height: 0; }
+.dt-corps { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1px; background: var(--trait); border: 1px solid var(--trait); min-height: 0; }
+.dt-corps > .dt-bloc { background: var(--fond); padding: 16px 20px; grid-template-rows: auto minmax(0, 1fr) auto; align-content: stretch; min-height: 0; }
+.viz { min-height: 0; display: grid; }
+.viz .barres { height: 100%; grid-auto-rows: minmax(0, 1fr); align-items: center; gap: 4px; }
+.viz .barre-l { grid-template-columns: minmax(120px, 34%) minmax(0, 1fr) auto; font-size: 16px; }
+.viz .barre-l .v { white-space: nowrap; min-width: 70px; }
+.viz .barre-l .p { height: 20px; }
+.viz .barre-l .v { font-size: 13.5px; }
+.viz svg { width: 100%; height: 100%; }
+.viz .etapes-obs { align-content: space-evenly; height: 100%; }
+.viz .etapes-obs li { font-size: 17px; }
+.minis { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--trait); border: 1px solid var(--trait); }
+.minis div { background: var(--plan); padding: 12px 18px; }
+.minis b { display: block; font-size: 38px; font-weight: 300; letter-spacing: -.03em; line-height: 1.05; }
+.minis span { font-family: var(--f-mono); font-size: 11.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--doux); }
+.dt-tete { display: flex; justify-content: space-between; align-items: end; gap: 20px; padding-right: 30px; }
 .dt-bloc { display: grid; align-content: start; gap: 12px; min-width: 0; }
 .dt-bloc p { margin: 0; color: var(--doux); font-size: 15px; }
 .dt-bloc p b { color: var(--texte); font-weight: 500; }
@@ -202,46 +224,21 @@ button { font: inherit; color: inherit; }
     <div class="mono grp">Workspace</div>
     <button class="nav" data-page="0"><svg viewBox="0 0 16 16"><rect x="2" y="2" width="5" height="5"/><rect x="9" y="2" width="5" height="5"/><rect x="2" y="9" width="5" height="5"/><rect x="9" y="9" width="5" height="5"/></svg>Audit</button>
     <button class="nav" data-page="1"><svg viewBox="0 0 16 16"><path d="M2 14V6l6-4 6 4v8z"/><path d="M6 14v-4h4v4"/></svg>Office</button>
-    <span class="nav off"><svg viewBox="0 0 16 16"><circle cx="4" cy="4" r="2"/><circle cx="12" cy="12" r="2"/><path d="M4 6v3a3 3 0 0 0 3 3h3"/></svg>Workflows<span class="bientot">soon</span></span>
-    <span class="nav off"><svg viewBox="0 0 16 16"><rect x="3" y="5" width="10" height="8"/><path d="M8 2v3M6 9h0M10 9h0"/></svg>Agents<span class="bientot">soon</span></span>
-    <span class="nav off"><svg viewBox="0 0 16 16"><path d="M4 2h6l3 3v9H4z"/><path d="M6 8h5M6 11h5"/></svg>Reports<span class="bientot">soon</span></span>
-    <span class="nav off"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="2.5"/><path d="M8 1.5v2M8 12.5v2M1.5 8h2M12.5 8h2M3.4 3.4l1.4 1.4M11.2 11.2l1.4 1.4M3.4 12.6l1.4-1.4M11.2 4.8l1.4-1.4"/></svg>Settings<span class="bientot">soon</span></span>
   </nav>
   <div class="profil"><span class="av">YB</span><div><b>Youssef</b><small>DeloAI consultant</small></div></div>
 </aside>
 <header class="barre">
   <span class="mono fil">Atelier Nova / <b id="fil">Audit</b></span>
-  <span class="mono live"><i></i><span id="nb-live">3</span>&nbsp;agents live</span>
-  <span class="mono" id="date"></span>
 </header>
 
 <main class="ecrans">
   <section class="ecran audit" id="e-audit">
-    <div class="au-grille">
-      <div class="au-gauche">
-        <div class="heros tuile" data-detail="cout" tabindex="0" role="button">
-          <div class="mono">The audit · one week observed</div>
-          <div class="chiffre">€71.7k <small>/ year</small></div>
-          <span class="mono">lost to repetitive tasks</span>
-        </div>
-        <div class="cles">
-          <div class="cle tuile" data-detail="heures" tabindex="0" role="button"><div class="chiffre">41 <small>h / week</small></div><span class="mono">hours lost / week, whole team</span></div>
-          <div class="cle tuile" data-detail="ecran" tabindex="0" role="button"><div class="chiffre">40 <small>%</small></div><span class="mono">of time in one screen · <b>Catalog</b></span></div>
-          <div class="cle tuile" data-detail="rapport" tabindex="0" role="button"><div class="chiffre perte">790× <small>/ week</small></div><span class="mono">No. 1 · <b>Sales report</b> · €10.5k / year</span></div>
-          <div class="cle tuile" data-detail="gain" tabindex="0" role="button"><div class="chiffre ia">€30.1k <small>/ year</small></div><span class="mono">recoverable · <b>5 workflows</b> to automate</span></div>
-        </div>
-        <div></div>
-      </div>
-      <div class="au-droite">
-        <i class="coin a"></i><i class="coin b"></i><i class="coin c"></i><i class="coin d"></i>
-        <div class="mono">3 workflows we deploy</div>
-        <h2>The first three, <b>deployed this morning</b>.</h2>
-        <ul class="wfs">
-          <li><span class="n">01</span><span class="nom">Sales report<small>790× / week</small></span><span class="eur">€10.5k<small>per year</small></span></li>
-          <li><span class="n">02</span><span class="nom">Canceled orders<small>520× / week</small></span><span class="eur">€8.7k<small>per year</small></span></li>
-          <li><span class="n">03</span><span class="nom">Product price<small>370× / week</small></span><span class="eur">€8.7k<small>per year</small></span></li>
-        </ul>
-      </div>
+    <div class="au-tuiles">
+      <div class="tu tu-heros tuile" data-detail="cout" tabindex="0" role="button"><span class="mono">The audit · one week observed</span><div><div class="chiffre">€71.7k</div><div class="unite">/ year</div></div><span class="mono">lost to repetitive tasks · 19 tasks · 60 seats</span></div>
+      <div class="tu tuile" data-detail="heures" tabindex="0" role="button"><span class="mono">Time lost</span><div class="chiffre">41 h</div><span class="mono">per week, whole team</span></div>
+      <div class="tu tuile" data-detail="ecran" tabindex="0" role="button"><span class="mono">One screen</span><div class="chiffre">40 %</div><span class="mono">of time in the <b>Catalog</b></span></div>
+      <div class="tu tuile" data-detail="rapport" tabindex="0" role="button"><span class="mono">Task no. 1 · <b>Sales report</b></span><div class="chiffre perte">790×</div><span class="mono">per week · €10.5k / year</span></div>
+      <div class="tu tuile" data-detail="gain" tabindex="0" role="button"><span class="mono">Recoverable</span><div class="chiffre ia">€30.1k</div><span class="mono">per year · <b>5 workflows</b> to automate</span></div>
     </div>
     <div class="mono source-ligne">Atelier Nova · 6 employees observed × 10 · WONDERBREAD data (Stanford)</div>
   </section>
@@ -319,7 +316,6 @@ function depuisHash() {
 }
 addEventListener("hashchange", depuisHash);
 document.querySelectorAll(".nav[data-page]").forEach(b => b.addEventListener("click", () => aller(Number(b.dataset.page))));
-$("#date").textContent = new Date().toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric" });
 
 /* ---------- Audit : tuiles qui s'ouvrent en panneau de détail (FLIP) ---------- */
 const D = typeof DATA !== "undefined" ? DATA : null;
@@ -337,62 +333,67 @@ function barres(items, fmt) {
   return `<div class="barres">${items.map(x => `<div class="barre-l ${x.c || ""}"><span class="k" title="${esc(x.k)}">${x.k}</span><span class="p"><i style="width:${(x.v / max * 100).toFixed(1)}%"></i></span><span class="v">${esc(fmt(x))}</span></div>`).join("")}</div>`;
 }
 function courbe(series, labels) {
-  const W = 520, H = 170, g = 34, b = 22, max = Math.max(...series.flatMap(s => s.v), 1);
-  const X = i => g + i * (W - g - 10) / (labels.length - 1), Y = v => H - b - v / max * (H - b - 10);
-  let out = `<svg class="courbe" viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Hours observed per day by team">`;
-  [0, .5, 1].forEach(f => { const y = Y(max * f); out += `<line x1="${g}" x2="${W - 10}" y1="${y}" y2="${y}" stroke="var(--trait)"/><text x="0" y="${y + 4}">${(max * f).toFixed(0)} h</text>`; });
-  labels.forEach((l, i) => out += `<text x="${X(i)}" y="${H - 4}" text-anchor="middle">${esc(l)}</text>`);
-  series.forEach(s => { out += `<polyline fill="none" stroke="${s.c}" stroke-width="2" points="${s.v.map((v, i) => `${X(i)},${Y(v)}`).join(" ")}"/>` + s.v.map((v, i) => `<circle cx="${X(i)}" cy="${Y(v)}" r="3" fill="${s.c}"/>`).join(""); });
+  const W = 560, H = 300, g = 40, b = 26, max = Math.max(...series.flatMap(s => s.v), 1);
+  const X = i => g + i * (W - g - 16) / (labels.length - 1), Y = v => H - b - v / max * (H - b - 26);
+  let out = `<svg class="courbe" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Hours observed per day by team">`;
+  [0, .5, 1].forEach(f => { const y = Y(max * f); out += `<line x1="${g}" x2="${W - 16}" y1="${y}" y2="${y}" stroke="var(--trait)"/><text x="0" y="${y + 4}">${(max * f).toFixed(0)} h</text>`; });
+  labels.forEach((l, i) => out += `<text x="${X(i)}" y="${H - 6}" text-anchor="middle">${esc(l)}</text>`);
+  series.forEach(s => { out += `<polyline fill="none" stroke="${s.c}" stroke-width="2.5" points="${s.v.map((v, i) => `${X(i)},${Y(v)}`).join(" ")}"/>` + s.v.map((v, i) => `<circle cx="${X(i)}" cy="${Y(v)}" r="4" fill="${s.c}"/><text x="${X(i)}" y="${Y(v) - 9}" text-anchor="middle">${v.toFixed(1)}</text>`).join(""); });
   return out + "</svg>";
 }
+const heuresDe = t => { const m = String(t || "").match(/(\d+)\s*h\s*(\d+)?/); return m ? Number(m[1]) + (Number(m[2] || 0) / 60) : 0; };
+function gabarit({ sur, titre, extra = "", minis, g, d }) {
+  return `<div class="dt-tete"><div><div class="mono">${sur}</div><div class="dt-titre">${titre}</div></div>${extra}</div>
+  <div class="minis">${minis.map(([v, k]) => `<div><b>${v}</b><span>${k}</span></div>`).join("")}</div>
+  <div class="dt-corps">${[g, d].map(([t, html, pied]) => `<div class="dt-bloc"><div class="mono">${t}</div><div class="viz">${html}</div>${pied ? `<p>${pied}</p>` : "<span></span>"}</div>`).join("")}</div>${SOURCE}`;
+}
 function contenuDetail(id) {
-  if (!D) return `<div class="dt-titre">Data unavailable</div><div></div>${SOURCE}`;
+  if (!D) return `<div class="dt-titre">Data unavailable</div><div></div><div></div>${SOURCE}`;
   const T = D.dash;
   const taches = T.taches.filter(t => t.cout_an > 0).slice().sort((a, b) => b.cout_an - a.cout_an);
+  const EN_CAT = { "Ressaisie": "Re-keying", "Recherche": "Searching", "Répétition": "Repetition" };
   if (id === "cout") {
-    const top = taches.slice(0, 8).map((t, i) => ({ k: esc(EN_TACHE[t.court] || t.court), v: t.cout_an, h: t.heures_semaine, c: i === 0 ? "perte" : "fort" }));
     const r = taches[0];
-    return `<div><div class="mono">Audit · cost of repetitive tasks</div><div class="dt-titre">${eurk(T.cout_an)} <small>/ year · ${T.taches.length} tasks · ${nf(T.heures_semaine)} h / week</small></div></div>
-    <div class="dt-corps"><div class="dt-bloc"><div class="mono">How it is computed</div><div class="formule">cost = hours / week × 46 weeks × €${nf(T.cout_horaire)}/h<br>${esc(EN_TACHE[r.court] || r.court)}: ${r.heures_semaine} h × 46 × €${nf(T.cout_horaire)} = €${nf(r.cout_an)}</div>
-    <p>Every task was seen on screen, then counted across <b>${nf(T.postes)} seats</b>. No survey, no estimate from a manager.</p></div>
-    <div class="dt-bloc"><div class="mono">Cost per task · top 8 · € / year</div>${barres(top, x => "€" + nf(x.v))}</div></div>${SOURCE}`;
+    const cats = {}; taches.forEach(t => cats[t.categorie] = (cats[t.categorie] || 0) + t.cout_an);
+    return gabarit({ sur: "Audit · cost of repetitive tasks", titre: `${eurk(T.cout_an)} <small>/ year</small>`,
+      extra: `<div class="formule">cost = hours / week × 46 weeks × €${nf(T.cout_horaire)}/h<br>${esc(EN_TACHE[r.court] || r.court)}: ${r.heures_semaine} h × 46 × €${nf(T.cout_horaire)} = €${nf(r.cout_an)}</div>`,
+      minis: [[nf(T.heures_semaine) + " h", "lost per week"], [String(T.taches.length), "repetitive tasks"], ["€" + nf(T.cout_horaire), "per hour, loaded cost"]],
+      g: ["Cost per task · top 8 · € / year", barres(taches.slice(0, 8).map((t, i) => ({ k: esc(EN_TACHE[t.court] || t.court), v: t.cout_an, c: i === 0 ? "perte" : "fort" })), x => "€" + nf(x.v))],
+      d: ["Cost by kind of waste · € / year", barres(Object.entries(cats).sort((a, b) => b[1] - a[1]).map(([k, v], i) => ({ k: esc(EN_CAT[k] || k), v, c: i === 0 ? "perte" : "fort" })), x => "€" + nf(x.v))] });
   }
   if (id === "heures") {
-    const eq = Object.keys(T.heures_par_jour);
-    const coul = ["var(--texte)", "var(--faible)"];
+    const eq = Object.keys(T.heures_par_jour), coul = ["var(--texte)", "var(--faible)"];
     const causes = T.goulots.map((g, i) => ({ k: esc({ "Travail refait": "Rework", "Allers-retours": "Back-and-forth", "Passage de relais": "Handoffs" }[g.type] || g.type), v: g.heures_semaine, c: i === 0 ? "perte" : "fort" }));
-    return `<div><div class="mono">Audit · time lost</div><div class="dt-titre">${nf(T.heures_semaine)} h <small>/ week lost, whole team</small></div></div>
-    <div class="dt-corps"><div class="dt-bloc"><div class="mono">Hours observed per day · by team</div>${courbe(eq.map((e, i) => ({ v: T.heures_par_jour[e], c: coul[i] })), T.jours.map(j => j.replace(/^\w+/, m => EN_JOUR[m] || m)))}
-    <div class="legende">${eq.map((e, i) => `<span><i style="background:${coul[i]}"></i>${esc(EN_EQUIPE[e] || e)} · ${nf(Math.round(T.heures_par_jour[e].reduce((a, b) => a + b, 0)))} h observed</span>`).join("")}</div></div>
-    <div class="dt-bloc"><div class="mono">Why the time is lost · h / week</div>${barres(causes, x => x.v + " h · " + Math.round(x.v / T.heures_semaine * 100) + " %")}<p>A task can add up several causes: <b>rework</b> alone explains ${Math.round(T.goulots[0].heures_semaine / T.heures_semaine * 100)} % of the time lost.</p></div></div>${SOURCE}`;
+    return gabarit({ sur: "Audit · time lost", titre: `${nf(T.heures_semaine)} h <small>/ week lost, whole team</small>`,
+      minis: [[nf(T.heures_semaine) + " h", "lost per week"], [nf(T.heures_observees) + " h", "observed on screen"], [Math.round(T.heures_gagnees_semaine) + " h", "per week we can hand back"]],
+      g: ["Hours observed per day · by team", courbe(eq.map((e, i) => ({ v: T.heures_par_jour[e], c: coul[i] })), T.jours.map(j => j.replace(/^\w+/, m => EN_JOUR[m] || m))),
+        `<span class="legende">${eq.map((e, i) => `<span><i style="background:${coul[i]}"></i>${esc(EN_EQUIPE[e] || e)} · ${nf(Math.round(T.heures_par_jour[e].reduce((a, b) => a + b, 0)))} h</span>`).join("")}</span>`],
+      d: ["Why the time is lost · h / week", barres(causes, x => x.v + " h · " + Math.round(x.v / T.heures_semaine * 100) + " %"), "A task can add up several causes."] });
   }
   if (id === "ecran") {
     const eq = Object.keys(T.minutes_ecran);
-    const tot = T.ecrans.map((e, i) => eq.reduce((a, k) => a + T.minutes_ecran[k][i], 0));
-    const somme = tot.reduce((a, b) => a + b, 0);
-    const items = T.ecrans.map((e, i) => ({ k: esc(EN_ECRAN[e] || e), v: tot[i], c: e === "Catalogue" ? "fort" : "" })).sort((a, b) => b.v - a.v);
-    const iC = T.ecrans.indexOf("Catalogue");
-    return `<div><div class="mono">Audit · where the time goes</div><div class="dt-titre">${Math.round(tot[iC] / somme * 100)} % <small>of time in one screen · Catalog</small></div></div>
-    <div class="dt-corps"><div class="dt-bloc"><div class="mono">Catalog · by team</div>${barres(eq.map(k => ({ k: esc(EN_EQUIPE[k] || k), v: T.minutes_ecran[k][iC], c: "fort" })), x => (x.v / 60).toFixed(1) + " h")}
-    <p><b>${(tot[iC] / 60).toFixed(1)} h</b> in the Catalog out of <b>${(somme / 60).toFixed(1)} h</b> observed, and <b>${nf(T.bascules)}</b> screen switches a week.</p></div>
-    <div class="dt-bloc"><div class="mono">Hours per screen · observed week</div>${barres(items, x => (x.v / 60).toFixed(1) + " h · " + Math.round(x.v / somme * 100) + " %")}</div></div>${SOURCE}`;
+    const tot = T.ecrans.map((e, i) => eq.reduce((a, k) => a + T.minutes_ecran[k][i], 0)), somme = tot.reduce((a, b) => a + b, 0), iC = T.ecrans.indexOf("Catalogue");
+    return gabarit({ sur: "Audit · where the time goes", titre: `${Math.round(tot[iC] / somme * 100)} % <small>of time in one screen · Catalog</small>`,
+      minis: [[(tot[iC] / 60).toFixed(1) + " h", "in the Catalog"], [(somme / 60).toFixed(1) + " h", "observed in total"], [nf(T.bascules), "screen switches / week"]],
+      g: ["Hours per screen · observed week", barres(T.ecrans.map((e, i) => ({ k: esc(EN_ECRAN[e] || e), v: tot[i], c: e === "Catalogue" ? "fort" : "" })).sort((a, b) => b.v - a.v), x => (x.v / 60).toFixed(1) + " h · " + Math.round(x.v / somme * 100) + " %")],
+      d: ["Catalog hours · by team", barres(eq.map(k => ({ k: esc(EN_EQUIPE[k] || k), v: T.minutes_ecran[k][iC], c: "fort" })), x => (x.v / 60).toFixed(1) + " h")] });
   }
   if (id === "rapport") {
     const r = T.taches.find(t => t.court === "Rapport ventes") || taches[0];
-    const qui = SALARIES.map(s => { const w = (PERS[s.id]?.workflows || []).find(w => w.agent === "rapport-ventes"); return { id: s.id, nom: s.prenom, k: esc(s.prenom) + ` <span style="color:var(--faible)">· ${esc(s.role)}</span>`, v: w?.fois || 0, c: w?.fois ? "perte" : "" }; }).sort((a, b) => b.v - a.v || (b.id === "sophie") - (a.id === "sophie"));
-    const etapes = (r.etapes || []).map((e, i) => EN_ETAPES_RAPPORT[i] || e);
-    return `<div><div class="mono">Audit · task no. 1</div><div class="dt-titre">Sales report <small>· ${nf(r.frequence)}× / week · ${r.heures_semaine} h / week · €${nf(r.cout_an)} / year</small></div></div>
-    <div class="dt-corps"><div class="dt-bloc"><div class="mono">Steps observed on screen</div><ol class="etapes-obs">${etapes.map(e => `<li>${esc(e)}</li>`).join("")}</ol></div>
-    <div class="dt-bloc"><div class="mono">Who does it · times this week</div>${barres(qui, x => x.v ? x.v + "×" : "—")}<p>Measured on 6 employees, then <b>× 10</b> for Atelier Nova's 60 seats.</p><a class="pont" href="#bureau-karim">See who does it most → Karim</a></div></div>${SOURCE}`;
+    const qui = SALARIES.map(s => { const w = (PERS[s.id]?.workflows || []).find(w => w.agent === "rapport-ventes"); return { k: esc(s.prenom) + ` <span style="color:var(--faible)">· ${esc(s.role)}</span>`, v: w?.fois || 0, c: w?.fois ? "perte" : "" }; }).sort((a, b) => b.v - a.v);
+    return gabarit({ sur: "Audit · task no. 1", titre: "Sales report", extra: `<a class="pont" href="#bureau-karim">See who does it most → Karim</a>`,
+      minis: [[nf(r.frequence) + "×", "per week, 60 seats"], [r.heures_semaine + " h", "per week"], ["€" + nf(r.cout_an), "per year"]],
+      g: ["Steps observed on screen", `<ol class="etapes-obs">${(r.etapes || []).map((e, i) => `<li>${esc(EN_ETAPES_RAPPORT[i] || e)}</li>`).join("")}</ol>`],
+      d: ["Who does it · times this week", barres(qui, x => x.v ? x.v + "×" : "—"), "Measured on 6 employees, then × 10 for 60 seats."] });
   }
   if (id === "gain") {
-    const mods = D.businessCase.modules;
-    const total = mods.reduce((a, m) => a + m.gain, 0);
+    const mods = D.businessCase.modules, total = mods.reduce((a, m) => a + m.gain, 0);
     const items = mods.map((m, i) => { const [nom, ag] = MODULES[i] || [m.name, ""]; const live = ETAT.agents.some(a => a.id === ag && a.statut === "en service");
-      return { k: esc(nom) + (live ? `<span class="badge">LIVE</span>` : ""), v: m.gain, c: live ? "ia" : "", d: `${enDuree(m.recovered)} · ${enDuree(m.delay)}` }; });
-    return `<div><div class="mono">Audit · what we get back</div><div class="dt-titre ia">${eurk(total)} <small>/ year recoverable · ${mods.length} workflows</small></div></div>
-    <div class="dt-corps"><div class="dt-bloc"><div class="mono">Time handed back / week · build time</div><div class="barres">${items.map(x => `<div class="barre-l ${x.c}" style="grid-template-columns:minmax(0,1fr) auto"><span class="k">${x.k}</span><span class="v">${esc(x.d)}</span></div>`).join("")}</div><p>The first three run <b>live</b> since this morning, in the store's real back-office.</p></div>
-    <div class="dt-bloc"><div class="mono">Annual gain per workflow · € / year</div>${barres(items, x => "€" + nf(x.v))}</div></div>${SOURCE}`;
+      return { k: esc(nom) + (live ? `<span class="badge">LIVE</span>` : ""), v: m.gain, h: heuresDe(m.recovered), rec: enDuree(m.recovered), delai: enDuree(m.delay), c: live ? "ia" : "" }; });
+    return gabarit({ sur: "Audit · what we get back", titre: `<span class="ia">${eurk(total)}</span> <small>/ year recoverable</small>`,
+      minis: [[String(mods.length), "workflows to automate"], [String(items.filter(x => x.c).length), "already live"], [items.reduce((a, x) => a + x.h, 0).toFixed(1) + " h", "handed back / week"]],
+      g: ["Time handed back · per week · build time", barres(items.map(x => ({ ...x, v: x.h })), x => `${x.rec.replace(" / wk", "")} · ${x.delai}`)],
+      d: ["Annual gain per workflow · € / year", barres(items, x => "€" + nf(x.v))] });
   }
   return "";
 }
@@ -406,8 +407,8 @@ function ouvrirDetail(id, anime = true) {
   d.innerHTML = `<button class="fermer" aria-label="Close">×</button><div class="dc">${contenuDetail(id)}</div>`;
   d.querySelector(".fermer").addEventListener("click", () => fermerDetail());
   const depart = { left: r.left - r0.left, top: r.top - r0.top, width: r.width, height: r.height };
-  const fin = { left: 28, top: 22, width: r0.width - 56, height: r0.height - 44 };
-  const pose = o => Object.entries(o).forEach(([k, v]) => d.style[k] = v + "px");
+  const fin = { left: "28px", top: "22px", width: "calc(100% - 56px)", height: "calc(100% - 44px)" };
+  const pose = o => Object.entries(o).forEach(([k, v]) => d.style[k] = typeof v === "number" ? v + "px" : v);
   pose(anime ? depart : fin);
   sec.append(voile, d);
   detailOuvert = d; detailId = id; tuileSource = { tuile, depart };
@@ -483,7 +484,6 @@ function afficher(n) {
   dernierN = n;
   const e = n.brut;
   ETAT.agents = n.agents; ETAT.actif = n.enCours ? n.enCours.agent : null;
-  $("#nb-live").textContent = n.agents.filter(a => a.statut === "en service").length;
   ETAT.demande = n.enCours ? (n.enCours.demande_en || n.enCours.demande || n.journal.find(l => l.run === n.enCours.run && l.type === "demande")?.demande || "") : "";
   $("#m-passages").textContent = nf(e.passages ?? n.runs.length);
   $("#m-humain").textContent = duree(n.humain);
