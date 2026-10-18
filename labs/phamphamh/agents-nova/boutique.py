@@ -221,7 +221,9 @@ def capturer_fiche(produit_id, sku):
         return None
 
 
-def rapport(type_, du, au, periode="month"):
+def rapport(type_, du, au, periode=None):
+    # meilleures ventes : un classement par année se lit mieux qu'un classement par mois
+    periode = periode or ("year" if type_ == "bestsellers" else "month")
     from playwright.sync_api import sync_playwright
     chemin, libelle = RAPPORTS[type_]
     nom = nom_capture()
@@ -238,8 +240,10 @@ def rapport(type_, du, au, periode="month"):
             pied = grille.locator("tfoot tr").first
             totaux = dict(zip(entetes, [t.strip() for t in pied.locator("th, td").all_inner_texts()])) if pied.count() else {}
             lignes = []
-            for tr in grille.locator("tbody tr").all()[:12]:
+            for tr in grille.locator("tbody tr").all()[:20]:
                 cellules = [t.strip() for t in tr.locator("td").all_inner_texts()]
+                if len(cellules) == len(entetes) - 1 and lignes:  # cellule « période » fusionnée (rowspan)
+                    cellules = [lignes[-1][entetes[0]]] + cellules
                 if len(cellules) > 1:
                     lignes.append(dict(zip(entetes, cellules)))
             grille.scroll_into_view_if_needed()
@@ -263,7 +267,7 @@ if __name__ == "__main__":
     sc.add_argument("--limite", type=int, default=10)
     sr = s.add_parser("rapport"); sr.add_argument("type", choices=list(RAPPORTS))
     sr.add_argument("--du", required=True); sr.add_argument("--au", required=True)
-    sr.add_argument("--periode", default="month", choices=["day", "month", "year"])
+    sr.add_argument("--periode", choices=["day", "month", "year"])
     r = a.parse_args()
     if r.cmd == "chercher":
         out = chercher(r.mots)
