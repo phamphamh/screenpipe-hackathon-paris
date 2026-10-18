@@ -1,0 +1,116 @@
+{
+ "source": "WONDERBREAD (Stanford, 2024) · site shopping_admin de WebArena · donnees/wonderbread/index.json",
+ "agents": {
+  "prix-produit": [
+   {
+    "id": "wb-779",
+    "task_id": 779,
+    "intention": "Reduce the price of yellow shirts from Gwyn Endurance in all size below L by 15%",
+    "fr": "Baisser de 15 % le prix des t-shirts jaunes Gwyn Endurance, toutes tailles sous le L",
+    "dossier": "779 @ 2024-01-13-03-48-17"
+   },
+   {
+    "id": "wb-781",
+    "task_id": 781,
+    "intention": "Increase the price of black fitness tshirts from Desiree with size XS by 37%",
+    "fr": "Augmenter de 37 % le prix des t-shirts fitness noirs Desiree en taille XS",
+    "dossier": "781 @ 2024-01-13-04-05-38"
+   },
+   {
+    "id": "wb-778",
+    "task_id": 778,
+    "intention": "Reduce the price of size 28 Sahara leggings by 13.5%",
+    "fr": "Baisser de 13,5 % le prix des leggings Sahara en taille 28",
+    "dossier": "778 @ 2024-01-13-03-43-38"
+   },
+   {
+    "id": "wb-780",
+    "task_id": 780,
+    "intention": "Increase the price of white Ingrid Running with size L and above by $17",
+    "fr": "Augmenter de 17 $ le prix des vestes Ingrid Running blanches, du L et au-dessus",
+    "dossier": "780 @ 2024-02-04-01-57-27"
+   },
+   {
+    "id": "wb-782",
+    "task_id": 782,
+    "intention": "Increase the price of all blue running tshirts in extra small and small sizes by 23%",
+    "fr": "Augmenter de 23 % le prix des t-shirts de running bleus en XS et S",
+    "dossier": "782 @ 2024-01-13-04-10-24"
+   }
+  ],
+  "rapport-ventes": [
+   {
+    "id": "wb-704",
+    "task_id": 704,
+    "intention": "Today is 3/15/2023, generate a sales order report for last month",
+    "fr": "Nous sommes le 15/03/2023 : rapport des commandes du mois dernier",
+    "dossier": "704 @ 2023-12-28-19-21-56"
+   },
+   {
+    "id": "wb-713",
+    "task_id": 713,
+    "intention": "Create a best sellers report from 05/01/2022 to 05/31/2023",
+    "fr": "Rapport des meilleures ventes du 01/05/2022 au 31/05/2023",
+    "dossier": "713 @ 2024-01-13-02-38-35"
+   },
+   {
+    "id": "wb-705",
+    "task_id": 705,
+    "intention": "Today is 3/15/2023, generate a sales order report over the last 45 days",
+    "fr": "Nous sommes le 15/03/2023 : rapport des commandes des 45 derniers jours",
+    "dossier": "705 @ 2023-12-28-19-23-20"
+   },
+   {
+    "id": "wb-709",
+    "task_id": 709,
+    "intention": "Create an orders report from beginning of May 2021 to end of March 2022",
+    "fr": "Rapport des commandes de début mai 2021 à fin mars 2022",
+    "dossier": "709 @ 2023-12-28-19-47-39"
+   },
+   {
+    "id": "wb-707",
+    "task_id": 707,
+    "intention": "Today is 3/15/2023, generate a sales order report for last year",
+    "fr": "Nous sommes le 15/03/2023 : rapport des commandes de l'an dernier",
+    "dossier": "707 @ 2023-12-28-19-26-46"
+   }
+  ],
+  "commandes-annulees": [
+   {
+    "id": "wb-198",
+    "task_id": 198,
+    "intention": "Get the customer name of the most recent cancelled order",
+    "fr": "Quel client a passé la commande annulée la plus récente ?",
+    "dossier": "198 @ 2023-12-29-15-11-21"
+   },
+   {
+    "id": "wb-288",
+    "task_id": 288,
+    "intention": "Tell me the name of the customer who has the most cancellations in the history",
+    "fr": "Quel client a le plus d'annulations dans l'historique ?",
+    "dossier": "288 @ 2023-12-29-17-00-41"
+   },
+   {
+    "id": "wb-202",
+    "task_id": 202,
+    "intention": "Get the date of the most recent canlled order",
+    "fr": "À quelle date a eu lieu la dernière commande annulée ?",
+    "dossier": "202 @ 2023-12-29-15-21-47"
+   },
+   {
+    "id": "wb-196",
+    "task_id": 196,
+    "intention": "Compare the payment difference of the last 4 cancelled orders and completed orders",
+    "fr": "Comparer le montant des 4 dernières commandes annulées et des 4 dernières terminées",
+    "dossier": "196 @ 2023-12-29-14-42-30"
+   },
+   {
+    "id": "wb-290",
+    "task_id": 290,
+    "intention": "Tell me the product SKUs in the most recent cancelled orders of the customer who has the most cancellations in the history",
+    "fr": "Quels produits (SKU) dans les dernières commandes annulées du client qui annule le plus ?",
+    "dossier": "290 @ 2023-12-29-17-20-54"
+   }
+  ]
+ }
+}

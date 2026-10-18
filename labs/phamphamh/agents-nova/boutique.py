@@ -47,7 +47,7 @@ def numero_suivant():
         return 1
     n = 0
     for l in open(chemin):
-        if f'"run": "{RUN}"' in l:
+        if f'"run": "{RUN}"' in l and '"type": "outil"' in l:
             n += 1
     return n + 1
 
@@ -246,8 +246,9 @@ def rapport(type_, du, au, periode="month"):
             page.screenshot(path=os.path.join(SORTIE, "captures", nom), type="jpeg", quality=70)
         finally:
             nav.close()
-    resume = ", ".join(f"{k} {v}" for k, v in totaux.items() if k not in ("Interval", "Period") and v)[:160]
-    journal("Génère le rapport", f"{libelle} du {du} au {au} · {resume or str(len(lignes)) + ' ligne(s)'}", capture=nom,
+    resume = ", ".join(f"{k} {v}" for k, v in totaux.items()
+                       if k not in ("Interval", "Period") and v and v not in ("0", "$0.00"))[:160]
+    journal("Génère le rapport", f"{libelle} du {du} au {au} · {resume or ('aucune donnée sur la période' if not lignes else str(len(lignes)) + ' ligne(s)')}", capture=nom,
             totaux=totaux)
     return {"rapport": type_, "du": du, "au": au, "totaux": totaux, "lignes": lignes, "capture": nom}
 
