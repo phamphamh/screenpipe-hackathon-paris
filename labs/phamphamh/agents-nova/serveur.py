@@ -1,43 +1,55 @@
 #!/usr/bin/env python3
-"""La démo DeloAI · Atelier Nova : les données, l'audit, et les agents déployés qui tournent pour de vrai.
+"""La démo DeloAI · Atelier Nova : les données, l'audit, et les agents IA déployés qui tournent pour de vrai.
 
 - sert la page (labs/phamphamh/agents-nova/index.html) et le dashboard (labs/phamphamh/dashboard-nova/) ;
-- fait tourner l'agent « Rapport de ventes » toutes les INTERVALLE minutes dans la boutique de test (c'est ça, « déployé ») ;
-- GET /api/etat : agents, passages, journal ; POST /api/lancer : un passage tout de suite.
+- fait tourner les 3 agents en service à tour de rôle, un passage toutes les INTERVALLE minutes : chaque passage est
+  un vrai agent Claude qui traite une vraie demande (WONDERBREAD) dans la boutique de test (agents_ia.py) ;
+- GET /api/etat : agents, passages, journal ; POST /api/lancer?agent=<id> : un passage tout de suite.
 
 Usage : python3 labs/phamphamh/agents-nova/serveur.py   →  http://localhost:8798
-Variables : INTERVALLE (minutes, défaut 15), PORT (défaut 8798).
+Variables : INTERVALLE (minutes, défaut 5), PORT (défaut 8798).
 """
 import json, os, threading, time
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timezone
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
+from urllib.parse import parse_qs, urlparse
 
-import agent_rapport
+import agents_ia
 
 ICI = os.path.dirname(os.path.abspath(__file__))
 LAB = os.path.dirname(ICI)
-SORTIE = agent_rapport.SORTIE
+SORTIE = agents_ia.SORTIE
 PORT = int(os.environ.get("PORT", 8798))
-INTERVALLE = float(os.environ.get("INTERVALLE", 15))
-HUMAIN_S = 23  # médiane mesurée sur 20 démos WONDERBREAD « rapport de ventes »
-PAR_SEMAINE = 790  # fréquence du rapport chez Atelier Nova (×10), dashboard d'adamaass
-# les 5 skills recommandées par l'audit (dashboard, écran Recommandation) ; une seule est déployée
+INTERVALLE = float(os.environ.get("INTERVALLE", 5))
+# temps humain médian par tâche (secondes), mesuré sur les démos WONDERBREAD
+# (donnees/wonderbread/traces/demos_sop_and_trace_only/<dossier>/*.json, dernier secs_from_start)
+HUMAIN_S = {
+    "rapport-ventes": 23,       # médiane mesurée sur 20 démos « rapport de ventes »
+    "prix-produit": 58.4,       # médiane de 34 démos, tâches 777 à 782 (prix des variantes)
+    "commandes-annulees": 35.7, # médiane de 40 démos, tâches 196, 198, 202, 288 à 292 (commandes annulées)
+}
+# les 5 skills recommandées par l'audit (dashboard, écran Recommandation) ; 3 sont déployées
 AGENTS = [
+    {"id": "prix-produit", "nom": "Prix produit", "equipe": "Opérations", "statut": "en service"},
     {"id": "rapport-ventes", "nom": "Rapport de ventes", "equipe": "E-commerce", "statut": "en service"},
-    {"id": "prix-produit", "nom": "Prix produit", "equipe": "Opérations", "statut": "en préparation"},
-    {"id": "commandes-annulees", "nom": "Commandes annulées", "equipe": "Opérations", "statut": "en préparation"},
+    {"id": "commandes-annulees", "nom": "Commandes annulées", "equipe": "Opérations", "statut": "en service"},
     {"id": "avis-produit", "nom": "Avis produit", "equipe": "E-commerce", "statut": "en préparation"},
     {"id": "variantes-produit", "nom": "Variantes produit", "equipe": "Opérations", "statut": "en préparation"},
 ]
+EN_SERVICE = [a["id"] for a in AGENTS if a["statut"] == "en service"]
 verrou = threading.Lock()
-etat = {"en_cours": False, "prochain": None}
 
 
 def lire_jsonl(nom, n=None):
     chemin = os.path.join(SORTIE, nom)
     if not os.path.exists(chemin):
         return []
-    lignes = [json.loads(l) for l in open(chemin) if l.strip()]
+    lignes = []
+    for l in open(chemin):
+        try:
+            lignes.append(json.loads(l))
+        except json.JSONDecodeError:  # ligne en cours d'écriture
+            pass
     return lignes[-n:] if n else lignes
 
 
@@ -46,39 +58,48 @@ def deploiement():
     chemin = os.path.join(SORTIE, "deploiement.json")
     if not os.path.exists(chemin):
         os.makedirs(SORTIE, exist_ok=True)
-        json.dump({"agent": "rapport-ventes", "depuis": datetime.now(timezone.utc).isoformat(timespec="seconds"),
-                   "intervalle_min": INTERVALLE}, open(chemin, "w"))
-    return json.load(open(chemin))
+        json.dump({"depuis": datetime.now(timezone.utc).isoformat(timespec="seconds")}, open(chemin, "w"))
+    return {"depuis": json.load(open(chemin))["depuis"]}
 
 
-def passage():
+def passage(agent_id):
+    """Un passage ; False si un autre passage est déjà en cours."""
     if not verrou.acquire(blocking=False):
         return False
-    etat["en_cours"] = True
     try:
-        agent_rapport.lancer("02/01/2023", "02/28/2023")
+        agents_ia.passage(agent_id)
+    except Exception as e:  # le planificateur ne doit jamais mourir
+        print(f"passage {agent_id} : {e}", flush=True)
+        agents_ia.en_cours = None
     finally:
-        etat["en_cours"] = False
         verrou.release()
     return True
 
 
+def prochain_agent():
+    """L'agent en service qui est passé le moins récemment (rotation)."""
+    derniers = {r.get("agent"): r.get("fini", "") for r in lire_jsonl("runs.jsonl")}
+    return min(EN_SERVICE, key=lambda a: (derniers.get(a, ""), EN_SERVICE.index(a)))
+
+
 def planificateur():
     while True:
-        etat["prochain"] = (datetime.now(timezone.utc) + timedelta(minutes=INTERVALLE)).isoformat(timespec="seconds")
         time.sleep(INTERVALLE * 60)
-        passage()
+        passage(prochain_agent())
 
 
 def resume():
     runs = lire_jsonl("runs.jsonl")
     ok = [r for r in runs if r.get("statut") == "ok"]
-    duree = round(sum(r["duree_s"] for r in ok) / len(ok), 1) if ok else None
+    agents = []
+    for a in AGENTS:
+        siens = [r for r in runs if r.get("agent") == a["id"]]
+        agents.append({**a, "passages": len(siens), "reussis": sum(r.get("statut") == "ok" for r in siens),
+                       "derniere_reponse": siens[-1].get("reponse") if siens else None})
     return {
-        "deploiement": deploiement(), "intervalle_min": INTERVALLE, "en_cours": etat["en_cours"], "prochain": etat["prochain"],
-        "agents": AGENTS, "passages": len(runs), "reussis": len(ok), "actions": sum(r.get("actions", 0) for r in runs),
-        "duree_agent_s": duree, "duree_humain_s": HUMAIN_S, "par_semaine": PAR_SEMAINE,
-        "heures_rendues_semaine": round(PAR_SEMAINE * HUMAIN_S / 3600, 1),
+        "deploiement": deploiement(), "intervalle_min": INTERVALLE, "en_cours": agents_ia.en_cours, "agents": agents,
+        "passages": len(runs), "reussis": len(ok), "actions": sum(r.get("actions", 0) for r in runs),
+        "humain_s_economise": round(sum(HUMAIN_S.get(r.get("agent"), 0) for r in ok), 1),
         "dernier": runs[-1] if runs else None, "runs": runs[-12:][::-1], "journal": lire_jsonl("journal.jsonl", 40),
     }
 
@@ -111,16 +132,21 @@ class Gestion(SimpleHTTPRequestHandler):
         return super().do_GET()
 
     def do_POST(self):
-        if self.path.startswith("/api/lancer"):
-            if etat["en_cours"]:
-                return self.envoyer_json({"lance": False, "raison": "un passage est déjà en cours"})
-            threading.Thread(target=passage, daemon=True).start()
-            return self.envoyer_json({"lance": True})
+        url = urlparse(self.path)
+        if url.path == "/api/lancer":
+            agent = (parse_qs(url.query).get("agent") or [None])[0] or prochain_agent()
+            if agent not in EN_SERVICE:
+                return self.envoyer_json({"lance": False, "raison": f"agent inconnu ou pas en service : {agent}"}, 400)
+            if verrou.locked() or agents_ia.en_cours:
+                return self.envoyer_json({"lance": False, "raison": "un passage est déjà en cours",
+                                          "en_cours": agents_ia.en_cours}, 409)
+            threading.Thread(target=passage, args=(agent,), daemon=True).start()
+            return self.envoyer_json({"lance": True, "agent": agent})
         self.send_error(404)
 
 
 if __name__ == "__main__":
     deploiement()
     threading.Thread(target=planificateur, daemon=True).start()
-    print(f"Démo DeloAI : http://localhost:{PORT}  (agent toutes les {INTERVALLE:g} min)")
+    print(f"Démo DeloAI : http://localhost:{PORT}  (un agent toutes les {INTERVALLE:g} min, à tour de rôle)", flush=True)
     ThreadingHTTPServer(("127.0.0.1", PORT), Gestion).serve_forever()

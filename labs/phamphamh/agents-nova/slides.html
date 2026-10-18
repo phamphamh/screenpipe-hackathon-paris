@@ -304,8 +304,8 @@ h1 strong, h2 strong { font-weight: 600; }
   window.NB_SLIDES = total;
 
   // Intégrée dans index.html (iframe) : pilotée uniquement par le hash, toutes les lignes visibles
-  let integre = false;
-  try { integre = window !== window.top; } catch (_) { integre = true; }
+  // intégrée par index.html : l'iframe porte name="integre" (dans un artefact claude.ai, la page est aussi dans une iframe, mais doit rester pilotable)
+  const integre = window.name === "integre";
   if (integre) {
     document.documentElement.classList.add("integre");
     document.getElementById("lien-demo").target = "_top";

@@ -80,7 +80,8 @@ Ton seul outil : la commande Bash `python3 {OUTIL} …` (rien d'autre, pas de cd
 {s['consigne']}
 
 Règles : tu es autonome, ne pose aucune question. Fais le minimum d'appels nécessaires.
-Réponds en français, en 2 phrases maximum, avec le résultat chiffré (ce que tu as fait ou trouvé)."""
+Réponds en français, en 2 phrases courtes maximum, avec le résultat chiffré (ce que tu as fait ou trouvé).
+Texte simple sans markdown, montants en dollars ($) comme dans la boutique, aucun commentaire sur ta méthode."""
 
 
 def passage(agent_id):
