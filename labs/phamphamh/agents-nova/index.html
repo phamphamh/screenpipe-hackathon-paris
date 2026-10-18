@@ -5,201 +5,656 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>DeloAI · Atelier Nova</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap">
 <style>
-:root{--fond:#0a0a0b;--carte:#141416;--bord:#26262a;--texte:#ececec;--doux:#9a9a9f;--cuivre:#e5a276;--vert:#22c55e;--rouge:#ef4444}
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--fond);color:var(--texte);font:15px/1.45 Inter,system-ui,sans-serif;min-height:100vh;display:flex;flex-direction:column}
-h1,h2,.gros{font-family:Outfit,sans-serif}
-.mono{font-family:"JetBrains Mono",monospace}
-header{display:flex;align-items:center;gap:28px;padding:14px 28px;border-bottom:1px solid var(--bord)}
-.marque{display:flex;align-items:center;gap:10px;font:700 18px Outfit}
-.marque b{width:30px;height:30px;border-radius:8px;background:var(--cuivre);color:#1a1209;display:grid;place-items:center}
-nav{display:flex;gap:6px}
-nav button{background:none;border:1px solid transparent;color:var(--doux);font:500 14px Inter;padding:8px 14px;border-radius:8px;cursor:pointer}
-nav button.actif{color:var(--texte);border-color:var(--bord);background:var(--carte)}
-nav button i{font-style:normal;color:var(--cuivre);margin-right:6px}
-.client{margin-left:auto;color:var(--doux);font-size:13px}
-main{flex:1;display:flex}
-section{display:none;flex:1;padding:26px 28px;gap:18px}
-section.actif{display:flex;flex-direction:column}
-#agents{height:calc(100vh - 62px);overflow:hidden}
-iframe{flex:1;border:0;width:100%;min-height:calc(100vh - 62px)}
-section.cadre{padding:0}
-.titre{display:flex;align-items:baseline;gap:16px}
-.titre h1{font-size:30px}
-.titre p{color:var(--doux)}
-.carte{background:var(--carte);border:1px solid var(--bord);border-radius:14px;padding:18px 20px}
-.etiquette{font:500 11px "JetBrains Mono";letter-spacing:.08em;text-transform:uppercase;color:var(--doux);margin-bottom:8px}
-.grille{display:grid;gap:18px}
-/* les données */
-.donnees{grid-template-columns:1.1fr 1fr;flex:1}
-.source .gros{font-size:22px;margin-bottom:6px}
-.source p{color:var(--doux);margin-top:6px}
-.source p b{color:var(--texte);font-weight:600}
-.personnes{grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
-.personne{display:flex;gap:12px;align-items:center;padding:12px 14px}
-.personne .av{width:38px;height:38px;border-radius:50%;background:#2a221c;color:var(--cuivre);display:grid;place-items:center;font:600 16px Outfit;flex:none}
-.personne b{display:block}
-.personne span{display:block;color:var(--doux);font-size:12.5px}
-.fois{display:flex;align-items:center;gap:16px;margin-top:14px;padding:14px 18px;border:1px dashed var(--cuivre);border-radius:12px}
-.fois .gros{font-size:34px;color:var(--cuivre)}
-.extrait li{list-style:none;display:grid;grid-template-columns:80px 1fr;gap:12px;padding:14px 0;border-bottom:1px solid var(--bord);font-size:15px}
-.extrait li:last-child{border:0}
-.extrait .h{color:var(--doux)}
-.extrait .f{display:block;color:var(--doux);font-size:12px;margin-top:4px}
-.extrait li.rep .a{color:var(--cuivre)}
-/* les agents */
-.bandeau{display:flex;align-items:center;gap:16px;padding:16px 20px}
-.pastille{width:12px;height:12px;border-radius:50%;background:var(--vert);box-shadow:0 0 0 0 rgba(34,197,94,.6);animation:pouls 1.8s infinite;flex:none}
-@keyframes pouls{70%{box-shadow:0 0 0 10px rgba(34,197,94,0)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}
-.bandeau .gros{font-size:20px}
-.bandeau .doux{color:var(--doux)}
-.bandeau button{margin-left:auto}
-button.action{background:var(--cuivre);color:#1a1209;border:0;font:600 14px Inter;padding:10px 16px;border-radius:9px;cursor:pointer}
-button.action:disabled{opacity:.5;cursor:default}
-.kpis{grid-template-columns:repeat(4,1fr)}
-.kpi .gros{font-size:30px}
-.kpi .s{color:var(--doux);font-size:13px}
-.vert{color:var(--vert)}.cuivre{color:var(--cuivre)}
-.direct{grid-template-columns:240px 1.5fr 1fr;flex:1;min-height:0}
-.agent{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--bord);font-size:14px}
-.agent:last-child{border:0}
-.agent .p{width:9px;height:9px;border-radius:50%;background:#3a3a3f;flex:none}
-.agent.on .p{background:var(--vert)}
-.agent small{display:block;color:var(--doux);font-size:12px}
-.ecran{display:flex;flex-direction:column}
-.ecran .img{flex:1;min-height:0;border-radius:10px;overflow:hidden;background:#000;border:1px solid var(--bord);display:grid;place-items:center}
-.ecran img{width:100%;height:100%;object-fit:contain}
-.ecran .leg{margin-top:10px;color:var(--doux);font-size:13px}
-.ecran .leg b{color:var(--texte)}
-.journal{overflow:auto;max-height:calc(100vh - 420px)}
-.journal li{list-style:none;display:grid;grid-template-columns:62px 1fr;gap:8px;padding:7px 0;border-bottom:1px solid var(--bord);font-size:13px;animation:entre .4s}
-.journal li .t{color:var(--doux)}
-.journal li small{display:block;color:var(--doux)}
-.journal li.neuf b{color:var(--cuivre)}
-@keyframes entre{from{opacity:0;transform:translateY(-4px)}}
-.resultat{margin-top:12px;font-size:13px;color:var(--doux)}
-.resultat b{color:var(--texte)}
-.vide{color:var(--doux);font-size:14px}
+/* Charte « salle de commandement » : monde gris, traits fins, une seule couleur vive pour l'IA (cyan), orange pour la perte. */
+:root {
+  color-scheme: dark;
+  --fond: #0a0c0f; --plan: #111418; --plan-2: #171b21;
+  --trait: #232830; --trait-fort: #343b46;
+  --texte: #e6e4df; --doux: #8b929d; --faible: #59606b;
+  --ia: #7ce3ff; --perte: #ffa24a;
+  --f-texte: "Geist", "Inter Tight", system-ui, sans-serif;
+  --f-mono: "Geist Mono", ui-monospace, Menlo, monospace;
+  --haut: 44px;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; overflow: hidden; }
+body { background: var(--fond); color: var(--texte); font-family: var(--f-texte); font-size: 16px; line-height: 1.45; }
+.mono { font-family: var(--f-mono); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--doux); font-weight: 400; }
+.ia { color: var(--ia); } .perte { color: var(--perte); }
+button { font: inherit; color: inherit; }
+
+/* Barre haute */
+.barre { position: fixed; inset: 0 0 auto 0; height: var(--haut); display: flex; align-items: center; gap: 28px; padding: 0 24px; border-bottom: 1px solid var(--trait); background: var(--fond); z-index: 5; }
+.barre .marque { color: var(--texte); font-weight: 500; display: flex; gap: 10px; align-items: center; letter-spacing: .16em; }
+.barre .marque i { width: 8px; height: 8px; background: var(--ia); display: inline-block; }
+.barre .etape { margin-left: auto; color: var(--texte); }
+.barre .etape b { color: var(--doux); font-weight: 400; }
+.barre .prog { position: absolute; left: 0; bottom: -1px; height: 2px; background: var(--ia); transition: width .35s ease; }
+
+/* Écrans */
+.ecrans { position: fixed; top: var(--haut); left: 0; right: 0; bottom: 0; }
+.ecran { position: absolute; inset: 0; display: none; }
+.ecran.on { display: block; }
+.ecran iframe { border: 0; width: 100%; height: 100%; display: block; background: var(--fond); }
+.vide { position: absolute; inset: 24px; border: 1px solid var(--trait); display: grid; place-items: center; }
+.coin { position: absolute; width: 14px; height: 14px; border-color: var(--trait-fort); border-style: solid; pointer-events: none; }
+.coin.a { left: 10px; top: 10px; border-width: 1px 0 0 1px; } .coin.b { right: 10px; top: 10px; border-width: 1px 1px 0 0; }
+.coin.c { left: 10px; bottom: 10px; border-width: 0 0 1px 1px; } .coin.d { right: 10px; bottom: 10px; border-width: 0 1px 1px 0; }
+.chiffre { font-weight: 300; letter-spacing: -.04em; line-height: .95; }
+
+/* ---------- Les données ---------- */
+.donnees { padding: 24px 40px 22px; }
+.d-grille { height: 100%; display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 40px; }
+.d-gauche { display: grid; grid-template-rows: auto auto auto 1fr auto; gap: 18px; min-height: 0; }
+.donnees h1 { font-weight: 300; font-size: 40px; line-height: 1.05; letter-spacing: -.03em; margin: 8px 0 0; text-wrap: balance; }
+.donnees h1 b { font-weight: 500; }
+.source { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 26px; align-items: end; border-top: 1px solid var(--trait-fort); padding-top: 16px; }
+.source .chiffre { font-size: 76px; }
+.source .s2 { font-size: 21px; font-weight: 500; letter-spacing: -.01em; }
+.source p { margin: 6px 0 0; color: var(--doux); font-size: 15px; max-width: 60ch; }
+.source p b { color: var(--texte); font-weight: 500; }
+.personnes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--trait); border: 1px solid var(--trait); align-self: start; }
+.personne { background: var(--plan); padding: 11px 16px 12px; display: grid; gap: 6px; min-width: 0; }
+.personne .nom { font-size: 22px; font-weight: 500; letter-spacing: -.01em; }
+.personne .role { font-family: var(--f-mono); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--doux); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.personne .nb { display: flex; gap: 18px; margin-top: 4px; }
+.personne .nb span { font-family: var(--f-mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--faible); }
+.personne .nb b { display: block; font-family: var(--f-texte); font-weight: 300; font-size: 26px; letter-spacing: -.03em; color: var(--texte); text-transform: none; line-height: 1.1; }
+.fois { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 26px; align-items: center; border-top: 1px solid var(--trait-fort); padding-top: 16px; }
+.fois .chiffre { font-size: 60px; }
+.fois .t { font-size: 20px; font-weight: 300; letter-spacing: -.01em; }
+.fois .t b { font-weight: 500; }
+.fois .mono { display: block; margin-top: 6px; }
+.d-droite { position: relative; border: 1px solid var(--trait); background: var(--plan); padding: 26px 28px; display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto; gap: 16px; min-height: 0; }
+.d-droite h2 { margin: 0; font-weight: 400; font-size: 26px; letter-spacing: -.02em; }
+.extrait { list-style: none; margin: 0; padding: 0; overflow: hidden; }
+.extrait li { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 14px; padding: 12px 0; border-top: 1px solid var(--trait); }
+.extrait .h { font-family: var(--f-mono); font-size: 15px; color: var(--texte); }
+.extrait .fen { font-family: var(--f-mono); font-size: 11px; letter-spacing: .06em; color: var(--faible); display: block; margin-bottom: 4px; }
+.extrait .act { font-family: var(--f-mono); font-size: 13px; color: var(--doux); }
+.extrait .act em { font-style: normal; color: var(--perte); }
+.extrait li.ecart { display: block; border: 0; padding: 0 0 10px 110px; font-family: var(--f-mono); font-size: 11px; letter-spacing: .1em; color: var(--perte); opacity: .8; }
+.trois { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 22px; align-items: center; border-top: 1px solid var(--perte); padding-top: 16px; }
+.trois .chiffre { font-size: 92px; color: var(--perte); }
+.trois .t { font-size: 22px; font-weight: 300; }
+.trois .t b { font-weight: 500; }
+
+/* ---------- Les agents ---------- */
+.agents { padding: 16px 18px 16px; }
+.a-grille { height: 100%; display: grid; grid-template-columns: minmax(0, 1fr) 430px; gap: 16px; }
+.a-gauche { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: 0; min-height: 0; border: 1px solid var(--trait); background: var(--plan); }
+.scene { position: relative; overflow: hidden; background: var(--fond); min-height: 0; }
+.scene canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
+.scene svg.liens { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.etiquette { position: absolute; pointer-events: none; font-family: var(--f-mono); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--texte); background: rgba(10,12,15,.86); border: 1px solid var(--trait-fort); padding: 5px 9px 6px; white-space: nowrap; line-height: 1.35; }
+.etiquette small { display: block; color: var(--doux); font-size: 10.5px; max-width: 300px; white-space: normal; text-transform: none; letter-spacing: .02em; }
+.etiquette.vive { border-color: var(--ia); }
+.etiquette.vive b, .etiquette.vive small { color: var(--ia); }
+.etiquette b { font-weight: 500; }
+.etiquette.eteinte { color: var(--faible); border-color: var(--trait); }
+.etiquette.eteinte small { color: var(--faible); }
+.etiquette.zone { background: none; border: 0; padding: 0; color: var(--doux); }
+.etiquette.zone.z-ia { color: var(--ia); }
+.mesures { position: absolute; right: 22px; top: 16px; display: grid; gap: 10px; text-align: right; pointer-events: none; }
+.mesures div { font-family: var(--f-mono); font-size: 11.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--doux); }
+.mesures b { display: block; font-family: var(--f-texte); font-size: 30px; font-weight: 300; letter-spacing: -.03em; color: var(--texte); text-transform: none; line-height: 1.1; }
+.mesures b.ia { color: var(--ia); }
+.pied-scene { position: absolute; left: 24px; bottom: 16px; pointer-events: none; font-size: 11px; }
+.demande { padding: 12px 18px 12px; border-bottom: 1px solid var(--trait); display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px; min-height: 104px; }
+.demande .fr { font-size: 25px; font-weight: 300; letter-spacing: -.02em; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.demande .en { font-family: var(--f-mono); font-size: 12px; color: var(--faible); line-height: 1.45; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+.demande.vive .fr { color: var(--ia); }
+.demande .mono b { color: var(--ia); font-weight: 400; }
+.direct { display: inline-flex; align-items: center; gap: 8px; }
+.direct i { width: 7px; height: 7px; background: var(--ia); display: inline-block; animation: clignote 1.6s infinite; }
+@keyframes clignote { 50% { opacity: .25; } }
+.rangee { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border-top: 1px solid var(--trait); }
+.rangee .ag { padding: 10px 14px 12px; border-left: 1px solid var(--trait); display: grid; gap: 4px; min-width: 0; }
+.rangee .ag:first-child { border-left: 0; }
+.rangee .ag .n { font-size: 15px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rangee .ag .st { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--doux); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rangee .ag .st i { font-style: normal; }
+.rangee .ag.on .st i { color: var(--ia); }
+.rangee .ag.off { color: var(--faible); }
+.rangee .ag.off .n { color: var(--faible); }
+.rangee .ag.actif { box-shadow: inset 0 2px 0 var(--ia); }
+.lancer { justify-self: start; margin-top: 2px; font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; background: transparent; border: 1px solid var(--trait-fort); color: var(--texte); padding: 4px 9px; cursor: pointer; }
+.lancer:hover:not(:disabled) { border-color: var(--ia); color: var(--ia); }
+.lancer:disabled { opacity: .35; cursor: default; }
+.lancer:focus-visible { outline: 1px solid var(--ia); outline-offset: 2px; }
+.a-droite { display: grid; grid-template-rows: auto auto minmax(0, 1fr); gap: 16px; min-height: 0; }
+.panneau { border: 1px solid var(--trait); background: var(--plan); padding: 12px 14px; display: grid; gap: 10px; min-height: 0; }
+.p-tete { display: flex; justify-content: space-between; gap: 10px; }
+.p-tete .mono:last-child { color: var(--faible); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.capture { aspect-ratio: 16 / 10; background: var(--fond); border: 1px solid var(--trait); display: grid; place-items: center; overflow: hidden; }
+.capture img { width: 100%; height: 100%; object-fit: cover; object-position: top left; display: block; }
+.reponse { font-size: 19px; font-weight: 300; letter-spacing: -.01em; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.reponse b { font-weight: 500; }
+.reponse.echec { color: var(--perte); font-size: 15px; }
+.journal { grid-template-rows: auto minmax(0, 1fr); }
+.journal ul { list-style: none; margin: 0; padding: 0; overflow: hidden; min-height: 0; }
+.journal li { display: grid; grid-template-columns: 74px minmax(0, 1fr); gap: 10px; padding: 7px 0 7px 8px; border-top: 1px solid var(--trait); border-left: 2px solid transparent; }
+.journal li .t { font-family: var(--f-mono); font-size: 11.5px; color: var(--doux); padding-top: 2px; }
+.journal li .e { font-size: 14.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.journal li .e i { font-style: normal; font-family: var(--f-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--faible); margin-right: 6px; }
+.journal li small { display: block; font-family: var(--f-mono); font-size: 11px; color: var(--faible); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.journal li.neuf { border-left-color: var(--ia); animation: neuf 3s ease-out; }
+.journal li.neuf .e { color: var(--ia); }
+@keyframes neuf { from { background: rgba(124,227,255,.12); } to { background: transparent; } }
+.vide-txt { color: var(--faible); font-family: var(--f-mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; }
+@media (prefers-reduced-motion: reduce) { .direct i, .journal li.neuf { animation: none; } }
 </style>
 </head>
 <body>
-<header>
-  <div class="marque"><b>D</b>DeloAI</div>
-  <nav>
-    <button data-v="donnees"><i>1</i>Les données</button>
-    <button data-v="audit"><i>2</i>L'audit</button>
-    <button data-v="ecarts"><i>3</i>Les écarts</button>
-    <button data-v="agents"><i>4</i>Les agents</button>
-  </nav>
-  <div class="client">Client : <b>Atelier Nova</b> · boutique en ligne</div>
+<header class="barre">
+  <span class="mono marque"><i></i>DeloAI</span>
+  <span class="mono">Client · Atelier Nova</span>
+  <span class="mono etape" id="etape">01 / 13</span>
+  <span class="prog" id="prog"></span>
 </header>
-<main>
-  <section id="donnees">
-    <div class="titre"><h1>D'où viennent les données</h1><p>De vraies personnes, sur de vraies tâches de back-office.</p></div>
-    <div class="grille donnees">
-      <div>
-        <div class="carte source">
-          <div class="etiquette">La source</div>
-          <div class="gros" id="src-nom"></div>
-          <p id="src-texte"></p>
-          <p>Ce que l'IA voit : <b>le titre de la fenêtre, l'adresse, les clics, les saisies</b>. Jamais leur identité : les prénoms sont inventés.</p>
+
+<main class="ecrans" id="ecrans">
+  <section class="ecran donnees" id="e-donnees" data-titre="Les données">
+    <div class="d-grille">
+      <div class="d-gauche">
+        <div>
+          <div class="mono">Les données · d'où elles viennent</div>
+          <h1>De vraies personnes, sur de vraies tâches de <b>back-office</b>.</h1>
         </div>
-        <div class="grille personnes" id="personnes"></div>
-        <div class="fois"><div class="gros">×10</div><div>Ces 6 personnes, multipliées par 10, deviennent <b>Atelier Nova : 60 salariés</b>. C'est une simulation, et on le dit.</div></div>
+        <div class="source">
+          <div class="chiffre" id="d-demos">2 929</div>
+          <div>
+            <div class="s2">enregistrements de travail réel</div>
+            <div class="mono" id="d-src" style="margin-top:4px">Wonderbread · Stanford (NeurIPS 2024) · CC-BY-4.0</div>
+            <p id="d-texte">Dans le back-office Magento de WebArena (Carnegie Mellon). Ce que l'IA lit : <b>le titre de la fenêtre, l'adresse, les clics, les saisies</b>. Jamais leur identité : les prénoms sont inventés.</p>
+          </div>
+        </div>
+        <div class="personnes" id="d-personnes"></div>
+        <div></div>
+        <div class="fois">
+          <div class="chiffre">×10</div>
+          <div class="t">Ces 6 personnes, multipliées par 10, deviennent <b>Atelier Nova : 60 salariés.</b><span class="mono">C'est une simulation, et on le dit.</span></div>
+        </div>
       </div>
-      <div class="carte">
-        <div class="etiquette">Ce que l'IA a lu · Sophie, analyste ventes, lundi matin</div>
-        <ul class="extrait" id="extrait"></ul>
-        <div class="fois"><div class="gros" id="nb-rapports">3</div><div>fois <b>le même rapport</b> en moins d'une heure. Personne ne l'a signalé : l'IA l'a vu.</div></div>
+      <div class="d-droite">
+        <i class="coin a"></i><i class="coin b"></i><i class="coin c"></i><i class="coin d"></i>
+        <div class="mono">Extrait brut · ce que l'IA a lu</div>
+        <h2>Sophie, analyste ventes, lundi matin</h2>
+        <ul class="extrait" id="d-extrait"></ul>
+        <div class="trois"><div class="chiffre" id="d-nb">3</div><div class="t">fois <b>le même rapport</b> en moins d'une heure. Personne ne l'a signalé : l'IA l'a vu.</div></div>
       </div>
     </div>
   </section>
-  <section id="audit" class="cadre"><iframe data-src="../dashboard-nova/index.html#contexte" title="Audit"></iframe></section>
-  <section id="ecarts" class="cadre"><iframe data-src="../dashboard-nova/index.html#couts" title="Écarts"></iframe></section>
-  <section id="agents">
-    <div class="carte bandeau">
-      <div class="pastille"></div>
-      <div><div class="gros">Agent « Rapport de ventes » : en service</div><div class="doux" id="depuis"></div></div>
-      <button class="action" id="lancer">Lancer un passage maintenant</button>
-    </div>
-    <div class="grille kpis">
-      <div class="carte kpi"><div class="etiquette">Passages depuis le déploiement</div><div class="gros" id="k-passages">–</div><div class="s" id="k-actions"></div></div>
-      <div class="carte kpi"><div class="etiquette">Temps par rapport</div><div class="gros"><span class="vert" id="k-agent">–</span> <span class="s">contre</span> <span id="k-humain">–</span></div><div class="s">agent · humain (médiane Stanford)</div></div>
-      <div class="carte kpi"><div class="etiquette">Fréquence chez Atelier Nova</div><div class="gros" id="k-freq">–</div><div class="s">rapports par semaine</div></div>
-      <div class="carte kpi"><div class="etiquette">Temps humain rendu</div><div class="gros cuivre" id="k-heures">–</div><div class="s">par semaine, sans personne au clavier</div></div>
-    </div>
-    <div class="grille direct">
-      <div class="carte"><div class="etiquette">Agents déployés</div><div id="liste-agents"></div></div>
-      <div class="carte ecran"><div class="etiquette">L'écran de l'agent, dans le vrai back-office</div><div class="img" id="ecran"><span class="vide">En attente du prochain passage…</span></div><div class="leg" id="legende"></div></div>
-      <div class="carte"><div class="etiquette">Journal · chaque action tracée</div><ul class="journal" id="journal"></ul><div class="resultat" id="resultat"></div></div>
+
+  <section class="ecran agents" id="e-agents" data-titre="Les agents">
+    <div class="a-grille">
+      <div class="a-gauche">
+        <div class="demande" id="demande">
+          <div class="mono" id="dem-tete">Dernière demande · réelle · Stanford</div>
+          <div class="fr" id="dem-fr">—</div>
+          <div class="en" id="dem-en"></div>
+        </div>
+        <div class="scene" id="scene">
+          <canvas id="c3d" aria-label="Le bureau d'Atelier Nova en 3D : six postes de salariés et cinq postes d'agents"></canvas>
+          <svg class="liens" id="liens"></svg>
+          <div id="etiquettes"></div>
+          <div class="mono pied-scene">Équipe · 6 postes observés ×10 = 60 salariés</div>
+          <div class="mesures">
+            <div>Passages<b id="m-passages">—</b></div>
+            <div>Actions tracées<b id="m-actions">—</b></div>
+            <div>Temps humain rendu<b class="ia" id="m-humain">—</b></div>
+            <div>En service depuis<b id="m-depuis">—</b></div>
+          </div>
+          <i class="coin a"></i><i class="coin b"></i><i class="coin c"></i><i class="coin d"></i>
+        </div>
+        <div class="rangee" id="rangee"></div>
+      </div>
+      <div class="a-droite">
+        <div class="panneau">
+          <div class="p-tete"><span class="mono">Écran de l'agent</span><span class="mono" id="cap-leg"></span></div>
+          <div class="capture" id="capture"><span class="vide-txt">En attente d'un passage</span></div>
+        </div>
+        <div class="panneau">
+          <div class="p-tete"><span class="mono">Dernière réponse</span><span class="mono" id="rep-leg"></span></div>
+          <div class="reponse" id="reponse">—</div>
+        </div>
+        <div class="panneau journal">
+          <div class="p-tete"><span class="mono"><span class="direct"><i></i>Journal en direct</span></span><span class="mono" id="j-mode">chaque action tracée</span></div>
+          <ul id="journal"></ul>
+        </div>
+      </div>
     </div>
   </section>
 </main>
-<script>
+
+<script type="module">
+/* ---------- Données communes ---------- */
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-const nf = n => Number(n).toLocaleString("fr-FR");
-const heure = iso => new Date(iso).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
-const VUES = ["donnees", "audit", "ecarts", "agents"];
+const nf = n => (n == null || isNaN(n)) ? "—" : Number(n).toLocaleString("fr-FR");
+const date = v => { if (!v) return null; const d = new Date(v); return isNaN(d) ? null : d; };
+const hm = v => { const d = date(v); return d ? d.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }) : "—"; };
+const hms = v => { const d = date(v); return d ? d.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit", second: "2-digit" }) : "—"; };
+const duree = s => { if (s == null || isNaN(s)) return "—"; s = Math.round(s); if (s < 60) return s + " s"; if (s < 3600) return Math.floor(s / 60) + " min " + String(s % 60).padStart(2, "0"); return Math.floor(s / 3600) + " h " + String(Math.floor(s % 3600 / 60)).padStart(2, "0"); };
+const virgule = n => String(n).replace(".", ",");
 
-function montrer(v) {
-  VUES.forEach(x => { $("#" + x).classList.toggle("actif", x === v); document.querySelector(`nav [data-v=${x}]`).classList.toggle("actif", x === v); });
-  const f = $("#" + v + " iframe"); if (f && !f.src) f.src = f.dataset.src;
-  history.replaceState(null, "", "#" + v);
+/* ---------- Enchaînement des étapes ---------- */
+const ETAPES = [
+  ...[1, 2, 3, 4, 5, 6, 7].map(n => ({ id: "s" + n, type: "slide", n, titre: "Ouverture" })),
+  { id: "donnees", type: "ecran", el: "e-donnees", titre: "Les données" },
+  { id: "audit", type: "cadre", src: "../dashboard-nova/index.html#constat", titre: "L'audit" },
+  { id: "ecarts", type: "cadre", src: "../dashboard-nova/index.html#couts", titre: "Les écarts" },
+  { id: "agents", type: "ecran", el: "e-agents", titre: "Les agents" },
+  ...[9, 10].map(n => ({ id: "s" + n, type: "slide", n, titre: "Conclusion" })),
+];
+const pad = n => String(n).padStart(2, "0");
+let courant = -1, slidesOk = true;
+const ecrans = $("#ecrans");
+
+fetch("slides.html", { method: "HEAD", cache: "no-store" }).then(r => { slidesOk = r.ok; }).catch(() => {});
+
+function surCles(e) {
+  if (e.metaKey || e.ctrlKey || e.altKey) return false;
+  if (["ArrowRight", " ", "PageDown"].includes(e.key)) { e.preventDefault(); suivant(); return true; }
+  if (["ArrowLeft", "PageUp"].includes(e.key)) { e.preventDefault(); precedent(); return true; }
+  if (e.key === "f" || e.key === "F") { if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen?.(); return true; }
+  return false;
 }
-document.querySelectorAll("nav button").forEach(b => b.onclick = () => montrer(b.dataset.v));
-addEventListener("keydown", e => {
-  if (!["ArrowRight", "ArrowLeft"].includes(e.key) || e.target.closest("iframe")) return;
-  const i = VUES.indexOf(location.hash.slice(1) || "donnees");
-  montrer(VUES[Math.max(0, Math.min(VUES.length - 1, i + (e.key === "ArrowRight" ? 1 : -1)))]);
-});
-addEventListener("hashchange", () => VUES.includes(location.hash.slice(1)) && montrer(location.hash.slice(1)));
-montrer(VUES.includes(location.hash.slice(1)) ? location.hash.slice(1) : "donnees");
-
-fetch("donnees.json").then(r => r.json()).then(d => {
-  $("#src-nom").textContent = `${d.source.nom} · ${d.source.qui}`;
-  $("#src-texte").innerHTML = `<b>${nf(d.source.demos)} enregistrements</b> de personnes réelles faisant leur travail dans un vrai logiciel : ${esc(d.boutique)}. Licence ouverte (${esc(d.source.licence)}). Pour la démo, on en a pris <b>6</b>, celles du back-office.`;
-  $("#personnes").innerHTML = d.personnes.map(p => `<div class="carte personne"><div class="av">${esc(p.prenom[0])}</div><div><b>${esc(p.prenom)}</b><span>${esc(p.role)}</span><span class="mono">${p.minutes} min · ${nf(p.captures)} captures</span></div></div>`).join("");
-  const ex = d.extrait.filter(l => !/^clic « REPORTS »$/.test(l.action));
-  // l'enregistrement tel quel, sans les clics sans libellé (« input », « Day ») pour rester lisible
-  const net = a => a.split(" · ").filter(x => !/^clic « (input|Day) »$/.test(x)).join(" · ").replace(/ dans « input »/g, "");
-  $("#extrait").innerHTML = ex.map(l => `<li class="${/Show Report/.test(l.action) ? "rep" : ""}"><span class="h mono">${esc(l.heure)}</span><span><span class="a">${esc(net(l.action))}</span><span class="f">${esc(l.fenetre)}</span></span></li>`).join("");
-  $("#nb-rapports").textContent = ex.filter(l => /Show Report/.test(l.action)).length;
-});
-
-let vus = new Set(), premier = true;
-async function rafraichir() {
-  let e; try { e = await (await fetch("/api/etat", { cache: "no-store" })).json(); } catch { return setTimeout(rafraichir, 4000); }
-  const dep = e.deploiement.depuis;
-  const proch = e.en_cours ? "passage en cours…" : e.prochain ? `prochain passage à ${heure(e.prochain)}` : "";
-  $("#depuis").textContent = `Déployé à ${heure(dep)} · tourne toutes les ${e.intervalle_min} min · ${proch}`;
-  $("#lancer").disabled = e.en_cours;
-  $("#k-passages").textContent = e.passages;
-  $("#k-actions").textContent = `${nf(e.actions)} actions tracées · ${e.reussis} réussis`;
-  $("#k-agent").textContent = e.duree_agent_s != null ? `${String(e.duree_agent_s).replace(".", ",")} s` : "–";
-  $("#k-humain").textContent = `${e.duree_humain_s} s`;
-  $("#k-freq").textContent = nf(e.par_semaine);
-  $("#k-heures").textContent = `${String(e.heures_rendues_semaine).replace(".", ",")} h`;
-  $("#liste-agents").innerHTML = e.agents.map(a => `<div class="agent ${a.statut === "en service" ? "on" : ""}"><span class="p"></span><div>${esc(a.nom)}<small>${esc(a.equipe)} · ${esc(a.statut)}</small></div></div>`).join("");
-  const j = e.journal.slice(-16).reverse();
-  $("#journal").innerHTML = j.map(l => { const k = l.run + l.n, neuf = !premier && !vus.has(k); vus.add(k); return `<li class="${neuf ? "neuf" : ""}"><span class="t mono">${heure(l.ts)}</span><span><b>${esc(l.etape)}</b><small>${esc(l.detail)}</small></span></li>`; }).join("");
-  premier = false;
-  const img = e.journal.slice().reverse().find(l => l.capture);
-  if (img) {
-    const src = "/captures/" + img.capture;
-    if ($("#ecran img")?.getAttribute("src") !== src) $("#ecran").innerHTML = `<img src="${src}" alt="">`;
-    $("#legende").innerHTML = `<b>${esc(img.etape)}</b> · ${esc(img.detail)} · ${heure(img.ts)}`;
+function brancher(ifr, st) {
+  // les flèches marchent même quand le focus est dans l'iframe
+  try {
+    const w = ifr.contentWindow;
+    w.addEventListener("keydown", e => { if (surCles(e)) e.stopImmediatePropagation(); }, true);
+    if (st.type === "slide") w.addEventListener("click", e => { if (e.target.closest && e.target.closest("a")) return; e.stopImmediatePropagation(); e.preventDefault(); suivant(); }, true);
+  } catch (_) {}
+}
+function slideDoc(st) { try { return st.frame?.contentDocument || null; } catch (_) { return null; } }
+function lignesSlide(st, tout) {
+  const d = slideDoc(st); if (!d) return;
+  d.querySelectorAll(".slide.on .l").forEach(l => l.classList.toggle("vu", tout));
+}
+function construire(st) {
+  if (st.node) return st.node;
+  if (st.type === "ecran") { st.node = document.getElementById(st.el); return st.node; }
+  const s = document.createElement("section"); s.className = "ecran";
+  if (st.type === "slide" && !slidesOk) {
+    s.innerHTML = `<div class="vide"><span class="mono">Slide ${st.n}</span></div>`;
+  } else {
+    const f = document.createElement("iframe");
+    if (st.type === "slide") f.name = "integre";
+    f.title = st.titre;
+    f.src = st.type === "slide" ? `slides.html#${st.n}` : st.src;
+    f.addEventListener("load", () => { brancher(f, st); if (st.type === "slide") lignesSlide(st, !!st.tout); if (ETAPES[courant] === st) setTimeout(() => window.focus(), 50); });
+    st.frame = f; s.appendChild(f);
   }
-  const r = e.dernier;
-  $("#resultat").innerHTML = r ? (r.statut === "ok"
-    ? `Dernier rapport : <b>février 2023 · ${esc(r.totaux.commandes)} commandes · ${esc(r.totaux.ventes)}</b> · ${r.actions} actions en ${String(r.duree_s).replace(".", ",")} s${r.csv ? " · CSV exporté" : ""}`
-    : `Dernier passage en échec : ${esc(r.erreur)}`) : "";
-  setTimeout(rafraichir, e.en_cours ? 700 : 4000);
+  ecrans.appendChild(s); st.node = s; return s;
 }
-$("#lancer").onclick = async () => { $("#lancer").disabled = true; await fetch("/api/lancer", { method: "POST" }); setTimeout(rafraichir, 300); };
+function aller(i, { arriere = false } = {}) {
+  i = Math.max(0, Math.min(ETAPES.length - 1, i));
+  const st = ETAPES[i];
+  ETAPES.forEach((x, j) => { if (x.node) x.node.classList.toggle("on", j === i); });
+  construire(st).classList.add("on");
+  if (st.type === "slide") { st.tout = arriere; lignesSlide(st, arriere); }
+  courant = i;
+  $("#etape").innerHTML = `${pad(i + 1)} / ${pad(ETAPES.length)} <b>·</b> ${esc(st.titre)}`;
+  $("#prog").style.width = ((i + 1) / ETAPES.length * 100) + "%";
+  history.replaceState(null, "", "#" + st.id);
+  // précharge l'étape suivante
+  const n = ETAPES[i + 1]; if (n && n.type !== "ecran") construire(n);
+  window.dispatchEvent(new CustomEvent("etape", { detail: st.id }));
+  window.focus();
+}
+function suivant() {
+  const st = ETAPES[courant];
+  if (st.type === "slide") { const d = slideDoc(st); const l = d && d.querySelector(".slide.on .l:not(.vu)"); if (l) { l.classList.add("vu"); return; } }
+  if (courant < ETAPES.length - 1) aller(courant + 1);
+}
+function precedent() {
+  const st = ETAPES[courant];
+  if (st.type === "slide") { const d = slideDoc(st); const v = d && d.querySelectorAll(".slide.on .l.vu"); if (v && v.length) { v[v.length - 1].classList.remove("vu"); return; } }
+  if (courant > 0) aller(courant - 1, { arriere: true });
+}
+addEventListener("keydown", e => { if (e.target.closest && e.target.closest("button") && (e.key === " " || e.key === "Enter")) return; surCles(e); });
+function depuisHash() {
+  const h = decodeURIComponent(location.hash.slice(1));
+  let i = ETAPES.findIndex(x => x.id === h);
+  if (i < 0 && /^\d+$/.test(h)) i = Number(h) - 1;
+  return i < 0 ? 0 : i;
+}
+addEventListener("hashchange", () => { const i = depuisHash(); if (i !== courant) aller(i); });
+aller(depuisHash());
+
+/* ---------- Écran « Les données » ---------- */
+fetch("donnees.json").then(r => r.json()).then(d => {
+  if (d.source) {
+    $("#d-demos").textContent = nf(d.source.demos);
+    $("#d-src").textContent = [d.source.nom, d.source.qui, d.source.licence].filter(Boolean).join(" · ");
+  }
+  if (d.boutique) $("#d-texte").innerHTML = `Dans le ${esc(d.boutique)}. Ce que l'IA lit : <b>le titre de la fenêtre, l'adresse, les clics, les saisies</b>. Jamais leur identité : les prénoms sont inventés.`;
+  $("#d-personnes").innerHTML = (d.personnes || []).map(p => `<div class="personne"><div class="nom">${esc(p.prenom)}</div><div class="role">${esc(p.role)}</div><div class="nb"><span><b>${nf(p.minutes)}</b>minutes</span><span><b>${nf(p.captures)}</b>captures</span></div></div>`).join("");
+  const net = a => a.split(" · ").filter(x => !/^clic « (input|Day) »$/.test(x)).join(" · ").replace(/ dans « input »/g, "").replace(/(clic « Show Report »)/, "<em>$1</em>");
+  const ex = (d.extrait || []).filter(l => !/^clic « REPORTS »$/.test(l.action));
+  const sec = h => { const [a, b, c] = h.split(":").map(Number); return a * 3600 + b * 60 + (c || 0); };
+  let html = "", avant = null;
+  ex.forEach(l => {
+    if (avant != null) html += `<li class="ecart">+ ${Math.round((sec(l.heure) - avant) / 60)} min · le même rapport, encore</li>`;
+    avant = sec(l.heure);
+    html += `<li><span class="h">${esc(l.heure)}</span><span><span class="fen">${esc(l.fenetre.replace(/ \/ Magento Admin$/, ""))}</span><span class="act">${net(esc(l.action))}</span></span></li>`;
+  });
+  $("#d-extrait").innerHTML = html;
+  $("#d-nb").textContent = ex.filter(l => /Show Report/.test(l.action)).length || 3;
+}).catch(() => {});
+
+/* ---------- Écran « Les agents » : état ---------- */
+const AGENTS_DEFAUT = [
+  { id: "prix-produit", nom: "Prix produit", equipe: "Opérations", statut: "en service" },
+  { id: "rapport-ventes", nom: "Rapport de ventes", equipe: "E-commerce", statut: "en service" },
+  { id: "commandes-annulees", nom: "Commandes annulées", equipe: "Opérations", statut: "en service" },
+  { id: "avis-produit", nom: "Avis produit", equipe: "E-commerce", statut: "en préparation" },
+  { id: "variantes-produit", nom: "Variantes produit", equipe: "Opérations", statut: "en préparation" },
+];
+// L'état normalisé que lit la scène 3D
+const ETAT = { agents: AGENTS_DEFAUT, actif: null, demande: "" };
+window.ETAT = ETAT;
+let mode = "serveur", instantane = null;
+const capUrl = c => (mode === "serveur" ? "../captures/" : "captures/") + c;
+
+function normaliser(e) {
+  const journal = Array.isArray(e.journal) ? e.journal : [];
+  const runs = Array.isArray(e.runs) ? e.runs : [];
+  let agents = Array.isArray(e.agents) && e.agents.length ? e.agents : AGENTS_DEFAUT;
+  agents = agents.map(a => ({ ...a, passages: a.passages ?? runs.filter(r => r.agent === a.id).length }));
+  let enCours = null;
+  if (e.en_cours && typeof e.en_cours === "object") enCours = e.en_cours;
+  else if (e.en_cours === true) { const l = journal[journal.length - 1]; enCours = { agent: e.deploiement?.agent || l?.agent, run: l?.run }; }
+  const dernier = e.dernier || runs[0] || null;
+  const humain = e.humain_s_economise ?? (e.reussis != null && e.duree_humain_s != null ? e.reussis * e.duree_humain_s : null);
+  return { brut: e, journal, runs, agents, enCours, dernier, humain };
+}
+function demandeDe(n) {
+  const c = n.enCours, d = n.dernier;
+  if (c) {
+    const ligne = n.journal.find(l => l.run === c.run && l.type === "demande");
+    return { vive: true, agent: c.agent, fr: c.demande_fr || ligne?.detail || "Passage en cours…", en: c.demande || ligne?.demande || "" };
+  }
+  if (d) {
+    const ligne = n.journal.find(l => l.run === d.run && l.type === "demande");
+    return { vive: false, agent: d.agent, fr: d.fr || d.demande_fr || ligne?.detail || (d.debut ? `Sortir le rapport de ventes du ${d.debut} au ${d.fin}` : "—"), en: d.demande || ligne?.demande || "" };
+  }
+  return { vive: false, fr: "—", en: "" };
+}
+function reponseDe(d, agents) {
+  if (!d) return { html: "—", echec: false };
+  if (d.statut && /echec|échec|erreur/i.test(d.statut)) return { html: `Échec du passage : ${esc(d.erreur || d.reponse || "erreur")}`, echec: true };
+  let r = d.reponse ?? agents.find(a => a.id === d.agent)?.derniere_reponse;
+  if (r && typeof r === "object") r = JSON.stringify(r);
+  if (!r && d.totaux) r = `<b>${esc(d.totaux.commandes)} commandes · ${esc(d.totaux.ventes)}</b> du ${esc(d.debut)} au ${esc(d.fin)}${d.csv ? " · CSV exporté" : ""}`;
+  else r = esc(r || "—");
+  return { html: r, echec: false };
+}
+
+const vus = new Set(); let premier = true, enCoursPrec = false;
+function afficher(n) {
+  const e = n.brut;
+  ETAT.agents = n.agents; ETAT.actif = n.enCours ? n.enCours.agent : null;
+  const dem = demandeDe(n); ETAT.demande = n.enCours ? dem.fr : "";
+  $("#m-passages").textContent = nf(e.passages ?? n.runs.length);
+  $("#m-actions").textContent = nf(e.actions);
+  $("#m-humain").textContent = duree(n.humain);
+  $("#m-depuis").textContent = hm(e.deploiement?.depuis);
+  const nomAgent = id => n.agents.find(a => a.id === id)?.nom || id || "";
+  $("#demande").classList.toggle("vive", dem.vive);
+  $("#dem-tete").innerHTML = dem.vive ? `<b>● En cours</b> · ${esc(nomAgent(dem.agent))} · demande réelle · Stanford` : `Dernière demande · ${esc(nomAgent(dem.agent))} · réelle · Stanford`;
+  $("#dem-fr").textContent = dem.fr;
+  $("#dem-en").textContent = dem.en ? `« ${dem.en} »` : "";
+  // rangée des agents
+  const enCours = !!n.enCours;
+  $("#rangee").innerHTML = n.agents.slice(0, 5).map(a => {
+    const on = a.statut === "en service", actif = a.id === ETAT.actif;
+    return `<div class="ag ${on ? "on" : "off"} ${actif ? "actif" : ""}"><div class="n">${esc(a.nom || a.id)}</div><div class="st"><i>${actif ? "● au travail" : on ? "● en service" : "○ en préparation"}</i>${on ? " · " + nf(a.passages) + " passages" : ""}</div>${on ? `<button class="lancer" data-agent="${esc(a.id)}" ${enCours ? "disabled" : ""}>Lancer un passage</button>` : ""}</div>`;
+  }).join("");
+  // journal : le plus récent en haut
+  const lignes = n.journal.slice(-24).reverse();
+  $("#journal").innerHTML = lignes.map(l => {
+    const k = `${l.run}|${l.n}|${l.ts}|${l.type}`; const neuf = !premier && !vus.has(k); vus.add(k);
+    const type = l.type === "demande" ? "demande" : l.type === "resultat" ? "résultat" : l.type === "outil" ? "action" : "";
+    return `<li class="${neuf ? "neuf" : ""}"><span class="t">${hms(l.ts)}</span><span><span class="e">${type ? `<i>${type}</i>` : ""}${esc(l.etape || l.fr || l.detail)}</span><small>${esc(l.agent || "")}${l.detail && l.etape ? " · " + esc(l.detail) : ""}</small></span></li>`;
+  }).join("") || `<li><span class="t">—</span><span class="vide-txt">Aucune action pour l'instant</span></li>`;
+  premier = false;
+  // capture la plus récente
+  const img = n.journal.slice().reverse().find(l => l.capture);
+  if (img) {
+    const src = capUrl(img.capture);
+    const cur = $("#capture img");
+    if (!cur || cur.getAttribute("src") !== src) $("#capture").innerHTML = `<img src="${esc(src)}" alt="Écran du back-office vu par l'agent" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'vide-txt',textContent:'Capture indisponible'}))">`;
+    $("#cap-leg").textContent = `${img.agent || ""} · ${hms(img.ts)}`;
+  }
+  const rep = reponseDe(n.dernier, n.agents);
+  $("#reponse").innerHTML = rep.html; $("#reponse").classList.toggle("echec", rep.echec);
+  const d = n.dernier;
+  $("#rep-leg").textContent = d ? [d.agent, d.duree_s != null ? virgule(d.duree_s) + " s" : "", d.actions != null ? d.actions + " actions" : ""].filter(Boolean).join(" · ") : "";
+  $("#j-mode").textContent = mode === "serveur" ? "chaque action tracée" : "rejeu d'un passage réel";
+}
+document.addEventListener("click", async e => {
+  const b = e.target.closest(".lancer"); if (!b) return;
+  document.querySelectorAll(".lancer").forEach(x => x.disabled = true);
+  if (mode === "serveur") { try { await fetch("../api/lancer?agent=" + encodeURIComponent(b.dataset.agent), { method: "POST" }); } catch (_) {} clearTimeout(minuteur); minuteur = setTimeout(rafraichir, 300); }
+  else rejouer(b.dataset.agent);
+});
+
+/* Mode serveur : /api/etat ; sinon instantané etat.json rejoué en boucle */
+let minuteur = 0;
+async function rafraichir() {
+  if (mode === "serveur") {
+    try {
+      const r = await fetch("../api/etat", { cache: "no-store" });
+      if (!r.ok) throw 0;
+      const e = await r.json();
+      const n = normaliser(e); afficher(n);
+      minuteur = setTimeout(rafraichir, n.enCours ? 700 : 4000); return;
+    } catch (_) {
+      try { const r = await fetch("etat.json", { cache: "no-store" }); if (!r.ok) throw 0; instantane = await r.json(); mode = "instantane"; rejouer(); return; }
+      catch (_) { minuteur = setTimeout(rafraichir, 4000); return; }
+    }
+  }
+}
+// rejeu : le dernier passage (ou celui de l'agent demandé) se déroule ligne à ligne, puis on recommence
+let rejeu = null;
+function rejouer(agent) {
+  clearTimeout(minuteur);
+  const base = instantane; if (!base) return;
+  const journal = Array.isArray(base.journal) ? base.journal : [];
+  const runs = Array.isArray(base.runs) ? base.runs : [];
+  const ok = runs.filter(r => !r.statut || r.statut === "ok");
+  const cible = (agent ? ok.find(r => r.agent === agent) || runs.find(r => r.agent === agent) : null) || base.dernier || ok[0] || runs[0];
+  const runId = cible?.run;
+  const lignesRun = journal.filter(l => l.run === runId);
+  const avant = journal.filter(l => l.run !== runId);
+  rejeu = { cible, lignesRun, avant, k: 0 };
+  const pas = () => {
+    const R = rejeu; if (!R) return;
+    const fini = R.k >= R.lignesRun.length;
+    const e = { ...base, journal: [...R.avant, ...R.lignesRun.slice(0, R.k)], dernier: fini ? R.cible : (runs.find(r => r.run !== runId) || base.dernier),
+      en_cours: fini ? null : { run: runId, agent: R.cible?.agent, demande_fr: R.cible?.fr || R.cible?.demande_fr, demande: R.cible?.demande } };
+    afficher(normaliser(e));
+    R.k++;
+    minuteur = setTimeout(fini ? () => { R.k = 0; pas(); } : pas, fini ? 9000 : 1100);
+  };
+  pas();
+}
 rafraichir();
+
+/* ---------- Scène 3D (charte) : chargée à la première visite de l'écran ---------- */
+let sceneLancee = false, visible = false, relance = null;
+function surEtape(id) {
+  visible = id === "agents";
+  if (visible && !sceneLancee) { sceneLancee = true; lancerScene().catch(err => { console.warn("scène 3D indisponible", err); }); }
+  if (visible && relance) relance();
+}
+addEventListener("etape", e => surEtape(e.detail));
+surEtape(ETAPES[courant].id);
+
+async function lancerScene() {
+  const THREE = await import("https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js");
+  const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  const reduit = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const canvas = $("#c3d"), zoneScene = $("#scene");
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+  renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  const scene = new THREE.Scene(); scene.background = new THREE.Color(css("--fond"));
+  const cam = new THREE.OrthographicCamera(-1, 1, 1, -1, .1, 200);
+  const CIBLE = new THREE.Vector3(1.2, 0, -3.4);
+  cam.position.set(22 + CIBLE.x, 20, 22 + CIBLE.z); cam.lookAt(CIBLE);
+  scene.add(new THREE.HemisphereLight(0xd8dde6, 0x0a0c0f, 1.7));
+  const soleil = new THREE.DirectionalLight(0xffffff, 1.3); soleil.position.set(-6, 18, 10); soleil.castShadow = true;
+  soleil.shadow.mapSize.set(2048, 2048); Object.assign(soleil.shadow.camera, { left: -16, right: 16, top: 16, bottom: -16 }); scene.add(soleil);
+  const IA = 0x7ce3ff;
+  const mat = c => new THREE.MeshStandardMaterial({ color: c, roughness: .92, metalness: .05 });
+  const aretes = (mesh, op = .35, c = 0xc3c8d0) => { const l = new THREE.LineSegments(new THREE.EdgesGeometry(mesh.geometry), new THREE.LineBasicMaterial({ color: c, transparent: true, opacity: op })); mesh.add(l); mesh.userData.aretes = l; return mesh; };
+  const ajoute = (geo, couleur, x, y, z, op) => { const m = aretes(new THREE.Mesh(geo, mat(couleur)), op); m.position.set(x, y, z); m.castShadow = m.receiveShadow = true; scene.add(m); return m; };
+
+  // sol, grille, murs
+  ajoute(new THREE.BoxGeometry(22, .3, 15), 0x1b2027, 0, -.15, 0, .5);
+  const grille = new THREE.GridHelper(22, 44, 0x2b313a, 0x1c2128); grille.position.y = .01; grille.scale.z = 15 / 22; scene.add(grille);
+  ajoute(new THREE.BoxGeometry(22, 2.2, .12), 0x1a1f26, 0, 1.1, -7.5, .4);
+  ajoute(new THREE.BoxGeometry(.12, 2.2, 15), 0x1a1f26, -11, 1.1, 0, .4);
+
+  // zone des agents : plancher teinté, cadre cyan
+  const ZA = { x0: 1.4, x1: 10.8, z0: -4.4, z1: 6.6 };
+  const plaque = new THREE.Mesh(new THREE.PlaneGeometry(ZA.x1 - ZA.x0, ZA.z1 - ZA.z0), new THREE.MeshBasicMaterial({ color: IA, transparent: true, opacity: .035 }));
+  plaque.rotation.x = -Math.PI / 2; plaque.position.set((ZA.x0 + ZA.x1) / 2, .02, (ZA.z0 + ZA.z1) / 2); scene.add(plaque);
+  const cadre = new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints([[ZA.x0, ZA.z0], [ZA.x1, ZA.z0], [ZA.x1, ZA.z1], [ZA.x0, ZA.z1]].map(([x, z]) => new THREE.Vector3(x, .03, z))), new THREE.LineBasicMaterial({ color: IA, transparent: true, opacity: .45 }));
+  scene.add(cadre);
+
+  // un poste
+  function poste(x, z, agent) {
+    const g = new THREE.Group(); g.position.set(x, 0, z); scene.add(g);
+    const b = aretes(new THREE.Mesh(new THREE.BoxGeometry(2.5, .1, 1.3), mat(agent ? 0x2c333d : 0x3a414c))); b.position.y = .86; b.castShadow = b.receiveShadow = true; g.add(b);
+    [[-1.1, -.5], [1.1, -.5], [-1.1, .5], [1.1, .5]].forEach(([a, c]) => { const l = new THREE.Mesh(new THREE.BoxGeometry(.06, .86, .06), mat(0x1f242b)); l.position.set(a, .43, c); g.add(l); });
+    const em = new THREE.MeshStandardMaterial({ color: 0x0d1013, emissive: 0x14181d, emissiveIntensity: 1.6, roughness: .3 });
+    const ecran = aretes(new THREE.Mesh(new THREE.BoxGeometry(1.3, .78, .05), em), .5); ecran.position.set(0, 1.38, -.42); ecran.castShadow = true; g.add(ecran);
+    const lueur = new THREE.PointLight(IA, 0, 4, 1.6); lueur.position.set(0, 1.4, 0); g.add(lueur);
+    let corps, tete;
+    if (agent) {
+      tete = aretes(new THREE.Mesh(new THREE.OctahedronGeometry(.3, 0), new THREE.MeshStandardMaterial({ color: 0x2a3039, emissive: 0x000000, emissiveIntensity: 1.4, roughness: .5 })), .6);
+      tete.position.set(0, 1.35, .9); tete.castShadow = true; g.add(tete);
+    } else {
+      corps = aretes(new THREE.Mesh(new THREE.CapsuleGeometry(.24, .48, 6, 14), mat(0x2a3039)), .35); corps.position.set(0, .86, .9); corps.castShadow = true; g.add(corps);
+      tete = aretes(new THREE.Mesh(new THREE.SphereGeometry(.21, 20, 14), mat(0x2a3039)), .3); tete.position.set(0, 1.45, .9); tete.castShadow = true; g.add(tete);
+    }
+    return { g, em, ecran, lueur, corps, tete, ancre: new THREE.Vector3(x, 2.05, z - .42), sortie: new THREE.Vector3(x, 1.9, z - .42) };
+  }
+
+  // salariés (gris)
+  const SALARIES = [["Léa", "Responsable e-commerce"], ["Karim", "Gestionnaire catalogue"], ["Sophie", "Analyste ventes"], ["Nadia", "Service client"], ["Julien", "Commandes et logistique"], ["Emma", "Marketing et promotions"]];
+  const posSal = [[-8.6, -3.4], [-5.4, -3.4], [-2.2, -3.4], [-8.6, 1.6], [-5.4, 1.6], [-2.2, 1.6]];
+  const salaries = posSal.map(([x, z]) => poste(x, z, false));
+
+  // serveur Magento (la boutique)
+  const SV = new THREE.Vector3(-9.4, 0, -6.4);
+  const baie = ajoute(new THREE.BoxGeometry(2.4, 2.9, 1), 0x20262e, SV.x, 1.45, SV.z, .55);
+  const voyants = [];
+  for (let k = 0; k < 6; k++) { const v = new THREE.Mesh(new THREE.BoxGeometry(1.8, .06, .02), new THREE.MeshBasicMaterial({ color: 0x59606b })); v.position.set(SV.x, .45 + k * .4, SV.z + .51); scene.add(v); voyants.push(v); }
+  const entreeSV = new THREE.Vector3(SV.x, 3.0, SV.z);
+  const anneau = new THREE.Mesh(new THREE.RingGeometry(1.7, 1.77, 64), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: .12, side: THREE.DoubleSide }));
+  anneau.rotation.x = -Math.PI / 2; anneau.position.set(SV.x, .03, SV.z); scene.add(anneau);
+
+  // postes d'agents : 3 devant (en service), 2 derrière (en préparation)
+  const posAg = [[3.3, 3.6], [6.3, 3.6], [9.3, 3.6], [4.8, -1.4], [7.8, -1.4]];
+  const agents = posAg.map(([x, z]) => {
+    const p = poste(x, z, true);
+    const courbe = new THREE.QuadraticBezierCurve3(p.sortie.clone(), new THREE.Vector3((x + SV.x) / 2, 6.2, (z + SV.z) / 2), entreeSV);
+    const trace = new THREE.Line(new THREE.BufferGeometry().setFromPoints(courbe.getPoints(60)), new THREE.LineDashedMaterial({ color: IA, dashSize: .2, gapSize: .14, transparent: true, opacity: 0 }));
+    trace.computeLineDistances(); scene.add(trace);
+    const pulses = Array.from({ length: 3 }, (_, k) => { const m = new THREE.Mesh(new THREE.SphereGeometry(.11, 12, 8), new THREE.MeshBasicMaterial({ color: IA })); m.visible = false; scene.add(m); return { m, p: k / 3 }; });
+    return { ...p, courbe, trace, pulses, niveau: 0 };
+  });
+  // balayage radar sur la zone des agents
+  const balayage = new THREE.Mesh(new THREE.RingGeometry(0, 6.2, 64, 1, 0, .5), new THREE.MeshBasicMaterial({ color: IA, transparent: true, opacity: .05, side: THREE.DoubleSide }));
+  balayage.rotation.x = -Math.PI / 2; balayage.position.set((ZA.x0 + ZA.x1) / 2, .025, (ZA.z0 + ZA.z1) / 2); scene.add(balayage);
+
+  // étiquettes reliées
+  const boite = $("#etiquettes"), svg = $("#liens");
+  const mk = (ancre, dx, dy, opt = {}) => {
+    const d = document.createElement("div"); d.className = "etiquette" + (opt.zone ? " zone" : ""); boite.appendChild(d);
+    let l = null, p = null;
+    if (!opt.zone) { l = document.createElementNS("http://www.w3.org/2000/svg", "polyline"); l.setAttribute("fill", "none"); l.setAttribute("stroke-width", "1"); svg.appendChild(l);
+      p = document.createElementNS("http://www.w3.org/2000/svg", "circle"); p.setAttribute("r", "2.4"); svg.appendChild(p); }
+    return { ancre, dx, dy, d, l, p, ...opt };
+  };
+  const decal = [[-70, 26], [20, -96], [40, -40], [-50, 40], [-30, 100], [30, 50]];
+  const etSal = salaries.map((s, k) => mk(s.ancre, decal[k][0], decal[k][1], { html: `${esc(SALARIES[k][0])} · ${esc(SALARIES[k][1])}` }));
+  const decalAg = [[-80, 50], [-20, 88], [60, 60], [100, 0], [100, 60]];
+  const etAg = agents.map((a, k) => mk(a.ancre, decalAg[k][0], decalAg[k][1]));
+  const etSv = mk(new THREE.Vector3(SV.x, 2.9, SV.z), -40, -16, { html: `Boutique · Magento<small>le vrai back-office, où les agents travaillent</small>` });
+  const zIA = mk(new THREE.Vector3(ZA.x1, 0, ZA.z1), -40, 14, { zone: true, html: "Agents déployés" }); zIA.d.classList.add("z-ia");
+  const toutes = [...etSal, ...etAg, etSv, zIA];
+
+  let largeur = 0, hauteur = 0, prec = null, flash = 0;
+  const coupe = (s, n) => s && s.length > n ? s.slice(0, n - 1) + "…" : s;
+  function rendu(t) {
+    const r = zoneScene.getBoundingClientRect();
+    if (!r.width) { prec = null; tourne = false; return; }
+    if (r.width !== largeur || r.height !== hauteur) { largeur = r.width; hauteur = r.height; renderer.setSize(r.width, r.height, false);
+      const a = r.width / r.height, v = Math.max(9.2, 14.6 / a); cam.left = -v * a; cam.right = v * a; cam.top = v; cam.bottom = -v; cam.updateProjectionMatrix(); }
+    const dt = prec === null ? 0 : Math.min(.05, (t - prec) / 1000); prec = t;
+    // état des postes d'agents
+    const liste = ETAT.agents.slice().sort((a, b) => (b.statut === "en service") - (a.statut === "en service")).slice(0, 5);
+    let arrive = false;
+    agents.forEach((a, k) => {
+      const ag = liste[k]; const on = ag && ag.statut === "en service"; const actif = ag && ag.id === ETAT.actif;
+      a.niveau += ((actif ? 1 : 0) - a.niveau) * Math.min(1, dt * 4);
+      const c = new THREE.Color(0x14181d).lerp(new THREE.Color(IA), a.niveau);
+      a.em.emissive.copy(on || actif ? c : new THREE.Color(0x07090b));
+      a.lueur.intensity = a.niveau * 10;
+      a.tete.material.emissive.copy(new THREE.Color(on ? 0x1b2e36 : 0x000000).lerp(new THREE.Color(IA), a.niveau));
+      a.tete.rotation.y += dt * (actif ? 2.4 : on ? .5 : 0);
+      a.tete.position.y = 1.35 + (on ? Math.sin(t / 700 + k) * .05 : -.15);
+      a.trace.material.opacity = a.niveau * .7;
+      a.pulses.forEach(p => { p.m.visible = actif && !reduit; if (!p.m.visible) return; const av = p.p; p.p = (p.p + dt * .7) % 1; if (p.p < av) arrive = true; p.m.position.copy(a.courbe.getPoint(p.p)); });
+      a.liste = ag;
+    });
+    if (arrive) flash = 1;
+    flash = Math.max(0, flash - dt * 1.2);
+    anneau.material.opacity = .12 + flash * .6; anneau.scale.setScalar(1 + flash * .12);
+    const travail = !!ETAT.actif;
+    voyants.forEach((v, k) => v.material.color.setHex(travail && Math.sin(t / 120 + k * 1.7) > .2 ? 0xc3c8d0 : 0x3a414c));
+    balayage.rotation.z = reduit ? 0 : -t / 2600;
+    renderer.render(scene, cam);
+    // étiquettes
+    const W = r.width, H = r.height;
+    toutes.forEach(e => {
+      const v = e.ancre.clone().project(cam), x = (v.x + 1) / 2 * W, y = (1 - v.y) / 2 * H;
+      let html = e.html, vive = false, eteinte = false;
+      const k = etAg.indexOf(e);
+      if (k >= 0) {
+        const ag = agents[k].liste;
+        if (!ag) { html = "Poste libre"; eteinte = true; }
+        else if (ag.id === ETAT.actif) { vive = true; html = `<b>Agent · ${esc(ag.nom || ag.id)}</b> · au travail<small>${esc(coupe(ETAT.demande, 70) || "passage en cours…")}</small>`; }
+        else if (ag.statut === "en service") html = `Agent · ${esc(ag.nom || ag.id)}<small>en service · ${nf(ag.passages ?? 0)} passages</small>`;
+        else { html = `Agent · ${esc(ag.nom || ag.id)}<small>en préparation</small>`; eteinte = true; }
+      }
+      if (e.d.innerHTML !== html) e.d.innerHTML = html;
+      e.d.classList.toggle("vive", vive); e.d.classList.toggle("eteinte", eteinte);
+      const w = e.d.offsetWidth, h = e.d.offsetHeight;
+      if (e.zone) { e.d.style.left = Math.min(Math.max(8, x + e.dx - (e.dx < 0 ? w : 0)), W - w - 8) + "px"; e.d.style.top = Math.min(Math.max(8, y + e.dy), H - h - 8) + "px"; return; }
+      const lx = x + e.dx, ly = y + e.dy;
+      const gx = Math.min(Math.max(8, lx - (e.dx < 0 ? w : 0)), W - w - 8), gy = Math.min(Math.max(8, e.dy < 0 ? ly - h : ly), H - h - 8);
+      e.d.style.left = gx + "px"; e.d.style.top = gy + "px";
+      const bx = e.dx < 0 ? gx + w : gx, by = e.dy < 0 ? gy + h : gy;
+      const trait = vive ? css("--ia") : eteinte ? css("--trait") : css("--trait-fort");
+      e.l.setAttribute("points", `${x},${y} ${x + e.dx * .5},${by} ${bx},${by}`); e.l.setAttribute("stroke", trait);
+      e.p.setAttribute("cx", x); e.p.setAttribute("cy", y); e.p.setAttribute("fill", vive ? css("--ia") : css("--doux"));
+    });
+    if (visible) requestAnimationFrame(rendu); else { prec = null; tourne = false; }
+  }
+  let tourne = false;
+  relance = () => { if (!tourne) { tourne = true; requestAnimationFrame(rendu); } };
+  relance();
+}
 </script>
 </body>
 </html>
