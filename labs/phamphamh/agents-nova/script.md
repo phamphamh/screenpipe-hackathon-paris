@@ -30,6 +30,8 @@
 
 ## Deck — closing *(back to tab 1)*
 
+**[8 · how it works]** And it's not magic. Three steps. Observe: screenpipe on every desk, we filter 55,000 captures down to the moments that matter, Claude reads each employee, and the employee validates before anything is shared. Audit: we merge the team, put a price on every repeated task, and rank what to automate. Deploy: the workflow is written from the observed steps, a Claude agent runs it with the store's tools, and every action is logged. All of it runs on a laptop.
+
 **[8 · before / after]** Before: weeks on site, a 50-page report, no agent deployed. After: one week of screenpipe, the audit in a day, agents already running.
 
 **[9]** So the question is no longer: what do I do with my data? The question is: what will you do with the time you get back?

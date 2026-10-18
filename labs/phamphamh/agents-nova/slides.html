@@ -6,7 +6,7 @@
 <title>DeloAI Pitch</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&family=Caveat:wght@600&display=swap" rel="stylesheet">
 <style>
 /* Tout en clair. Slides 1 à 4 : blanc brut. Slides 5 à 10 : esprit « salle de commandement » en clair. */
 :root {
@@ -51,6 +51,24 @@ h1 strong, h2 strong { font-weight: 700; }
 .l.bam { opacity: 1; transform: none; transition: none; visibility: hidden; }
 .l.bam.vu { visibility: visible; animation: bam .12s ease-out; }
 @keyframes bam { from { transform: scale(1.15); } to { transform: scale(1); } }
+
+
+/* Comment ça marche — tableau façon Miro : fond à points, post-its, flèches */
+.tech { inset: 40px 56px; justify-content: flex-start; }
+.tech .tableau { position: relative; flex: 1; margin-top: 18px; border: 1px solid #e3e5e8; border-radius: 6px;
+  background: #fafafa radial-gradient(#cfd3d8 1.2px, transparent 1.3px) 0 0 / 22px 22px; padding: 26px 30px;
+  display: grid; grid-template-columns: 1fr 56px 1fr 56px 1fr; align-items: stretch; }
+.tech h2 { font-size: 64px; }
+.tech h2 .main { font-family: "Caveat", cursive; font-weight: 600; letter-spacing: 0; color: #d9730d; font-size: 58px; margin-left: 14px; }
+.tech .col { display: flex; flex-direction: column; gap: 14px; }
+.tech .col > .mono { font-size: 13px; letter-spacing: .12em; color: #59606b; text-transform: uppercase; margin-bottom: 2px; }
+.tech .postit { padding: 12px 14px 13px; font-size: 17px; line-height: 1.25; color: #1b1d20; box-shadow: 0 1px 0 rgba(0,0,0,.06), 0 6px 14px -8px rgba(0,0,0,.25); }
+.tech .postit b { display: block; font-size: 19px; font-weight: 600; margin-bottom: 3px; letter-spacing: -.01em; }
+.tech .postit small { display: block; margin-top: 6px; font-family: "Geist Mono", ui-monospace, monospace; font-size: 12px; color: #4b5058; }
+.tech .jaune { background: #fff2a8; transform: rotate(-.6deg); } .tech .bleu { background: #d4e9ff; transform: rotate(.5deg); }
+.tech .vert { background: #d7f3d9; transform: rotate(-.4deg); } .tech .rose { background: #ffdce6; transform: rotate(.7deg); }
+.tech .fleche { display: flex; align-items: center; justify-content: center; font-family: "Caveat", cursive; font-size: 54px; color: #343b46; }
+.tech .note { position: absolute; font-family: "Caveat", cursive; font-size: 26px; color: #d9730d; }
 
 /* 02 — screenpipe */
 .sp { display: grid; grid-template-columns: 1fr 520px; gap: 80px; align-items: center; }
@@ -266,10 +284,38 @@ h1 strong, h2 strong { font-weight: 700; }
     <h1>Atelier <strong>Nova.</strong></h1>
     <p class="def">An online store. 60 employees. <strong>Live demo.</strong></p>
     <div class="etapes">
-      <div><span class="mono">01</span>The data</div>
-      <div><span class="mono">02</span>The audit</div>
-      <div><span class="mono">03</span>The gaps</div>
-      <div><span class="mono">04</span>The agents</div>
+      <div><span class="mono">01</span>The audit</div>
+      <div><span class="mono">02</span>The office</div>
+    </div>
+  </section>
+
+
+  <!-- comment ça marche (après la démo) -->
+  <section data-id="tech" class="slide tech">
+    <h2 class="l">How it works. <span class="main">no magic.</span></h2>
+    <div class="tableau l">
+      <div class="col">
+        <div class="mono">1 · Observe</div>
+        <div class="postit jaune"><b>screenpipe on every desk</b>screen, clicks, apps, audio. Stays on the laptop.</div>
+        <div class="postit jaune"><b>80/20 filter</b>55,510 captures → 14,470 work moments.<small>skip idle, scroll, duplicates</small></div>
+        <div class="postit jaune"><b>Claude reads each employee</b>tasks, steps, time, evidence.</div>
+        <div class="postit rose"><b>The employee validates</b>only the reviewed summary is shared. No screenshot leaves.</div>
+      </div>
+      <div class="fleche">→</div>
+      <div class="col">
+        <div class="mono">2 · Audit</div>
+        <div class="postit bleu"><b>Merge the team</b>same task, many people → 19 repeated tasks.</div>
+        <div class="postit bleu"><b>Put a price on it</b>hours × 46 weeks × €38/h → €71.7k / year.<small>Karim: sales report 17× / week</small></div>
+        <div class="postit bleu"><b>Rank what to automate</b>5 workflows, €30.1k / year.</div>
+      </div>
+      <div class="fleche">→</div>
+      <div class="col">
+        <div class="mono">3 · Deploy</div>
+        <div class="postit vert"><b>Workflow = the observed steps</b>written from what people actually do.<small>SKILL.md</small></div>
+        <div class="postit vert"><b>Claude agent + store tools</b>search · price · orders · reports.<small>Magento API + a real browser</small></div>
+        <div class="postit vert"><b>Every action logged</b>journal, screenshots, a human approves risky steps.</div>
+      </div>
+      <span class="note" style="right:34px; bottom:10px">all of it runs on a laptop ✓</span>
     </div>
   </section>
 
