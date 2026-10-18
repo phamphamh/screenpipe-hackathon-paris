@@ -337,7 +337,11 @@ h1 strong, h2 strong { font-weight: 700; }
     s = Math.max(0, Math.min(total - 1, i));
     slides.forEach((el, j) => el.classList.toggle("on", j === s));
     document.documentElement.classList.toggle("sombre", slides[s].classList.contains("sombre-slide"));
-    slides[s].querySelectorAll(".l").forEach(l => l.classList.toggle("vu", toutes || toutVoir || integre));
+    // tout le contenu de la slide s'affiche d'un coup, avec une courte cascade (pas d'appui ligne par ligne)
+    (montrer.minuteries || []).forEach(clearTimeout); montrer.minuteries = [];
+    const lignes = [...slides[s].querySelectorAll(".l")];
+    lignes.forEach(l => l.classList.toggle("vu", toutVoir || integre));
+    if (!toutVoir && !integre) lignes.forEach((l, k) => montrer.minuteries.push(setTimeout(() => l.classList.add("vu"), 80 + k * 110)));
     if (!integre) {
       try { history.replaceState(null, "", `${location.pathname}${location.search}#${s + 1}`); } catch (_) {}
     } else {
@@ -348,16 +352,8 @@ h1 strong, h2 strong { font-weight: 700; }
     }
   }
 
-  function avancer() {
-    const suivante = slides[s].querySelector(".l:not(.vu)");
-    if (suivante) return suivante.classList.add("vu");
-    if (s < total - 1) montrer(s + 1);
-  }
-  function reculer() {
-    const vues = slides[s].querySelectorAll(".l.vu");
-    if (vues.length) return vues[vues.length - 1].classList.remove("vu");
-    if (s > 0) montrer(s - 1, { toutes: true });
-  }
+  function avancer() { if (s < total - 1) montrer(s + 1); }
+  function reculer() { if (s > 0) montrer(s - 1); }
 
   if (!integre) document.addEventListener("keydown", e => {
     if (e.metaKey || e.ctrlKey || e.altKey) return;
