@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <title>DeloAI — la tuile</title>
+  <rect x="28" y="28" width="200" height="200" rx="48" fill="#000"/>
+  <g fill="none" stroke="#fff" stroke-width="26" stroke-linecap="round">
+    <path d="M95 78.5 V177.5"/>
+    <path d="M95 78.5 A49.5 49.5 0 0 1 95 177.5"/>
+  </g>
+  <circle cx="163" cy="177.5" r="13" fill="#fff"/>
+</svg>

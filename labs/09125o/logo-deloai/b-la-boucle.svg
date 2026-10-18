@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
-  <title>DeloAI — la boucle tracée</title>
-  <path d="M153.3 58.5 A74 74 0 0 1 102.7 197.5" fill="none" stroke="#000" stroke-width="28" stroke-linecap="round"/>
-  <circle cx="63.9" cy="165" r="15" fill="#000"/>
-  <circle cx="58.4" cy="102.7" r="15" fill="#000"/>
-  <circle cx="102.7" cy="58.5" r="15" fill="#000"/>
-</svg>

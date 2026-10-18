@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <title>DeloAI — le curseur tracé</title>
+  <path fill="#000" d="M48 38 L126 116 L98 116 L114 154 L92 162 L76 124 Z"/>
+  <circle cx="140" cy="150" r="13" fill="#000"/>
+  <circle cx="170" cy="180" r="12" fill="#000"/>
+  <circle cx="196" cy="206" r="11" fill="#000"/>
+</svg>
