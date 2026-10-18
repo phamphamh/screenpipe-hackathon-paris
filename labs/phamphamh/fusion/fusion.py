@@ -8,7 +8,7 @@ Règles de confidentialité appliquées ici, pas dans le site :
 Usage : python3 fusion.py <dossier ou fichiers de résumés> --onboarding onboarding.json [-o insights.json] [--ia]
 Uniquement la bibliothèque standard de Python.
 """
-import argparse, glob, hashlib, json, os, re, subprocess, sys, tempfile, unicodedata
+import argparse, ast, glob, hashlib, json, os, re, subprocess, sys, tempfile, unicodedata
 from collections import defaultdict
 from datetime import datetime
 
@@ -28,6 +28,22 @@ def mots(s):
 
 def app_propre(a):
     return re.sub(r"[‎‏​]", "", a or "").strip() or "Inconnue"
+
+
+def texte_limite(l):
+    """Une limite arrive en texte — ou en objet {"texte": …}, ou en texte d'objet (nos générateurs hésitent).
+    La fusion ne garde que du texte : un objet casserait dict.fromkeys (non hachable) et s'afficherait mal."""
+    if isinstance(l, dict):
+        l = l.get("texte") or l.get("text") or next((v for v in l.values() if isinstance(v, str)), "")
+    t = str(l or "").strip()
+    if t.startswith("{"):
+        try:
+            d = ast.literal_eval(t)
+            if isinstance(d, dict):
+                t = str(d.get("texte") or d.get("text") or "").strip() or t
+        except (ValueError, SyntaxError):
+            pass
+    return t
 
 
 def jours(resume):
@@ -245,7 +261,7 @@ def fusionner(resumes, onboarding, regroupement="heuristique", modele="sonnet"):
                        "exemples": v["exemples"][:4]} for k, v in gl.items()), key=lambda x: x["heures_par_semaine"], reverse=True)
 
     # --- ce qu'on ne sait pas ---
-    limites = list(dict.fromkeys(l for r in valides for l in r.get("limites") or []))
+    limites = list(dict.fromkeys(t for r in valides for t in (texte_limite(l) for l in r.get("limites") or []) if t))
     peu_surs = [t["titre"] for t in groupes if t["confiance"] < 0.6]
     supposes = sum(e.get("statut") == "supposé" for t in groupes for e in t["etapes"])
 

@@ -16,7 +16,7 @@ ICI = os.path.dirname(os.path.abspath(__file__))
 LAB = os.path.dirname(ICI)
 RACINE = os.path.dirname(os.path.dirname(LAB))
 sys.path.insert(0, os.path.join(LAB, "fusion"))
-from fusion import fusionner, vers_front_adamaass  # noqa: E402
+from fusion import fusionner, texte_limite, vers_front_adamaass  # noqa: E402
 
 PORT = int(os.environ.get("PORT", 8787))
 DEMO = os.path.join(LAB, "demo")
@@ -76,9 +76,13 @@ def onboarding(campagne):
 
 def resume_a_relire(campagne, personne):
     if campagne == "demo":
-        return lire(os.path.join(DEMO_RELUS, f"{personne}.json")) or lire(os.path.join(DEMO, "resumes", f"{personne}.json"))
-    moi = pseudo()
-    return lire(os.path.join(RACINE, "labs", moi, "campagne", "resume-valide.json")) or lire(os.path.join(RACINE, "donnees", moi, "resume.json"))
+        r = lire(os.path.join(DEMO_RELUS, f"{personne}.json")) or lire(os.path.join(DEMO, "resumes", f"{personne}.json"))
+    else:
+        moi = pseudo()
+        r = lire(os.path.join(RACINE, "labs", moi, "campagne", "resume-valide.json")) or lire(os.path.join(RACINE, "donnees", moi, "resume.json"))
+    if r:
+        r["limites"] = [t for t in (texte_limite(l) for l in r.get("limites") or []) if t]
+    return r
 
 
 def chemin_valide(campagne, personne):
