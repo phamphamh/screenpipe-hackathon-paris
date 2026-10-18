@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap">
 <style>
-/* Charte « salle de commandement » : monde gris, traits fins, une seule couleur vive pour l'IA (cyan), orange pour la perte. */
+/* Charte « salle de commandement », version claire : monde gris, traits fins, une seule couleur vive pour l'IA (cyan), orange pour la perte. */
 :root {
   color-scheme: light;
   --fond: #ffffff; --plan: #f6f7f8; --plan-2: #eef0f2;
@@ -32,201 +32,158 @@ button { font: inherit; color: inherit; }
 .barre .etape { margin-left: auto; color: var(--texte); }
 .barre .etape b { color: var(--doux); font-weight: 400; }
 .barre .prog { position: absolute; left: 0; bottom: -1px; height: 2px; background: var(--ia); transition: width .35s ease; }
-
-/* Écrans */
 .ecrans { position: fixed; top: var(--haut); left: 0; right: 0; bottom: 0; }
 .ecran { position: absolute; inset: 0; display: none; }
 .ecran.on { display: block; }
-.ecran iframe { border: 0; width: 100%; height: 100%; display: block; background: var(--fond); }
-.lien-pitch { position: absolute; right: 20px; bottom: 9px; font-family: var(--f-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--doux); text-decoration: none; border-bottom: 1px solid var(--trait-fort); padding-bottom: 1px; }
-.lien-pitch:hover, .lien-pitch:focus-visible { color: var(--ia); border-color: var(--ia); outline: none; }
-.vide { position: absolute; inset: 24px; border: 1px solid var(--trait); display: grid; place-items: center; }
 .coin { position: absolute; width: 14px; height: 14px; border-color: var(--trait-fort); border-style: solid; pointer-events: none; }
 .coin.a { left: 10px; top: 10px; border-width: 1px 0 0 1px; } .coin.b { right: 10px; top: 10px; border-width: 1px 1px 0 0; }
 .coin.c { left: 10px; bottom: 10px; border-width: 0 0 1px 1px; } .coin.d { right: 10px; bottom: 10px; border-width: 0 1px 1px 0; }
-.chiffre { font-weight: 300; letter-spacing: -.04em; line-height: .95; }
+.chiffre { font-weight: 300; letter-spacing: -.045em; line-height: .95; }
 
-/* ---------- Les données ---------- */
-.donnees { padding: 24px 40px 24px; }
-.d-grille { height: 100%; display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 40px; }
-.d-gauche { display: grid; grid-template-rows: auto auto auto 1fr auto; gap: 18px; min-height: 0; }
-.donnees h1 { font-weight: 300; font-size: 40px; line-height: 1.05; letter-spacing: -.03em; margin: 8px 0 0; text-wrap: balance; }
-.donnees h1 b { font-weight: 500; }
-.source { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 26px; align-items: end; border-top: 1px solid var(--trait-fort); padding-top: 16px; }
-.source .chiffre { font-size: 76px; }
-.source .s2 { font-size: 21px; font-weight: 500; letter-spacing: -.01em; }
-.source p { margin: 6px 0 0; color: var(--doux); font-size: 15px; max-width: 60ch; }
-.source p b { color: var(--texte); font-weight: 500; }
-.personnes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--trait); border: 1px solid var(--trait); align-self: start; }
-.personne { background: var(--plan); padding: 11px 16px 12px; display: grid; gap: 6px; min-width: 0; }
-.personne .nom { font-size: 22px; font-weight: 500; letter-spacing: -.01em; }
-.personne .role { font-family: var(--f-mono); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--doux); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.personne .nb { display: flex; gap: 18px; margin-top: 4px; }
-.personne .nb span { font-family: var(--f-mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--faible); }
-.personne .nb b { display: block; font-family: var(--f-texte); font-weight: 300; font-size: 26px; letter-spacing: -.03em; color: var(--texte); text-transform: none; line-height: 1.1; }
-.fois { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 26px; align-items: center; border-top: 1px solid var(--trait-fort); padding-top: 16px; }
-.fois .chiffre { font-size: 60px; }
-.fois .t { font-size: 20px; font-weight: 300; letter-spacing: -.01em; }
-.fois .t b { font-weight: 500; }
-.fois .mono { display: block; margin-top: 6px; }
-.d-droite { position: relative; border: 1px solid var(--trait); background: var(--plan); padding: 26px 28px; display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto; gap: 16px; min-height: 0; }
-.d-droite h2 { margin: 0; font-weight: 400; font-size: 26px; letter-spacing: -.02em; }
-.extrait { list-style: none; margin: 0; padding: 0; overflow: hidden; }
-.extrait li { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 14px; padding: 12px 0; border-top: 1px solid var(--trait); }
-.extrait .h { font-family: var(--f-mono); font-size: 15px; color: var(--texte); }
-.extrait .fen { font-family: var(--f-mono); font-size: 11px; letter-spacing: .06em; color: var(--faible); display: block; margin-bottom: 4px; }
-.extrait .act { font-family: var(--f-mono); font-size: 13px; color: var(--doux); }
-.extrait .act em { font-style: normal; color: var(--perte); }
-.extrait li.ecart { display: block; border: 0; padding: 0 0 10px 110px; font-family: var(--f-mono); font-size: 11px; letter-spacing: .1em; color: var(--perte); opacity: .8; }
-.trois { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 22px; align-items: center; border-top: 1px solid var(--perte); padding-top: 16px; }
-.trois .chiffre { font-size: 92px; color: var(--perte); }
-.trois .t { font-size: 22px; font-weight: 300; }
-.trois .t b { font-weight: 500; }
+/* ---------- L'audit ---------- */
+.audit { padding: 40px 56px 28px; display: grid; grid-template-rows: minmax(0, 1fr) auto; gap: 20px; }
+.au-grille { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 56px; min-height: 0; }
+.au-gauche { display: grid; grid-template-rows: auto auto minmax(0, 1fr); gap: 28px; }
+.heros .chiffre { font-size: 132px; margin-top: 14px; }
+.heros .chiffre small { font-size: 44px; letter-spacing: -.02em; color: var(--doux); }
+.heros .mono { display: block; margin-top: 14px; font-size: 13px; }
+.cles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid var(--trait-fort); align-self: start; }
+.cle { padding: 18px 20px 18px 0; border-bottom: 1px solid var(--trait); }
+.cle:nth-child(2n) { padding-left: 24px; border-left: 1px solid var(--trait); }
+.cle .chiffre { font-size: 60px; }
+.cle .chiffre small { font-size: 24px; letter-spacing: -.01em; color: var(--doux); }
+.cle .mono { display: block; margin-top: 10px; line-height: 1.5; }
+.cle .mono b { color: var(--texte); font-weight: 500; }
+.au-droite { position: relative; border: 1px solid var(--trait); background: var(--plan); padding: 30px 32px; display: grid; grid-template-rows: auto auto minmax(0, 1fr); gap: 18px; align-self: start; }
+.au-droite h2 { margin: 0; font-weight: 300; font-size: 30px; letter-spacing: -.02em; line-height: 1.15; }
+.au-droite h2 b { font-weight: 500; }
+.wfs { list-style: none; margin: 0; padding: 0; }
+.wfs li { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; gap: 12px; align-items: baseline; padding: 18px 0; border-top: 1px solid var(--trait-fort); }
+.wfs .n { font-family: var(--f-mono); font-size: 12px; color: var(--ia); }
+.wfs .nom { font-size: 22px; font-weight: 500; letter-spacing: -.01em; }
+.wfs .nom small { display: block; font-family: var(--f-mono); font-size: 11.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--doux); font-weight: 400; margin-top: 4px; }
+.wfs .eur { font-size: 30px; font-weight: 300; letter-spacing: -.03em; text-align: right; }
+.wfs .eur small { display: block; font-family: var(--f-mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--faible); }
+.source-ligne { border-top: 1px solid var(--trait); padding-top: 12px; color: var(--faible); }
 
-/* ---------- Les agents ---------- */
-.agents { padding: 16px 18px 16px; }
-.a-grille { height: 100%; display: grid; grid-template-columns: minmax(0, 1fr) 430px; gap: 16px; }
-.a-gauche { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: 0; min-height: 0; border: 1px solid var(--trait); background: var(--plan); }
-.scene { position: relative; overflow: hidden; background: var(--fond); min-height: 0; }
+/* ---------- Le bureau ---------- */
+.bureau { padding: 16px 18px; }
+.b-grille { height: 100%; display: grid; grid-template-columns: minmax(0, 1fr) 420px; gap: 16px; }
+.scene { position: relative; overflow: hidden; background: var(--fond); min-height: 0; border: 1px solid var(--trait); }
 .scene canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
 .scene svg.liens { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.scene-tete { position: absolute; left: 22px; top: 18px; pointer-events: none; }
+.scene-tete .t { font-size: 30px; font-weight: 300; letter-spacing: -.02em; margin-top: 6px; }
 .etiquette { position: absolute; pointer-events: none; font-family: var(--f-mono); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--texte); background: rgba(255,255,255,.93); border: 1px solid var(--trait-fort); padding: 5px 9px 6px; white-space: nowrap; line-height: 1.35; }
-.etiquette small { display: block; color: var(--doux); font-size: 10.5px; max-width: 300px; white-space: normal; text-transform: none; letter-spacing: .02em; }
+.etiquette small { display: block; color: var(--doux); font-size: 10.5px; max-width: 280px; white-space: normal; text-transform: none; letter-spacing: .02em; }
+.etiquette.cliquable { pointer-events: auto; cursor: pointer; }
+.etiquette.cliquable:hover, .etiquette.choisie { border-color: var(--texte); box-shadow: 0 0 0 1px var(--texte); }
 .etiquette.vive { border-color: var(--ia); }
 .etiquette.vive b, .etiquette.vive small { color: var(--ia); }
 .etiquette b { font-weight: 500; }
 .etiquette.eteinte { color: var(--faible); border-color: var(--trait); }
 .etiquette.eteinte small { color: var(--faible); }
-.etiquette.zone { background: none; border: 0; padding: 0; color: var(--doux); }
-.etiquette.zone.z-ia { color: var(--ia); }
-.mesures { position: absolute; right: 22px; top: 16px; display: grid; gap: 10px; text-align: right; pointer-events: none; }
+.etiquette.zone { background: none; border: 0; padding: 0; color: var(--ia); }
+.mesures { position: absolute; right: 22px; top: 16px; display: grid; gap: 12px; text-align: right; pointer-events: none; }
 .mesures div { font-family: var(--f-mono); font-size: 11.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--doux); }
-.mesures b { display: block; font-family: var(--f-texte); font-size: 30px; font-weight: 300; letter-spacing: -.03em; color: var(--texte); text-transform: none; line-height: 1.1; }
+.mesures b { display: block; font-family: var(--f-texte); font-size: 34px; font-weight: 300; letter-spacing: -.03em; color: var(--texte); text-transform: none; line-height: 1.1; }
 .mesures b.ia { color: var(--ia); }
-.pied-scene { position: absolute; right: 24px; bottom: 16px; pointer-events: none; font-size: 11px; }
-.demande { padding: 12px 18px 12px; border-bottom: 1px solid var(--trait); display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px; min-height: 104px; }
-.demande .fr { font-size: 25px; font-weight: 300; letter-spacing: -.02em; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.demande .en { font-family: var(--f-mono); font-size: 12px; color: var(--faible); line-height: 1.45; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
-.demande.vive .fr { color: var(--ia); }
-.demande .mono b { color: var(--ia); font-weight: 400; }
-.direct { display: inline-flex; align-items: center; gap: 8px; }
-.direct i { width: 7px; height: 7px; background: var(--ia); display: inline-block; animation: clignote 1.6s infinite; }
-@keyframes clignote { 50% { opacity: .25; } }
-.rangee { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border-top: 1px solid var(--trait); }
-.rangee .ag { padding: 10px 14px 12px; border-left: 1px solid var(--trait); display: grid; gap: 4px; min-width: 0; }
-.rangee .ag:first-child { border-left: 0; }
-.rangee .ag .n { font-size: 15px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.rangee .ag .st { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--doux); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.rangee .ag .st i { font-style: normal; }
-.rangee .ag.on .st i { color: var(--ia); }
-.rangee .ag.off { color: var(--faible); }
-.rangee .ag.off .st { white-space: normal; }
-.rangee .ag.off .n { color: var(--faible); }
-.rangee .ag.actif { box-shadow: inset 0 2px 0 var(--ia); }
-.boutons { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px; }
-.lancer { justify-self: start; font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; background: transparent; border: 1px solid var(--trait-fort); color: var(--texte); padding: 4px 8px; cursor: pointer; }
-.lancer:hover:not(:disabled) { border-color: var(--ia); color: var(--ia); }
-.lancer[data-visible] { border-color: rgba(10,132,184,.45); color: var(--ia); }
-.lancer:disabled { opacity: .35; cursor: default; }
-.lancer:focus-visible { outline: 1px solid var(--ia); outline-offset: 2px; }
-.a-droite { display: grid; grid-template-rows: auto auto minmax(0, 1fr); gap: 16px; min-height: 0; }
-.panneau { border: 1px solid var(--trait); background: var(--plan); padding: 12px 14px; display: grid; gap: 10px; min-height: 0; }
-.p-tete { display: flex; justify-content: space-between; gap: 10px; }
-.p-tete .mono:last-child { color: var(--faible); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.capture { aspect-ratio: 16 / 10; background: var(--fond); border: 1px solid var(--trait); display: grid; place-items: center; overflow: hidden; }
-.capture img { width: 100%; height: 100%; object-fit: cover; object-position: top left; display: block; }
-.reponse { font-size: 19px; font-weight: 300; letter-spacing: -.01em; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-.reponse b { font-weight: 500; }
-.reponse.echec { color: var(--perte); font-size: 15px; }
-.journal { grid-template-rows: auto minmax(0, 1fr); }
-.journal ul { list-style: none; margin: 0; padding: 0; overflow: hidden; min-height: 0; }
-.journal li { display: grid; grid-template-columns: 74px minmax(0, 1fr); gap: 10px; padding: 7px 0 7px 8px; border-top: 1px solid var(--trait); border-left: 2px solid transparent; }
+.aide { position: absolute; left: 22px; bottom: 16px; pointer-events: none; }
+.b-droite { display: grid; grid-template-rows: minmax(0, 1fr) auto; gap: 16px; min-height: 0; }
+.panneau { position: relative; border: 1px solid var(--trait); background: var(--plan); padding: 18px 20px; display: grid; align-content: start; gap: 12px; min-height: 0; overflow: hidden; }
+.panneau.vide-p { align-content: center; justify-items: start; }
+.panneau .fermer { position: absolute; right: 12px; top: 10px; background: none; border: 0; font-family: var(--f-mono); font-size: 16px; color: var(--doux); cursor: pointer; padding: 4px 8px; }
+.pn-nom { font-size: 38px; font-weight: 300; letter-spacing: -.03em; line-height: 1; }
+.pn-wf { border-top: 1px solid var(--trait-fort); padding-top: 12px; display: grid; gap: 8px; }
+.pn-wf .nom { font-size: 21px; font-weight: 500; letter-spacing: -.01em; }
+.pn-wf .fois { font-family: var(--f-mono); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--doux); }
+.btn { justify-self: start; font-family: var(--f-mono); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; background: var(--fond); border: 1px solid var(--texte); color: var(--texte); padding: 8px 14px; cursor: pointer; }
+.btn:hover:not(:disabled) { background: var(--texte); color: var(--fond); }
+.btn.ia { border-color: var(--ia); color: var(--ia); }
+.btn.ia:hover:not(:disabled) { background: var(--ia); color: #fff; }
+.btn:disabled { opacity: .4; cursor: default; }
+.btn:focus-visible { outline: 2px solid var(--ia); outline-offset: 2px; }
+.terminal { list-style: none; margin: 0; padding: 12px 14px; background: var(--fond); border: 1px solid var(--trait); font-family: var(--f-mono); font-size: 12.5px; line-height: 1.6; color: var(--texte); min-height: 40px; }
+.terminal li { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.terminal li::before { content: "› "; color: var(--ia); }
+.terminal li.ok::before { content: "✓ "; }
+.terminal li.ok { color: var(--ia); }
+.etat { font-size: 17px; font-weight: 400; display: flex; gap: 10px; align-items: center; }
+.etat i { width: 8px; height: 8px; background: var(--ia); display: inline-block; animation: clignote 1.2s infinite; flex: none; }
+.reponse { font-size: 19px; font-weight: 300; letter-spacing: -.01em; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; border-left: 2px solid var(--ia); padding-left: 12px; }
+.journal { border: 1px solid var(--trait); background: var(--plan); padding: 12px 16px 6px; }
+.journal ul { list-style: none; margin: 8px 0 0; padding: 0; }
+.journal li { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 10px; padding: 6px 0 6px 8px; border-top: 1px solid var(--trait); border-left: 2px solid transparent; }
 .journal li .t { font-family: var(--f-mono); font-size: 11.5px; color: var(--doux); padding-top: 2px; }
-.journal li .e { font-size: 14.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.journal li .e i { font-style: normal; font-family: var(--f-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--faible); margin-right: 6px; }
+.journal li .e { font-size: 14.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
 .journal li small { display: block; font-family: var(--f-mono); font-size: 11px; color: var(--faible); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .journal li.neuf { border-left-color: var(--ia); animation: neuf 3s ease-out; }
 .journal li.neuf .e { color: var(--ia); }
+.direct { display: inline-flex; align-items: center; gap: 8px; }
+.direct i { width: 7px; height: 7px; background: var(--ia); display: inline-block; animation: clignote 1.6s infinite; }
+@keyframes clignote { 50% { opacity: .25; } }
 @keyframes neuf { from { background: rgba(10,132,184,.1); } to { background: transparent; } }
-.vide-txt { color: var(--faible); font-family: var(--f-mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; }
-@media (prefers-reduced-motion: reduce) { .direct i, .journal li.neuf { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .direct i, .etat i, .journal li.neuf { animation: none; } }
 </style>
 </head>
 <body>
 <header class="barre">
   <span class="mono marque"><i></i>DeloAI</span>
   <span class="mono">Client · Atelier Nova</span>
-  <span class="mono etape" id="etape">01 / 13</span>
+  <span class="mono etape" id="etape">01 / 02</span>
   <span class="prog" id="prog"></span>
 </header>
 
-<main class="ecrans" id="ecrans">
-  <section class="ecran donnees" id="e-donnees" data-titre="Les données">
-    <div class="d-grille">
-      <div class="d-gauche">
-        <div>
-          <div class="mono">Les données · d'où elles viennent</div>
-          <h1>De vraies personnes, sur de vraies tâches de <b>back-office</b>.</h1>
+<main class="ecrans">
+  <section class="ecran audit" id="e-audit">
+    <div class="au-grille">
+      <div class="au-gauche">
+        <div class="heros">
+          <div class="mono">L'audit · une semaine observée</div>
+          <div class="chiffre">71,7 <small>k€ / an</small></div>
+          <span class="mono">perdus dans des tâches répétées</span>
         </div>
-        <div class="source">
-          <div class="chiffre" id="d-demos">2 929</div>
-          <div>
-            <div class="s2">enregistrements de travail réel</div>
-            <div class="mono" id="d-src" style="margin-top:4px">Wonderbread · Stanford (NeurIPS 2024) · CC-BY-4.0</div>
-            <p id="d-texte">Dans le back-office Magento de WebArena (Carnegie Mellon). Ce que l'IA lit : <b>le titre de la fenêtre, l'adresse, les clics, les saisies</b>. Jamais leur identité : les prénoms sont inventés.</p>
-          </div>
+        <div class="cles">
+          <div class="cle"><div class="chiffre">41 <small>h / semaine</small></div><span class="mono">perdues, toute l'équipe</span></div>
+          <div class="cle"><div class="chiffre">40 <small>%</small></div><span class="mono">du temps dans un seul écran · <b>Catalogue</b></span></div>
+          <div class="cle"><div class="chiffre perte">790 <small>fois / sem.</small></div><span class="mono">N° 1 · <b>le rapport de ventes</b> · 10,5 k€ / an</span></div>
+          <div class="cle"><div class="chiffre ia">30,1 <small>k€ / an</small></div><span class="mono">récupérables · <b>5 workflows</b> à automatiser</span></div>
         </div>
-        <div class="personnes" id="d-personnes"></div>
         <div></div>
-        <div class="fois">
-          <div class="chiffre">×10</div>
-          <div class="t">Ces 6 personnes, multipliées par 10, deviennent <b>Atelier Nova : 60 salariés.</b><span class="mono">C'est une simulation, et on le dit.</span></div>
-        </div>
       </div>
-      <div class="d-droite">
+      <div class="au-droite">
         <i class="coin a"></i><i class="coin b"></i><i class="coin c"></i><i class="coin d"></i>
-        <div class="mono">Extrait brut · ce que l'IA a lu</div>
-        <h2>Sophie, analyste ventes, lundi matin</h2>
-        <ul class="extrait" id="d-extrait"></ul>
-        <div class="trois"><div class="chiffre" id="d-nb">3</div><div class="t">fois <b>le même rapport</b> en moins d'une heure. Personne ne l'a signalé : l'IA l'a vu.</div></div>
+        <div class="mono">Les 3 workflows qu'on déploie</div>
+        <h2>Les trois premiers, <b>déployés ce matin</b>.</h2>
+        <ul class="wfs">
+          <li><span class="n">01</span><span class="nom">Rapport de ventes<small>790 fois / semaine</small></span><span class="eur">10,5 k€<small>par an</small></span></li>
+          <li><span class="n">02</span><span class="nom">Commandes annulées<small>520 fois / semaine</small></span><span class="eur">8,7 k€<small>par an</small></span></li>
+          <li><span class="n">03</span><span class="nom">Prix produit<small>370 fois / semaine</small></span><span class="eur">8,7 k€<small>par an</small></span></li>
+        </ul>
       </div>
     </div>
+    <div class="mono source-ligne">Atelier Nova · 6 salariés observés × 10 · données WONDERBREAD (Stanford)</div>
   </section>
 
-  <section class="ecran agents" id="e-agents" data-titre="Les agents">
-    <div class="a-grille">
-      <div class="a-gauche">
-        <div class="demande" id="demande">
-          <div class="mono" id="dem-tete">Dernière demande · réelle · Stanford</div>
-          <div class="fr" id="dem-fr">—</div>
-          <div class="en" id="dem-en"></div>
+  <section class="ecran bureau" id="e-bureau">
+    <div class="b-grille">
+      <div class="scene" id="scene">
+        <canvas id="c3d" aria-label="Le bureau d'Atelier Nova en 3D : six postes de salariés, cliquables, et cinq postes d'agents"></canvas>
+        <svg class="liens" id="liens"></svg>
+        <div id="etiquettes"></div>
+        <div class="scene-tete"><div class="mono">Le bureau · Atelier Nova</div></div>
+        <div class="mesures">
+          <div>Passages<b id="m-passages">—</b></div>
+          <div>Temps humain rendu<b class="ia" id="m-humain">—</b></div>
+          <div>En service depuis<b id="m-depuis">—</b></div>
         </div>
-        <div class="scene" id="scene">
-          <canvas id="c3d" aria-label="Le bureau d'Atelier Nova en 3D : six postes de salariés et cinq postes d'agents"></canvas>
-          <svg class="liens" id="liens"></svg>
-          <div id="etiquettes"></div>
-          <div class="mono pied-scene">Équipe · 6 postes observés ×10 = 60 salariés</div>
-          <div class="mesures">
-            <div>Passages<b id="m-passages">—</b></div>
-            <div>Actions tracées<b id="m-actions">—</b></div>
-            <div>Temps humain rendu<b class="ia" id="m-humain">—</b></div>
-            <div>En service depuis<b id="m-depuis">—</b></div>
-          </div>
-          <i class="coin a"></i><i class="coin b"></i><i class="coin c"></i><i class="coin d"></i>
-        </div>
-        <div class="rangee" id="rangee"></div>
+        <div class="mono aide">Cliquez sur un salarié</div>
+        <i class="coin a"></i><i class="coin b"></i><i class="coin c"></i><i class="coin d"></i>
       </div>
-      <div class="a-droite">
-        <div class="panneau">
-          <div class="p-tete"><span class="mono">Écran de l'agent</span><span class="mono" id="cap-leg"></span></div>
-          <div class="capture" id="capture"><span class="vide-txt">En attente d'un passage</span></div>
-        </div>
-        <div class="panneau">
-          <div class="p-tete"><span class="mono">Dernière réponse</span><span class="mono" id="rep-leg"></span></div>
-          <div class="reponse" id="reponse">—</div>
-        </div>
-        <div class="panneau journal">
-          <div class="p-tete"><span class="mono"><span class="direct"><i></i>Journal en direct</span></span><span class="mono" id="j-mode">chaque action tracée</span></div>
+      <div class="b-droite">
+        <div class="panneau vide-p" id="panneau"></div>
+        <div class="journal">
+          <div class="mono"><span class="direct"><i></i>Journal en direct</span></div>
           <ul id="journal"></ul>
         </div>
       </div>
@@ -235,7 +192,6 @@ button { font: inherit; color: inherit; }
 </main>
 
 <script type="module">
-/* ---------- Données communes ---------- */
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const nf = n => (n == null || isNaN(n)) ? "—" : Number(n).toLocaleString("fr-FR");
@@ -243,126 +199,72 @@ const date = v => { if (!v) return null; const d = new Date(v); return isNaN(d) 
 const hm = v => { const d = date(v); return d ? d.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }) : "—"; };
 const hms = v => { const d = date(v); return d ? d.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit", second: "2-digit" }) : "—"; };
 const duree = s => { if (s == null || isNaN(s)) return "—"; s = Math.round(s); if (s < 60) return s + " s"; if (s < 3600) return Math.floor(s / 60) + " min " + String(s % 60).padStart(2, "0"); return Math.floor(s / 3600) + " h " + String(Math.floor(s % 3600 / 60)).padStart(2, "0"); };
-const virgule = n => String(n).replace(".", ",");
 const masque = v => v == null ? v : String(v).replace(/[\w.+-]+@[\w-]+(\.[\w-]+)+/g, "…");
+const sansAccent = s => String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+const attendre = ms => new Promise(r => setTimeout(r, ms));
 
-/* ---------- Enchaînement des étapes ---------- */
-const ETAPES = [
-  { id: "donnees", type: "ecran", el: "e-donnees", titre: "Les données" },
-  { id: "audit", type: "cadre", src: "../dashboard-nova/index.html#constat", titre: "L'audit" },
-  { id: "ecarts", type: "cadre", src: "../dashboard-nova/index.html#couts", titre: "Les écarts" },
-  { id: "agents", type: "ecran", el: "e-agents", titre: "Les agents" },
-];
-const pad = n => String(n).padStart(2, "0");
-let courant = -1, slidesOk = true;
-const ecrans = $("#ecrans");
-
-
-function surCles(e) {
-  if (e.metaKey || e.ctrlKey || e.altKey) return false;
-  if (["ArrowRight", " ", "PageDown"].includes(e.key)) { e.preventDefault(); suivant(); return true; }
-  if (["ArrowLeft", "PageUp"].includes(e.key)) { e.preventDefault(); precedent(); return true; }
-  if (e.key === "f" || e.key === "F") { if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen?.(); return true; }
-  return false;
-}
-function brancher(ifr, st) {
-  // les flèches marchent même quand le focus est dans l'iframe
-  try {
-    const w = ifr.contentWindow;
-    w.addEventListener("keydown", e => { if (surCles(e)) e.stopImmediatePropagation(); }, true);
-    if (st.type === "slide") w.addEventListener("click", e => { if (e.target.closest && e.target.closest("a")) return; e.stopImmediatePropagation(); e.preventDefault(); suivant(); }, true);
-  } catch (_) {}
-}
-function slideDoc(st) { try { return st.frame?.contentDocument || null; } catch (_) { return null; } }
-function lignesSlide(st, tout) {
-  const d = slideDoc(st); if (!d) return;
-  d.querySelectorAll(".slide.on .l").forEach(l => l.classList.toggle("vu", tout));
-}
-function construire(st) {
-  if (st.node) return st.node;
-  if (st.type === "ecran") { st.node = document.getElementById(st.el); return st.node; }
-  const s = document.createElement("section"); s.className = "ecran";
-  if (st.type === "slide" && !slidesOk) {
-    s.innerHTML = `<div class="vide"><span class="mono">Slide ${st.n}</span></div>`;
-  } else {
-    const f = document.createElement("iframe");
-    if (st.type === "slide") f.name = "integre";
-    f.title = st.titre;
-    f.src = st.type === "slide" ? `slides.html#${st.n}` : st.src;
-    f.addEventListener("load", () => { brancher(f, st); if (st.type === "slide") lignesSlide(st, !!st.tout); if (ETAPES[courant] === st) setTimeout(() => window.focus(), 50); });
-    st.frame = f; s.appendChild(f);
-  }
-  ecrans.appendChild(s); st.node = s; return s;
-}
-function aller(i, { arriere = false } = {}) {
+/* ---------- Deux écrans ---------- */
+const ETAPES = [{ id: "audit", titre: "L'audit" }, { id: "bureau", titre: "Le bureau" }];
+let courant = -1;
+function aller(i, garderHash) {
   i = Math.max(0, Math.min(ETAPES.length - 1, i));
-  const st = ETAPES[i];
-  ETAPES.forEach((x, j) => { if (x.node) x.node.classList.toggle("on", j === i); });
-  construire(st).classList.add("on");
-  if (st.type === "slide") { st.tout = arriere; lignesSlide(st, arriere); }
-  courant = i;
-  $("#etape").innerHTML = `${pad(i + 1)} / ${pad(ETAPES.length)} <b>·</b> ${esc(st.titre)}`;
+  const st = ETAPES[i]; courant = i;
+  ETAPES.forEach((x, j) => document.getElementById("e-" + x.id).classList.toggle("on", j === i));
+  $("#etape").innerHTML = `${String(i + 1).padStart(2, "0")} / ${String(ETAPES.length).padStart(2, "0")} <b>·</b> ${esc(st.titre)}`;
   $("#prog").style.width = ((i + 1) / ETAPES.length * 100) + "%";
-  history.replaceState(null, "", "#" + st.id);
-  // précharge l'étape suivante
-  const n = ETAPES[i + 1]; if (n && n.type !== "ecran") construire(n);
-  window.dispatchEvent(new CustomEvent("etape", { detail: st.id }));
-  window.focus();
+  if (!garderHash) history.replaceState(null, "", "#" + st.id);
+  surEtape(st.id);
 }
-function suivant() {
-  const st = ETAPES[courant];
-  if (st.type === "slide") { const d = slideDoc(st); const l = d && d.querySelector(".slide.on .l:not(.vu)"); if (l) { l.classList.add("vu"); return; } }
-  if (courant < ETAPES.length - 1) aller(courant + 1);
-}
-function precedent() {
-  const st = ETAPES[courant];
-  if (st.type === "slide") { const d = slideDoc(st); const v = d && d.querySelectorAll(".slide.on .l.vu"); if (v && v.length) { v[v.length - 1].classList.remove("vu"); return; } }
-  if (courant > 0) aller(courant - 1, { arriere: true });
-}
-addEventListener("keydown", e => { if (e.target.closest && e.target.closest("button") && (e.key === " " || e.key === "Enter")) return; surCles(e); });
+addEventListener("keydown", e => {
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  if (e.target.closest && e.target.closest("button") && (e.key === " " || e.key === "Enter")) return;
+  if (["ArrowRight", " ", "PageDown"].includes(e.key)) { e.preventDefault(); aller(courant + 1); }
+  else if (["ArrowLeft", "PageUp"].includes(e.key)) { e.preventDefault(); aller(courant - 1); }
+  else if (e.key === "Escape") fermerPanneau();
+  else if (e.key === "f" || e.key === "F") { if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen?.(); }
+});
 function depuisHash() {
   const h = decodeURIComponent(location.hash.slice(1));
-  let i = ETAPES.findIndex(x => x.id === h);
-  if (i < 0 && /^\d+$/.test(h)) i = Number(h) - 1;
-  return i < 0 ? 0 : i;
+  const m = h.match(/^bureau-(.+)$/);
+  if (m) { aller(1, true); ouvrirPersonne(sansAccent(m[1])); return; }
+  const i = ETAPES.findIndex(x => x.id === h);
+  aller(i < 0 ? 0 : i);
 }
-addEventListener("hashchange", () => { const i = depuisHash(); if (i !== courant) aller(i); });
-aller(depuisHash());
+addEventListener("hashchange", depuisHash);
 
-/* ---------- Écran « Les données » ---------- */
-fetch("donnees.json").then(r => r.json()).then(d => {
-  if (d.source) {
-    $("#d-demos").textContent = nf(d.source.demos);
-    $("#d-src").textContent = [d.source.nom, d.source.qui, d.source.licence].filter(Boolean).join(" · ");
-  }
-  if (d.boutique) $("#d-texte").innerHTML = `Dans le ${esc(d.boutique)}. Ce que l'IA lit : <b>le titre de la fenêtre, l'adresse, les clics, les saisies</b>. Jamais leur identité : les prénoms sont inventés.`;
-  $("#d-personnes").innerHTML = (d.personnes || []).map(p => `<div class="personne"><div class="nom">${esc(p.prenom)}</div><div class="role">${esc(p.role)}</div><div class="nb"><span><b>${nf(p.minutes)}</b>minutes</span><span><b>${nf(p.captures)}</b>captures</span></div></div>`).join("");
-  const net = a => a.split(" · ").filter(x => !/^clic « (input|Day) »$/.test(x)).join(" · ").replace(/ dans « input »/g, "").replace(/(clic « Show Report »)/, "<em>$1</em>");
-  const ex = (d.extrait || []).filter(l => !/^clic « REPORTS »$/.test(l.action));
-  const sec = h => { const [a, b, c] = h.split(":").map(Number); return a * 3600 + b * 60 + (c || 0); };
-  let html = "", avant = null;
-  ex.forEach(l => {
-    if (avant != null) html += `<li class="ecart">+ ${Math.round((sec(l.heure) - avant) / 60)} min · le même rapport, encore</li>`;
-    avant = sec(l.heure);
-    html += `<li><span class="h">${esc(l.heure)}</span><span><span class="fen">${esc(l.fenetre.replace(/ \/ Magento Admin$/, ""))}</span><span class="act">${net(esc(l.action))}</span></span></li>`;
-  });
-  $("#d-extrait").innerHTML = html;
-  $("#d-nb").textContent = ex.filter(l => /Show Report/.test(l.action)).length || 3;
-}).catch(() => {});
-
-/* ---------- Écran « Les agents » : état ---------- */
-const AGENTS_DEFAUT = [
-  { id: "prix-produit", nom: "Prix produit", equipe: "Opérations", statut: "en service" },
-  { id: "rapport-ventes", nom: "Rapport de ventes", equipe: "E-commerce", statut: "en service" },
-  { id: "commandes-annulees", nom: "Commandes annulées", equipe: "Opérations", statut: "en service" },
-  { id: "avis-produit", nom: "Avis produit", equipe: "E-commerce", statut: "en préparation" },
-  { id: "variantes-produit", nom: "Variantes produit", equipe: "Opérations", statut: "en préparation" },
+/* ---------- Personnes et leurs workflows ---------- */
+const SALARIES = [
+  { id: "lea", prenom: "Léa", role: "Responsable e-commerce" }, { id: "karim", prenom: "Karim", role: "Gestionnaire catalogue" },
+  { id: "sophie", prenom: "Sophie", role: "Analyste ventes" }, { id: "nadia", prenom: "Nadia", role: "Service client" },
+  { id: "julien", prenom: "Julien", role: "Commandes et logistique" }, { id: "emma", prenom: "Emma", role: "Marketing et promotions" },
 ];
-// L'état normalisé que lit la scène 3D
-const ETAT = { agents: AGENTS_DEFAUT, actif: null, demande: "" };
-window.ETAT = ETAT;
-let mode = "serveur", instantane = null;
-const capUrl = c => (mode === "serveur" ? "../captures/" : "captures/") + c;
+const REPLI = {
+  sophie: [{ agent: "rapport-ventes", nom: "Rapport de ventes", etapes: ["Ouvre Rapports › Ventes", "Choisit la période", "Lance le rapport", "Lit les totaux et répond"] }],
+  karim: [{ agent: "prix-produit", nom: "Prix produit", etapes: ["Ouvre Catalogue › Produits", "Cherche le produit", "Modifie le prix", "Enregistre et vérifie"] }],
+  nadia: [{ agent: "commandes-annulees", nom: "Commandes annulées", etapes: ["Ouvre Ventes › Commandes", "Filtre sur « annulée »", "Lit les commandes", "Répond"] }],
+};
+const PERS = Object.fromEntries(SALARIES.map(s => [s.id, { ...s, workflows: REPLI[s.id] || [] }]));
+async function chargerPersonnes() {
+  for (const url of ["../api/personnes", "personnes.json"]) {
+    try {
+      const r = await fetch(url, { cache: "no-store" }); if (!r.ok) continue;
+      const liste = await r.json(); if (!Array.isArray(liste)) continue;
+      liste.forEach(p => { const id = sansAccent(p.id || p.prenom); if (!PERS[id]) return; PERS[id] = { ...PERS[id], ...p, id, workflows: Array.isArray(p.workflows) ? p.workflows : PERS[id].workflows }; });
+      rendrePanneau(); return;
+    } catch (_) {}
+  }
+}
+chargerPersonnes();
+
+/* ---------- État des agents (API, ou instantané etat.json rejoué) ---------- */
+const AGENTS_DEFAUT = [
+  { id: "prix-produit", nom: "Prix produit", statut: "en service" }, { id: "rapport-ventes", nom: "Rapport de ventes", statut: "en service" },
+  { id: "commandes-annulees", nom: "Commandes annulées", statut: "en service" }, { id: "avis-produit", nom: "Avis produit", statut: "en préparation" },
+  { id: "variantes-produit", nom: "Variantes produit", statut: "en préparation" },
+];
+// lu par la scène 3D
+const ETAT = { agents: AGENTS_DEFAUT, actif: null, demande: "", choisi: null, lien: null };
+let mode = "serveur", instantane = null, dernierN = null;
 
 function normaliser(e) {
   const journal = Array.isArray(e.journal) ? e.journal : [];
@@ -376,131 +278,131 @@ function normaliser(e) {
   const humain = e.humain_s_economise ?? (e.reussis != null && e.duree_humain_s != null ? e.reussis * e.duree_humain_s : null);
   return { brut: e, journal, runs, agents, enCours, dernier, humain };
 }
-function demandeDe(n) {
-  const c = n.enCours, d = n.dernier;
-  if (c) {
-    const ligne = n.journal.find(l => l.run === c.run && l.type === "demande");
-    return { vive: true, agent: c.agent, fr: c.demande_fr || ligne?.detail || "Passage en cours…", en: c.demande || ligne?.demande || "" };
-  }
-  if (d) {
-    const ligne = n.journal.find(l => l.run === d.run && l.type === "demande");
-    return { vive: false, agent: d.agent, fr: d.fr || d.demande_fr || ligne?.detail || (d.debut ? `Sortir le rapport de ventes du ${d.debut} au ${d.fin}` : "—"), en: d.demande || ligne?.demande || "" };
-  }
-  return { vive: false, fr: "—", en: "" };
-}
-function reponseDe(d, agents) {
-  if (!d) return { html: "—", echec: false };
-  if (d.statut && /echec|échec|erreur/i.test(d.statut)) return { html: `Échec du passage : ${esc(masque(d.erreur || d.reponse || "erreur"))}`, echec: true };
-  let r = d.reponse ?? agents.find(a => a.id === d.agent)?.derniere_reponse;
-  if (r && typeof r === "object") r = JSON.stringify(r);
-  if (!r && d.totaux) r = `<b>${esc(d.totaux.commandes)} commandes · ${esc(d.totaux.ventes)}</b> du ${esc(d.debut)} au ${esc(d.fin)}${d.csv ? " · CSV exporté" : ""}`;
-  else r = esc(masque(r) || "—");
-  return { html: r, echec: false };
-}
-
-const vus = new Set(); let premier = true, enCoursPrec = false;
+const vus = new Set(); let premier = true;
 function afficher(n) {
+  dernierN = n;
   const e = n.brut;
   ETAT.agents = n.agents; ETAT.actif = n.enCours ? n.enCours.agent : null;
-  const dem = demandeDe(n); ETAT.demande = n.enCours ? dem.fr : "";
+  ETAT.demande = n.enCours ? (n.enCours.demande_fr || n.journal.find(l => l.run === n.enCours.run && l.type === "demande")?.detail || "") : "";
   $("#m-passages").textContent = nf(e.passages ?? n.runs.length);
-  $("#m-actions").textContent = nf(e.actions);
   $("#m-humain").textContent = duree(n.humain);
   $("#m-depuis").textContent = hm(e.deploiement?.depuis);
-  const nomAgent = id => n.agents.find(a => a.id === id)?.nom || id || "";
-  $("#demande").classList.toggle("vive", dem.vive);
-  $("#dem-tete").innerHTML = dem.vive ? `<b>● En cours</b> · ${esc(nomAgent(dem.agent))} · demande réelle · Stanford` : `Dernière demande · ${esc(nomAgent(dem.agent))} · réelle · Stanford`;
-  $("#dem-fr").textContent = dem.fr;
-  $("#dem-en").textContent = dem.en ? `« ${dem.en} »` : "";
-  // rangée des agents
-  const enCours = !!n.enCours;
-  const rang = n.agents.slice().sort((a, b) => (b.statut === "en service") - (a.statut === "en service")).slice(0, 5);
-  const nOn = rang.filter(a => a.statut === "en service").length;
-  $("#rangee").style.gridTemplateColumns = [nOn ? `repeat(${nOn}, minmax(0, 1.6fr))` : "", rang.length - nOn ? `repeat(${rang.length - nOn}, minmax(0, 1fr))` : ""].join(" ");
-  $("#rangee").innerHTML = rang.map(a => {
-    const on = a.statut === "en service", actif = a.id === ETAT.actif;
-    return `<div class="ag ${on ? "on" : "off"} ${actif ? "actif" : ""}"><div class="n">${esc(a.nom || a.id)}</div><div class="st"><i>${actif ? "● au travail" : on ? "● en service" : "○ en préparation"}</i>${on ? " · " + nf(a.passages) + " passages" : ""}</div>${on ? `<div class="boutons"><button class="lancer" data-agent="${esc(a.id)}" ${enCours ? "disabled" : ""}>Lancer un passage</button><button class="lancer" data-agent="${esc(a.id)}" data-visible="1" ${enCours ? "disabled" : ""}>En direct</button></div>` : ""}</div>`;
-  }).join("");
-  // journal : le plus récent en haut
-  const lignes = n.journal.slice(-24).reverse();
-  $("#journal").innerHTML = lignes.map(l => {
+  $("#journal").innerHTML = n.journal.slice(-6).reverse().map(l => {
     const k = `${l.run}|${l.n}|${l.ts}|${l.type}`; const neuf = !premier && !vus.has(k); vus.add(k);
-    const type = l.type === "demande" ? "demande" : l.type === "resultat" ? "résultat" : l.type === "outil" ? "action" : "";
-    return `<li class="${neuf ? "neuf" : ""}"><span class="t">${hms(l.ts)}</span><span><span class="e">${type ? `<i>${type}</i>` : ""}${esc(masque(l.etape || l.fr || l.detail))}</span><small>${esc(l.agent || "")}${l.detail && l.etape ? " · " + esc(masque(l.detail)) : ""}</small></span></li>`;
-  }).join("") || `<li><span class="t">—</span><span class="vide-txt">Aucune action pour l'instant</span></li>`;
+    return `<li class="${neuf ? "neuf" : ""}"><span class="t">${hms(l.ts)}</span><span><span class="e">${esc(masque(l.etape || l.detail))}</span><small>${esc(l.agent || "")}${l.detail && l.etape ? " · " + esc(masque(l.detail)) : ""}</small></span></li>`;
+  }).join("") || `<li><span class="t">—</span><span class="e">Aucune action pour l'instant</span></li>`;
   premier = false;
-  // capture la plus récente
-  const img = n.journal.slice().reverse().find(l => l.capture);
-  if (img) {
-    const src = capUrl(img.capture);
-    const cur = $("#capture img");
-    if (!cur || cur.getAttribute("src") !== src) $("#capture").innerHTML = `<img src="${esc(src)}" alt="Écran du back-office vu par l'agent" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'vide-txt',textContent:'Capture indisponible'}))">`;
-    $("#cap-leg").textContent = `${img.agent || ""} · ${hms(img.ts)}`;
-  }
-  const rep = reponseDe(n.dernier, n.agents);
-  $("#reponse").innerHTML = rep.html; $("#reponse").classList.toggle("echec", rep.echec);
-  const d = n.dernier;
-  $("#rep-leg").textContent = d ? [d.agent, d.duree_s != null ? virgule(d.duree_s) + " s" : "", d.actions != null ? d.actions + " actions" : ""].filter(Boolean).join(" · ") : "";
-  $("#j-mode").textContent = mode === "serveur" ? "chaque action tracée" : "rejeu d'un passage réel";
+  suivreRun(n);
 }
-document.addEventListener("click", async e => {
-  const b = e.target.closest(".lancer"); if (!b) return;
-  document.querySelectorAll(".lancer").forEach(x => x.disabled = true);
-  if (mode === "serveur") { try { await fetch("../api/lancer?agent=" + encodeURIComponent(b.dataset.agent) + (b.dataset.visible ? "&visible=1" : ""), { method: "POST" }); } catch (_) {} clearTimeout(minuteur); minuteur = setTimeout(rafraichir, 300); }
-  else rejouer(b.dataset.agent);
-});
-
-/* Mode serveur : /api/etat ; sinon instantané etat.json rejoué en boucle */
 let minuteur = 0;
 async function rafraichir() {
-  if (mode === "serveur") {
-    try {
-      const r = await fetch("../api/etat", { cache: "no-store" });
-      if (!r.ok) throw 0;
-      const e = await r.json();
-      const n = normaliser(e); afficher(n);
-      minuteur = setTimeout(rafraichir, n.enCours ? 700 : 4000); return;
-    } catch (_) {
-      try { const r = await fetch("etat.json", { cache: "no-store" }); if (!r.ok) throw 0; instantane = await r.json(); mode = "instantane"; rejouer(); return; }
-      catch (_) { minuteur = setTimeout(rafraichir, 4000); return; }
-    }
+  clearTimeout(minuteur);
+  if (mode !== "serveur") return;
+  try {
+    const r = await fetch("../api/etat", { cache: "no-store" }); if (!r.ok) throw 0;
+    const n = normaliser(await r.json()); afficher(n);
+    minuteur = setTimeout(rafraichir, n.enCours || P.phase === "lance" ? 700 : 4000);
+  } catch (_) {
+    try { const r = await fetch("etat.json", { cache: "no-store" }); if (!r.ok) throw 0; instantane = await r.json(); mode = "instantane"; afficher(normaliser(instantane)); }
+    catch (_) { minuteur = setTimeout(rafraichir, 4000); }
   }
 }
-// rejeu : le dernier passage (ou celui de l'agent demandé) se déroule ligne à ligne, puis on recommence
-let rejeu = null;
+// rejeu hors ligne : le dernier passage de l'agent se déroule ligne à ligne
 function rejouer(agent) {
   clearTimeout(minuteur);
   const base = instantane; if (!base) return;
-  const journal = Array.isArray(base.journal) ? base.journal : [];
-  const runs = Array.isArray(base.runs) ? base.runs : [];
-  const ok = runs.filter(r => !r.statut || r.statut === "ok");
-  const cible = (agent ? ok.find(r => r.agent === agent) || runs.find(r => r.agent === agent) : null) || base.dernier || ok[0] || runs[0];
-  const runId = cible?.run;
-  const lignesRun = journal.filter(l => l.run === runId);
-  const avant = journal.filter(l => l.run !== runId);
-  rejeu = { cible, lignesRun, avant, k: 0 };
+  const journal = Array.isArray(base.journal) ? base.journal : [], runs = Array.isArray(base.runs) ? base.runs : [];
+  const cible = runs.find(r => r.agent === agent && (!r.statut || r.statut === "ok")) || runs.find(r => r.agent === agent) || base.dernier;
+  const lignes = journal.filter(l => l.run === cible?.run), avant = journal.filter(l => l.run !== cible?.run);
+  let k = 0;
   const pas = () => {
-    const R = rejeu; if (!R) return;
-    const fini = R.k >= R.lignesRun.length;
-    const e = { ...base, journal: [...R.avant, ...R.lignesRun.slice(0, R.k)], dernier: fini ? R.cible : (runs.find(r => r.run !== runId) || base.dernier),
-      en_cours: fini ? null : { run: runId, agent: R.cible?.agent, demande_fr: R.cible?.fr || R.cible?.demande_fr, demande: R.cible?.demande } };
+    const fini = k > lignes.length;
+    const e = { ...base, journal: [...avant, ...lignes.slice(0, k)], dernier: fini ? cible : base.dernier, en_cours: fini ? null : { run: cible?.run, agent, demande_fr: cible?.fr } };
     afficher(normaliser(e));
-    R.k++;
-    minuteur = setTimeout(fini ? () => { R.k = 0; pas(); } : pas, fini ? 9000 : 1100);
+    k++; if (!fini) minuteur = setTimeout(pas, 1000);
   };
   pas();
 }
 rafraichir();
 
-/* ---------- Scène 3D (charte) : chargée à la première visite de l'écran ---------- */
+/* ---------- Le panneau d'une personne ---------- */
+const P = { id: null, wf: null, phase: "liste", ecrites: 0, depuis: 0, run: null, reponse: "" };
+function ouvrirPersonne(id) {
+  if (!PERS[id]) return;
+  Object.assign(P, { id, wf: null, phase: "liste", ecrites: 0, run: null, reponse: "" });
+  ETAT.choisi = id; ETAT.lien = null;
+  if (courant === 1) history.replaceState(null, "", "#bureau-" + id);
+  rendrePanneau();
+}
+function fermerPanneau() {
+  Object.assign(P, { id: null, wf: null, phase: "liste" }); ETAT.choisi = null; ETAT.lien = null;
+  if (courant === 1) history.replaceState(null, "", "#bureau");
+  rendrePanneau();
+}
+window.ouvrirPersonne = ouvrirPersonne;
+function rendrePanneau() {
+  const el = $("#panneau");
+  if (!P.id) { el.className = "panneau vide-p"; el.innerHTML = `<div class="mono">Cliquez sur un salarié</div><div style="font-size:22px;font-weight:300;letter-spacing:-.01em">pour voir ce qu'il refait chaque semaine, et le confier à un agent.</div>`; return; }
+  const p = PERS[P.id]; el.className = "panneau";
+  let h = `<button class="fermer" data-act="fermer" aria-label="Fermer">×</button><div class="mono">Salarié · ${esc(p.role)}</div><div class="pn-nom">${esc(p.prenom)}</div>`;
+  if (!P.wf) {
+    h += p.workflows.length ? p.workflows.map((w, i) => `<div class="pn-wf"><div class="nom">${esc(w.nom)}</div><div class="fois">${w.fois != null ? `Observé ${nf(w.fois)} fois cette semaine` : "Observé cette semaine"}${w.minutes != null ? ` · ${nf(w.minutes)} min` : ""}</div><button class="btn" data-act="creer" data-i="${i}">Créer le workflow</button></div>`).join("")
+      : `<div class="pn-wf"><div class="fois">Aucun workflow répété repéré pour l'instant.</div></div>`;
+  } else {
+    const w = P.wf, etapes = w.etapes && w.etapes.length ? w.etapes : ["Ouvre le back-office", "Fait la tâche", "Répond"];
+    h += `<div class="pn-wf"><div class="nom">${esc(w.nom)}</div><div class="fois">${P.phase === "creation" ? "Le workflow se crée…" : "Workflow créé · agent " + esc(w.agent)}</div></div>`;
+    h += `<ol class="terminal">${etapes.slice(0, P.ecrites).map(t => `<li>${esc(t)}</li>`).join("")}${P.phase !== "creation" ? `<li class="ok">Confié à l'agent ${esc(w.agent)}</li>` : ""}</ol>`;
+    if (P.phase === "pret") h += `<button class="btn ia" data-act="lancer">Lancer en direct</button>`;
+    if (P.phase === "lance") {
+      const lignes = (dernierN?.journal || []).filter(l => P.run ? l.run === P.run : (l.agent === w.agent && (date(l.ts)?.getTime() || 0) >= P.depuis - 2000)).slice(-3);
+      h += `<div class="etat"><i></i>L'agent travaille dans le back-office…</div>`;
+      h += lignes.length ? `<ol class="terminal">${lignes.map(l => `<li>${esc(masque(l.etape || l.detail))}${l.detail && l.etape ? " · " + esc(masque(l.detail)) : ""}</li>`).join("")}</ol>` : "";
+    }
+    if (P.phase === "fini") h += `<div class="mono">Réponse de l'agent</div><div class="reponse">${esc(masque(P.reponse) || "Passage terminé.")}</div>`;
+  }
+  el.innerHTML = h;
+}
+$("#panneau").addEventListener("click", async e => {
+  const b = e.target.closest("[data-act]"); if (!b) return;
+  if (b.dataset.act === "fermer") return fermerPanneau();
+  if (b.dataset.act === "creer") {
+    const w = PERS[P.id].workflows[Number(b.dataset.i)]; if (!w) return;
+    Object.assign(P, { wf: w, phase: "creation", ecrites: 0 });
+    ETAT.lien = { personne: P.id, agent: w.agent, t0: performance.now() };
+    rendrePanneau();
+    const n = (w.etapes && w.etapes.length) || 3;
+    for (let k = 1; k <= n; k++) { await attendre(2000 / (n + 1)); if (P.wf !== w) return; P.ecrites = k; rendrePanneau(); }
+    await attendre(300); if (P.wf !== w) return;
+    P.phase = "pret"; rendrePanneau();
+  }
+  if (b.dataset.act === "lancer") {
+    const w = P.wf; Object.assign(P, { phase: "lance", depuis: Date.now(), run: null }); rendrePanneau();
+    if (mode === "serveur") {
+      try { await fetch(`../api/lancer?agent=${encodeURIComponent(w.agent)}&visible=1&personne=${encodeURIComponent(P.id)}`, { method: "POST" }); } catch (_) {}
+      setTimeout(rafraichir, 300);
+    } else rejouer(w.agent);
+  }
+});
+let vuEnCours = false;
+function suivreRun(n) {
+  if (P.phase !== "lance" || !P.wf) return;
+  const w = P.wf;
+  if (n.enCours && n.enCours.agent === w.agent) { P.run = n.enCours.run || P.run; vuEnCours = true; }
+  const d = n.dernier;
+  const fini = d && d.agent === w.agent && (P.run ? d.run === P.run : vuEnCours) && !n.enCours;
+  if (fini) { P.phase = "fini"; vuEnCours = false; P.reponse = /echec|échec/i.test(d.statut || "") ? "Le passage a échoué : " + (d.erreur || "") : (d.reponse || n.agents.find(a => a.id === w.agent)?.derniere_reponse || (d.totaux ? `${d.totaux.commandes} commandes · ${d.totaux.ventes}` : "")); }
+  rendrePanneau();
+}
+
+/* ---------- Scène 3D ---------- */
 let sceneLancee = false, visible = false, relance = null;
 function surEtape(id) {
-  visible = id === "agents";
-  if (visible && !sceneLancee) { sceneLancee = true; lancerScene().catch(err => { console.warn("scène 3D indisponible", err); }); }
+  visible = id === "bureau";
+  if (visible && !sceneLancee) { sceneLancee = true; lancerScene().catch(err => console.warn("scène 3D indisponible", err)); }
   if (visible && relance) relance();
 }
-addEventListener("etape", e => surEtape(e.detail));
-surEtape(ETAPES[courant].id);
+rendrePanneau();
+depuisHash();
 
 async function lancerScene() {
   const THREE = await import("https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js");
@@ -519,31 +421,27 @@ async function lancerScene() {
   soleil.shadow.mapSize.set(2048, 2048); Object.assign(soleil.shadow.camera, { left: -16, right: 16, top: 16, bottom: -16 }); scene.add(soleil);
   const IA = 0x0a84b8;
   const mat = c => new THREE.MeshStandardMaterial({ color: c, roughness: .92, metalness: .05 });
-  const aretes = (mesh, op = .35, c = 0x7c848e) => { const l = new THREE.LineSegments(new THREE.EdgesGeometry(mesh.geometry), new THREE.LineBasicMaterial({ color: c, transparent: true, opacity: Math.min(1, op * 1.6) })); mesh.add(l); mesh.userData.aretes = l; return mesh; };
+  const aretes = (mesh, op = .35, c = 0x7c848e) => { const l = new THREE.LineSegments(new THREE.EdgesGeometry(mesh.geometry), new THREE.LineBasicMaterial({ color: c, transparent: true, opacity: Math.min(1, op * 1.6) })); mesh.add(l); return mesh; };
   const ajoute = (geo, couleur, x, y, z, op) => { const m = aretes(new THREE.Mesh(geo, mat(couleur)), op); m.position.set(x, y, z); m.castShadow = m.receiveShadow = true; scene.add(m); return m; };
 
-  // sol, grille, murs
   ajoute(new THREE.BoxGeometry(22, .3, 15), 0xf1f3f5, 0, -.15, 0, .5);
   const grille = new THREE.GridHelper(22, 44, 0xd9dde3, 0xe6e9ec); grille.position.y = .01; grille.scale.z = 15 / 22; scene.add(grille);
   ajoute(new THREE.BoxGeometry(22, 2.2, .12), 0xe9ecef, 0, 1.1, -7.5, .4);
   ajoute(new THREE.BoxGeometry(.12, 2.2, 15), 0xe9ecef, -11, 1.1, 0, .4);
-
-  // zone des agents : plancher teinté, cadre cyan
   const ZA = { x0: 1.4, x1: 10.8, z0: -4.4, z1: 6.6 };
   const plaque = new THREE.Mesh(new THREE.PlaneGeometry(ZA.x1 - ZA.x0, ZA.z1 - ZA.z0), new THREE.MeshBasicMaterial({ color: IA, transparent: true, opacity: .06 }));
   plaque.rotation.x = -Math.PI / 2; plaque.position.set((ZA.x0 + ZA.x1) / 2, .02, (ZA.z0 + ZA.z1) / 2); scene.add(plaque);
-  const cadre = new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints([[ZA.x0, ZA.z0], [ZA.x1, ZA.z0], [ZA.x1, ZA.z1], [ZA.x0, ZA.z1]].map(([x, z]) => new THREE.Vector3(x, .03, z))), new THREE.LineBasicMaterial({ color: IA, transparent: true, opacity: .45 }));
-  scene.add(cadre);
+  scene.add(new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints([[ZA.x0, ZA.z0], [ZA.x1, ZA.z0], [ZA.x1, ZA.z1], [ZA.x0, ZA.z1]].map(([x, z]) => new THREE.Vector3(x, .03, z))), new THREE.LineBasicMaterial({ color: IA, transparent: true, opacity: .45 })));
 
-  // un poste
   function poste(x, z, agent) {
     const g = new THREE.Group(); g.position.set(x, 0, z); scene.add(g);
-    const b = aretes(new THREE.Mesh(new THREE.BoxGeometry(2.5, .1, 1.3), mat(agent ? 0xcfd6de : 0xdde1e6))); b.position.y = .86; b.castShadow = b.receiveShadow = true; g.add(b);
+    const plateau = mat(agent ? 0xcfd6de : 0xdde1e6);
+    const b = aretes(new THREE.Mesh(new THREE.BoxGeometry(2.5, .1, 1.3), plateau)); b.position.y = .86; b.castShadow = b.receiveShadow = true; g.add(b);
     [[-1.1, -.5], [1.1, -.5], [-1.1, .5], [1.1, .5]].forEach(([a, c]) => { const l = new THREE.Mesh(new THREE.BoxGeometry(.06, .86, .06), mat(0xa7afb9)); l.position.set(a, .43, c); g.add(l); });
     const em = new THREE.MeshStandardMaterial({ color: 0x3a414c, emissive: 0x000000, emissiveIntensity: 1.4, roughness: .3 });
     const ecran = aretes(new THREE.Mesh(new THREE.BoxGeometry(1.3, .78, .05), em), .5); ecran.position.set(0, 1.38, -.42); ecran.castShadow = true; g.add(ecran);
     const lueur = new THREE.PointLight(IA, 0, 4, 1.6); lueur.position.set(0, 1.4, 0); g.add(lueur);
-    let corps, tete;
+    let corps = null, tete;
     if (agent) {
       tete = aretes(new THREE.Mesh(new THREE.OctahedronGeometry(.3, 0), new THREE.MeshStandardMaterial({ color: 0xb7bec7, emissive: 0x000000, emissiveIntensity: 1.4, roughness: .5 })), .6);
       tete.position.set(0, 1.35, .9); tete.castShadow = true; g.add(tete);
@@ -551,24 +449,19 @@ async function lancerScene() {
       corps = aretes(new THREE.Mesh(new THREE.CapsuleGeometry(.24, .48, 6, 14), mat(0xb7bec7)), .35); corps.position.set(0, .86, .9); corps.castShadow = true; g.add(corps);
       tete = aretes(new THREE.Mesh(new THREE.SphereGeometry(.21, 20, 14), mat(0xc9ced5)), .3); tete.position.set(0, 1.45, .9); tete.castShadow = true; g.add(tete);
     }
-    return { g, em, ecran, lueur, corps, tete, ancre: new THREE.Vector3(x, 2.05, z - .42), sortie: new THREE.Vector3(x, 1.9, z - .42) };
+    return { g, em, plateau, lueur, corps, tete, ancre: new THREE.Vector3(x, 2.05, z - .42), sortie: new THREE.Vector3(x, 1.9, z - .42) };
   }
-
-  // salariés (gris)
-  const SALARIES = [["Léa", "Responsable e-commerce"], ["Karim", "Gestionnaire catalogue"], ["Sophie", "Analyste ventes"], ["Nadia", "Service client"], ["Julien", "Commandes et logistique"], ["Emma", "Marketing et promotions"]];
   const posSal = [[-8.6, -3.4], [-5.4, -3.4], [-2.2, -3.4], [-8.6, 1.6], [-5.4, 1.6], [-2.2, 1.6]];
-  const salaries = posSal.map(([x, z]) => poste(x, z, false));
+  const salaries = posSal.map(([x, z], k) => { const p = poste(x, z, false); p.g.userData.personne = SALARIES[k].id; return p; });
 
-  // serveur Magento (la boutique)
   const SV = new THREE.Vector3(-9.4, 0, -6.4);
-  const baie = ajoute(new THREE.BoxGeometry(2.4, 2.9, 1), 0xe2e6ea, SV.x, 1.45, SV.z, .55);
+  ajoute(new THREE.BoxGeometry(2.4, 2.9, 1), 0xe2e6ea, SV.x, 1.45, SV.z, .55);
   const voyants = [];
   for (let k = 0; k < 6; k++) { const v = new THREE.Mesh(new THREE.BoxGeometry(1.8, .06, .02), new THREE.MeshBasicMaterial({ color: 0xaab2bc })); v.position.set(SV.x, .45 + k * .4, SV.z + .51); scene.add(v); voyants.push(v); }
   const entreeSV = new THREE.Vector3(SV.x, 3.0, SV.z);
   const anneau = new THREE.Mesh(new THREE.RingGeometry(1.7, 1.77, 64), new THREE.MeshBasicMaterial({ color: 0x5b636e, transparent: true, opacity: .12, side: THREE.DoubleSide }));
   anneau.rotation.x = -Math.PI / 2; anneau.position.set(SV.x, .03, SV.z); scene.add(anneau);
 
-  // postes d'agents : 3 devant (en service), 2 derrière (en préparation)
   const posAg = [[3.3, 3.6], [6.3, 3.6], [9.3, 3.6], [4.8, -1.4], [7.8, -1.4]];
   const agents = posAg.map(([x, z]) => {
     const p = poste(x, z, true);
@@ -578,7 +471,12 @@ async function lancerScene() {
     const pulses = Array.from({ length: 3 }, (_, k) => { const m = new THREE.Mesh(new THREE.SphereGeometry(.11, 12, 8), new THREE.MeshBasicMaterial({ color: IA })); m.visible = false; scene.add(m); return { m, p: k / 3 }; });
     return { ...p, courbe, trace, pulses, niveau: 0 };
   });
-  // balayage radar sur la zone des agents
+  // trait cyan salarié → agent, tracé à la création du workflow
+  const N_LIEN = 80;
+  const lienGeo = new THREE.BufferGeometry().setFromPoints(Array.from({ length: N_LIEN }, () => new THREE.Vector3()));
+  const lien = new THREE.Line(lienGeo, new THREE.LineBasicMaterial({ color: IA, transparent: true, opacity: .95 })); lien.visible = false; scene.add(lien);
+  const lienPulse = new THREE.Mesh(new THREE.SphereGeometry(.13, 12, 8), new THREE.MeshBasicMaterial({ color: IA })); lienPulse.visible = false; scene.add(lienPulse);
+  let lienCle = null, lienCourbe = null;
   const balayage = new THREE.Mesh(new THREE.RingGeometry(0, 6.2, 64, 1, 0, .5), new THREE.MeshBasicMaterial({ color: IA, transparent: true, opacity: .05, side: THREE.DoubleSide }));
   balayage.rotation.x = -Math.PI / 2; balayage.position.set((ZA.x0 + ZA.x1) / 2, .025, (ZA.z0 + ZA.z1) / 2); scene.add(balayage);
 
@@ -592,12 +490,25 @@ async function lancerScene() {
     return { ancre, dx, dy, d, l, p, ...opt };
   };
   const decal = [[-70, 26], [20, -96], [40, -40], [-50, 40], [-30, 100], [30, 50]];
-  const etSal = salaries.map((s, k) => mk(s.ancre, decal[k][0], decal[k][1], { html: `${esc(SALARIES[k][0])} · ${esc(SALARIES[k][1])}` }));
+  const etSal = salaries.map((s, k) => { const e = mk(s.ancre, decal[k][0], decal[k][1], { html: `${esc(SALARIES[k].prenom)} · ${esc(SALARIES[k].role)}`, personne: SALARIES[k].id }); e.d.classList.add("cliquable"); e.d.addEventListener("click", () => ouvrirPersonne(SALARIES[k].id)); return e; });
   const decalAg = [[-80, 50], [-20, 88], [60, 60], [100, 0], [100, 60]];
   const etAg = agents.map((a, k) => mk(a.ancre, decalAg[k][0], decalAg[k][1]));
-  const etSv = mk(new THREE.Vector3(SV.x, 2.9, SV.z), -40, -16, { html: `Boutique · Magento<small>le vrai back-office, où les agents travaillent</small>` });
-  const zIA = mk(new THREE.Vector3(ZA.x1, 0, ZA.z1), -40, 14, { zone: true, html: "Agents déployés" }); zIA.d.classList.add("z-ia");
+  const etSv = mk(new THREE.Vector3(SV.x, 2.9, SV.z), -40, -16, { html: `Boutique · Magento<small>le vrai back-office</small>` });
+  const zIA = mk(new THREE.Vector3(ZA.x1, 0, ZA.z1), -40, 14, { zone: true, html: "Agents déployés" });
   const toutes = [...etSal, ...etAg, etSv, zIA];
+
+  // clic sur un poste de salarié
+  const ray = new THREE.Raycaster(), souris = new THREE.Vector2();
+  const personneSous = ev => {
+    const r = canvas.getBoundingClientRect();
+    souris.set((ev.clientX - r.left) / r.width * 2 - 1, -((ev.clientY - r.top) / r.height) * 2 + 1);
+    ray.setFromCamera(souris, cam);
+    const hit = ray.intersectObjects(salaries.map(s => s.g), true)[0];
+    let o = hit?.object; while (o && !o.userData.personne) o = o.parent;
+    return o?.userData.personne || null;
+  };
+  canvas.addEventListener("click", ev => { const id = personneSous(ev); if (id) ouvrirPersonne(id); });
+  canvas.addEventListener("mousemove", ev => { canvas.style.cursor = personneSous(ev) ? "pointer" : "default"; });
 
   let largeur = 0, hauteur = 0, prec = null, flash = 0;
   const coupe = (s, n) => s && s.length > n ? s.slice(0, n - 1) + "…" : s;
@@ -607,30 +518,40 @@ async function lancerScene() {
     if (r.width !== largeur || r.height !== hauteur) { largeur = r.width; hauteur = r.height; renderer.setSize(r.width, r.height, false);
       const a = r.width / r.height, v = Math.max(9.2, 14.6 / a); cam.left = -v * a; cam.right = v * a; cam.top = v; cam.bottom = -v; cam.updateProjectionMatrix(); }
     const dt = prec === null ? 0 : Math.min(.05, (t - prec) / 1000); prec = t;
-    // état des postes d'agents
     const liste = ETAT.agents.slice().sort((a, b) => (b.statut === "en service") - (a.statut === "en service")).slice(0, 5);
+    const lienAgent = ETAT.lien?.agent;
     let arrive = false;
     agents.forEach((a, k) => {
       const ag = liste[k]; const on = ag && ag.statut === "en service"; const actif = ag && ag.id === ETAT.actif;
-      a.niveau += ((actif ? 1 : 0) - a.niveau) * Math.min(1, dt * 4);
-      const c = new THREE.Color(0x000000).lerp(new THREE.Color(0x22b8f0), a.niveau);
-      a.em.emissive.copy(c); a.em.color.setHex(on || actif ? 0x3a414c : 0x8a929c);
+      const allume = actif || (ag && ag.id === lienAgent && ETAT.lien && performance.now() - ETAT.lien.t0 > 1200);
+      a.niveau += ((allume ? 1 : 0) - a.niveau) * Math.min(1, dt * 4);
+      a.em.emissive.copy(new THREE.Color(0x000000).lerp(new THREE.Color(0x22b8f0), a.niveau)); a.em.color.setHex(on || allume ? 0x3a414c : 0x8a929c);
       a.lueur.intensity = a.niveau * 10;
       a.tete.material.emissive.copy(new THREE.Color(0x000000).lerp(new THREE.Color(IA), a.niveau)); a.tete.material.color.setHex(on ? 0x9fc3d3 : 0xd5dae0);
       a.tete.rotation.y += dt * (actif ? 2.4 : on ? .5 : 0);
       a.tete.position.y = 1.35 + (on ? Math.sin(t / 700 + k) * .05 : -.15);
-      a.trace.material.opacity = a.niveau * .7;
+      a.trace.material.opacity = actif ? .7 : Math.max(0, a.trace.material.opacity - dt);
       a.pulses.forEach(p => { p.m.visible = actif && !reduit; if (!p.m.visible) return; const av = p.p; p.p = (p.p + dt * .7) % 1; if (p.p < av) arrive = true; p.m.position.copy(a.courbe.getPoint(p.p)); });
       a.liste = ag;
     });
+    // lien salarié → agent
+    if (ETAT.lien) {
+      const s = salaries[SALARIES.findIndex(x => x.id === ETAT.lien.personne)], k = agents.findIndex(a => a.liste?.id === ETAT.lien.agent);
+      if (s && k >= 0) {
+        const cle = ETAT.lien.personne + ETAT.lien.agent + ETAT.lien.t0;
+        if (cle !== lienCle) { lienCle = cle; const a = agents[k]; lienCourbe = new THREE.QuadraticBezierCurve3(s.sortie.clone(), new THREE.Vector3((s.sortie.x + a.sortie.x) / 2, 5.5, (s.sortie.z + a.sortie.z) / 2), a.sortie.clone()); lienGeo.setFromPoints(lienCourbe.getPoints(N_LIEN - 1)); }
+        const q = Math.min(1, (performance.now() - ETAT.lien.t0) / 1300);
+        lien.visible = true; lienGeo.setDrawRange(0, Math.max(2, Math.round(q * N_LIEN)));
+        lienPulse.visible = !reduit; lienPulse.position.copy(lienCourbe.getPoint(q < 1 ? q : (t / 1600) % 1));
+      }
+    } else { lien.visible = false; lienPulse.visible = false; lienCle = null; }
+    salaries.forEach((s, k) => s.plateau.color.setHex(SALARIES[k].id === ETAT.choisi ? 0xb9c1ca : 0xdde1e6));
     if (arrive) flash = 1;
     flash = Math.max(0, flash - dt * 1.2);
     anneau.material.opacity = .12 + flash * .6; anneau.scale.setScalar(1 + flash * .12);
-    const travail = !!ETAT.actif;
-    voyants.forEach((v, k) => v.material.color.setHex(travail && Math.sin(t / 120 + k * 1.7) > .2 ? IA : 0xaab2bc));
+    voyants.forEach((v, k) => v.material.color.setHex(ETAT.actif && Math.sin(t / 120 + k * 1.7) > .2 ? IA : 0xaab2bc));
     balayage.rotation.z = reduit ? 0 : -t / 2600;
     renderer.render(scene, cam);
-    // étiquettes
     const W = r.width, H = r.height;
     toutes.forEach(e => {
       const v = e.ancre.clone().project(cam), x = (v.x + 1) / 2 * W, y = (1 - v.y) / 2 * H;
@@ -639,19 +560,22 @@ async function lancerScene() {
       if (k >= 0) {
         const ag = agents[k].liste;
         if (!ag) { html = "Poste libre"; eteinte = true; }
-        else if (ag.id === ETAT.actif) { vive = true; html = `<b>Agent · ${esc(ag.nom || ag.id)}</b> · au travail<small>${esc(coupe(ETAT.demande, 70) || "passage en cours…")}</small>`; }
+        else if (ag.id === ETAT.actif) { vive = true; html = `<b>Agent · ${esc(ag.nom || ag.id)}</b> · au travail<small>${esc(coupe(masque(ETAT.demande), 70) || "passage en cours…")}</small>`; }
+        else if (ag.id === lienAgent) { vive = true; html = `<b>Agent · ${esc(ag.nom || ag.id)}</b><small>nouveau workflow reçu</small>`; }
         else if (ag.statut === "en service") html = `Agent · ${esc(ag.nom || ag.id)}<small>en service · ${nf(ag.passages ?? 0)} passages</small>`;
         else { html = `Agent · ${esc(ag.nom || ag.id)}<small>en préparation</small>`; eteinte = true; }
       }
       if (e.d.innerHTML !== html) e.d.innerHTML = html;
       e.d.classList.toggle("vive", vive); e.d.classList.toggle("eteinte", eteinte);
+      if (e.personne) e.d.classList.toggle("choisie", e.personne === ETAT.choisi);
       const w = e.d.offsetWidth, h = e.d.offsetHeight;
       if (e.zone) { e.d.style.left = Math.min(Math.max(8, x + e.dx - (e.dx < 0 ? w : 0)), W - w - 8) + "px"; e.d.style.top = Math.min(Math.max(8, y + e.dy), H - h - 8) + "px"; return; }
       const lx = x + e.dx, ly = y + e.dy;
       const gx = Math.min(Math.max(8, lx - (e.dx < 0 ? w : 0)), W - w - 8), gy = Math.min(Math.max(8, e.dy < 0 ? ly - h : ly), H - h - 8);
       e.d.style.left = gx + "px"; e.d.style.top = gy + "px";
       const bx = e.dx < 0 ? gx + w : gx, by = e.dy < 0 ? gy + h : gy;
-      const trait = vive ? css("--ia") : eteinte ? css("--trait") : css("--trait-fort");
+      const choisie = e.personne && e.personne === ETAT.choisi;
+      const trait = vive ? css("--ia") : choisie ? css("--texte") : eteinte ? css("--trait") : css("--trait-fort");
       e.l.setAttribute("points", `${x},${y} ${x + e.dx * .5},${by} ${bx},${by}`); e.l.setAttribute("stroke", trait);
       e.p.setAttribute("cx", x); e.p.setAttribute("cy", y); e.p.setAttribute("fill", vive ? css("--ia") : css("--doux"));
     });
