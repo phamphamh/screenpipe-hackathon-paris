@@ -1,4 +1,51 @@
-# DeloAI — votre cabinet et votre ESN, dans votre poche
+<p align="center"><img src="docs/captures/deloai-bureau-karim.png" alt="DeloAI — the office of Atelier Nova, with Claude agents deployed" width="100%"></p>
+
+# DeloAI — your consulting firm and your IT team, in your pocket
+
+**DeloAI turns a week of screenpipe recordings into an AI consulting engagement: it audits what employees repeat by hand, puts a price on it, and deploys Claude agents that do the work in the company's real software.**
+
+screenpipe × 42 Paris hackathon, 16–18 October 2026. Pitch deck in English, live demo below, the French write-up further down.
+
+| 1 · Audit | 2 · The office | 3 · An agent, live in Magento |
+|---|---|---|
+| ![audit](docs/captures/deloai-audit.png) | ![office](docs/captures/deloai-bureau-karim.png) | ![agent](docs/captures/deloai-agent-live.png) |
+| One week of screenpipe → €71.7k a year lost to repeated tasks, the same sales report pulled 790× a week, €30.1k recoverable. Each number opens its detail; scroll for one employee, step by step. | Click an employee → the workflows the audit found in their week → open the workflow (trigger, observed steps, agent, output) → **Deploy** → **Run it live**. | A Claude agent takes a real recorded request ("cut the price of the yellow Gwyn tees below size L by 15%"), opens each product in the real back-office, types the new price, saves. Every action logged. |
+
+## Run the demo
+
+```sh
+# 1. the test store (WebArena's Magento back-office, 9.6 GB image, once): see labs/phamphamh/boutique/README.md
+sh labs/phamphamh/boutique/installer.sh
+# 2. the DeloAI app + the deployed agents (one run every 5 min, in the background)
+python3 labs/phamphamh/agents-nova/serveur.py      # → http://localhost:8798
+```
+
+Needs Python 3, Playwright and the `claude` CLI. The script of the 3-minute demo: [`labs/phamphamh/agents-nova/script.md`](labs/phamphamh/agents-nova/script.md).
+
+## How it works
+
+```mermaid
+flowchart LR
+  A[screenpipe on every desk<br/>clicks, pages, typed values] --> B[80/20 filter<br/>55,510 captures → 14,470 moments]
+  B --> C[Claude summarises each employee<br/>tasks · steps · time]
+  C --> D[The employee reviews<br/>only the validated summary is shared]
+  D --> E[Merge the team<br/>19 repeated tasks, priced]
+  E --> F[Workflow = the observed steps]
+  F --> G[Claude agent + store tools<br/>Magento API · Playwright browser]
+  G --> H[Every action logged<br/>screenshots · journal]
+```
+
+Each employee's screenpipe capture (window titles, URLs, clicks, typed values) is filtered down to the work moments that matter, then summarised by Claude into tasks, steps and time spent; the employee reviews that summary before anything is shared. A fusion step merges the validated summaries across the team, groups identical tasks by the screens they touch, and prices them (hours × 46 weeks × hourly cost) to rank what to automate. For the demo, we replayed six real people from Stanford's [WONDERBREAD](https://hazyresearch.stanford.edu/wonderbread-website) dataset (CC-BY-4.0) as a one-week screenpipe campaign at **Atelier Nova**, an online store running the [WebArena](https://github.com/web-arena-x/webarena) Magento back-office, scaled ×10 to 60 seats. Each recommended workflow is written from the observed steps and handed to a Claude agent (`claude -p`), which receives a real recorded request and acts through a small tool layer ([`boutique.py`](labs/phamphamh/agents-nova/boutique.py)): the Magento REST API to read, Playwright driving a visible Chrome window to edit. Agents run on a schedule, all on a single laptop. Only the "hands" depend on the software: the same agent works with Gmail, an ERP or any app that has an API or a connector.
+
+**Honest limits**: the company is fictional and the volumes are ×10 a real sample of 6 people; only Magento is wired today (Gmail + Sage were tested in a sandbox, [`labs/natsuwy/tester-en-vrai/`](labs/natsuwy/tester-en-vrai/)); the live mode is slowed down on purpose so the audience can follow.
+
+**Team**: [`docs/contribution-equipe.md`](docs/contribution-equipe.md) · adamaass (the audit), 09125o, natsuwy, tmschrib, phamphamh.
+
+---
+
+## Version française
+
+### DeloAI — votre cabinet et votre ESN, dans votre poche
 
 **Le produit** : une semaine de screenpipe chez des salariés volontaires ; chacun relit et valide son propre résumé ; l'entreprise reçoit son **Wrapped** — l'audit de son travail réel : ses tâches répétées, leur coût réel, quoi automatiser en premier — **et sa première automatisation** (skill générée, testée sur une seconde personne). L'étape suivante est déjà montrée pour de vrai : des agents Claude **déployés dans un vrai back-office Magento** y font le travail de l'équipe — rapport de ventes, changement de prix, commandes annulées — chaque action tracée, personne au clavier. Zéro consultant sur place : la mission d'un forward deployed engineer, livrée en logiciel. Le découpage : [`produit/decoupage.md`](produit/decoupage.md) ; le récit complet : [`produit/positionnement.md`](produit/positionnement.md).
 
