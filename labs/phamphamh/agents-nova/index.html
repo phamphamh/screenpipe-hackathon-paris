@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DeloAI · Atelier Nova</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--fond:#0a0a0b;--carte:#141416;--bord:#26262a;--texte:#ececec;--doux:#9a9a9f;--cuivre:#e5a276;--vert:#22c55e;--rouge:#ef4444}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--fond);color:var(--texte);font:15px/1.45 Inter,system-ui,sans-serif;min-height:100vh;display:flex;flex-direction:column}
+h1,h2,.gros{font-family:Outfit,sans-serif}
+.mono{font-family:"JetBrains Mono",monospace}
+header{display:flex;align-items:center;gap:28px;padding:14px 28px;border-bottom:1px solid var(--bord)}
+.marque{display:flex;align-items:center;gap:10px;font:700 18px Outfit}
+.marque b{width:30px;height:30px;border-radius:8px;background:var(--cuivre);color:#1a1209;display:grid;place-items:center}
+nav{display:flex;gap:6px}
+nav button{background:none;border:1px solid transparent;color:var(--doux);font:500 14px Inter;padding:8px 14px;border-radius:8px;cursor:pointer}
+nav button.actif{color:var(--texte);border-color:var(--bord);background:var(--carte)}
+nav button i{font-style:normal;color:var(--cuivre);margin-right:6px}
+.client{margin-left:auto;color:var(--doux);font-size:13px}
+main{flex:1;display:flex}
+section{display:none;flex:1;padding:26px 28px;gap:18px}
+section.actif{display:flex;flex-direction:column}
+#agents{height:calc(100vh - 62px);overflow:hidden}
+iframe{flex:1;border:0;width:100%;min-height:calc(100vh - 62px)}
+section.cadre{padding:0}
+.titre{display:flex;align-items:baseline;gap:16px}
+.titre h1{font-size:30px}
+.titre p{color:var(--doux)}
+.carte{background:var(--carte);border:1px solid var(--bord);border-radius:14px;padding:18px 20px}
+.etiquette{font:500 11px "JetBrains Mono";letter-spacing:.08em;text-transform:uppercase;color:var(--doux);margin-bottom:8px}
+.grille{display:grid;gap:18px}
+/* les données */
+.donnees{grid-template-columns:1.1fr 1fr;flex:1}
+.source .gros{font-size:22px;margin-bottom:6px}
+.source p{color:var(--doux);margin-top:6px}
+.source p b{color:var(--texte);font-weight:600}
+.personnes{grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
+.personne{display:flex;gap:12px;align-items:center;padding:12px 14px}
+.personne .av{width:38px;height:38px;border-radius:50%;background:#2a221c;color:var(--cuivre);display:grid;place-items:center;font:600 16px Outfit;flex:none}
+.personne b{display:block}
+.personne span{display:block;color:var(--doux);font-size:12.5px}
+.fois{display:flex;align-items:center;gap:16px;margin-top:14px;padding:14px 18px;border:1px dashed var(--cuivre);border-radius:12px}
+.fois .gros{font-size:34px;color:var(--cuivre)}
+.extrait li{list-style:none;display:grid;grid-template-columns:80px 1fr;gap:12px;padding:14px 0;border-bottom:1px solid var(--bord);font-size:15px}
+.extrait li:last-child{border:0}
+.extrait .h{color:var(--doux)}
+.extrait .f{display:block;color:var(--doux);font-size:12px;margin-top:4px}
+.extrait li.rep .a{color:var(--cuivre)}
+/* les agents */
+.bandeau{display:flex;align-items:center;gap:16px;padding:16px 20px}
+.pastille{width:12px;height:12px;border-radius:50%;background:var(--vert);box-shadow:0 0 0 0 rgba(34,197,94,.6);animation:pouls 1.8s infinite;flex:none}
+@keyframes pouls{70%{box-shadow:0 0 0 10px rgba(34,197,94,0)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}
+.bandeau .gros{font-size:20px}
+.bandeau .doux{color:var(--doux)}
+.bandeau button{margin-left:auto}
+button.action{background:var(--cuivre);color:#1a1209;border:0;font:600 14px Inter;padding:10px 16px;border-radius:9px;cursor:pointer}
+button.action:disabled{opacity:.5;cursor:default}
+.kpis{grid-template-columns:repeat(4,1fr)}
+.kpi .gros{font-size:30px}
+.kpi .s{color:var(--doux);font-size:13px}
+.vert{color:var(--vert)}.cuivre{color:var(--cuivre)}
+.direct{grid-template-columns:240px 1.5fr 1fr;flex:1;min-height:0}
+.agent{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--bord);font-size:14px}
+.agent:last-child{border:0}
+.agent .p{width:9px;height:9px;border-radius:50%;background:#3a3a3f;flex:none}
+.agent.on .p{background:var(--vert)}
+.agent small{display:block;color:var(--doux);font-size:12px}
+.ecran{display:flex;flex-direction:column}
+.ecran .img{flex:1;min-height:0;border-radius:10px;overflow:hidden;background:#000;border:1px solid var(--bord);display:grid;place-items:center}
+.ecran img{width:100%;height:100%;object-fit:contain}
+.ecran .leg{margin-top:10px;color:var(--doux);font-size:13px}
+.ecran .leg b{color:var(--texte)}
+.journal{overflow:auto;max-height:calc(100vh - 420px)}
+.journal li{list-style:none;display:grid;grid-template-columns:62px 1fr;gap:8px;padding:7px 0;border-bottom:1px solid var(--bord);font-size:13px;animation:entre .4s}
+.journal li .t{color:var(--doux)}
+.journal li small{display:block;color:var(--doux)}
+.journal li.neuf b{color:var(--cuivre)}
+@keyframes entre{from{opacity:0;transform:translateY(-4px)}}
+.resultat{margin-top:12px;font-size:13px;color:var(--doux)}
+.resultat b{color:var(--texte)}
+.vide{color:var(--doux);font-size:14px}
+</style>
+</head>
+<body>
+<header>
+  <div class="marque"><b>D</b>DeloAI</div>
+  <nav>
+    <button data-v="donnees"><i>1</i>Les données</button>
+    <button data-v="audit"><i>2</i>L'audit</button>
+    <button data-v="ecarts"><i>3</i>Les écarts</button>
+    <button data-v="agents"><i>4</i>Les agents</button>
+  </nav>
+  <div class="client">Client : <b>Atelier Nova</b> · boutique en ligne</div>
+</header>
+<main>
+  <section id="donnees">
+    <div class="titre"><h1>D'où viennent les données</h1><p>De vraies personnes, sur de vraies tâches de back-office.</p></div>
+    <div class="grille donnees">
+      <div>
+        <div class="carte source">
+          <div class="etiquette">La source</div>
+          <div class="gros" id="src-nom"></div>
+          <p id="src-texte"></p>
+          <p>Ce que l'IA voit : <b>le titre de la fenêtre, l'adresse, les clics, les saisies</b>. Jamais leur identité : les prénoms sont inventés.</p>
+        </div>
+        <div class="grille personnes" id="personnes"></div>
+        <div class="fois"><div class="gros">×10</div><div>Ces 6 personnes, multipliées par 10, deviennent <b>Atelier Nova : 60 salariés</b>. C'est une simulation, et on le dit.</div></div>
+      </div>
+      <div class="carte">
+        <div class="etiquette">Ce que l'IA a lu · Sophie, analyste ventes, lundi matin</div>
+        <ul class="extrait" id="extrait"></ul>
+        <div class="fois"><div class="gros" id="nb-rapports">3</div><div>fois <b>le même rapport</b> en moins d'une heure. Personne ne l'a signalé : l'IA l'a vu.</div></div>
+      </div>
+    </div>
+  </section>
+  <section id="audit" class="cadre"><iframe data-src="../dashboard-nova/index.html#contexte" title="Audit"></iframe></section>
+  <section id="ecarts" class="cadre"><iframe data-src="../dashboard-nova/index.html#couts" title="Écarts"></iframe></section>
+  <section id="agents">
+    <div class="carte bandeau">
+      <div class="pastille"></div>
+      <div><div class="gros">Agent « Rapport de ventes » : en service</div><div class="doux" id="depuis"></div></div>
+      <button class="action" id="lancer">Lancer un passage maintenant</button>
+    </div>
+    <div class="grille kpis">
+      <div class="carte kpi"><div class="etiquette">Passages depuis le déploiement</div><div class="gros" id="k-passages">–</div><div class="s" id="k-actions"></div></div>
+      <div class="carte kpi"><div class="etiquette">Temps par rapport</div><div class="gros"><span class="vert" id="k-agent">–</span> <span class="s">contre</span> <span id="k-humain">–</span></div><div class="s">agent · humain (médiane Stanford)</div></div>
+      <div class="carte kpi"><div class="etiquette">Fréquence chez Atelier Nova</div><div class="gros" id="k-freq">–</div><div class="s">rapports par semaine</div></div>
+      <div class="carte kpi"><div class="etiquette">Temps humain rendu</div><div class="gros cuivre" id="k-heures">–</div><div class="s">par semaine, sans personne au clavier</div></div>
+    </div>
+    <div class="grille direct">
+      <div class="carte"><div class="etiquette">Agents déployés</div><div id="liste-agents"></div></div>
+      <div class="carte ecran"><div class="etiquette">L'écran de l'agent, dans le vrai back-office</div><div class="img" id="ecran"><span class="vide">En attente du prochain passage…</span></div><div class="leg" id="legende"></div></div>
+      <div class="carte"><div class="etiquette">Journal · chaque action tracée</div><ul class="journal" id="journal"></ul><div class="resultat" id="resultat"></div></div>
+    </div>
+  </section>
+</main>
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const nf = n => Number(n).toLocaleString("fr-FR");
+const heure = iso => new Date(iso).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
+const VUES = ["donnees", "audit", "ecarts", "agents"];
+
+function montrer(v) {
+  VUES.forEach(x => { $("#" + x).classList.toggle("actif", x === v); document.querySelector(`nav [data-v=${x}]`).classList.toggle("actif", x === v); });
+  const f = $("#" + v + " iframe"); if (f && !f.src) f.src = f.dataset.src;
+  history.replaceState(null, "", "#" + v);
+}
+document.querySelectorAll("nav button").forEach(b => b.onclick = () => montrer(b.dataset.v));
+addEventListener("keydown", e => {
+  if (!["ArrowRight", "ArrowLeft"].includes(e.key) || e.target.closest("iframe")) return;
+  const i = VUES.indexOf(location.hash.slice(1) || "donnees");
+  montrer(VUES[Math.max(0, Math.min(VUES.length - 1, i + (e.key === "ArrowRight" ? 1 : -1)))]);
+});
+addEventListener("hashchange", () => VUES.includes(location.hash.slice(1)) && montrer(location.hash.slice(1)));
+montrer(VUES.includes(location.hash.slice(1)) ? location.hash.slice(1) : "donnees");
+
+fetch("donnees.json").then(r => r.json()).then(d => {
+  $("#src-nom").textContent = `${d.source.nom} · ${d.source.qui}`;
+  $("#src-texte").innerHTML = `<b>${nf(d.source.demos)} enregistrements</b> de personnes réelles faisant leur travail dans un vrai logiciel : ${esc(d.boutique)}. Licence ouverte (${esc(d.source.licence)}). Pour la démo, on en a pris <b>6</b>, celles du back-office.`;
+  $("#personnes").innerHTML = d.personnes.map(p => `<div class="carte personne"><div class="av">${esc(p.prenom[0])}</div><div><b>${esc(p.prenom)}</b><span>${esc(p.role)}</span><span class="mono">${p.minutes} min · ${nf(p.captures)} captures</span></div></div>`).join("");
+  const ex = d.extrait.filter(l => !/^clic « REPORTS »$/.test(l.action));
+  // l'enregistrement tel quel, sans les clics sans libellé (« input », « Day ») pour rester lisible
+  const net = a => a.split(" · ").filter(x => !/^clic « (input|Day) »$/.test(x)).join(" · ").replace(/ dans « input »/g, "");
+  $("#extrait").innerHTML = ex.map(l => `<li class="${/Show Report/.test(l.action) ? "rep" : ""}"><span class="h mono">${esc(l.heure)}</span><span><span class="a">${esc(net(l.action))}</span><span class="f">${esc(l.fenetre)}</span></span></li>`).join("");
+  $("#nb-rapports").textContent = ex.filter(l => /Show Report/.test(l.action)).length;
+});
+
+let vus = new Set(), premier = true;
+async function rafraichir() {
+  let e; try { e = await (await fetch("/api/etat", { cache: "no-store" })).json(); } catch { return setTimeout(rafraichir, 4000); }
+  const dep = e.deploiement.depuis;
+  const proch = e.en_cours ? "passage en cours…" : e.prochain ? `prochain passage à ${heure(e.prochain)}` : "";
+  $("#depuis").textContent = `Déployé à ${heure(dep)} · tourne toutes les ${e.intervalle_min} min · ${proch}`;
+  $("#lancer").disabled = e.en_cours;
+  $("#k-passages").textContent = e.passages;
+  $("#k-actions").textContent = `${nf(e.actions)} actions tracées · ${e.reussis} réussis`;
+  $("#k-agent").textContent = e.duree_agent_s != null ? `${String(e.duree_agent_s).replace(".", ",")} s` : "–";
+  $("#k-humain").textContent = `${e.duree_humain_s} s`;
+  $("#k-freq").textContent = nf(e.par_semaine);
+  $("#k-heures").textContent = `${String(e.heures_rendues_semaine).replace(".", ",")} h`;
+  $("#liste-agents").innerHTML = e.agents.map(a => `<div class="agent ${a.statut === "en service" ? "on" : ""}"><span class="p"></span><div>${esc(a.nom)}<small>${esc(a.equipe)} · ${esc(a.statut)}</small></div></div>`).join("");
+  const j = e.journal.slice(-16).reverse();
+  $("#journal").innerHTML = j.map(l => { const k = l.run + l.n, neuf = !premier && !vus.has(k); vus.add(k); return `<li class="${neuf ? "neuf" : ""}"><span class="t mono">${heure(l.ts)}</span><span><b>${esc(l.etape)}</b><small>${esc(l.detail)}</small></span></li>`; }).join("");
+  premier = false;
+  const img = e.journal.slice().reverse().find(l => l.capture);
+  if (img) {
+    const src = "/captures/" + img.capture;
+    if ($("#ecran img")?.getAttribute("src") !== src) $("#ecran").innerHTML = `<img src="${src}" alt="">`;
+    $("#legende").innerHTML = `<b>${esc(img.etape)}</b> · ${esc(img.detail)} · ${heure(img.ts)}`;
+  }
+  const r = e.dernier;
+  $("#resultat").innerHTML = r ? (r.statut === "ok"
+    ? `Dernier rapport : <b>février 2023 · ${esc(r.totaux.commandes)} commandes · ${esc(r.totaux.ventes)}</b> · ${r.actions} actions en ${String(r.duree_s).replace(".", ",")} s${r.csv ? " · CSV exporté" : ""}`
+    : `Dernier passage en échec : ${esc(r.erreur)}`) : "";
+  setTimeout(rafraichir, e.en_cours ? 700 : 4000);
+}
+$("#lancer").onclick = async () => { $("#lancer").disabled = true; await fetch("/api/lancer", { method: "POST" }); setTimeout(rafraichir, 300); };
+rafraichir();
+</script>
+</body>
+</html>
