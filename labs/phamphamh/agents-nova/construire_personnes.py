@@ -58,6 +58,53 @@ EN_PLUS = {
 }
 
 
+CATEGORIES_EN = {"prix-produit": "Product price", "rapport-ventes": "Sales report", "commandes-annulees": "Cancelled orders"}
+ECRANS = [("reports", "Reports"), ("sales/order", "Orders"), ("sales/", "Sales"), ("catalog/product", "Catalog"),
+          ("catalog", "Catalog"), ("customer", "Customers"), ("review", "Reviews"), ("dashboard", "Dashboard"),
+          ("sales_rule", "Promotions"), ("catalog_rule", "Promotions"), ("cms", "Content")]
+
+
+def ecran(m):
+    """Écran du back-office d'après l'URL (sinon le titre de la fenêtre)."""
+    chemin = (m.get("url") or "").split("/admin/", 1)[-1]
+    for motif, nom in ECRANS:
+        if chemin.startswith(motif) or f"/{motif}" in chemin:
+            return nom
+    titre = [t.strip() for t in (m.get("fenetre") or "").split("/") if t.strip() and t.strip() != "Magento Admin"]
+    return titre[-1] if titre else "Other"
+
+
+def activite(pid, verite):
+    """L'activité réelle de la semaine (moments.json), chaque moment classé par la démo qui le contient (verite.json)."""
+    moments = json.load(open(os.path.join(RACINE, "donnees", "nova", pid, "moments.json")))["moments"]
+    demos = []
+    for v in verite:
+        cat = next((CATEGORIES_EN[a] for a, (_, _, motif) in AGENTS.items()
+                    if re.search(motif, v["intention"], re.I) and not v["intention"].startswith("Cancel order")),
+                   "Other back-office work")
+        demos.append((datetime.fromisoformat(v["debut"]), datetime.fromisoformat(v["fin"]), cat))
+    jours, rep, fois, ecrans = {}, {}, {}, {}
+    for _, _, cat in demos:
+        fois[cat] = fois.get(cat, 0) + 1
+    for m in moments:
+        t = datetime.fromisoformat(m["debut"])
+        cat = next((c for d, f, c in demos if d <= t < f), "Other back-office work")
+        jour = t.strftime("%a")
+        jours[jour] = jours.get(jour, 0) + m["minutes"]
+        rep[cat] = rep.get(cat, 0) + m["minutes"]
+        e = ecran(m)
+        ecrans[e] = ecrans.get(e, 0) + m["minutes"]
+    ordre = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+    return {
+        "minutes": round(sum(m["minutes"] for m in moments), 1), "captures": sum(m.get("captures", 0) for m in moments),
+        "moments": len(moments),
+        "jours": [{"jour": j, "minutes": round(jours[j], 1)} for j in ordre if j in jours],
+        "repartition": sorted([{"nom_en": c, "minutes": round(rep.get(c, 0), 1), "fois": fois.get(c, 0)}
+                               for c in set(rep) | set(fois)], key=lambda x: -x["minutes"]),
+        "ecrans_top": [{"ecran": e, "minutes": round(mn, 1)} for e, mn in sorted(ecrans.items(), key=lambda x: -x[1])[:4]],
+    }
+
+
 def main():
     demandes = json.load(open(os.path.join(ICI, "demandes.json")))["agents"]
     taches = {t["id"]: t for t in json.load(open(os.path.join(RACINE, "labs", "adamaass", "exemples", "nova-backoffice.json")))["taches"]}
@@ -78,7 +125,8 @@ def main():
                               "etapes": [e["texte"] for e in taches[tache]["etapes"]][:6], "etapes_en": EN[agent][1],
                               "demande": {"en": en, "fr": fr, "sienne": bool(choix)}})
         workflows.sort(key=lambda w: -w["fois"])
-        sortie.append({"id": pid, "prenom": prenom, "role": role, "role_en": role_en, "workflows": workflows})
+        sortie.append({"id": pid, "prenom": prenom, "role": role, "role_en": role_en, "workflows": workflows,
+                       "activite": activite(pid, verite)})
     json.dump(sortie, open(os.path.join(ICI, "personnes.json"), "w"), ensure_ascii=False, indent=1)
     return sortie
 

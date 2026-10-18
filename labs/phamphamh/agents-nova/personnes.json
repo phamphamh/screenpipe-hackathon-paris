@@ -89,7 +89,74 @@
      "sienne": true
     }
    }
-  ]
+  ],
+  "activite": {
+   "minutes": 74.9,
+   "captures": 1094,
+   "moments": 272,
+   "jours": [
+    {
+     "jour": "Mon",
+     "minutes": 5.0
+    },
+    {
+     "jour": "Tue",
+     "minutes": 23.1
+    },
+    {
+     "jour": "Wed",
+     "minutes": 14.7
+    },
+    {
+     "jour": "Thu",
+     "minutes": 13.4
+    },
+    {
+     "jour": "Fri",
+     "minutes": 18.6
+    }
+   ],
+   "repartition": [
+    {
+     "nom_en": "Other back-office work",
+     "minutes": 44.1,
+     "fois": 73
+    },
+    {
+     "nom_en": "Cancelled orders",
+     "minutes": 12.5,
+     "fois": 8
+    },
+    {
+     "nom_en": "Product price",
+     "minutes": 12.4,
+     "fois": 6
+    },
+    {
+     "nom_en": "Sales report",
+     "minutes": 5.8,
+     "fois": 9
+    }
+   ],
+   "ecrans_top": [
+    {
+     "ecran": "Catalog",
+     "minutes": 33.2
+    },
+    {
+     "ecran": "Orders",
+     "minutes": 15.3
+    },
+    {
+     "ecran": "Reports",
+     "minutes": 10.8
+    },
+    {
+     "ecran": "Dashboard",
+     "minutes": 6.4
+    }
+   ]
+  }
  },
  {
   "id": "karim",
@@ -181,7 +248,74 @@
      "sienne": true
     }
    }
-  ]
+  ],
+  "activite": {
+   "minutes": 43.1,
+   "captures": 1006,
+   "moments": 244,
+   "jours": [
+    {
+     "jour": "Mon",
+     "minutes": 0.9
+    },
+    {
+     "jour": "Tue",
+     "minutes": 7.3
+    },
+    {
+     "jour": "Wed",
+     "minutes": 9.5
+    },
+    {
+     "jour": "Thu",
+     "minutes": 13.8
+    },
+    {
+     "jour": "Fri",
+     "minutes": 11.5
+    }
+   ],
+   "repartition": [
+    {
+     "nom_en": "Other back-office work",
+     "minutes": 32.4,
+     "fois": 67
+    },
+    {
+     "nom_en": "Sales report",
+     "minutes": 6.5,
+     "fois": 17
+    },
+    {
+     "nom_en": "Product price",
+     "minutes": 3.9,
+     "fois": 5
+    },
+    {
+     "nom_en": "Cancelled orders",
+     "minutes": 0.3,
+     "fois": 1
+    }
+   ],
+   "ecrans_top": [
+    {
+     "ecran": "Catalog",
+     "minutes": 13.7
+    },
+    {
+     "ecran": "Reports",
+     "minutes": 11.9
+    },
+    {
+     "ecran": "Reviews",
+     "minutes": 5.8
+    },
+    {
+     "ecran": "Orders",
+     "minutes": 5.0
+    }
+   ]
+  }
  },
  {
   "id": "sophie",
@@ -245,7 +379,65 @@
      "sienne": true
     }
    }
-  ]
+  ],
+  "activite": {
+   "minutes": 39.2,
+   "captures": 667,
+   "moments": 221,
+   "jours": [
+    {
+     "jour": "Tue",
+     "minutes": 9.0
+    },
+    {
+     "jour": "Wed",
+     "minutes": 7.2
+    },
+    {
+     "jour": "Thu",
+     "minutes": 12.3
+    },
+    {
+     "jour": "Fri",
+     "minutes": 10.8
+    }
+   ],
+   "repartition": [
+    {
+     "nom_en": "Other back-office work",
+     "minutes": 27.3,
+     "fois": 71
+    },
+    {
+     "nom_en": "Cancelled orders",
+     "minutes": 8.3,
+     "fois": 8
+    },
+    {
+     "nom_en": "Sales report",
+     "minutes": 3.7,
+     "fois": 7
+    }
+   ],
+   "ecrans_top": [
+    {
+     "ecran": "Orders",
+     "minutes": 15.4
+    },
+    {
+     "ecran": "Reports",
+     "minutes": 9.0
+    },
+    {
+     "ecran": "Reviews",
+     "minutes": 7.0
+    },
+    {
+     "ecran": "Catalog",
+     "minutes": 2.5
+    }
+   ]
+  }
  },
  {
   "id": "nadia",
@@ -337,7 +529,70 @@
      "sienne": true
     }
    }
-  ]
+  ],
+  "activite": {
+   "minutes": 68.7,
+   "captures": 1142,
+   "moments": 277,
+   "jours": [
+    {
+     "jour": "Tue",
+     "minutes": 11.4
+    },
+    {
+     "jour": "Wed",
+     "minutes": 20.9
+    },
+    {
+     "jour": "Thu",
+     "minutes": 14.7
+    },
+    {
+     "jour": "Fri",
+     "minutes": 21.7
+    }
+   ],
+   "repartition": [
+    {
+     "nom_en": "Other back-office work",
+     "minutes": 55.4,
+     "fois": 63
+    },
+    {
+     "nom_en": "Product price",
+     "minutes": 8.8,
+     "fois": 12
+    },
+    {
+     "nom_en": "Sales report",
+     "minutes": 4.3,
+     "fois": 8
+    },
+    {
+     "nom_en": "Cancelled orders",
+     "minutes": 0.3,
+     "fois": 1
+    }
+   ],
+   "ecrans_top": [
+    {
+     "ecran": "Catalog",
+     "minutes": 37.3
+    },
+    {
+     "ecran": "Orders",
+     "minutes": 12.9
+    },
+    {
+     "ecran": "Reports",
+     "minutes": 3.9
+    },
+    {
+     "ecran": "Promotions",
+     "minutes": 3.3
+    }
+   ]
+  }
  },
  {
   "id": "julien",
@@ -429,7 +684,70 @@
      "sienne": true
     }
    }
-  ]
+  ],
+  "activite": {
+   "minutes": 33.9,
+   "captures": 736,
+   "moments": 222,
+   "jours": [
+    {
+     "jour": "Tue",
+     "minutes": 7.6
+    },
+    {
+     "jour": "Wed",
+     "minutes": 9.7
+    },
+    {
+     "jour": "Thu",
+     "minutes": 7.2
+    },
+    {
+     "jour": "Fri",
+     "minutes": 9.3
+    }
+   ],
+   "repartition": [
+    {
+     "nom_en": "Other back-office work",
+     "minutes": 23.8,
+     "fois": 61
+    },
+    {
+     "nom_en": "Product price",
+     "minutes": 5.9,
+     "fois": 6
+    },
+    {
+     "nom_en": "Sales report",
+     "minutes": 3.0,
+     "fois": 7
+    },
+    {
+     "nom_en": "Cancelled orders",
+     "minutes": 1.1,
+     "fois": 3
+    }
+   ],
+   "ecrans_top": [
+    {
+     "ecran": "Reports",
+     "minutes": 8.9
+    },
+    {
+     "ecran": "Orders",
+     "minutes": 7.5
+    },
+    {
+     "ecran": "Catalog",
+     "minutes": 7.4
+    },
+    {
+     "ecran": "Reviews",
+     "minutes": 6.2
+    }
+   ]
+  }
  },
  {
   "id": "emma",
@@ -521,6 +839,69 @@
      "sienne": true
     }
    }
-  ]
+  ],
+  "activite": {
+   "minutes": 62.9,
+   "captures": 906,
+   "moments": 211,
+   "jours": [
+    {
+     "jour": "Tue",
+     "minutes": 10.1
+    },
+    {
+     "jour": "Wed",
+     "minutes": 20.1
+    },
+    {
+     "jour": "Thu",
+     "minutes": 11.1
+    },
+    {
+     "jour": "Fri",
+     "minutes": 21.5
+    }
+   ],
+   "repartition": [
+    {
+     "nom_en": "Other back-office work",
+     "minutes": 55.8,
+     "fois": 56
+    },
+    {
+     "nom_en": "Sales report",
+     "minutes": 4.9,
+     "fois": 9
+    },
+    {
+     "nom_en": "Product price",
+     "minutes": 1.8,
+     "fois": 4
+    },
+    {
+     "nom_en": "Cancelled orders",
+     "minutes": 0.4,
+     "fois": 1
+    }
+   ],
+   "ecrans_top": [
+    {
+     "ecran": "Catalog",
+     "minutes": 33.5
+    },
+    {
+     "ecran": "Orders",
+     "minutes": 17.6
+    },
+    {
+     "ecran": "Reports",
+     "minutes": 4.4
+    },
+    {
+     "ecran": "Content",
+     "minutes": 2.9
+    }
+   ]
+  }
  }
 ]
