@@ -24,36 +24,36 @@ html, body { margin: 0; height: 100%; }
 body { background: var(--bg); color: var(--text); font-family: var(--body); display: grid; grid-template-rows: auto 1fr; overflow: hidden; }
 .mono { font-family: var(--mono); font-size: 11px; letter-spacing: .07em; text-transform: uppercase; color: var(--faint); }
 header { display: flex; align-items: center; gap: 24px; padding: 20px 28px 14px; border-bottom: 1px solid var(--line); }
-header h1 { font-family: var(--display); font-weight: 600; font-size: 24px; letter-spacing: -.01em; margin: 0; }
+header h1 { font-family: var(--display); font-weight: 600; font-size: 30px; letter-spacing: -.01em; margin: 0; }
 header .src { margin-left: auto; text-align: right; }
 .chrono { font-family: var(--display); font-weight: 700; font-size: 40px; font-variant-numeric: tabular-nums; color: var(--cuivre); min-width: 3.2ch; text-align: right; }
 main { min-height: 0; padding: 18px 28px 22px; }
 
 /* choix du salarié */
 #choix h2 { font-family: var(--display); font-weight: 600; font-size: clamp(26px, 3.4vw, 46px); letter-spacing: -.02em; margin: 6vh 0 4vh; }
-.salaries { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; max-width: 1100px; }
-.salaries button { all: unset; cursor: pointer; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; display: grid; gap: 6px; transition: border-color .2s, transform .2s; }
+.salaries { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; max-width: 1400px; }
+.salaries button { all: unset; cursor: pointer; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 26px 28px; display: grid; gap: 6px; transition: border-color .2s, transform .2s; }
 .salaries button:hover, .salaries button:focus-visible { border-color: var(--cuivre); transform: translateY(-2px); }
-.salaries b { font-family: var(--display); font-size: 24px; font-weight: 600; }
-.salaries span { color: var(--muted); font-size: 14px; }
+.salaries b { font-family: var(--display); font-size: 34px; font-weight: 600; }
+.salaries span { color: var(--muted); font-size: 17px; }
 
 /* la lecture */
 #lecture { display: none; height: 100%; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 18px; }
 .panneau { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
 .tete { display: flex; justify-content: space-between; align-items: baseline; padding: 14px 18px 10px; border-bottom: 1px solid var(--line); }
-.tete b { font-family: var(--display); font-weight: 600; font-size: 17px; }
-#brut { flex: 1; overflow: hidden; padding: 8px 18px; font-family: var(--mono); font-size: 12px; line-height: 1.55; color: var(--muted); }
+.tete b { font-family: var(--display); font-weight: 600; font-size: 20px; }
+#brut { flex: 1; overflow: hidden; padding: 8px 18px; font-family: var(--mono); font-size: 14px; line-height: 1.6; color: var(--muted); }
 #brut div { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 #brut .h { color: var(--faint); } #brut .f { color: var(--text); }
 .droite { display: grid; grid-template-rows: minmax(0, 1fr) 150px; gap: 18px; min-height: 0; }
 #taches { flex: 1; overflow: auto; padding: 12px 18px; display: grid; gap: 10px; align-content: start; }
 .tache { border: 1px solid var(--line); border-left: 3px solid var(--cuivre); border-radius: 10px; padding: 12px 14px; background: var(--surface-2); animation: entre .4s ease-out; }
-.tache h3 { margin: 0; font-family: var(--display); font-weight: 600; font-size: 19px; line-height: 1.25; }
-.tache .bas { margin-top: 6px; display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 13px; color: var(--muted); }
+.tache h3 { margin: 0; font-family: var(--display); font-weight: 600; font-size: 23px; line-height: 1.25; }
+.tache .bas { margin-top: 6px; display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 15px; color: var(--muted); }
 .tache .ok { color: var(--vert); font-weight: 600; }
 .vide { color: var(--faint); font-size: 15px; padding: 8px 0; }
 #flux { flex: 1; overflow: hidden; padding: 10px 18px; font-family: var(--mono); font-size: 11px; line-height: 1.5; color: var(--faint); white-space: pre-wrap; word-break: break-all; display: flex; flex-direction: column-reverse; }
-#bilan { font-family: var(--display); font-weight: 600; font-size: 18px; color: var(--text); }
+#bilan { font-family: var(--display); font-weight: 600; font-size: 21px; color: var(--text); }
 #bilan em { font-style: normal; color: var(--vert); }
 .erreur { color: var(--rouge); }
 .btn { all: unset; cursor: pointer; font-size: 14px; font-weight: 600; padding: 8px 14px; border-radius: 9px; border: 1px solid var(--line); background: var(--surface-2); }

@@ -6,7 +6,7 @@ Base : l'enregistrement du 18/10 (11h24), recalé sur les vrais chiffres du dash
 
 **Le style** (inspiré de Tugan Bara) : une promesse dans les 10 premières secondes, tenue à la fin ; des phrases courtes ; un ennemi clair (l'agent que personne n'utilise) ; des chiffres précis ; on parle au jury (« vous »).
 
-**Le dispositif** : une personne parle, une autre clique. `labs/phamphamh/pitch/intro.html` (4 écrans, la flèche → fait apparaître les lignes une par une), puis le dashboard Atelier Nova (bouton **☀︎ Clair**, mode Présenter).
+**Le dispositif** : une personne parle, une autre clique. Trois onglets, dans l'ordre : `labs/phamphamh/pitch/intro.html` (4 écrans, la flèche → fait apparaître les lignes une par une) ; le dashboard Atelier Nova (bouton **☀︎ Clair**, mode Présenter) ; la page « en direct » (`python3 labs/phamphamh/pitch/en-direct/serveur.py`, puis http://localhost:8797). La page « en direct » a besoin du Mac de phamphamh (les enregistrements bruts y sont) et d'internet.
 
 **Environ 320 mots** : environ 2 min 10 à voix haute, ce qui laisse 50 s pour les deux moments en direct.
 
@@ -39,10 +39,12 @@ Les passages marqués **[À CONSTRUIRE]** n'existent pas encore : on ne les dit 
 
 > « Voici Atelier Nova. Une boutique en ligne, 60 salariés. Ce sont des gens réels : Stanford les a enregistrés au travail, c'est le jeu de données WONDERBREAD. On en a pris six, et on a multiplié par dix. »
 
-## 1:00 – 1:20 · La preuve qu'on n'a rien écrit en dur — **[À CONSTRUIRE]**
-**À l'écran** : un bouton « Retirer un salarié » ; le dashboard se recalcule en quelques secondes.
+## 1:00 – 1:30 · La preuve qu'on n'a rien écrit en dur (la page « en direct »)
+**À l'écran** : `http://localhost:8797` (voir plus bas pour l'ouvrir). Le juré choisit un salarié, on clique sur son nom : son enregistrement brut défile à gauche, l'IA écrit à droite, et les tâches apparaissent une par une. Environ 30 s, pendant qu'on parle.
 
-> « Vous vous demandez si on a tapé ces chiffres à la main. Choisissez un salarié. N'importe lequel. *(le juré choisit)* On le retire, on relance. Tout se recalcule à partir des enregistrements bruts. »
+> « Vous vous demandez si on a tapé ces chiffres à la main. Alors choisissez un salarié. N'importe lequel. *(clic)* À gauche, son enregistrement brut, tel quel. À droite, l'IA le lit, maintenant. *(les tâches arrivent)* Elle retrouve toute seule les tâches du rapport : le rapport de ventes, les commandes annulées. Rien n'était préparé. »
+
+*Si la lecture échoue (réseau), la page propose « Rejouer la dernière lecture », avec son heure : on le dit honnêtement (« voici celle de 12 h 40 »).*
 
 ## 1:20 – 1:45 · Ce qu'on a trouvé
 **À l'écran** : écrans 2, 3 et 4, un chiffre chacun.
@@ -88,6 +90,7 @@ Les passages marqués **[À CONSTRUIRE]** n'existent pas encore : on ne les dit 
 - **« Quel lien avec screenpipe ? »** On utilise sa capture, son format de workflow, et on ajoute ce qui leur manque : la campagne avec relecture par le salarié, la fusion de plusieurs personnes, et le rapport pour le dirigeant.
 
 ## Avant de monter sur scène
+- [ ] Page « en direct » ouverte, et une lecture faite le matin même sur chaque salarié (pour avoir une lecture de secours).
 - [ ] `intro.html` ouvert en plein écran sur l'écran A ; le dashboard ouvert dans un 2e onglet.
 - [ ] Dashboard : bouton **☀︎ Clair** cliqué (il s'ouvre en sombre), **mode Présenter**, écran 1 affiché.
 - [ ] Répéter les 2 clics : Rapport ventes (écran 4) ; Prix produit puis Créer la skill (écran 5). Vérifiés le 18/10 : ils marchent.
