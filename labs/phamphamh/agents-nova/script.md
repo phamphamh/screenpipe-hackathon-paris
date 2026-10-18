@@ -22,7 +22,7 @@ On the left, what people do today. A consulting firm on site for weeks. A 50-pag
 That's DeloAI. An AI-native consulting firm.
 
 ### 0:53 – 1:07 · Slide 6 · Atelier Nova
-Our test client: Atelier Nova, an online sportswear store, 60 employees. The experiment: we replayed a real week of back-office work, as if they had run screenpipe on every desk. Real people, recorded by Stanford.
+Our test client: Atelier Nova, an online sportswear store, 60 employees, everything in Magento. The data is real: Stanford recorded people doing real back-office work. We replayed six of them as one week of screenpipe on every desk.
 
 ### 1:07 – 1:10 · Slide 7 · Live demo
 Let's look inside. *(switch to tab 2)*
