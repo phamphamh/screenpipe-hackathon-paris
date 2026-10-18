@@ -67,8 +67,37 @@ button { font: inherit; color: inherit; }
 .chiffre { font-weight: 300; letter-spacing: -.045em; line-height: .95; }
 
 /* ---------- L'audit ---------- */
-.audit { padding: 22px 26px 22px; display: grid; grid-template-rows: minmax(0, 1fr); gap: 14px; }
-.audit.ecran.on { display: grid; }
+.audit { padding: 22px 26px 40px; overflow-y: auto; }
+.audit.ecran.on { display: block; }
+.audit .au-tuiles { height: calc(100vh - var(--haut) - 44px); min-height: 420px; }
+.suite { display: grid; gap: 22px; margin-top: 48px; }
+.suite h2 { margin: 0; font-size: 34px; font-weight: 300; letter-spacing: -.025em; }
+.suite h2 b { font-weight: 600; }
+.trio { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--trait); border: 1px solid var(--trait); }
+.trio > div { background: var(--fond); padding: 22px 24px; display: grid; gap: 12px; align-content: start; min-width: 0; }
+.trio .gros { font-size: 64px; font-weight: 300; letter-spacing: -.04em; line-height: 1; }
+.trio .phrase-s { margin: 0; font-size: 17px; color: var(--doux); line-height: 1.35; }
+.trio .barre-l { grid-template-columns: minmax(90px, 36%) minmax(0, 1fr) auto; font-size: 14px; }
+.trio .barre-l .v { white-space: nowrap; }
+.puces { display: flex; gap: 8px; flex-wrap: wrap; }
+.puce { font-family: var(--f-mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; border: 1px solid var(--trait-fort); background: var(--fond); padding: 8px 14px; cursor: pointer; }
+.puce:hover { border-color: var(--texte); }
+.puce.on { background: var(--texte); color: var(--fond); border-color: var(--texte); }
+.cas-nom { font-size: 52px; font-weight: 300; letter-spacing: -.035em; line-height: 1; }
+.cas-nom b { font-weight: 600; }
+.minis3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.minis3 b { display: block; font-size: 34px; font-weight: 300; letter-spacing: -.03em; line-height: 1.05; }
+.minis3 span { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--doux); }
+.fil-chrono { list-style: none; margin: 0; padding: 0; border-left: 1px solid var(--trait-fort); }
+.fil-chrono li { position: relative; padding: 0 0 14px 18px; }
+.fil-chrono li::before { content: ""; position: absolute; left: -4px; top: 6px; width: 7px; height: 7px; background: var(--fond); border: 1px solid var(--texte); border-radius: 50%; }
+.fil-chrono li.rep::before { background: var(--perte); border-color: var(--perte); }
+.fil-chrono .h { font-family: var(--f-mono); font-size: 12px; color: var(--doux); }
+.fil-chrono .a { display: block; font-size: 14.5px; }
+.fil-chrono .w { display: block; font-family: var(--f-mono); font-size: 11px; color: var(--faible); }
+.wf-cas { border-top: 1px solid var(--trait); padding-top: 12px; display: grid; gap: 6px; }
+.wf-cas .n { font-size: 20px; font-weight: 500; }
+.wf-cas .f { font-family: var(--f-mono); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--doux); }
 .au-tuiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: 1fr; gap: 1px; background: var(--trait); border: 1px solid var(--trait); min-height: 0; }
 .tu { background: var(--fond); padding: 36px 34px; display: flex; flex-direction: column; justify-content: center; gap: 28px; min-width: 0; }
 .tu .phrase { margin: 0; font-size: 26px; font-weight: 300; letter-spacing: -.015em; line-height: 1.25; color: var(--doux); max-width: 16ch; }
@@ -197,6 +226,28 @@ button { font: inherit; color: inherit; }
 .quoi dd { margin: 0; }
 .pont { justify-self: start; font-family: var(--f-mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--ia); text-decoration: none; border: 1px solid var(--ia); padding: 8px 12px; }
 .pont:hover { background: var(--ia); color: #fff; }
+.lien-graphe { background: none; border: 0; padding: 0; text-align: left; cursor: pointer; font: inherit; font-size: 21px; font-weight: 500; letter-spacing: -.01em; color: var(--texte); }
+.lien-graphe span { font-family: var(--f-mono); font-size: 13px; color: var(--ia); }
+.lien-graphe:hover { color: var(--ia); }
+.graphe-voile { position: fixed; inset: 0; background: rgba(10,12,15,.28); z-index: 20; display: grid; place-items: center; }
+.graphe { width: 85vw; height: 82vh; background: var(--fond); border: 1px solid var(--trait-fort); box-shadow: 0 30px 80px -30px rgba(10,12,15,.5); display: grid; grid-template-rows: auto minmax(0, 1fr) auto; border-radius: 10px; overflow: hidden; }
+.g-tete { display: flex; align-items: center; gap: 16px; padding: 16px 22px; border-bottom: 1px solid var(--trait); }
+.g-tete .t { font-size: 22px; font-weight: 500; letter-spacing: -.01em; }
+.g-tete .btn { margin-left: auto; }
+.g-toile { position: relative; overflow: auto; background-color: #fafbfc; background-image: radial-gradient(#cfd5dc 1px, transparent 1px); background-size: 18px 18px; }
+.g-toile svg { position: absolute; left: 0; top: 0; pointer-events: none; }
+.noeud { position: absolute; width: 150px; min-height: 92px; background: #fff; border: 1px solid #c9cfd6; border-radius: 10px; box-shadow: 0 2px 6px rgba(10,12,15,.06); padding: 10px 12px; cursor: pointer; display: grid; gap: 4px; align-content: start; font: inherit; text-align: left; }
+.noeud:hover { border-color: var(--texte); }
+.noeud.on { border-color: var(--ia); box-shadow: 0 0 0 2px rgba(10,132,184,.25); }
+.noeud .ic { width: 26px; height: 26px; border-radius: 6px; display: grid; place-items: center; background: var(--plan-2); }
+.noeud .ic svg { position: static; width: 15px; height: 15px; stroke: var(--texte); fill: none; stroke-width: 1.6; }
+.noeud.agent .ic { background: var(--ia); } .noeud.agent .ic svg { stroke: #fff; }
+.noeud.trigger .ic { background: var(--perte); } .noeud.trigger .ic svg { stroke: #fff; }
+.noeud .tt { font-size: 13px; font-weight: 500; line-height: 1.25; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.noeud .st { font-family: var(--f-mono); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--faible); }
+.g-detail { border-top: 1px solid var(--trait); padding: 14px 22px 18px; min-height: 96px; display: grid; gap: 6px; }
+.g-detail .d1 { font-size: 19px; font-weight: 500; }
+.g-detail .d2 { color: var(--doux); font-size: 15px; }
 .pn-wf .fois { font-family: var(--f-mono); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--doux); }
 .btn { justify-self: start; font-family: var(--f-mono); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; background: var(--fond); border: 1px solid var(--texte); color: var(--texte); padding: 8px 14px; cursor: pointer; }
 .btn:hover:not(:disabled) { background: var(--texte); color: var(--fond); }
@@ -231,11 +282,14 @@ button { font: inherit; color: inherit; }
 @keyframes clignote { 50% { opacity: .25; } }
 @keyframes neuf { from { background: rgba(10,132,184,.1); } to { background: transparent; } }
 @media (prefers-reduced-motion: reduce) { .direct i, .etat i, .journal li.neuf { animation: none; } }
+.logo-d { width: 26px; height: 24px; flex: none; }
+.logo .mot-logo { font-weight: 700; letter-spacing: -.03em; color: #11172b; }
+.logo .mot-logo b { color: #2f4bff; font-weight: 700; }
 </style>
 </head>
 <body>
 <aside class="side">
-  <div class="logo"><i></i>DeloAI</div>
+  <div class="logo"><svg class="logo-d" viewBox="0 0 52 48" aria-hidden="true"><rect x="2" y="4" width="11" height="40" rx="3" fill="#2f4bff"/><path d="M19 4h7a20 20 0 0 1 0 40h-7V33h7a9 9 0 0 0 0-18h-7z" fill="#11172b"/></svg><span class="mot-logo">Delo<b>AI</b></span></div>
   <div class="espace" title="Client workspace"><span class="pastille">AN</span><div><b>Atelier Nova</b><small>Online store · 60 seats</small></div><span class="chev">⌄</span></div>
   <nav aria-label="Pages">
     <div class="mono grp">Workspace</div>
@@ -255,6 +309,7 @@ button { font: inherit; color: inherit; }
       <div class="tu tuile" data-detail="rapport" tabindex="0" role="button"><div class="chiffre perte">790×</div><p class="phrase">the same sales report, pulled every week. Karim alone: 17×.</p></div>
       <div class="tu tuile" data-detail="gain" tabindex="0" role="button"><div class="chiffre ia">€30.1k</div><p class="phrase">recovered every year by automating 5 workflows.</p></div>
     </div>
+    <div class="suite" id="suite"></div>
   </section>
 
   <section class="ecran bureau" id="e-bureau">
@@ -311,13 +366,17 @@ addEventListener("keydown", e => {
   if (e.target.closest && e.target.closest("button") && (e.key === " " || e.key === "Enter")) return;
   if (["ArrowRight", " ", "PageDown"].includes(e.key)) { e.preventDefault(); aller(courant + 1); }
   else if (["ArrowLeft", "PageUp"].includes(e.key)) { e.preventDefault(); aller(courant - 1); }
-  else if (e.key === "Escape") { if (detailOuvert) fermerDetail(); else fermerPanneau(); }
+  else if (e.key === "Escape") { if ($("#graphe")) fermerGraphe(); else if (detailOuvert) fermerDetail(); else fermerPanneau(); }
   else if (e.key === "f" || e.key === "F") { if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen?.(); }
 });
 function depuisHash() {
   const h = decodeURIComponent(location.hash.slice(1));
   const m = h.match(/^bureau-(.+)$/);
-  if (m) { aller(1, true); ouvrirPersonne(sansAccent(m[1])); return; }
+  if (m) { const [pid, ag] = m[1].split("~"); aller(1, true); ouvrirPersonne(sansAccent(pid)); if (ag) { P.focus = ag; rendrePanneau(); } return; }
+  const cs = h.match(/^cas-(.+)$/);
+  if (cs) { aller(0, true); CAS = cs[1]; setTimeout(() => { rendreSuite(); $("#suite .cas-nom")?.scrollIntoView({ block: "start" }); }, 1200); return; }
+  const gr = h.match(/^graphe-([a-z]+)-(.+)$/);
+  if (gr) { aller(1, true); ouvrirPersonne(gr[1]); setTimeout(() => window.ouvrirGraphe(gr[1], gr[2]), 1500); return; }
   const g = h.match(/^agent-(.+)$/);
   if (g) { aller(1, true); AG = g[1]; rendrePanneau(); history.replaceState(null, "", "#agent-" + g[1]); return; }
   const a = h.match(/^audit-(.+)$/);
@@ -409,9 +468,42 @@ function contenuDetail(id) {
   return "";
 }
 let detailOuvert = null, tuileSource = null, detailId = null;
+let CAS = "sophie", EXTRAIT = null;
+fetch("donnees.json").then(r => r.json()).then(d => { EXTRAIT = d.extrait || null; rendreSuite(); }).catch(() => {});
+const actionEn = a => String(a).split(" · ").filter(x => !/^clic « (input|Day) »$/.test(x)).join(" · ").replace(/ dans « input »/g, "").replace(/clic « ([^»]+) »/g, "click “$1”").replace(/saisie « ([^»]+) »/g, "type “$1”").replace(/défilement/g, "scroll");
+function rendreSuite() {
+  const el = $("#suite"); if (!el || !D) return;
+  const T = D.dash;
+  const eq = Object.keys(T.minutes_ecran);
+  const tot = T.ecrans.map((e, i) => eq.reduce((a, k) => a + T.minutes_ecran[k][i], 0)), somme = tot.reduce((a, b) => a + b, 0), iC = T.ecrans.indexOf("Catalogue");
+  const taches = T.taches.filter(t => t.cout_an > 0).slice().sort((a, b) => b.cout_an - a.cout_an);
+  const coul = ["var(--texte)", "var(--faible)"], eqH = Object.keys(T.heures_par_jour);
+  let h = `<div class="mono">More from the audit</div><div class="trio">
+  <div><div class="gros">${nf(T.heures_semaine)} h</div><p class="phrase-s">lost every week across the team. Hours observed per day, by team:</p>${courbe(eqH.map((e, i) => ({ v: T.heures_par_jour[e], c: coul[i] })), T.jours.map(j => j.replace(/^\w+/, m => EN_JOUR[m] || m)))}<span class="legende">${eqH.map((e, i) => `<span><i style="background:${coul[i]}"></i>${esc(EN_EQUIPE[e] || e)}</span>`).join("")}</span></div>
+  <div><div class="gros">${Math.round(tot[iC] / somme * 100)} %</div><p class="phrase-s">of all screen time is spent in one screen: the Catalog.</p>${barres(T.ecrans.map((e, i) => ({ k: esc(EN_ECRAN[e] || e), v: tot[i], c: e === "Catalogue" ? "fort" : "" })).sort((a, b) => b.v - a.v).slice(0, 6), x => Math.round(x.v / somme * 100) + " %")}</div>
+  <div><div class="gros perte">${eurk(taches[0].cout_an)}</div><p class="phrase-s">a year for the sales report alone. The six most expensive tasks:</p>${barres(taches.slice(0, 6).map((t, i) => ({ k: esc(EN_TACHE[t.court] || t.court), v: t.cout_an, c: i === 0 ? "perte" : "fort" })), x => eurk(x.v))}</div></div>`;
+  const p = PERS[CAS], act = p.activite || {};
+  const src = (typeof DONNEES_PERS !== "undefined" ? DONNEES_PERS : {})[CAS] || {};
+  const elle = ["sophie", "lea", "nadia", "emma"].includes(CAS) ? "she" : "he";
+  h += `<div class="mono" style="margin-top:26px">One employee, step by step</div>
+  <div class="puces">${SALARIES.map(s => `<button class="puce ${s.id === CAS ? "on" : ""}" data-cas="${s.id}">${esc(s.prenom)}</button>`).join("")}</div>
+  <div class="cas-nom"><b>${esc(p.prenom)}</b> — ${esc(p.role)}</div>
+  <div class="trio">
+  <div><div class="mono">What we captured</div><div class="minis3"><div><b>${nf(act.minutes ?? src.minutes)}</b><span>minutes</span></div><div><b>${nf(act.captures ?? src.captures)}</b><span>captures</span></div><div><b>${nf(act.moments ?? src.moments)}</b><span>moments</span></div></div>
+    ${act.jours ? `<div class="mono">Minutes per day</div>${barres(act.jours.map(j => ({ k: esc(j.jour), v: j.minutes, c: "fort" })), x => x.v.toFixed(1) + " min")}` : ""}</div>
+  <div><div class="mono">What ${elle} does</div>${act.repartition ? barres(act.repartition.map((r, i) => ({ k: esc(r.nom_en || r.nom), v: r.minutes, c: i === 0 ? "" : "perte" })), x => x.v.toFixed(1) + " min") : ""}
+    ${act.ecrans_top ? `<div class="mono">Top screens</div>${barres(act.ecrans_top.map(e => ({ k: esc(e.ecran), v: e.minutes, c: "fort" })), x => x.v.toFixed(1) + " min")}` : ""}</div>
+  <div><div class="mono">What we'll automate</div>${wfsTries(p).map(w => `<div class="wf-cas"><span class="n">${esc(w.nom)}</span><span class="f">${w.fois != null ? nf(w.fois) + "× / week" : ""}${w.minutes != null ? " · " + nf(w.minutes) + " min" : ""}</span><a class="pont" href="#bureau-${esc(CAS)}~${esc(w.agent)}">Open in the office →</a></div>`).join("") || `<p class="phrase-s">Nothing repeated enough yet.</p>`}</div></div>`;
+  if (CAS === "sophie" && EXTRAIT) {
+    h += `<div class="mono">A real morning, as screenpipe saw it</div><ol class="fil-chrono">${EXTRAIT.map(l => `<li class="${/Show Report/.test(l.action) ? "rep" : ""}"><span class="h">${esc(l.heure)}</span><span class="a">${esc(actionEn(l.action))}</span><span class="w">${esc(l.fenetre)}</span></li>`).join("")}</ol>`;
+  }
+  el.innerHTML = h;
+}
+document.addEventListener("click", e => { const b = e.target.closest && e.target.closest(".puce"); if (b) { CAS = b.dataset.cas; rendreSuite(); } });
 function ouvrirDetail(id, anime = true) {
   const sec = $("#e-audit"), tuile = sec.querySelector(`.tuile[data-detail="${id}"]`); if (!tuile) return;
   fermerDetail(true);
+  sec.scrollTop = 0;
   const r0 = sec.getBoundingClientRect(), r = tuile.getBoundingClientRect();
   const voile = document.createElement("div"); voile.className = "voile"; voile.addEventListener("click", () => fermerDetail());
   const d = document.createElement("div"); d.className = "detail"; d.setAttribute("role", "dialog");
@@ -459,7 +551,7 @@ async function chargerPersonnes() {
       const r = await fetch(url, { cache: "no-store" }); if (!r.ok) continue;
       const liste = await r.json(); if (!Array.isArray(liste)) continue;
       liste.forEach(p => { const id = sansAccent(p.id || p.prenom); if (!PERS[id]) return; PERS[id] = { ...PERS[id], ...p, id, role: p.role_en || PERS[id].role, workflows: Array.isArray(p.workflows) ? p.workflows.map(w => ({ ...w, nom: w.nom_en || w.name || w.nom })) : PERS[id].workflows }; });
-      rendrePanneau();
+      rendrePanneau(); rendreSuite();
       if (detailOuvert && detailId) { const dc = detailOuvert.querySelector(".dc"); if (dc) dc.innerHTML = contenuDetail(detailId); }
       return;
     } catch (_) {}
@@ -594,7 +686,7 @@ function rendrePanneau() {
   if (!P.wf) {
     const liste = wfsTries(p);
     h += liste.length ? liste.map((w, i) => { const c = audit(w.agent), q = QUOI[w.agent];
-      return `<div class="pn-wf ${i === 0 ? "top" : ""}"><span class="reco">${i === 0 ? "★ " : ""}Recommended by the audit</span><div class="nom">${esc(w.nom)}</div>
+      return `<div class="pn-wf ${i === 0 ? "top" : ""}"><span class="reco">${i === 0 ? "★ " : ""}Recommended by the audit</span><button class="nom lien-graphe" data-act="graphe" data-i="${i}" title="See the workflow">${esc(w.nom)} <span>↗</span></button>
       <div class="pourquoi"><b>Found in the audit:</b> ${esc(p.prenom)} ran this ${esc(w.nom.toLowerCase())} ${w.fois != null ? `${nf(w.fois)}× this week` : "this week"}${w.minutes != null ? ` (${nf(w.minutes)} min)` : ""}.${c ? ` Company-wide: <b>${nf(c.frequence)}× / week, ${eurk(c.cout_an)} / year</b>.` : ""}</div>
       ${q ? `<dl class="quoi"><dt>Trigger</dt><dd>${esc(q[0].replace("{p}", p.prenom))}</dd><dt>Does</dt><dd>${esc(q[1])}</dd><dt>Output</dt><dd>${esc(q[2])}</dd></dl>` : ""}
       <button class="btn ${i === 0 ? "ia" : ""}" data-act="creer" data-i="${i}">Deploy workflow</button></div>`; }).join("")
@@ -633,6 +725,7 @@ $("#panneau").addEventListener("click", async e => {
     await attendre(300); if (P.wf !== w) return;
     P.phase = "pret"; rendrePanneau();
   }
+  if (b.dataset.act === "graphe") { const w = wfsTries(PERS[P.id])[Number(b.dataset.i)]; if (w) ouvrirGraphe(PERS[P.id], w); return; }
   if (b.dataset.act === "lancer") {
     const w = P.wf; Object.assign(P, { phase: "lance", depuis: Date.now(), run: null }); rendrePanneau();
     if (mode === "serveur") {
@@ -649,7 +742,48 @@ const QUOI = {
   "commandes-annulees": ["When {p} has to check canceled orders", "opens Sales › Orders, filters on canceled, reads the orders", "the answer, with the order numbers"],
   "prix-produit": ["When {p} has to change a product price", "opens the product in the Catalog, changes the price, saves and checks", "the new price, live in the store"],
 };
-const wfsTries = p => (p.workflows || []).slice().sort((a, b) => ((audit(b.agent)?.cout_an || 0) - (audit(a.agent)?.cout_an || 0)) || ((b.fois || 0) - (a.fois || 0)));
+const wfsTries = p => { const l = wfsTries0(p); const i = P.focus ? l.findIndex(w => w.agent === P.focus) : -1; if (i > 0) l.unshift(l.splice(i, 1)[0]); return l; };
+const wfsTries0 = p => (p.workflows || []).slice().sort((a, b) => ((audit(b.agent)?.cout_an || 0) - (audit(a.agent)?.cout_an || 0)) || ((b.fois || 0) - (a.fois || 0)));
+// vue du workflow façon n8n (lecture seule)
+const ICONES = { trigger: '<path d="M9 1 3 9h4l-1 6 6-8H8z"/>', etape: '<rect x="2" y="3" width="12" height="10" rx="1.5"/><path d="M2 6h12"/>', agent: '<path d="M8 1v4M8 11v4M1 8h4M11 8h4M3.5 3.5l2.5 2.5M10 10l2.5 2.5M3.5 12.5 6 10M10 6l2.5-2.5"/>', sortie: '<path d="M4 2h6l3 3v9H4z"/><path d="M6 8h5M6 11h5"/>' };
+let grapheNoeuds = [];
+function ouvrirGraphe(p, w) {
+  fermerGraphe();
+  const q = QUOI[w.agent] || ["When " + p.prenom + " needs it", "does the task", "the result"];
+  const etapes = etapesDe(w).slice(0, 7);
+  const preuve = w.fois != null ? `Observed ${nf(w.fois)}× this week on ${p.prenom}'s screen${w.minutes != null ? ` · ${nf(w.minutes)} min` : ""}` : "Observed this week";
+  grapheNoeuds = [
+    { type: "trigger", t: q[0].replace("{p}", p.prenom), st: "Trigger", d: `Starts ${q[0].replace("{p}", p.prenom).replace(/^When/, "when")}.`, d2: preuve },
+    ...etapes.map((e, i) => ({ type: "etape", t: e, st: "Magento · step " + (i + 1), d: e, d2: preuve })),
+    { type: "agent", t: "Claude · DeloAI agent", st: "Agent", d: "Claude does these steps itself, in the store's real back-office, and logs every action.", d2: "Agent: " + (w.agent || "") },
+    { type: "sortie", t: q[2].charAt(0).toUpperCase() + q[2].slice(1), st: "Output", d: "Output: " + q[2] + ".", d2: "Sent back to " + p.prenom + "." },
+  ];
+  const W = 150, G = 40, X0 = 36, Yb = 150, dy = 46;
+  const pos = grapheNoeuds.map((n, i) => ({ x: X0 + i * (W + G), y: Yb + (i % 2 ? dy : 0) }));
+  const largeur = X0 * 2 + grapheNoeuds.length * (W + G), hauteur = Yb + dy + 160;
+  let chemins = "";
+  for (let i = 0; i < pos.length - 1; i++) {
+    const a = { x: pos[i].x + W, y: pos[i].y + 46 }, b = { x: pos[i + 1].x, y: pos[i + 1].y + 46 };
+    const d = `M${a.x},${a.y} C${a.x + 30},${a.y} ${b.x - 30},${b.y} ${b.x},${b.y}`;
+    chemins += `<path id="gc${i}" d="${d}" fill="none" stroke="#9aa2ad" stroke-width="1.6"/><circle r="3.2" fill="var(--ia)"><animateMotion dur="1.6s" begin="${(i * .2).toFixed(1)}s" repeatCount="indefinite"><mpath href="#gc${i}"/></animateMotion></circle>`;
+  }
+  const v = document.createElement("div"); v.className = "graphe-voile"; v.id = "graphe";
+  v.innerHTML = `<div class="graphe" role="dialog" aria-label="Workflow">
+    <div class="g-tete"><span class="mono">Workflow</span><span class="t">${esc(w.nom)}</span><span class="mono">${esc(p.prenom)} · ${esc(p.role)}</span><button class="btn" data-g="fermer">Close</button></div>
+    <div class="g-toile"><div style="position:relative;width:${largeur}px;height:${hauteur}px"><svg width="${largeur}" height="${hauteur}">${chemins}</svg>
+      ${grapheNoeuds.map((n, i) => `<button class="noeud ${n.type}" data-n="${i}" style="left:${pos[i].x}px;top:${pos[i].y}px"><span class="ic"><svg viewBox="0 0 16 16">${ICONES[n.type]}</svg></span><span class="tt">${esc(n.t)}</span><span class="st">${esc(n.st)}</span></button>`).join("")}</div></div>
+    <div class="g-detail" id="g-detail"><span class="mono">Click a node to see its detail</span></div></div>`;
+  v.addEventListener("click", e => {
+    if (e.target === v || e.target.closest("[data-g=fermer]")) return fermerGraphe();
+    const nd = e.target.closest(".noeud"); if (!nd) return;
+    v.querySelectorAll(".noeud").forEach(x => x.classList.toggle("on", x === nd));
+    const n = grapheNoeuds[Number(nd.dataset.n)];
+    $("#g-detail").innerHTML = `<span class="mono">${esc(n.st)}</span><span class="d1">${esc(n.d)}</span><span class="d2">${esc(n.d2)}</span>`;
+  });
+  document.body.appendChild(v);
+}
+function fermerGraphe() { $("#graphe")?.remove(); }
+window.ouvrirGraphe = (id, agent) => { const p = PERS[id]; const w = p && (p.workflows || []).find(x => x.agent === agent); if (w) ouvrirGraphe(p, w); };
 const etapesDe = w => (w.etapes_en && w.etapes_en.length ? w.etapes_en : w.etapes && w.etapes.length ? w.etapes : ["Open the back-office", "Do the task", "Answer"]);
 let vuEnCours = false;
 function suivreRun(n) {
