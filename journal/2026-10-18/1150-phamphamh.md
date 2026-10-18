@@ -4,3 +4,5 @@
 - **À corriger à l'oral** : 6 vraies personnes ×10 (pas 60 observés), Magento (pas « Magneto »), 17 h / semaine soit un mi-temps (pas un temps plein, pas « 24 h par jour »), euros (pas dollars).
 - **Pas vérifié** : la durée réelle à voix haute (pas encore chronométrée) ; le nombre d'heures du jeu WONDERBREAD.
 - **Pour les autres** : le script suit l'ordre du dashboard d'adamaass, sans rien y changer.
+- **Ajout (nouvelle intro)** : `labs/phamphamh/pitch/intro.html`, 3 écrans avant le dashboard : la question posée à Louis et sa réponse (« ils ont plein de données, ils ne savent pas quoi en faire »), screenpipe en 3 coches, le problème en 3 croix, puis « il manque le cabinet ». Les lignes apparaissent une par une avec la flèche → ; testé dans le navigateur, en clair et en sombre.
+- **Ajout (plan de midi)** : script réécrit dans l'ordre promesse → intro (4 écrans) → Atelier Nova → preuve que rien n'est écrit en dur → résultats → agents recommandés → agents déployés en direct. Les deux moments en direct sont marqués [À CONSTRUIRE] : ils n'existent pas encore.

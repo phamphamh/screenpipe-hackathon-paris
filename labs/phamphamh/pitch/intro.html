@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="fr" data-theme="clair">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Intro du pitch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* mêmes couleurs que le dashboard Atelier Nova (labs/adamaass/nova-dashboard/dash.css) */
+:root {
+  --bg: #0a0a0b; --surface: #111013; --line: #ffffff17;
+  --text: #ece7e2; --muted: #a39c95; --faint: #79726c;
+  --cuivre: #e5a276; --rouge: #e5484d; --vert: #00c758;
+  --cuivre-degrade: linear-gradient(100deg, #b9713f 0%, #e5a276 40%, #f7d3b4 100%);
+  --display: "Outfit", system-ui, sans-serif; --body: "Inter", system-ui, sans-serif; --mono: "JetBrains Mono", ui-monospace, monospace;
+}
+:root[data-theme="clair"] {
+  --bg: #f6f3ef; --surface: #ffffff; --line: #00000014;
+  --text: #1a1714; --muted: #57504a; --faint: #7a726b;
+  --cuivre: #b8692f; --rouge: #d93a40; --vert: #0f9d4c;
+  --cuivre-degrade: linear-gradient(100deg, #b9713f 0%, #d98f5c 45%, #e8b48b 100%);
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body { background: var(--bg); color: var(--text); font-family: var(--body); overflow: hidden; }
+.slide { position: absolute; inset: 0; display: none; flex-direction: column; justify-content: center; padding: 0 max(16px, 9vw); }
+.slide.on { display: flex; }
+.sur { font-family: var(--mono); font-size: clamp(12px, 1.3vw, 16px); letter-spacing: .08em; text-transform: uppercase; color: var(--faint); margin: 0 0 3vh; }
+h1 { font-family: var(--display); font-weight: 600; font-size: clamp(28px, 4.6vw, 68px); line-height: 1.1; letter-spacing: -.02em; margin: 0; max-width: 20ch; }
+h1 em { font-style: normal; background: var(--cuivre-degrade); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.qui { margin-top: 6vh; padding-left: 22px; border-left: 3px solid var(--cuivre); font-family: var(--display); font-weight: 500; font-size: clamp(22px, 3vw, 44px); line-height: 1.2; max-width: 26ch; color: var(--text); }
+.qui b { display: block; margin-bottom: 1vh; font-family: var(--mono); font-weight: 400; font-size: clamp(12px, 1.3vw, 16px); letter-spacing: .08em; text-transform: uppercase; color: var(--cuivre); }
+ul { list-style: none; padding: 0; margin: 5vh 0 0; display: grid; gap: 2.4vh; }
+li { display: flex; gap: 18px; align-items: baseline; font-size: clamp(18px, 2.3vw, 32px); line-height: 1.25; max-width: 44ch; }
+li .m { font-family: var(--display); font-weight: 700; flex: none; width: 1.2em; }
+li.ok .m { color: var(--vert); }
+li.ko .m { color: var(--rouge); }
+li.n .m { color: var(--cuivre); font-family: var(--mono); font-weight: 500; font-size: .7em; width: 2em; }
+li.n b { font-weight: 600; }
+.cache { opacity: 0; transform: translateY(8px); transition: opacity .35s, transform .35s; }
+.cache.vu { opacity: 1; transform: none; }
+.chute { margin-top: 6vh; font-family: var(--display); font-weight: 600; font-size: clamp(22px, 3.2vw, 46px); letter-spacing: -.01em; }
+.chute em { font-style: normal; color: var(--cuivre); }
+.pied { position: fixed; left: max(16px, 9vw); right: max(16px, 9vw); bottom: 3vh; display: flex; justify-content: space-between; font-family: var(--mono); font-size: 12px; color: var(--faint); }
+</style>
+</head>
+<body>
+
+<section class="slide on">
+  <p class="sur">Au début du hackathon</p>
+  <h1>On a demandé à Louis : quel est le plus gros problème de vos utilisateurs ?</h1>
+  <p class="qui cache"><b>Sa réponse</b>Ils ont plein de données, et ils ne savent pas quoi en faire.</p>
+</section>
+
+<section class="slide">
+  <p class="sur">screenpipe</p>
+  <h1>Il enregistre ce qui se passe sur l'ordinateur. <em>En local.</em></h1>
+  <ul>
+    <li class="ok cache"><span class="m">✓</span>Chaque application, chaque fenêtre, chaque texte affiché</li>
+    <li class="ok cache"><span class="m">✓</span>Chaque réunion, transcrite</li>
+    <li class="ok cache"><span class="m">✓</span>Tout reste sur la machine, et une IA peut le consulter</li>
+  </ul>
+</section>
+
+<section class="slide">
+  <p class="sur">Le problème</p>
+  <h1>Des données, mais aucune conclusion.</h1>
+  <ul>
+    <li class="ko cache"><span class="m">✗</span>Des milliers de captures par jour, que personne ne relit</li>
+    <li class="ko cache"><span class="m">✗</span>Peu de dirigeants savent demander à Claude ou ChatGPT des conclusions sur leur entreprise</li>
+    <li class="ko cache"><span class="m">✗</span>Encore moins savent quoi automatiser, et comment</li>
+  </ul>
+  <p class="chute cache">L'outil brut existe. <em>Il manque le cabinet.</em></p>
+</section>
+
+<section class="slide">
+  <p class="sur">Ce qu'on a construit</p>
+  <h1>Un cabinet <em>IA natif.</em></h1>
+  <ul>
+    <li class="n cache"><span class="m">01</span><span><b>Observer</b> : une semaine de screenpipe chez les volontaires</span></li>
+    <li class="n cache"><span class="m">02</span><span><b>Analyser</b> : un rapport construit sur les méthodes des grands cabinets</span></li>
+    <li class="n cache"><span class="m">03</span><span><b>Déployer</b> : les workflows et les agents, prêts à tourner</span></li>
+    <li class="n cache"><span class="m">04</span><span><b>Suivre</b> : screenpipe remesure si les agents servent vraiment</span></li>
+  </ul>
+  <p class="chute cache">Le vrai problème : <em>l'agent que personne n'utilise.</em></p>
+</section>
+
+<div class="pied"><span>← → pour avancer · T : thème clair / sombre</span><span id="num"></span></div>
+
+<script>
+const slides = [...document.querySelectorAll(".slide")];
+let s = 0;
+const montrer = () => {
+  slides.forEach((el, i) => el.classList.toggle("on", i === s));
+  document.getElementById("num").textContent = `${s + 1} / ${slides.length}`;
+};
+// → révèle d'abord les lignes cachées de l'écran, puis passe au suivant ; ← fait l'inverse
+function avancer() {
+  const suivant = slides[s].querySelector(".cache:not(.vu)");
+  if (suivant) return suivant.classList.add("vu");
+  if (s < slides.length - 1) { s++; montrer(); }
+}
+function reculer() {
+  const vus = slides[s].querySelectorAll(".cache.vu");
+  if (vus.length) return vus[vus.length - 1].classList.remove("vu");
+  if (s > 0) { s--; montrer(); }
+}
+document.addEventListener("keydown", e => {
+  if (["ArrowRight", " ", "PageDown", "Enter"].includes(e.key)) { e.preventDefault(); avancer(); }
+  if (["ArrowLeft", "PageUp", "Backspace"].includes(e.key)) { e.preventDefault(); reculer(); }
+  if (e.key === "t" || e.key === "T") {
+    const r = document.documentElement;
+    r.dataset.theme = r.dataset.theme === "clair" ? "sombre" : "clair";
+  }
+});
+document.addEventListener("click", avancer);
+montrer();
+</script>
+</body>
+</html>

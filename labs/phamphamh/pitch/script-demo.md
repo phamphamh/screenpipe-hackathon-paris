@@ -2,51 +2,67 @@
 
 Base : l'enregistrement du 18/10 (11h24), recalé sur les vrais chiffres du dashboard Atelier Nova (`labs/adamaass/nova-dashboard/`, données `labs/adamaass/caibinet-nova/data.js`).
 
-**Le dispositif** : une personne parle, une autre clique. Dashboard en **mode Présenter** (flèches ← →), thème clair pour le projecteur. On suit les 5 écrans dans l'ordre, rien d'autre à ouvrir.
+**Le plan** (demandé le 18/10 midi) : l'intro → l'entreprise et l'étude → **la preuve qu'on n'a rien écrit en dur** → ce qu'on a trouvé → les agents qu'on recommande → **ces agents, déployés ce matin, en direct**.
 
-**Environ 420 mots** : ça tient en 2 min 50 à un rythme posé. Les chiffres se disent arrondis, comme écrits ci-dessous.
+**Le style** (inspiré de Tugan Bara) : une promesse dans les 10 premières secondes, tenue à la fin ; des phrases courtes ; un ennemi clair (l'agent que personne n'utilise) ; des chiffres précis ; on parle au jury (« vous »).
+
+**Le dispositif** : une personne parle, une autre clique. `labs/phamphamh/pitch/intro.html` (4 écrans, la flèche → fait apparaître les lignes une par une), puis le dashboard Atelier Nova (bouton **☀︎ Clair**, mode Présenter).
+
+**Environ 320 mots** : environ 2 min 10 à voix haute, ce qui laisse 50 s pour les deux moments en direct.
+
+Les passages marqués **[À CONSTRUIRE]** n'existent pas encore : on ne les dit pas tant qu'ils ne tournent pas pour de vrai.
 
 ---
 
-## 0:00 – 0:20 · L'accroche
-**À l'écran** : le dashboard, écran 1 « Contexte », pas encore commenté.
+## 0:00 – 0:10 · La promesse
+**À l'écran** : `intro.html`, écran A, encore vide.
 
-> « Une PME qui veut "faire de l'IA" ne sait pas par où commencer. Aujourd'hui, elle paie des consultants pour venir regarder ses équipes travailler pendant des semaines. Nous, on a remplacé les consultants par screenpipe : il tourne une semaine sur les postes des volontaires, et on rend au dirigeant ce rapport. »
+> « Ce matin, on a lancé des agents dans une entreprise. Ils tournent en ce moment. Dans trois minutes, vous verrez ce qu'ils ont fait. Mais d'abord, une question. »
 
-## 0:20 – 0:40 · D'où viennent les données (à dire, pas à cacher)
-**À l'écran** : pointer l'étiquette « Simulation ×10 » en haut.
+*Si les agents ne tournent pas encore pour de vrai, on coupe cette phrase et on commence directement à l'écran A.* **[À CONSTRUIRE]**
 
-> « On ne pouvait pas filmer les écrans d'une vraie entreprise ce week-end. On a pris WONDERBREAD, un jeu de données de Stanford : de vraies personnes, enregistrées pendant qu'elles travaillent dans le back-office d'une boutique en ligne, sur Magento. C'est exactement ce que screenpipe capte. Six de ces personnes forment notre entreprise fictive, Atelier Nova, et on a multiplié par dix pour simuler 60 salariés. C'est écrit sur chaque écran. »
+## 0:10 – 0:45 · L'intro (`intro.html`)
+**Écran A — Louis.**
+> « Au début du hackathon, on a demandé à Louis le plus gros problème de ses utilisateurs. Sa réponse : ils ont plein de données, et ils ne savent pas quoi en faire. »
 
-## 0:40 – 1:00 · Écran 1 — Ce qu'on a observé
-**À l'écran** : l'entonnoir captures → skills.
+**Écran B — screenpipe.**
+> « screenpipe enregistre tout ce qui se passe sur l'ordinateur. En local. »
 
-> « 60 salariés, 2 équipes, 5 jours. 55 000 captures d'écran. L'IA ne les lit pas toutes : on trie d'abord, puis on regroupe en 14 000 moments de travail, puis en 19 tâches qui se répètent. 11 sont de vrais problèmes. 5 peuvent devenir des skills Claude. Et avant que quoi que ce soit parte, chaque salarié relit son résumé et le valide. Aucune capture ne quitte son ordinateur. »
+**Écran C — le problème.**
+> « Des milliers de captures par jour. Personne ne les relit. Personne ne sait quoi automatiser. L'outil existe. Il manque le cabinet. »
 
-## 1:00 – 1:15 · Écran 2 — Ce qu'on a trouvé
-**À l'écran** : l'anneau du coût annuel.
+**Écran D — ce qu'on a construit.**
+> « Alors on l'a construit. Un cabinet IA natif. Il observe. Il analyse avec les méthodes des grands cabinets. Il déploie les agents. Et il vérifie qu'ils servent. Parce que le vrai problème, ce n'est pas l'IA qui ne marche pas. C'est l'agent que personne n'utilise. »
 
-> « Ces tâches répétées coûtent 72 000 euros par an à Atelier Nova. On peut en récupérer 49 000. Les 5 premières skills, à elles seules : 30 000. »
+## 0:45 – 1:00 · L'entreprise et l'étude
+**À l'écran** : dashboard, écran 1. Pointer « Simulation ×10 » en bas à gauche.
 
-## 1:15 – 1:35 · Écran 3 — Où part le temps ?
-**À l'écran** : heures par écran Magento. Montrer la barre **Catalogue** (surlignée « 40 % »).
+> « Voici Atelier Nova. Une boutique en ligne, 60 salariés. Ce sont des gens réels : Stanford les a enregistrés au travail, c'est le jeu de données WONDERBREAD. On en a pris six, et on a multiplié par dix. »
 
-> « 40 % du temps passe dans un seul écran : le catalogue produits. Et c'est l'équipe Opérations qui y passe le plus. »
+## 1:00 – 1:20 · La preuve qu'on n'a rien écrit en dur — **[À CONSTRUIRE]**
+**À l'écran** : un bouton « Retirer un salarié » ; le dashboard se recalcule en quelques secondes.
 
-## 1:35 – 2:00 · Écran 4 — Qu'est-ce qui coûte le plus ?
-**À l'écran** : le treemap. Cliquer sur **Rapport ventes**.
+> « Vous vous demandez si on a tapé ces chiffres à la main. Choisissez un salarié. N'importe lequel. *(le juré choisit)* On le retire, on relance. Tout se recalcule à partir des enregistrements bruts. »
 
-> « Trois problèmes font 48 % du coût. Un : sortir le même rapport de ventes, 790 fois par semaine. Deux : vérifier les commandes annulées. Trois : modifier le prix d'un produit. Je clique sur le rapport : voici les étapes qu'on a vues, les cinq noms différents que les gens lui donnent, et les exceptions. Chaque chiffre mène à ce qui a été observé. »
+## 1:20 – 1:45 · Ce qu'on a trouvé
+**À l'écran** : écrans 2, 3 et 4, un chiffre chacun.
 
-## 2:00 – 2:35 · Écran 5 — Que faire, dans quel ordre ?
-**À l'écran** : la cascade « De 41 h à 24 h perdues par semaine ». Cliquer la 1re skill (**Prix produit**), puis **Créer la skill (SKILL.md)** dans le panneau qui s'ouvre.
+> « 55 000 captures. 19 tâches qui reviennent. Coût : 72 000 euros par an. 40 % du temps dans un seul écran, le catalogue. Et un rapport de ventes, toujours le même, sorti 790 fois par semaine. »
 
-> « Notre recommandation, dans l'ordre. On commence par la modification de prix : c'est elle qui rend le plus d'heures, et elle se construit en une semaine. Les 5 skills font passer le temps perdu de 41 à 24 heures par semaine : 17 heures rendues, 30 000 euros par an. Et la skill sort d'ici, en un clic, écrite à partir des étapes réelles. Il reste à la relire avant de l'activer. »
+## 1:45 – 2:10 · Ce que nos agents recommandent
+**À l'écran** : écran 5. Cliquer **Prix produit**, puis **Créer la skill (SKILL.md)**.
 
-## 2:35 – 2:55 · La fin
-**À l'écran** : retour sur l'écran 1, ou le lien du dépôt.
+> « Nos agents en tirent cinq automatisations. On commence par la modification des prix : c'est elle qui rend le plus d'heures. Un clic, et elle est écrite, à partir des étapes réellement observées. »
 
-> « Un audit de cabinet, en une semaine, sans consultant sur place. Les données restent sur les machines, chaque salarié valide ce qui part, et rien n'est montré par personne. Tout part de screenpipe, tout finit en skill Claude. Merci. »
+## 2:10 – 2:45 · En direct : les agents déployés ce matin — **[À CONSTRUIRE]**
+**À l'écran** : le journal des actions de l'agent, dans une copie de Magento.
+
+> « Et maintenant, ce que je vous ai promis. Cette automatisation, on l'a lancée ce matin. Voici son journal : [X] actions, chacune tracée. [X] prix modifiés en [X] secondes, contre [X] minutes à la main. Et quand une information manquait, l'agent s'est arrêté pour demander à un humain. »
+
+## 2:45 – 3:00 · La fin
+> « Louis, vos utilisateurs ont les données. Nous, on leur apporte le cabinet. Merci. »
+
+**À trancher** : le nom de l'équipe ; la réponse de Louis, avec ses mots exacts si l'un de vous s'en souvient.
 
 ---
 
@@ -72,7 +88,8 @@ Base : l'enregistrement du 18/10 (11h24), recalé sur les vrais chiffres du dash
 - **« Quel lien avec screenpipe ? »** On utilise sa capture, son format de workflow, et on ajoute ce qui leur manque : la campagne avec relecture par le salarié, la fusion de plusieurs personnes, et le rapport pour le dirigeant.
 
 ## Avant de monter sur scène
-- [ ] Dashboard ouvert, bouton **☀︎ Clair** cliqué (il s'ouvre en sombre), **mode Présenter**, écran 1 affiché.
+- [ ] `intro.html` ouvert en plein écran sur l'écran A ; le dashboard ouvert dans un 2e onglet.
+- [ ] Dashboard : bouton **☀︎ Clair** cliqué (il s'ouvre en sombre), **mode Présenter**, écran 1 affiché.
 - [ ] Répéter les 2 clics : Rapport ventes (écran 4) ; Prix produit puis Créer la skill (écran 5). Vérifiés le 18/10 : ils marchent.
 - [ ] Chronométrer une fois en entier : viser 2 min 50.
 - [ ] Choisir qui parle et qui clique.
