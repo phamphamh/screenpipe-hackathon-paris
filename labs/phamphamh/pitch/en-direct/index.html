@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="fr" data-theme="clair">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lecture en direct</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* mêmes couleurs que le dashboard Atelier Nova et que ../intro.html */
+:root {
+  --bg: #0a0a0b; --surface: #111013; --surface-2: #17161a; --line: #ffffff17;
+  --text: #ece7e2; --muted: #a39c95; --faint: #79726c;
+  --cuivre: #e5a276; --rouge: #e5484d; --vert: #00c758;
+  --display: "Outfit", system-ui, sans-serif; --body: "Inter", system-ui, sans-serif; --mono: "JetBrains Mono", ui-monospace, monospace;
+}
+:root[data-theme="clair"] {
+  --bg: #f6f3ef; --surface: #ffffff; --surface-2: #f3eee9; --line: #00000014;
+  --text: #1a1714; --muted: #57504a; --faint: #7a726b;
+  --cuivre: #b8692f; --rouge: #d93a40; --vert: #0f9d4c;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body { background: var(--bg); color: var(--text); font-family: var(--body); display: grid; grid-template-rows: auto 1fr; overflow: hidden; }
+.mono { font-family: var(--mono); font-size: 11px; letter-spacing: .07em; text-transform: uppercase; color: var(--faint); }
+header { display: flex; align-items: center; gap: 24px; padding: 20px 28px 14px; border-bottom: 1px solid var(--line); }
+header h1 { font-family: var(--display); font-weight: 600; font-size: 24px; letter-spacing: -.01em; margin: 0; }
+header .src { margin-left: auto; text-align: right; }
+.chrono { font-family: var(--display); font-weight: 700; font-size: 40px; font-variant-numeric: tabular-nums; color: var(--cuivre); min-width: 3.2ch; text-align: right; }
+main { min-height: 0; padding: 18px 28px 22px; }
+
+/* choix du salarié */
+#choix h2 { font-family: var(--display); font-weight: 600; font-size: clamp(26px, 3.4vw, 46px); letter-spacing: -.02em; margin: 6vh 0 4vh; }
+.salaries { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; max-width: 1100px; }
+.salaries button { all: unset; cursor: pointer; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; display: grid; gap: 6px; transition: border-color .2s, transform .2s; }
+.salaries button:hover, .salaries button:focus-visible { border-color: var(--cuivre); transform: translateY(-2px); }
+.salaries b { font-family: var(--display); font-size: 24px; font-weight: 600; }
+.salaries span { color: var(--muted); font-size: 14px; }
+
+/* la lecture */
+#lecture { display: none; height: 100%; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 18px; }
+.panneau { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
+.tete { display: flex; justify-content: space-between; align-items: baseline; padding: 14px 18px 10px; border-bottom: 1px solid var(--line); }
+.tete b { font-family: var(--display); font-weight: 600; font-size: 17px; }
+#brut { flex: 1; overflow: hidden; padding: 8px 18px; font-family: var(--mono); font-size: 12px; line-height: 1.55; color: var(--muted); }
+#brut div { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#brut .h { color: var(--faint); } #brut .f { color: var(--text); }
+.droite { display: grid; grid-template-rows: minmax(0, 1fr) 150px; gap: 18px; min-height: 0; }
+#taches { flex: 1; overflow: auto; padding: 12px 18px; display: grid; gap: 10px; align-content: start; }
+.tache { border: 1px solid var(--line); border-left: 3px solid var(--cuivre); border-radius: 10px; padding: 12px 14px; background: var(--surface-2); animation: entre .4s ease-out; }
+.tache h3 { margin: 0; font-family: var(--display); font-weight: 600; font-size: 19px; line-height: 1.25; }
+.tache .bas { margin-top: 6px; display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 13px; color: var(--muted); }
+.tache .ok { color: var(--vert); font-weight: 600; }
+.vide { color: var(--faint); font-size: 15px; padding: 8px 0; }
+#flux { flex: 1; overflow: hidden; padding: 10px 18px; font-family: var(--mono); font-size: 11px; line-height: 1.5; color: var(--faint); white-space: pre-wrap; word-break: break-all; display: flex; flex-direction: column-reverse; }
+#bilan { font-family: var(--display); font-weight: 600; font-size: 18px; color: var(--text); }
+#bilan em { font-style: normal; color: var(--vert); }
+.erreur { color: var(--rouge); }
+.btn { all: unset; cursor: pointer; font-size: 14px; font-weight: 600; padding: 8px 14px; border-radius: 9px; border: 1px solid var(--line); background: var(--surface-2); }
+.btn:hover { border-color: var(--cuivre); }
+@keyframes entre { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .tache { animation: none; } }
+@media (max-width: 800px) { .salaries { grid-template-columns: 1fr 1fr; } #lecture { grid-template-columns: 1fr; } body { overflow: auto; } }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <div class="mono">Atelier Nova · en direct</div>
+    <h1 id="titre">L'IA lit l'enregistrement brut d'un salarié</h1>
+  </div>
+  <div class="src mono">Données WONDERBREAD (Stanford)<br>rien n'est préparé à l'avance</div>
+  <div class="chrono" id="chrono">0 s</div>
+</header>
+<main>
+  <section id="choix">
+    <h2>Choisissez un salarié.</h2>
+    <div class="salaries" id="salaries"></div>
+  </section>
+  <section id="lecture">
+    <div class="panneau">
+      <div class="tete"><b>Enregistrement brut</b><span class="mono" id="brut-compte"></span></div>
+      <div id="brut"></div>
+    </div>
+    <div class="droite">
+      <div class="panneau">
+        <div class="tete"><b>Tâches répétées trouvées</b><span class="mono" id="t-compte"></span></div>
+        <div id="taches"><div class="vide">L'IA lit les moments de travail…</div></div>
+      </div>
+      <div class="panneau">
+        <div class="tete"><span id="bilan">Ce que l'IA écrit, en ce moment</span><span id="actions"></span></div>
+        <div id="flux"><span id="flux-t"></span></div>
+      </div>
+    </div>
+  </section>
+</main>
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+let t0 = 0, minuteur = null, defile = null;
+
+async function demarrer() {
+  const ss = await fetch("/api/salaries").then(r => r.json());
+  $("#salaries").innerHTML = ss.map(s => `<button data-p="${s.id}"><b>${esc(s.prenom)}</b><span>${esc(s.equipe)} · ${esc(s.role)}</span><span>${s.moments} moments de travail · ${s.captures} captures</span></button>`).join("");
+  $("#salaries").addEventListener("click", e => { const b = e.target.closest("button"); if (b) lire(b.dataset.p, ss.find(s => s.id === b.dataset.p)); });
+}
+
+function chrono(marche) {
+  clearInterval(minuteur);
+  if (marche) { t0 = Date.now(); minuteur = setInterval(() => $("#chrono").textContent = Math.round((Date.now() - t0) / 1000) + " s", 250); }
+}
+
+// l'enregistrement brut défile pendant que l'IA lit : ce sont les lignes envoyées telles quelles à l'IA
+async function montrerBrut(p) {
+  const b = await fetch("/api/brut?p=" + p).then(r => r.json()), L = b.lignes;
+  $("#brut-compte").textContent = `${L.length} moments · ${b.stats.captures_regardees} captures`;
+  let i = 0; clearInterval(defile);
+  defile = setInterval(() => {
+    const l = L[i++ % L.length], d = document.createElement("div");
+    d.innerHTML = `<span class="h">${esc(l.h)}</span>  <span class="f">${esc(l.fenetre)}</span>  ${esc(l.url)}  ${esc(l.texte)}`;
+    $("#brut").appendChild(d);
+    while ($("#brut").children.length > 60) $("#brut").firstChild.remove();
+    $("#brut").scrollTop = 1e9;
+  }, 90);
+}
+
+function carte(t) {
+  const etat = t.rapport === undefined ? "" : t.rapport ? `<span class="ok">✓ aussi dans le rapport : ${esc(t.rapport)}</span>` : `<span>pas dans le rapport</span>`;
+  return `<div class="tache"><h3>${esc(t.titre)}</h3><div class="bas">${t.preuves !== undefined ? `<span>${t.preuves} moments en preuve</span>` : ""}${etat}</div></div>`;
+}
+
+function montrerFin(f, rejoue) {
+  chrono(false); clearInterval(defile);
+  $("#chrono").textContent = f.secondes + " s";
+  $("#taches").innerHTML = f.taches.map(carte).join("");
+  const n = f.taches.filter(t => t.rapport).length;
+  $("#t-compte").textContent = f.taches.length + " tâches";
+  $("#bilan").innerHTML = `${f.moments} moments lus en ${f.secondes} s · ${f.taches.length} tâches, <em>dont ${n} déjà dans le rapport</em>` + (rejoue ? ` · lecture de ${esc(f.heure)}, rejouée` : "");
+  $("#actions").innerHTML = `<button class="btn" id="autre">Un autre salarié</button>`;
+  $("#autre").onclick = () => { $("#lecture").style.display = "none"; $("#choix").style.display = ""; $("#titre").textContent = "L'IA lit l'enregistrement brut d'un salarié"; $("#chrono").textContent = "0 s"; };
+}
+
+async function lire(p, s) {
+  $("#choix").style.display = "none"; $("#lecture").style.display = "grid";
+  $("#titre").textContent = `L'IA lit l'enregistrement brut de ${s.prenom}`;
+  $("#taches").innerHTML = `<div class="vide">L'IA lit les moments de travail…</div>`; $("#t-compte").textContent = "";
+  $("#flux-t").textContent = ""; $("#bilan").textContent = "Ce que l'IA écrit, en ce moment"; $("#actions").innerHTML = "";
+  montrerBrut(p); chrono(true);
+  let texte = "", vus = 0;
+  const es = new EventSource("/api/lire?p=" + p);
+  es.addEventListener("texte", e => {
+    texte += JSON.parse(e.data);
+    $("#flux-t").textContent = texte.slice(-1600);
+    const titres = [...texte.matchAll(/"titre"\s*:\s*"([^"]+)"/g)].map(m => m[1]);  // une tâche apparaît dès que l'IA écrit son titre
+    if (titres.length > vus) {
+      if (!vus) $("#taches").innerHTML = "";
+      titres.slice(vus).forEach(t => $("#taches").insertAdjacentHTML("beforeend", carte({ titre: t })));
+      vus = titres.length; $("#t-compte").textContent = vus + " tâches";
+    }
+  });
+  es.addEventListener("fin", e => { es.close(); montrerFin(JSON.parse(e.data)); });
+  es.addEventListener("erreur", e => { es.close(); echec(p, JSON.parse(e.data), s); });
+  es.onerror = () => { if (es.readyState === 2) return; es.close(); echec(p, "connexion coupée", s); };
+}
+
+function echec(p, msg, s) {
+  chrono(false); clearInterval(defile);
+  $("#bilan").innerHTML = `<span class="erreur">La lecture a échoué : ${esc(msg)}</span>`;
+  $("#actions").innerHTML = (s.garde ? `<button class="btn" id="rejouer">Rejouer la dernière lecture</button> ` : "") + `<button class="btn" id="relancer">Relancer</button>`;
+  $("#relancer").onclick = () => lire(p, s);
+  if (s.garde) $("#rejouer").onclick = async () => montrerFin(await fetch("/api/rejouer?p=" + p).then(r => r.json()), true);
+}
+
+document.addEventListener("keydown", e => { if (e.key === "t" || e.key === "T") { const r = document.documentElement; r.dataset.theme = r.dataset.theme === "clair" ? "sombre" : "clair"; } });
+demarrer();
+</script>
+</body>
+</html>
