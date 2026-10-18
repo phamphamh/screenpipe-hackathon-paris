@@ -10,7 +10,7 @@
 Usage : python3 labs/phamphamh/agents-nova/serveur.py   →  http://localhost:8798
 Variables : INTERVALLE (minutes, défaut 5), PORT (défaut 8798).
 """
-import json, os, threading, time
+import json, os, subprocess, sys, threading, time
 from datetime import datetime, timezone
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, urlparse
@@ -68,6 +68,9 @@ def passage(agent_id, visible=False, personne=None):
     if not verrou.acquire(blocking=False):
         return False
     try:
+        if visible and agent_id == "prix-produit":
+            # démo en direct : remettre les prix d'origine, sinon l'agent répond « déjà fait » et ne change rien à l'écran
+            subprocess.run([sys.executable, os.path.join(ICI, "boutique.py"), "restaurer-prix"], capture_output=True, timeout=120)
         agents_ia.passage(agent_id, visible, personne)
     except Exception as e:  # le planificateur ne doit jamais mourir
         print(f"passage {agent_id} : {e}", flush=True)

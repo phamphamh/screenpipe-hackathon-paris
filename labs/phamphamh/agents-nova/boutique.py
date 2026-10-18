@@ -192,9 +192,9 @@ def commandes(statut=None, client=None, limite=10):
 VISIBLE = os.environ.get("BOUTIQUE_VISIBLE") == "1"
 CDP = os.environ.get("BOUTIQUE_CDP")
 BANDEAU = os.environ.get("AGENT_BANDEAU", f"Agent DeloAI · {AGENT}")
-RALENTI_MS = 700   # chaque geste se voit
-FRAPPE_MS = 80     # frappe caractère par caractère
-PAUSE_PAGE_MS = 1000
+RALENTI_MS = 250   # chaque geste se voit
+FRAPPE_MS = 25     # frappe caractère par caractère
+PAUSE_PAGE_MS = 350
 HABILLAGE = """(texte => { const f = () => {
   if (document.getElementById('deloai-bandeau')) return;
   const b = document.createElement('div'); b.id = 'deloai-bandeau'; b.textContent = texte;
@@ -349,7 +349,7 @@ def prix_par_admin(produit_id, sku, nouveau):
         page.wait_for_timeout(400)
         page.screenshot(path=os.path.join(SORTIE, "captures", nom), type="jpeg", quality=70)
         montrer_prix(page, produit_id)
-        page.wait_for_timeout(1200)
+        page.wait_for_timeout(500)
     return nom
 
 
@@ -362,17 +362,17 @@ def montrer_commandes(statut, client):
             page.locator("tr.data-row").first.wait_for(state="visible", timeout=60000)
             vider = page.locator("button[data-action='grid-filter-reset']").first
             if vider.count() and vider.is_visible():
-                cliquer(page, vider); page.wait_for_timeout(1500)
+                cliquer(page, vider); page.wait_for_timeout(600)
             if statut:
                 cliquer(page, page.locator("button[data-action='grid-filter-expand']").first)
                 choix = page.locator("select[name='status']").first
                 cliquer(page, choix); choix.select_option(statut)
                 cliquer(page, page.locator("button[data-action='grid-filter-apply']").first)
-                page.wait_for_timeout(2000)
+                page.wait_for_timeout(800)
             if client:
                 recherche = page.locator("#fulltext").first
                 saisir(page, recherche, client); recherche.press("Enter")
-                page.wait_for_timeout(2000)
+                page.wait_for_timeout(800)
             page.screenshot(path=os.path.join(SORTIE, "captures", nom), type="jpeg", quality=70)
         return nom
     except Exception as e:
@@ -410,7 +410,7 @@ def rapport(type_, du, au, periode=None):
             grille.scroll_into_view_if_needed()
             page.screenshot(path=os.path.join(SORTIE, "captures", nom), type="jpeg", quality=70)
             if CDP or VISIBLE:
-                page.wait_for_timeout(1500)
+                page.wait_for_timeout(600)
     resume = ", ".join(f"{k} {v}" for k, v in totaux.items()
                        if k not in ("Interval", "Period") and v and v not in ("0", "$0.00"))[:160]
     journal(f"Opens the {libelle}", f"{du} → {au} · {resume or ('no data for this period' if not lignes else str(len(lignes)) + ' row(s)')}", capture=nom,
