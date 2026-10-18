@@ -70,6 +70,19 @@ h1 strong, h2 strong { font-weight: 700; }
 .tech .fleche { display: flex; align-items: center; justify-content: center; font-family: "Caveat", cursive; font-size: 54px; color: #343b46; }
 .tech .note { position: absolute; font-family: "Caveat", cursive; font-size: 26px; color: #d9730d; }
 
+
+/* 04 — tableau gauche / droite : ce qui ne marche pas · ce qui marche */
+.tableau-titre { font-size: 64px; margin-bottom: 44px; }
+.duel { display: grid; grid-template-columns: 1fr 1fr; border-top: 2px solid #0a0c0f; }
+.duel > div { padding: 22px 0 0; display: flex; flex-direction: column; }
+.duel .col-non { padding-right: 48px; border-right: 1px solid #d9dde3; }
+.duel .col-oui { padding-left: 48px; }
+.duel .mono { font-family: "Geist Mono", ui-monospace, monospace; font-size: 14px; letter-spacing: .12em; text-transform: uppercase; color: #59606b; margin: 0 0 10px; }
+.duel .ligne { display: grid; grid-template-columns: 44px 1fr; align-items: baseline; padding: 16px 0; border-bottom: 1px solid #e6e8eb; font-size: 22px; color: #59606b; }
+.duel .ligne b { display: block; font-size: 30px; font-weight: 600; color: #0a0c0f; letter-spacing: -.02em; margin-bottom: 2px; }
+.duel .x { font-size: 30px; font-weight: 700; color: #0a0c0f; }
+.duel .v { font-size: 30px; font-weight: 700; color: #0a84b8; }
+
 /* 02 — screenpipe */
 .sp { display: grid; grid-template-columns: 1fr 520px; gap: 80px; align-items: center; }
 .sp-tete { display: flex; align-items: center; gap: 28px; }
@@ -155,13 +168,15 @@ h1 strong, h2 strong { font-weight: 700; }
 .nova b { margin-top: 18px; font-size: 76px; font-weight: 300; letter-spacing: -.045em; line-height: 1; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .nova b.mot { font-size: 46px; letter-spacing: -.035em; line-height: 1.74; }
 .nova .pt { margin-top: 10px; font-size: 18px; white-space: nowrap; color: var(--doux); letter-spacing: -.01em; }
+.nova-xp { margin-top: 34px; font-size: 24px; line-height: 1.35; max-width: 1050px; color: var(--doux); }
+.nova-xp strong { color: var(--texte); font-weight: 600; }
 .nova-src { margin: 48px 0 0; color: var(--faible); }
 
 /* Démo */
 .demo { align-items: flex-start; }
 .point { display: inline-block; width: 8px; height: 8px; background: var(--texte); animation: clignote 1.6s steps(2, jump-none) infinite; }
 @keyframes clignote { 50% { opacity: .25; } }
-.etapes { margin-top: 52px; display: grid; grid-template-columns: repeat(4, 230px); border: 1px solid var(--leger); background: var(--plan); }
+.etapes { margin-top: 52px; display: grid; grid-template-columns: repeat(2, 460px); border: 1px solid var(--leger); background: var(--plan); }
 .etapes div { padding: 18px 20px; border-right: 1px solid var(--leger); font-size: 24px; letter-spacing: -.015em; }
 .etapes div:last-child { border-right: 0; }
 .etapes span { display: block; margin-bottom: 8px; color: var(--faible); }
@@ -249,14 +264,20 @@ h1 strong, h2 strong { font-weight: 700; }
 
   <!-- 4 -->
   <section data-id="ouverture-4" class="slide">
-    <ul class="croix">
-      <li class="l tombe"><span class="x">✗</span><div><b>Traditional consulting:</b> consultants on site for weeks</div></li>
-      <li class="l tombe"><span class="x">✗</span><div><b>A 50-page report,</b> expensive, left to gather dust in a drawer</div></li>
-      <li class="l tombe"><span class="x">✗</span><div><b>screenpipe alone:</b> thousands of captures a day, nobody ever reads them</div></li>
-    </ul>
-    <div class="verite l">
-      <h2><span class="doux">The problem was never the data.</span><br>It's the <strong>context.</strong></h2>
-      <div class="coches"><span><b>✓</b>what to look at</span><span><b>✓</b>what to automate</span><span><b>✓</b>where to start</span></div>
+    <h2 class="l tableau-titre"><span class="doux">The problem was never the data.</span> It's the <strong>context.</strong></h2>
+    <div class="duel l">
+      <div class="col-non">
+        <p class="mono">What doesn't work</p>
+        <div class="ligne"><span class="x">✗</span><div><b>Consulting firms</b>consultants on site for weeks</div></div>
+        <div class="ligne"><span class="x">✗</span><div><b>A 50-page report</b>expensive, ends up in a drawer</div></div>
+        <div class="ligne"><span class="x">✗</span><div><b>screenpipe alone</b>thousands of captures a day, nobody reads them</div></div>
+      </div>
+      <div class="col-oui">
+        <p class="mono">What works: context</p>
+        <div class="ligne"><span class="v">✓</span><div><b>What to look at</b>the tasks people repeat, measured</div></div>
+        <div class="ligne"><span class="v">✓</span><div><b>What to automate</b>ranked by money and hours lost</div></div>
+        <div class="ligne"><span class="v">✓</span><div><b>Where to start</b>one agent, deployed this week</div></div>
+      </div>
     </div>
   </section>
 
@@ -275,17 +296,16 @@ h1 strong, h2 strong { font-weight: 700; }
       <div><span class="lab mono">screenpipe on every desk</span><b>1 week</b></div>
       <div><span class="lab mono">Screen captures</span><b>55,510</b></div>
     </div>
-    <p class="nova-src mono">6 real people recorded by Stanford (WONDERBREAD) × 10</p>
+    <p class="nova-xp"><strong>The experiment:</strong> we replayed a real week of back-office work, as if Atelier Nova had run screenpipe on every desk. Real people, real clicks, recorded by Stanford (WONDERBREAD), scaled × 10.</p>
   </section>
 
   <!-- 7 -->
   <section data-id="demo" class="slide sombre-slide demo">
-    <p class="etiquette ia mono"><span class="point"></span>Atelier Nova · live demo</p>
-    <h1>Atelier <strong>Nova.</strong></h1>
-    <p class="def">An online store. 60 employees. <strong>Live demo.</strong></p>
+    <p class="etiquette ia mono"><span class="point"></span>Live demo</p>
+    <h1>Let's look <strong>inside.</strong></h1>
     <div class="etapes">
-      <div><span class="mono">01</span>The audit</div>
-      <div><span class="mono">02</span>The office</div>
+      <div><span class="mono">01</span>The audit: what one week revealed</div>
+      <div><span class="mono">02</span>The office: an agent deployed, live</div>
     </div>
   </section>
 
