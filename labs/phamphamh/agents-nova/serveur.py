@@ -4,7 +4,8 @@
 - sert la page (labs/phamphamh/agents-nova/index.html) et le dashboard (labs/phamphamh/dashboard-nova/) ;
 - fait tourner les 3 agents en service à tour de rôle, un passage toutes les INTERVALLE minutes : chaque passage est
   un vrai agent Claude qui traite une vraie demande (WONDERBREAD) dans la boutique de test (agents_ia.py) ;
-- GET /api/etat : agents, passages, journal ; POST /api/lancer?agent=<id> : un passage tout de suite.
+- GET /api/etat : agents, passages, journal ; POST /api/lancer?agent=<id>[&visible=1] : un passage tout de suite
+  (visible=1 : l'agent agit dans une fenêtre Chromium qu'on voit, pour la démo en direct).
 
 Usage : python3 labs/phamphamh/agents-nova/serveur.py   →  http://localhost:8798
 Variables : INTERVALLE (minutes, défaut 5), PORT (défaut 8798).
@@ -62,12 +63,12 @@ def deploiement():
     return {"depuis": json.load(open(chemin))["depuis"]}
 
 
-def passage(agent_id):
-    """Un passage ; False si un autre passage est déjà en cours."""
+def passage(agent_id, visible=False):
+    """Un passage ; False si un autre passage est déjà en cours. Le planificateur reste invisible."""
     if not verrou.acquire(blocking=False):
         return False
     try:
-        agents_ia.passage(agent_id)
+        agents_ia.passage(agent_id, visible)
     except Exception as e:  # le planificateur ne doit jamais mourir
         print(f"passage {agent_id} : {e}", flush=True)
         agents_ia.en_cours = None
@@ -134,14 +135,16 @@ class Gestion(SimpleHTTPRequestHandler):
     def do_POST(self):
         url = urlparse(self.path)
         if url.path == "/api/lancer":
-            agent = (parse_qs(url.query).get("agent") or [None])[0] or prochain_agent()
+            q = parse_qs(url.query)
+            agent = (q.get("agent") or [None])[0] or prochain_agent()
+            visible = (q.get("visible") or ["0"])[0] in ("1", "true", "oui")
             if agent not in EN_SERVICE:
                 return self.envoyer_json({"lance": False, "raison": f"agent inconnu ou pas en service : {agent}"}, 400)
             if verrou.locked() or agents_ia.en_cours:
                 return self.envoyer_json({"lance": False, "raison": "un passage est déjà en cours",
                                           "en_cours": agents_ia.en_cours}, 409)
-            threading.Thread(target=passage, args=(agent,), daemon=True).start()
-            return self.envoyer_json({"lance": True, "agent": agent})
+            threading.Thread(target=passage, args=(agent, visible), daemon=True).start()
+            return self.envoyer_json({"lance": True, "agent": agent, "visible": visible})
         self.send_error(404)
 
 

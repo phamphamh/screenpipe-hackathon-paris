@@ -84,9 +84,36 @@ Réponds en français, en 2 phrases courtes maximum, avec le résultat chiffré 
 Texte simple sans markdown, montants en dollars ($) comme dans la boutique, aucun commentaire sur ta méthode."""
 
 
-def passage(agent_id):
-    """Un passage de l'agent : prochaine demande (rotation), vrai agent Claude, bilan dans runs.jsonl."""
+PORT_CDP = int(os.environ.get("PORT_CDP", 9333))
+
+
+def ouvrir_fenetre():
+    """Mode visible : UNE fenêtre Chromium (1280×800, à gauche de l'écran) pour tout le passage.
+    boutique.py s'y reconnecte à chaque appel grâce à BOUTIQUE_CDP."""
+    import urllib.request
+    from playwright.sync_api import sync_playwright
+    with sync_playwright() as p:
+        exe = p.chromium.executable_path
+    proc = subprocess.Popen([exe, f"--remote-debugging-port={PORT_CDP}", f"--user-data-dir={TRAVAIL}/chromium-profil",
+                             "--window-position=0,0", "--window-size=1280,800", "--no-first-run",
+                             "--no-default-browser-check", "--disable-features=Translate", "about:blank"],
+                            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    for _ in range(50):
+        try:
+            urllib.request.urlopen(f"http://127.0.0.1:{PORT_CDP}/json/version", timeout=1)
+            return proc
+        except Exception:
+            time.sleep(0.2)
+    proc.terminate()
+    raise RuntimeError("la fenêtre Chromium ne répond pas")
+
+
+def passage(agent_id, visible=None):
+    """Un passage de l'agent : prochaine demande (rotation), vrai agent Claude, bilan dans runs.jsonl.
+    visible=True (ou BOUTIQUE_VISIBLE=1) : l'agent agit dans une fenêtre Chromium qu'on voit (démo en direct)."""
     global en_cours
+    if visible is None:
+        visible = os.environ.get("BOUTIQUE_VISIBLE") == "1"
     liste = demandes(agent_id)
     deja = [r for r in lire_jsonl("runs.jsonl") if r.get("agent") == agent_id]
     i = len(deja) % len(liste)
@@ -94,13 +121,23 @@ def passage(agent_id):
     run = datetime.now().strftime("%Y%m%d-%H%M%S-") + uuid.uuid4().hex[:4]
     t0 = time.time()
     en_cours = {"run": run, "agent": agent_id, "demande_fr": d["fr"], "depuis": maintenant()}
-    env = {**os.environ, "AGENT_ID": agent_id, "AGENT_RUN": run}
+    env = {**os.environ, "AGENT_ID": agent_id, "AGENT_RUN": run, "BOUTIQUE_VISIBLE": "1" if visible else "0",
+           "AGENT_BANDEAU": f"Agent DeloAI · {SKILLS[agent_id]['nom']} · demande Stanford : {d['intention']}"}
+    env.pop("BOUTIQUE_CDP", None)
     ecrire_jsonl("journal.jsonl", {"ts": maintenant(), "agent": agent_id, "run": run, "n": 0, "type": "demande",
                                    "etape": "Reçoit une demande", "detail": d["fr"], "demande": d["intention"],
                                    "demande_id": d["id"], "capture": None})
     if agent_id == "prix-produit" and i == 0 and os.path.exists(os.path.join(SORTIE, "prix-origine.json")):
         # nouveau tour de rotation : on remet les prix d'origine, pour que les baisses ne s'empilent pas
         subprocess.run([sys.executable, OUTIL, "restaurer-prix"], env=env, capture_output=True, timeout=60)
+    fenetre = None
+    if visible:
+        try:
+            fenetre = ouvrir_fenetre()
+            env["BOUTIQUE_CDP"] = f"http://127.0.0.1:{PORT_CDP}"
+            subprocess.run([sys.executable, OUTIL, "accueil"], env=env, capture_output=True, timeout=90)
+        except Exception as e:  # sans fenêtre partagée, chaque appel ouvre sa propre fenêtre visible
+            print(f"fenêtre partagée impossible : {e}", file=sys.stderr)
     dossier = os.path.join(TRAVAIL, run)
     os.makedirs(dossier, exist_ok=True)
     cmd = ["claude", "-p", d["intention"], "--model", MODELE, "--append-system-prompt", consigne(agent_id),
@@ -108,7 +145,8 @@ def passage(agent_id):
            "--strict-mcp-config", "--no-session-persistence"]
     statut, reponse, cout = "echec", "", None
     try:
-        p = subprocess.run(cmd, cwd=dossier, env=env, capture_output=True, text=True, timeout=DELAI_S)
+        delai = DELAI_S * 2 if visible else DELAI_S  # au ralenti, l'interface d'admin prend plus de temps
+        p = subprocess.run(cmd, cwd=dossier, env=env, capture_output=True, text=True, timeout=delai)
         try:
             sortie = json.loads(p.stdout)
             reponse = (sortie.get("result") or "").strip()
@@ -117,9 +155,13 @@ def passage(agent_id):
         except json.JSONDecodeError:
             reponse = (p.stderr or p.stdout or "sortie illisible").strip()[:300]
     except subprocess.TimeoutExpired:
-        reponse = f"Délai dépassé ({DELAI_S} s) : l'agent n'a pas fini."
+        reponse = f"Délai dépassé : l'agent n'a pas fini."
     except Exception as e:
         reponse = f"Lancement impossible : {e}"[:300]
+    finally:
+        if fenetre:
+            time.sleep(4)  # on laisse le résultat à l'écran un instant
+            fenetre.terminate()
     duree = round(time.time() - t0, 1)
     actions = sum(1 for l in lire_jsonl("journal.jsonl") if l.get("run") == run and l.get("type") == "outil")
     ecrire_jsonl("journal.jsonl", {"ts": maintenant(), "agent": agent_id, "run": run, "n": actions + 1,
@@ -127,6 +169,7 @@ def passage(agent_id):
                                    "detail": reponse, "statut": statut, "capture": None})
     bilan = {"run": run, "agent": agent_id, "demande_id": d["id"], "demande": d["intention"], "fr": d["fr"],
              "statut": statut, "reponse": reponse, "duree_s": duree, "actions": actions, "cout_usd": cout,
+             "visible": bool(visible),
              "fini": maintenant()}
     ecrire_jsonl("runs.jsonl", bilan)
     en_cours = None
@@ -134,4 +177,6 @@ def passage(agent_id):
 
 
 if __name__ == "__main__":
-    print(json.dumps(passage(sys.argv[1] if len(sys.argv) > 1 else "rapport-ventes"), ensure_ascii=False, indent=1))
+    # python3 agents_ia.py <agent> [--visible]
+    print(json.dumps(passage(sys.argv[1] if len(sys.argv) > 1 else "rapport-ventes", True if "--visible" in sys.argv else None),
+                     ensure_ascii=False, indent=1))
