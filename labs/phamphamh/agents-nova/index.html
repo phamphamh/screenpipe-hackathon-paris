@@ -38,6 +38,8 @@ button { font: inherit; color: inherit; }
 .ecran { position: absolute; inset: 0; display: none; }
 .ecran.on { display: block; }
 .ecran iframe { border: 0; width: 100%; height: 100%; display: block; background: var(--fond); }
+.lien-pitch { position: absolute; right: 20px; bottom: 9px; font-family: var(--f-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--doux); text-decoration: none; border-bottom: 1px solid var(--trait-fort); padding-bottom: 1px; }
+.lien-pitch:hover, .lien-pitch:focus-visible { color: var(--ia); border-color: var(--ia); outline: none; }
 .vide { position: absolute; inset: 24px; border: 1px solid var(--trait); display: grid; place-items: center; }
 .coin { position: absolute; width: 14px; height: 14px; border-color: var(--trait-fort); border-style: solid; pointer-events: none; }
 .coin.a { left: 10px; top: 10px; border-width: 1px 0 0 1px; } .coin.b { right: 10px; top: 10px; border-width: 1px 1px 0 0; }
@@ -45,7 +47,7 @@ button { font: inherit; color: inherit; }
 .chiffre { font-weight: 300; letter-spacing: -.04em; line-height: .95; }
 
 /* ---------- Les données ---------- */
-.donnees { padding: 24px 40px 22px; }
+.donnees { padding: 22px 40px 36px; }
 .d-grille { height: 100%; display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 40px; }
 .d-gauche { display: grid; grid-template-rows: auto auto auto 1fr auto; gap: 18px; min-height: 0; }
 .donnees h1 { font-weight: 300; font-size: 40px; line-height: 1.05; letter-spacing: -.03em; margin: 8px 0 0; text-wrap: balance; }
@@ -82,7 +84,7 @@ button { font: inherit; color: inherit; }
 .trois .t b { font-weight: 500; }
 
 /* ---------- Les agents ---------- */
-.agents { padding: 16px 18px 16px; }
+.agents { padding: 16px 18px 34px; }
 .a-grille { height: 100%; display: grid; grid-template-columns: minmax(0, 1fr) 430px; gap: 16px; }
 .a-gauche { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: 0; min-height: 0; border: 1px solid var(--trait); background: var(--plan); }
 .scene { position: relative; overflow: hidden; background: var(--fond); min-height: 0; }
@@ -118,10 +120,13 @@ button { font: inherit; color: inherit; }
 .rangee .ag .st i { font-style: normal; }
 .rangee .ag.on .st i { color: var(--ia); }
 .rangee .ag.off { color: var(--faible); }
+.rangee .ag.off .st { white-space: normal; }
 .rangee .ag.off .n { color: var(--faible); }
 .rangee .ag.actif { box-shadow: inset 0 2px 0 var(--ia); }
-.lancer { justify-self: start; margin-top: 2px; font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; background: transparent; border: 1px solid var(--trait-fort); color: var(--texte); padding: 4px 9px; cursor: pointer; }
+.boutons { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px; }
+.lancer { justify-self: start; font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; background: transparent; border: 1px solid var(--trait-fort); color: var(--texte); padding: 4px 8px; cursor: pointer; }
 .lancer:hover:not(:disabled) { border-color: var(--ia); color: var(--ia); }
+.lancer[data-visible] { border-color: rgba(124,227,255,.45); color: var(--ia); }
 .lancer:disabled { opacity: .35; cursor: default; }
 .lancer:focus-visible { outline: 1px solid var(--ia); outline-offset: 2px; }
 .a-droite { display: grid; grid-template-rows: auto auto minmax(0, 1fr); gap: 16px; min-height: 0; }
@@ -157,6 +162,7 @@ button { font: inherit; color: inherit; }
 
 <main class="ecrans" id="ecrans">
   <section class="ecran donnees" id="e-donnees" data-titre="Les données">
+    <a class="lien-pitch" href="slides.html#contexte">← Pitch</a>
     <div class="d-grille">
       <div class="d-gauche">
         <div>
@@ -189,6 +195,7 @@ button { font: inherit; color: inherit; }
   </section>
 
   <section class="ecran agents" id="e-agents" data-titre="Les agents">
+    <a class="lien-pitch" href="slides.html#fin-1">Suite du pitch →</a>
     <div class="a-grille">
       <div class="a-gauche">
         <div class="demande" id="demande">
@@ -239,21 +246,19 @@ const hm = v => { const d = date(v); return d ? d.toLocaleTimeString("fr-FR", { 
 const hms = v => { const d = date(v); return d ? d.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit", second: "2-digit" }) : "—"; };
 const duree = s => { if (s == null || isNaN(s)) return "—"; s = Math.round(s); if (s < 60) return s + " s"; if (s < 3600) return Math.floor(s / 60) + " min " + String(s % 60).padStart(2, "0"); return Math.floor(s / 3600) + " h " + String(Math.floor(s % 3600 / 60)).padStart(2, "0"); };
 const virgule = n => String(n).replace(".", ",");
+const masque = v => v == null ? v : String(v).replace(/[\w.+-]+@[\w-]+(\.[\w-]+)+/g, "…");
 
 /* ---------- Enchaînement des étapes ---------- */
 const ETAPES = [
-  ...[1, 2, 3, 4, 5, 6, 7].map(n => ({ id: "s" + n, type: "slide", n, titre: "Ouverture" })),
   { id: "donnees", type: "ecran", el: "e-donnees", titre: "Les données" },
   { id: "audit", type: "cadre", src: "../dashboard-nova/index.html#constat", titre: "L'audit" },
   { id: "ecarts", type: "cadre", src: "../dashboard-nova/index.html#couts", titre: "Les écarts" },
   { id: "agents", type: "ecran", el: "e-agents", titre: "Les agents" },
-  ...[9, 10].map(n => ({ id: "s" + n, type: "slide", n, titre: "Conclusion" })),
 ];
 const pad = n => String(n).padStart(2, "0");
 let courant = -1, slidesOk = true;
 const ecrans = $("#ecrans");
 
-fetch("slides.html", { method: "HEAD", cache: "no-store" }).then(r => { slidesOk = r.ok; }).catch(() => {});
 
 function surCles(e) {
   if (e.metaKey || e.ctrlKey || e.altKey) return false;
@@ -387,11 +392,11 @@ function demandeDe(n) {
 }
 function reponseDe(d, agents) {
   if (!d) return { html: "—", echec: false };
-  if (d.statut && /echec|échec|erreur/i.test(d.statut)) return { html: `Échec du passage : ${esc(d.erreur || d.reponse || "erreur")}`, echec: true };
+  if (d.statut && /echec|échec|erreur/i.test(d.statut)) return { html: `Échec du passage : ${esc(masque(d.erreur || d.reponse || "erreur"))}`, echec: true };
   let r = d.reponse ?? agents.find(a => a.id === d.agent)?.derniere_reponse;
   if (r && typeof r === "object") r = JSON.stringify(r);
   if (!r && d.totaux) r = `<b>${esc(d.totaux.commandes)} commandes · ${esc(d.totaux.ventes)}</b> du ${esc(d.debut)} au ${esc(d.fin)}${d.csv ? " · CSV exporté" : ""}`;
-  else r = esc(r || "—");
+  else r = esc(masque(r) || "—");
   return { html: r, echec: false };
 }
 
@@ -411,16 +416,19 @@ function afficher(n) {
   $("#dem-en").textContent = dem.en ? `« ${dem.en} »` : "";
   // rangée des agents
   const enCours = !!n.enCours;
-  $("#rangee").innerHTML = n.agents.slice(0, 5).map(a => {
+  const rang = n.agents.slice().sort((a, b) => (b.statut === "en service") - (a.statut === "en service")).slice(0, 5);
+  const nOn = rang.filter(a => a.statut === "en service").length;
+  $("#rangee").style.gridTemplateColumns = [nOn ? `repeat(${nOn}, minmax(0, 1.6fr))` : "", rang.length - nOn ? `repeat(${rang.length - nOn}, minmax(0, 1fr))` : ""].join(" ");
+  $("#rangee").innerHTML = rang.map(a => {
     const on = a.statut === "en service", actif = a.id === ETAT.actif;
-    return `<div class="ag ${on ? "on" : "off"} ${actif ? "actif" : ""}"><div class="n">${esc(a.nom || a.id)}</div><div class="st"><i>${actif ? "● au travail" : on ? "● en service" : "○ en préparation"}</i>${on ? " · " + nf(a.passages) + " passages" : ""}</div>${on ? `<button class="lancer" data-agent="${esc(a.id)}" ${enCours ? "disabled" : ""}>Lancer un passage</button>` : ""}</div>`;
+    return `<div class="ag ${on ? "on" : "off"} ${actif ? "actif" : ""}"><div class="n">${esc(a.nom || a.id)}</div><div class="st"><i>${actif ? "● au travail" : on ? "● en service" : "○ en préparation"}</i>${on ? " · " + nf(a.passages) + " passages" : ""}</div>${on ? `<div class="boutons"><button class="lancer" data-agent="${esc(a.id)}" ${enCours ? "disabled" : ""}>Lancer un passage</button><button class="lancer" data-agent="${esc(a.id)}" data-visible="1" ${enCours ? "disabled" : ""}>En direct</button></div>` : ""}</div>`;
   }).join("");
   // journal : le plus récent en haut
   const lignes = n.journal.slice(-24).reverse();
   $("#journal").innerHTML = lignes.map(l => {
     const k = `${l.run}|${l.n}|${l.ts}|${l.type}`; const neuf = !premier && !vus.has(k); vus.add(k);
     const type = l.type === "demande" ? "demande" : l.type === "resultat" ? "résultat" : l.type === "outil" ? "action" : "";
-    return `<li class="${neuf ? "neuf" : ""}"><span class="t">${hms(l.ts)}</span><span><span class="e">${type ? `<i>${type}</i>` : ""}${esc(l.etape || l.fr || l.detail)}</span><small>${esc(l.agent || "")}${l.detail && l.etape ? " · " + esc(l.detail) : ""}</small></span></li>`;
+    return `<li class="${neuf ? "neuf" : ""}"><span class="t">${hms(l.ts)}</span><span><span class="e">${type ? `<i>${type}</i>` : ""}${esc(masque(l.etape || l.fr || l.detail))}</span><small>${esc(l.agent || "")}${l.detail && l.etape ? " · " + esc(masque(l.detail)) : ""}</small></span></li>`;
   }).join("") || `<li><span class="t">—</span><span class="vide-txt">Aucune action pour l'instant</span></li>`;
   premier = false;
   // capture la plus récente
@@ -440,7 +448,7 @@ function afficher(n) {
 document.addEventListener("click", async e => {
   const b = e.target.closest(".lancer"); if (!b) return;
   document.querySelectorAll(".lancer").forEach(x => x.disabled = true);
-  if (mode === "serveur") { try { await fetch("../api/lancer?agent=" + encodeURIComponent(b.dataset.agent), { method: "POST" }); } catch (_) {} clearTimeout(minuteur); minuteur = setTimeout(rafraichir, 300); }
+  if (mode === "serveur") { try { await fetch("../api/lancer?agent=" + encodeURIComponent(b.dataset.agent) + (b.dataset.visible ? "&visible=1" : ""), { method: "POST" }); } catch (_) {} clearTimeout(minuteur); minuteur = setTimeout(rafraichir, 300); }
   else rejouer(b.dataset.agent);
 });
 

@@ -12,6 +12,7 @@ La sortie sur stdout est un JSON court, lu par l'agent.
   python3 boutique.py rapport orders --du 02/01/2023 --au 02/28/2023   (orders | refunded | tax | bestsellers)
 """
 import argparse, json, os, re, sys, urllib.error, urllib.parse, urllib.request
+from contextlib import contextmanager
 from datetime import datetime, timezone
 
 ICI = os.path.dirname(os.path.abspath(__file__))
@@ -136,9 +137,14 @@ def prix(sku, nouveau):
     origine.setdefault(sku, ancien)  # on garde le tout premier prix connu, pour pouvoir tout restaurer
     os.makedirs(SORTIE, exist_ok=True)
     json.dump(origine, open(chemin_origine, "w"), ensure_ascii=False, indent=1)
-    appel("PUT", f"products/{urllib.parse.quote(sku, safe='')}", {"product": {"sku": sku, "price": nouveau}}, magasin="all")
+    if CDP or VISIBLE:
+        capture = prix_par_admin(p["id"], sku, nouveau)
+    else:
+        appel("PUT", f"products/{urllib.parse.quote(sku, safe='')}", {"product": {"sku": sku, "price": nouveau}},
+              magasin="all")
     verifie = float(lire_produit(sku).get("price") or 0)
-    capture = capturer_fiche(p["id"], sku)
+    if not (CDP or VISIBLE):
+        capture = capturer_fiche(p["id"], sku)
     journal("Change le prix", f"{sku} · {euros(ancien)} → {euros(verifie)}", capture=capture,
             sku=sku, ancien=ancien, nouveau=verifie)
     return {"sku": sku, "nom": p.get("name"), "ancien": ancien, "nouveau": verifie, "capture": capture}
@@ -171,21 +177,77 @@ def commandes(statut=None, client=None, limite=10):
         liste.append({"numero": c["increment_id"], "date": c["created_at"],
                       "client": f"{c.get('customer_firstname') or ''} {c.get('customer_lastname') or ''}".strip(),
                       "email": c.get("customer_email"), "statut": c["status"], "total": c.get("grand_total"), "skus": skus})
+    capture = montrer_commandes(statut, client) if (CDP or VISIBLE) else None
     filtre = " · ".join(x for x in [f"statut {statut}" if statut else "", f"client « {client} »" if client else ""] if x)
     journal("Consulte les commandes", f"{filtre or 'toutes'} · {r.get('total_count', len(liste))} trouvée(s), "
-            f"{len(liste)} lue(s)" + (f" · la plus récente : n° {liste[0]['numero']} ({liste[0]['client']})" if liste else ""))
+            f"{len(liste)} lue(s)" + (f" · la plus récente : n° {liste[0]['numero']} ({liste[0]['client']})" if liste else ""),
+            capture=capture)
     return {"total": r.get("total_count"), "commandes": liste}
 
 
-# ---------- Playwright : rapports et captures ----------
+# ---------- Playwright : rapports, captures et mode visible ----------
+# Mode visible (démo en direct) : BOUTIQUE_VISIBLE=1. Les actions passent par l'interface d'admin dans une fenêtre
+# Chromium qu'on voit, au ralenti, avec un bandeau et un curseur. Pendant un passage, agents_ia.py ouvre UNE fenêtre
+# et donne son adresse dans BOUTIQUE_CDP : chaque appel de l'outil s'y reconnecte au lieu d'en ouvrir une autre.
+VISIBLE = os.environ.get("BOUTIQUE_VISIBLE") == "1"
+CDP = os.environ.get("BOUTIQUE_CDP")
+BANDEAU = os.environ.get("AGENT_BANDEAU", f"Agent DeloAI · {AGENT}")
+RALENTI_MS = 250
+HABILLAGE = """(texte => { const f = () => {
+  if (document.getElementById('deloai-bandeau')) return;
+  const b = document.createElement('div'); b.id = 'deloai-bandeau'; b.textContent = texte;
+  b.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:2147483647;background:#0f172a;color:#fff;'
+    + 'font:600 14px -apple-system,Helvetica,sans-serif;padding:9px 16px;box-shadow:0 2px 10px rgba(0,0,0,.35);'
+    + 'pointer-events:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-bottom:3px solid #f97316';
+  document.body.appendChild(b);
+  const c = document.createElement('div'); c.id = 'deloai-curseur';
+  c.style.cssText = 'position:fixed;z-index:2147483647;width:22px;height:22px;border-radius:50%;left:-60px;top:-60px;'
+    + 'background:rgba(249,115,22,.45);border:2px solid #f97316;pointer-events:none;transform:translate(-50%,-50%);'
+    + 'transition:left .12s,top .12s,transform .1s';
+  document.body.appendChild(c);
+  addEventListener('mousemove', e => { c.style.left = e.clientX + 'px'; c.style.top = e.clientY + 'px'; }, true);
+  addEventListener('mousedown', () => c.style.transform = 'translate(-50%,-50%) scale(1.7)', true);
+  addEventListener('mouseup', () => c.style.transform = 'translate(-50%,-50%)', true);
+}; document.body ? f() : addEventListener('DOMContentLoaded', f); })"""
 
-def navigateur(p):
-    nav = p.chromium.launch(headless=True)
+
+def habiller(ctx, page):
+    """Bandeau « Agent DeloAI · … » et curseur visible, sur la page actuelle et les suivantes."""
+    script = f"{HABILLAGE}({json.dumps(BANDEAU)})"
+    ctx.add_init_script(script)
+    try:
+        page.evaluate(script)
+    except Exception:
+        pass
+
+
+@contextmanager
+def admin():
+    """(page, ctx, etat) : fenêtre partagée du passage, fenêtre visible seule, ou navigateur invisible."""
+    from playwright.sync_api import sync_playwright
     etat = os.path.join(SORTIE, "session-admin.json")
-    ctx = nav.new_context(viewport={"width": 1400, "height": 850},
-                          storage_state=etat if os.path.exists(etat) else None)
-    page = ctx.new_page()
-    return nav, ctx, page, etat
+    with sync_playwright() as p:
+        if CDP:
+            nav = p.chromium.connect_over_cdp(CDP, slow_mo=RALENTI_MS)
+            ctx = nav.contexts[0]
+            page = ctx.pages[0] if ctx.pages else ctx.new_page()
+        elif VISIBLE:
+            nav = p.chromium.launch(headless=False, slow_mo=RALENTI_MS,
+                                    args=["--window-position=0,0", "--window-size=1280,800"])
+            ctx = nav.new_context(no_viewport=True, storage_state=etat if os.path.exists(etat) else None)
+            page = ctx.new_page()
+        else:
+            nav = p.chromium.launch(headless=True)
+            ctx = nav.new_context(viewport={"width": 1400, "height": 850},
+                                  storage_state=etat if os.path.exists(etat) else None)
+            page = ctx.new_page()
+        if CDP or VISIBLE:
+            habiller(ctx, page)
+        try:
+            yield page, ctx, etat
+        finally:
+            if not CDP:  # la fenêtre partagée reste ouverte : agents_ia.py la ferme à la fin du passage
+                nav.close()
 
 
 def ouvrir(page, ctx, etat, chemin):
@@ -194,42 +256,107 @@ def ouvrir(page, ctx, etat, chemin):
     if page.locator("#username").count():
         page.fill("#username", COMPTE[0]); page.fill("#login", COMPTE[1])
         page.click(".action-login"); page.wait_for_load_state("domcontentloaded", timeout=120000)
-        ctx.storage_state(path=etat)
+        try:
+            ctx.storage_state(path=etat)
+        except Exception:
+            pass
         if chemin not in page.url:
             page.goto(f"{BOUTIQUE}/admin/{chemin}", timeout=120000, wait_until="domcontentloaded")
 
 
+def accueil():
+    """Début d'un passage visible : la fenêtre se connecte et montre le tableau de bord."""
+    with admin() as (page, ctx, etat):
+        ouvrir(page, ctx, etat, "dashboard/")
+        page.wait_for_timeout(800)
+    journal("Ouvre le back-office", BOUTIQUE.replace("http://", "") + "/admin")
+    return {"ok": True}
+
+
+def montrer_prix(page, produit_id):
+    champ = page.locator("input[name='product[price]']")
+    champ.wait_for(state="visible", timeout=60000)
+    page.wait_for_timeout(500)
+    champ.scroll_into_view_if_needed()
+    page.evaluate("window.scrollBy(0, -250)")
+    return champ
+
+
 def capturer_fiche(produit_id, sku):
-    from playwright.sync_api import sync_playwright
     nom = nom_capture()
     try:
-        with sync_playwright() as p:
-            nav, ctx, page, etat = navigateur(p)
-            try:
-                ouvrir(page, ctx, etat, f"catalog/product/edit/id/{produit_id}/")
-                champ = page.locator("input[name='product[price]']")
-                champ.wait_for(state="visible", timeout=60000)
-                page.wait_for_timeout(600)
-                champ.scroll_into_view_if_needed()
-                page.evaluate("window.scrollBy(0, -250)")
-                page.screenshot(path=os.path.join(SORTIE, "captures", nom), type="jpeg", quality=70)
-            finally:
-                nav.close()
+        with admin() as (page, ctx, etat):
+            ouvrir(page, ctx, etat, f"catalog/product/edit/id/{produit_id}/")
+            montrer_prix(page, produit_id)
+            page.screenshot(path=os.path.join(SORTIE, "captures", nom), type="jpeg", quality=70)
         return nom
     except Exception as e:  # la capture est un bonus : le prix est déjà changé et vérifié par l'API
         print(f"capture impossible : {str(e).splitlines()[0][:120]}", file=sys.stderr)
         return None
 
 
+def prix_par_admin(produit_id, sku, nouveau):
+    """Mode visible : Catalog › Products › recherche du SKU › fiche › champ Prix › Save, comme un salarié."""
+    nom = nom_capture()
+    with admin() as (page, ctx, etat):
+        try:
+            ouvrir(page, ctx, etat, "catalog/product/")
+            recherche = page.locator("#fulltext").first
+            recherche.wait_for(state="visible", timeout=30000)
+            recherche.click(); recherche.fill(""); recherche.type(sku, delay=45); recherche.press("Enter")
+            ligne = page.locator("tr.data-row", has_text=sku).first
+            ligne.wait_for(state="visible", timeout=30000)
+            page.wait_for_timeout(400)
+            ligne.locator("a", has_text="Edit").first.click()
+            page.wait_for_url("**/catalog/product/edit/**", timeout=60000)
+        except Exception:  # la grille n'a pas coopéré : on ouvre la fiche directement
+            ouvrir(page, ctx, etat, f"catalog/product/edit/id/{produit_id}/")
+        champ = montrer_prix(page, produit_id)
+        champ.click(click_count=3); champ.fill("")
+        champ.type(f"{nouveau:.2f}", delay=120)
+        page.wait_for_timeout(300)
+        page.locator("#save-button").click()
+        page.locator(".message-success", has_text="You saved the product").first.wait_for(timeout=120000)
+        page.wait_for_timeout(400)
+        page.screenshot(path=os.path.join(SORTIE, "captures", nom), type="jpeg", quality=70)
+        montrer_prix(page, produit_id)
+        page.wait_for_timeout(1200)
+    return nom
+
+
+def montrer_commandes(statut, client):
+    """Mode visible : Sales › Orders, filtre par statut (et recherche du client) ; les données viennent de l'API."""
+    nom = nom_capture()
+    try:
+        with admin() as (page, ctx, etat):
+            ouvrir(page, ctx, etat, "sales/order/")
+            page.locator("tr.data-row").first.wait_for(state="visible", timeout=60000)
+            vider = page.locator("button[data-action='grid-filter-reset']").first
+            if vider.count() and vider.is_visible():
+                vider.click(); page.wait_for_timeout(1500)
+            if statut:
+                page.locator("button[data-action='grid-filter-expand']").first.click()
+                page.locator("select[name='status']").first.select_option(statut)
+                page.locator("button[data-action='grid-filter-apply']").first.click()
+                page.wait_for_timeout(2000)
+            if client:
+                recherche = page.locator("#fulltext").first
+                recherche.click(); recherche.fill(""); recherche.type(client, delay=45); recherche.press("Enter")
+                page.wait_for_timeout(2000)
+            page.screenshot(path=os.path.join(SORTIE, "captures", nom), type="jpeg", quality=70)
+        return nom
+    except Exception as e:
+        print(f"affichage des commandes impossible : {str(e).splitlines()[0][:120]}", file=sys.stderr)
+        return None
+
+
 def rapport(type_, du, au, periode=None):
     # meilleures ventes : un classement par année se lit mieux qu'un classement par mois
     periode = periode or ("year" if type_ == "bestsellers" else "month")
-    from playwright.sync_api import sync_playwright
     chemin, libelle = RAPPORTS[type_]
     nom = nom_capture()
-    with sync_playwright() as p:
-        nav, ctx, page, etat = navigateur(p)
-        try:
+    with admin() as (page, ctx, etat):
+        if True:
             ouvrir(page, ctx, etat, chemin)
             page.wait_for_selector("#sales_report_from", timeout=60000)
             page.fill("#sales_report_from", du); page.fill("#sales_report_to", au)
@@ -248,8 +375,8 @@ def rapport(type_, du, au, periode=None):
                     lignes.append(dict(zip(entetes, cellules)))
             grille.scroll_into_view_if_needed()
             page.screenshot(path=os.path.join(SORTIE, "captures", nom), type="jpeg", quality=70)
-        finally:
-            nav.close()
+            if CDP or VISIBLE:
+                page.wait_for_timeout(1500)
     resume = ", ".join(f"{k} {v}" for k, v in totaux.items()
                        if k not in ("Interval", "Period") and v and v not in ("0", "$0.00"))[:160]
     journal("Génère le rapport", f"{libelle} du {du} au {au} · {resume or ('aucune donnée sur la période' if not lignes else str(len(lignes)) + ' ligne(s)')}", capture=nom,
@@ -263,6 +390,7 @@ if __name__ == "__main__":
     s.add_parser("chercher").add_argument("mots")
     sp = s.add_parser("prix"); sp.add_argument("sku"); sp.add_argument("nouveau_prix", type=float)
     s.add_parser("restaurer-prix")
+    s.add_parser("accueil")
     sc = s.add_parser("commandes"); sc.add_argument("--statut"); sc.add_argument("--client")
     sc.add_argument("--limite", type=int, default=10)
     sr = s.add_parser("rapport"); sr.add_argument("type", choices=list(RAPPORTS))
@@ -273,6 +401,8 @@ if __name__ == "__main__":
         out = chercher(r.mots)
     elif r.cmd == "prix":
         out = prix(r.sku, r.nouveau_prix)
+    elif r.cmd == "accueil":
+        out = accueil()
     elif r.cmd == "restaurer-prix":
         out = restaurer_prix()
     elif r.cmd == "commandes":
