@@ -1,5 +1,7 @@
 # Script de la démo — finale (3 min + 2 min de questions)
 
+**Ne sert que si on est sélectionnés.** La vidéo de rendu (2 min) est dans `script-video.md`. Ici, le jury choisit lui-même le salarié lu par l'IA. « Retirer un salarié et tout recalculer » est à construire seulement si on est pris : il faut alors les résumés validés et la fusion d'Atelier Nova, qui ne sont pas sur le Mac de phamphamh (seuls les enregistrements bruts y sont).
+
 Base : l'enregistrement du 18/10 (11h24), recalé sur les vrais chiffres du dashboard Atelier Nova (`labs/adamaass/nova-dashboard/`, données `labs/adamaass/caibinet-nova/data.js`).
 
 **Le plan** (demandé le 18/10 midi) : l'intro → l'entreprise et l'étude → **la preuve qu'on n'a rien écrit en dur** → ce qu'on a trouvé → les agents qu'on recommande → **ces agents, déployés ce matin, en direct**.
