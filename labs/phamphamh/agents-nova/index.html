@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fr">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -139,51 +139,51 @@ button { font: inherit; color: inherit; }
     <div class="au-grille">
       <div class="au-gauche">
         <div class="heros">
-          <div class="mono">L'audit · une semaine observée</div>
-          <div class="chiffre">71,7 <small>k€ / an</small></div>
-          <span class="mono">perdus dans des tâches répétées</span>
+          <div class="mono">The audit · one week observed</div>
+          <div class="chiffre">€71.7k <small>/ year</small></div>
+          <span class="mono">lost to repetitive tasks</span>
         </div>
         <div class="cles">
-          <div class="cle"><div class="chiffre">41 <small>h / semaine</small></div><span class="mono">perdues, toute l'équipe</span></div>
-          <div class="cle"><div class="chiffre">40 <small>%</small></div><span class="mono">du temps dans un seul écran · <b>Catalogue</b></span></div>
-          <div class="cle"><div class="chiffre perte">790 <small>fois / sem.</small></div><span class="mono">N° 1 · <b>le rapport de ventes</b> · 10,5 k€ / an</span></div>
-          <div class="cle"><div class="chiffre ia">30,1 <small>k€ / an</small></div><span class="mono">récupérables · <b>5 workflows</b> à automatiser</span></div>
+          <div class="cle"><div class="chiffre">41 <small>h / week</small></div><span class="mono">hours lost / week, whole team</span></div>
+          <div class="cle"><div class="chiffre">40 <small>%</small></div><span class="mono">of time in one screen · <b>Catalog</b></span></div>
+          <div class="cle"><div class="chiffre perte">790× <small>/ week</small></div><span class="mono">No. 1 · <b>Sales report</b> · €10.5k / year</span></div>
+          <div class="cle"><div class="chiffre ia">€30.1k <small>/ year</small></div><span class="mono">recoverable · <b>5 workflows</b> to automate</span></div>
         </div>
         <div></div>
       </div>
       <div class="au-droite">
         <i class="coin a"></i><i class="coin b"></i><i class="coin c"></i><i class="coin d"></i>
-        <div class="mono">Les 3 workflows qu'on déploie</div>
-        <h2>Les trois premiers, <b>déployés ce matin</b>.</h2>
+        <div class="mono">3 workflows we deploy</div>
+        <h2>The first three, <b>deployed this morning</b>.</h2>
         <ul class="wfs">
-          <li><span class="n">01</span><span class="nom">Rapport de ventes<small>790 fois / semaine</small></span><span class="eur">10,5 k€<small>par an</small></span></li>
-          <li><span class="n">02</span><span class="nom">Commandes annulées<small>520 fois / semaine</small></span><span class="eur">8,7 k€<small>par an</small></span></li>
-          <li><span class="n">03</span><span class="nom">Prix produit<small>370 fois / semaine</small></span><span class="eur">8,7 k€<small>par an</small></span></li>
+          <li><span class="n">01</span><span class="nom">Sales report<small>790× / week</small></span><span class="eur">€10.5k<small>per year</small></span></li>
+          <li><span class="n">02</span><span class="nom">Canceled orders<small>520× / week</small></span><span class="eur">€8.7k<small>per year</small></span></li>
+          <li><span class="n">03</span><span class="nom">Product price<small>370× / week</small></span><span class="eur">€8.7k<small>per year</small></span></li>
         </ul>
       </div>
     </div>
-    <div class="mono source-ligne">Atelier Nova · 6 salariés observés × 10 · données WONDERBREAD (Stanford)</div>
+    <div class="mono source-ligne">Atelier Nova · 6 employees observed × 10 · WONDERBREAD data (Stanford)</div>
   </section>
 
   <section class="ecran bureau" id="e-bureau">
     <div class="b-grille">
       <div class="scene" id="scene">
-        <canvas id="c3d" aria-label="Le bureau d'Atelier Nova en 3D : six postes de salariés, cliquables, et cinq postes d'agents"></canvas>
+        <canvas id="c3d" aria-label="Atelier Nova's office in 3D: six clickable employee desks and five agent desks"></canvas>
         <svg class="liens" id="liens"></svg>
         <div id="etiquettes"></div>
-        <div class="scene-tete"><div class="mono">Le bureau · Atelier Nova</div></div>
+        <div class="scene-tete"><div class="mono">The office · Atelier Nova</div></div>
         <div class="mesures">
-          <div>Passages<b id="m-passages">—</b></div>
-          <div>Temps humain rendu<b class="ia" id="m-humain">—</b></div>
-          <div>En service depuis<b id="m-depuis">—</b></div>
+          <div>Runs<b id="m-passages">—</b></div>
+          <div>Human time saved<b class="ia" id="m-humain">—</b></div>
+          <div>Live since<b id="m-depuis">—</b></div>
         </div>
-        <div class="mono aide">Cliquez sur un salarié</div>
+        <div class="mono aide">Click an employee</div>
         <i class="coin a"></i><i class="coin b"></i><i class="coin c"></i><i class="coin d"></i>
       </div>
       <div class="b-droite">
         <div class="panneau vide-p" id="panneau"></div>
         <div class="journal">
-          <div class="mono"><span class="direct"><i></i>Journal en direct</span></div>
+          <div class="mono"><span class="direct"><i></i>Live log</span></div>
           <ul id="journal"></ul>
         </div>
       </div>
@@ -194,17 +194,17 @@ button { font: inherit; color: inherit; }
 <script type="module">
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-const nf = n => (n == null || isNaN(n)) ? "—" : Number(n).toLocaleString("fr-FR");
+const nf = n => (n == null || isNaN(n)) ? "—" : Number(n).toLocaleString("en-US");
 const date = v => { if (!v) return null; const d = new Date(v); return isNaN(d) ? null : d; };
-const hm = v => { const d = date(v); return d ? d.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }) : "—"; };
-const hms = v => { const d = date(v); return d ? d.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit", second: "2-digit" }) : "—"; };
+const hm = v => { const d = date(v); return d ? d.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }) : "—"; };
+const hms = v => { const d = date(v); return d ? d.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit" }) : "—"; };
 const duree = s => { if (s == null || isNaN(s)) return "—"; s = Math.round(s); if (s < 60) return s + " s"; if (s < 3600) return Math.floor(s / 60) + " min " + String(s % 60).padStart(2, "0"); return Math.floor(s / 3600) + " h " + String(Math.floor(s % 3600 / 60)).padStart(2, "0"); };
 const masque = v => v == null ? v : String(v).replace(/[\w.+-]+@[\w-]+(\.[\w-]+)+/g, "…");
 const sansAccent = s => String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
 const attendre = ms => new Promise(r => setTimeout(r, ms));
 
 /* ---------- Deux écrans ---------- */
-const ETAPES = [{ id: "audit", titre: "L'audit" }, { id: "bureau", titre: "Le bureau" }];
+const ETAPES = [{ id: "audit", titre: "The audit" }, { id: "bureau", titre: "The office" }];
 let courant = -1;
 function aller(i, garderHash) {
   i = Math.max(0, Math.min(ETAPES.length - 1, i));
@@ -234,14 +234,14 @@ addEventListener("hashchange", depuisHash);
 
 /* ---------- Personnes et leurs workflows ---------- */
 const SALARIES = [
-  { id: "lea", prenom: "Léa", role: "Responsable e-commerce" }, { id: "karim", prenom: "Karim", role: "Gestionnaire catalogue" },
-  { id: "sophie", prenom: "Sophie", role: "Analyste ventes" }, { id: "nadia", prenom: "Nadia", role: "Service client" },
-  { id: "julien", prenom: "Julien", role: "Commandes et logistique" }, { id: "emma", prenom: "Emma", role: "Marketing et promotions" },
+  { id: "lea", prenom: "Léa", role: "E-commerce lead" }, { id: "karim", prenom: "Karim", role: "Catalog manager" },
+  { id: "sophie", prenom: "Sophie", role: "Sales analyst" }, { id: "nadia", prenom: "Nadia", role: "Customer service" },
+  { id: "julien", prenom: "Julien", role: "Orders & logistics" }, { id: "emma", prenom: "Emma", role: "Marketing & promotions" },
 ];
 const REPLI = {
-  sophie: [{ agent: "rapport-ventes", nom: "Rapport de ventes", etapes: ["Ouvre Rapports › Ventes", "Choisit la période", "Lance le rapport", "Lit les totaux et répond"] }],
-  karim: [{ agent: "prix-produit", nom: "Prix produit", etapes: ["Ouvre Catalogue › Produits", "Cherche le produit", "Modifie le prix", "Enregistre et vérifie"] }],
-  nadia: [{ agent: "commandes-annulees", nom: "Commandes annulées", etapes: ["Ouvre Ventes › Commandes", "Filtre sur « annulée »", "Lit les commandes", "Répond"] }],
+  sophie: [{ agent: "rapport-ventes", nom: "Sales report", etapes: ["Open Reports › Sales", "Pick the period", "Run the report", "Read the totals and answer"] }],
+  karim: [{ agent: "prix-produit", nom: "Product price", etapes: ["Open Catalog › Products", "Find the product", "Change the price", "Save and check"] }],
+  nadia: [{ agent: "commandes-annulees", nom: "Canceled orders", etapes: ["Open Sales › Orders", "Filter on “canceled”", "Read the orders", "Answer"] }],
 };
 const PERS = Object.fromEntries(SALARIES.map(s => [s.id, { ...s, workflows: REPLI[s.id] || [] }]));
 async function chargerPersonnes() {
@@ -249,7 +249,7 @@ async function chargerPersonnes() {
     try {
       const r = await fetch(url, { cache: "no-store" }); if (!r.ok) continue;
       const liste = await r.json(); if (!Array.isArray(liste)) continue;
-      liste.forEach(p => { const id = sansAccent(p.id || p.prenom); if (!PERS[id]) return; PERS[id] = { ...PERS[id], ...p, id, workflows: Array.isArray(p.workflows) ? p.workflows : PERS[id].workflows }; });
+      liste.forEach(p => { const id = sansAccent(p.id || p.prenom); if (!PERS[id]) return; PERS[id] = { ...PERS[id], ...p, id, role: p.role_en || PERS[id].role, workflows: Array.isArray(p.workflows) ? p.workflows.map(w => ({ ...w, nom: w.nom_en || w.name || w.nom })) : PERS[id].workflows }; });
       rendrePanneau(); return;
     } catch (_) {}
   }
@@ -258,9 +258,9 @@ chargerPersonnes();
 
 /* ---------- État des agents (API, ou instantané etat.json rejoué) ---------- */
 const AGENTS_DEFAUT = [
-  { id: "prix-produit", nom: "Prix produit", statut: "en service" }, { id: "rapport-ventes", nom: "Rapport de ventes", statut: "en service" },
-  { id: "commandes-annulees", nom: "Commandes annulées", statut: "en service" }, { id: "avis-produit", nom: "Avis produit", statut: "en préparation" },
-  { id: "variantes-produit", nom: "Variantes produit", statut: "en préparation" },
+  { id: "prix-produit", nom: "Product price", statut: "en service" }, { id: "rapport-ventes", nom: "Sales report", statut: "en service" },
+  { id: "commandes-annulees", nom: "Canceled orders", statut: "en service" }, { id: "avis-produit", nom: "Product reviews", statut: "en préparation" },
+  { id: "variantes-produit", nom: "Product variants", statut: "en préparation" },
 ];
 // lu par la scène 3D
 const ETAT = { agents: AGENTS_DEFAUT, actif: null, demande: "", choisi: null, lien: null };
@@ -270,7 +270,8 @@ function normaliser(e) {
   const journal = Array.isArray(e.journal) ? e.journal : [];
   const runs = Array.isArray(e.runs) ? e.runs : [];
   let agents = Array.isArray(e.agents) && e.agents.length ? e.agents : AGENTS_DEFAUT;
-  agents = agents.map(a => ({ ...a, passages: a.passages ?? runs.filter(r => r.agent === a.id).length }));
+  const NOM_EN = Object.fromEntries(AGENTS_DEFAUT.map(a => [a.id, a.nom]));
+  agents = agents.map(a => ({ ...a, nom: a.nom_en || NOM_EN[a.id] || a.nom, passages: a.passages ?? runs.filter(r => r.agent === a.id).length }));
   let enCours = null;
   if (e.en_cours && typeof e.en_cours === "object") enCours = e.en_cours;
   else if (e.en_cours === true) { const l = journal[journal.length - 1]; enCours = { agent: e.deploiement?.agent || l?.agent, run: l?.run }; }
@@ -283,14 +284,14 @@ function afficher(n) {
   dernierN = n;
   const e = n.brut;
   ETAT.agents = n.agents; ETAT.actif = n.enCours ? n.enCours.agent : null;
-  ETAT.demande = n.enCours ? (n.enCours.demande_fr || n.journal.find(l => l.run === n.enCours.run && l.type === "demande")?.detail || "") : "";
+  ETAT.demande = n.enCours ? (n.enCours.demande_en || n.enCours.demande || n.journal.find(l => l.run === n.enCours.run && l.type === "demande")?.demande || "") : "";
   $("#m-passages").textContent = nf(e.passages ?? n.runs.length);
   $("#m-humain").textContent = duree(n.humain);
   $("#m-depuis").textContent = hm(e.deploiement?.depuis);
   $("#journal").innerHTML = n.journal.slice(-6).reverse().map(l => {
     const k = `${l.run}|${l.n}|${l.ts}|${l.type}`; const neuf = !premier && !vus.has(k); vus.add(k);
-    return `<li class="${neuf ? "neuf" : ""}"><span class="t">${hms(l.ts)}</span><span><span class="e">${esc(masque(l.etape || l.detail))}</span><small>${esc(l.agent || "")}${l.detail && l.etape ? " · " + esc(masque(l.detail)) : ""}</small></span></li>`;
-  }).join("") || `<li><span class="t">—</span><span class="e">Aucune action pour l'instant</span></li>`;
+    return `<li class="${neuf ? "neuf" : ""}"><span class="t">${hms(l.ts)}</span><span><span class="e">${esc(masque(l.etape_en || l.etape || l.detail))}</span><small>${esc(l.agent || "")}${(l.detail_en || l.detail) && l.etape ? " · " + esc(masque(l.detail_en || (l.type === "demande" && l.demande) || l.detail)) : ""}</small></span></li>`;
+  }).join("") || `<li><span class="t">—</span><span class="e">No action yet</span></li>`;
   premier = false;
   suivreRun(n);
 }
@@ -342,23 +343,23 @@ function fermerPanneau() {
 window.ouvrirPersonne = ouvrirPersonne;
 function rendrePanneau() {
   const el = $("#panneau");
-  if (!P.id) { el.className = "panneau vide-p"; el.innerHTML = `<div class="mono">Cliquez sur un salarié</div><div style="font-size:22px;font-weight:300;letter-spacing:-.01em">pour voir ce qu'il refait chaque semaine, et le confier à un agent.</div>`; return; }
+  if (!P.id) { el.className = "panneau vide-p"; el.innerHTML = `<div class="mono">Click an employee</div><div style="font-size:22px;font-weight:300;letter-spacing:-.01em">to see what they redo every week, and hand it to an agent.</div>`; return; }
   const p = PERS[P.id]; el.className = "panneau";
-  let h = `<button class="fermer" data-act="fermer" aria-label="Fermer">×</button><div class="mono">Salarié · ${esc(p.role)}</div><div class="pn-nom">${esc(p.prenom)}</div>`;
+  let h = `<button class="fermer" data-act="fermer" aria-label="Close">×</button><div class="mono">Employee · ${esc(p.role)}</div><div class="pn-nom">${esc(p.prenom)}</div>`;
   if (!P.wf) {
-    h += p.workflows.length ? p.workflows.map((w, i) => `<div class="pn-wf"><div class="nom">${esc(w.nom)}</div><div class="fois">${w.fois != null ? `Observé ${nf(w.fois)} fois cette semaine` : "Observé cette semaine"}${w.minutes != null ? ` · ${nf(w.minutes)} min` : ""}</div><button class="btn" data-act="creer" data-i="${i}">Créer le workflow</button></div>`).join("")
-      : `<div class="pn-wf"><div class="fois">Aucun workflow répété repéré pour l'instant.</div></div>`;
+    h += p.workflows.length ? p.workflows.map((w, i) => `<div class="pn-wf"><div class="nom">${esc(w.nom)}</div><div class="fois">${w.fois != null ? `Observed ${nf(w.fois)} times this week` : "Observed this week"}${w.minutes != null ? ` · ${nf(w.minutes)} min` : ""}</div>${w.demande?.en ? `<div class="fois" style="text-transform:none;letter-spacing:.02em;color:var(--faible)">“${esc(w.demande.en)}”</div>` : ""}<button class="btn" data-act="creer" data-i="${i}">Create workflow</button></div>`).join("")
+      : `<div class="pn-wf"><div class="fois">No repeated workflow spotted yet.</div></div>`;
   } else {
-    const w = P.wf, etapes = w.etapes && w.etapes.length ? w.etapes : ["Ouvre le back-office", "Fait la tâche", "Répond"];
-    h += `<div class="pn-wf"><div class="nom">${esc(w.nom)}</div><div class="fois">${P.phase === "creation" ? "Le workflow se crée…" : "Workflow créé · agent " + esc(w.agent)}</div></div>`;
-    h += `<ol class="terminal">${etapes.slice(0, P.ecrites).map(t => `<li>${esc(t)}</li>`).join("")}${P.phase !== "creation" ? `<li class="ok">Confié à l'agent ${esc(w.agent)}</li>` : ""}</ol>`;
-    if (P.phase === "pret") h += `<button class="btn ia" data-act="lancer">Lancer en direct</button>`;
+    const w = P.wf, etapes = etapesDe(w);
+    h += `<div class="pn-wf"><div class="nom">${esc(w.nom)}</div><div class="fois">${P.phase === "creation" ? "Creating the workflow…" : "Workflow created · agent " + esc(w.agent)}</div></div>`;
+    h += `<ol class="terminal">${etapes.slice(0, P.ecrites).map(t => `<li>${esc(t)}</li>`).join("")}${P.phase !== "creation" ? `<li class="ok">Handed to agent ${esc(w.agent)}</li>` : ""}</ol>`;
+    if (P.phase === "pret") h += `<button class="btn ia" data-act="lancer">Run live</button>`;
     if (P.phase === "lance") {
       const lignes = (dernierN?.journal || []).filter(l => P.run ? l.run === P.run : (l.agent === w.agent && (date(l.ts)?.getTime() || 0) >= P.depuis - 2000)).slice(-3);
-      h += `<div class="etat"><i></i>L'agent travaille dans le back-office…</div>`;
-      h += lignes.length ? `<ol class="terminal">${lignes.map(l => `<li>${esc(masque(l.etape || l.detail))}${l.detail && l.etape ? " · " + esc(masque(l.detail)) : ""}</li>`).join("")}</ol>` : "";
+      h += `<div class="etat"><i></i>The agent is working in the back-office…</div>`;
+      h += lignes.length ? `<ol class="terminal">${lignes.map(l => `<li>${esc(masque(l.etape_en || l.etape || l.detail))}${(l.detail_en || l.detail) && l.etape ? " · " + esc(masque(l.detail_en || l.detail)) : ""}</li>`).join("")}</ol>` : "";
     }
-    if (P.phase === "fini") h += `<div class="mono">Réponse de l'agent</div><div class="reponse">${esc(masque(P.reponse) || "Passage terminé.")}</div>`;
+    if (P.phase === "fini") h += `<div class="mono">Agent's answer</div><div class="reponse">${esc(masque(P.reponse) || "Run finished.")}</div>`;
   }
   el.innerHTML = h;
 }
@@ -370,7 +371,7 @@ $("#panneau").addEventListener("click", async e => {
     Object.assign(P, { wf: w, phase: "creation", ecrites: 0 });
     ETAT.lien = { personne: P.id, agent: w.agent, t0: performance.now() };
     rendrePanneau();
-    const n = (w.etapes && w.etapes.length) || 3;
+    const n = etapesDe(w).length;
     for (let k = 1; k <= n; k++) { await attendre(2000 / (n + 1)); if (P.wf !== w) return; P.ecrites = k; rendrePanneau(); }
     await attendre(300); if (P.wf !== w) return;
     P.phase = "pret"; rendrePanneau();
@@ -383,6 +384,7 @@ $("#panneau").addEventListener("click", async e => {
     } else rejouer(w.agent);
   }
 });
+const etapesDe = w => (w.etapes_en && w.etapes_en.length ? w.etapes_en : w.etapes && w.etapes.length ? w.etapes : ["Open the back-office", "Do the task", "Answer"]);
 let vuEnCours = false;
 function suivreRun(n) {
   if (P.phase !== "lance" || !P.wf) return;
@@ -390,7 +392,7 @@ function suivreRun(n) {
   if (n.enCours && n.enCours.agent === w.agent) { P.run = n.enCours.run || P.run; vuEnCours = true; }
   const d = n.dernier;
   const fini = d && d.agent === w.agent && (P.run ? d.run === P.run : vuEnCours) && !n.enCours;
-  if (fini) { P.phase = "fini"; vuEnCours = false; P.reponse = /echec|échec/i.test(d.statut || "") ? "Le passage a échoué : " + (d.erreur || "") : (d.reponse || n.agents.find(a => a.id === w.agent)?.derniere_reponse || (d.totaux ? `${d.totaux.commandes} commandes · ${d.totaux.ventes}` : "")); }
+  if (fini) { P.phase = "fini"; vuEnCours = false; P.reponse = /echec|échec/i.test(d.statut || "") ? "The run failed: " + (d.erreur || "") : (d.reponse_en || d.reponse || n.agents.find(a => a.id === w.agent)?.derniere_reponse || (d.totaux ? `${d.totaux.commandes} orders · ${d.totaux.ventes}` : "")); }
   rendrePanneau();
 }
 
@@ -493,8 +495,8 @@ async function lancerScene() {
   const etSal = salaries.map((s, k) => { const e = mk(s.ancre, decal[k][0], decal[k][1], { html: `${esc(SALARIES[k].prenom)} · ${esc(SALARIES[k].role)}`, personne: SALARIES[k].id }); e.d.classList.add("cliquable"); e.d.addEventListener("click", () => ouvrirPersonne(SALARIES[k].id)); return e; });
   const decalAg = [[-80, 50], [-20, 88], [60, 60], [100, 0], [100, 60]];
   const etAg = agents.map((a, k) => mk(a.ancre, decalAg[k][0], decalAg[k][1]));
-  const etSv = mk(new THREE.Vector3(SV.x, 2.9, SV.z), -40, -16, { html: `Boutique · Magento<small>le vrai back-office</small>` });
-  const zIA = mk(new THREE.Vector3(ZA.x1, 0, ZA.z1), -40, 14, { zone: true, html: "Agents déployés" });
+  const etSv = mk(new THREE.Vector3(SV.x, 2.9, SV.z), -40, -16, { html: `Store · Magento<small>the real back-office</small>` });
+  const zIA = mk(new THREE.Vector3(ZA.x1, 0, ZA.z1), -40, 14, { zone: true, html: "Deployed agents" });
   const toutes = [...etSal, ...etAg, etSv, zIA];
 
   // clic sur un poste de salarié
@@ -559,11 +561,11 @@ async function lancerScene() {
       const k = etAg.indexOf(e);
       if (k >= 0) {
         const ag = agents[k].liste;
-        if (!ag) { html = "Poste libre"; eteinte = true; }
-        else if (ag.id === ETAT.actif) { vive = true; html = `<b>Agent · ${esc(ag.nom || ag.id)}</b> · au travail<small>${esc(coupe(masque(ETAT.demande), 70) || "passage en cours…")}</small>`; }
-        else if (ag.id === lienAgent) { vive = true; html = `<b>Agent · ${esc(ag.nom || ag.id)}</b><small>nouveau workflow reçu</small>`; }
-        else if (ag.statut === "en service") html = `Agent · ${esc(ag.nom || ag.id)}<small>en service · ${nf(ag.passages ?? 0)} passages</small>`;
-        else { html = `Agent · ${esc(ag.nom || ag.id)}<small>en préparation</small>`; eteinte = true; }
+        if (!ag) { html = "Free desk"; eteinte = true; }
+        else if (ag.id === ETAT.actif) { vive = true; html = `<b>Agent · ${esc(ag.nom || ag.id)}</b> · working<small>${esc(coupe(masque(ETAT.demande), 70) || "run in progress…")}</small>`; }
+        else if (ag.id === lienAgent) { vive = true; html = `<b>Agent · ${esc(ag.nom || ag.id)}</b><small>new workflow received</small>`; }
+        else if (ag.statut === "en service") html = `Agent · ${esc(ag.nom || ag.id)}<small>live · ${nf(ag.passages ?? 0)} runs</small>`;
+        else { html = `Agent · ${esc(ag.nom || ag.id)}<small>coming soon</small>`; eteinte = true; }
       }
       if (e.d.innerHTML !== html) e.d.innerHTML = html;
       e.d.classList.toggle("vive", vive); e.d.classList.toggle("eteinte", eteinte);
