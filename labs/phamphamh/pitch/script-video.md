@@ -4,6 +4,8 @@ La vidéo passe avant la finale : c'est elle qui nous fait sélectionner. La fin
 
 **Différence avec la finale** : en vidéo, le jury ne peut pas choisir. C'est donc nous qui choisissons un salarié, et la lecture par l'IA est filmée **d'un seul plan, chrono visible**. C'est ça, la preuve que rien n'est écrit en dur.
 
+**Prononciation** : « DeloAI » se dit « délo-aï ».
+
 **Environ 230 mots de voix off** : environ 1 min 40, ce qui laisse 20 s de respiration et de plans sans voix.
 
 **À filmer** (enregistrement d'écran, thème clair) :
@@ -15,7 +17,7 @@ La vidéo passe avant la finale : c'est elle qui nous fait sélectionner. La fin
 ---
 
 ## 0:00 – 0:25 · L'intro — plan 1 (les 4 écrans)
-> « Nous, c'est ACG, AI Consulting Group. On a demandé à Louis le plus gros problème des utilisateurs de screenpipe. Sa réponse : ils ont plein de données, et ils ne savent pas quoi en faire. screenpipe enregistre tout, en local. Mais personne ne relit ces captures, et personne ne sait quoi automatiser. Il manque le cabinet. Alors on l'a construit. »
+> « Nous, c'est DeloAI. On a demandé à Louis le plus gros problème des utilisateurs de screenpipe. Sa réponse : ils ont plein de données, et ils ne savent pas quoi en faire. screenpipe enregistre tout, en local. Mais personne ne relit ces captures, et personne ne sait quoi automatiser. Il manque le cabinet. Alors on l'a construit. »
 
 ## 0:25 – 0:37 · Le cas — plan 2, écran 1 (étiquette « Simulation ×10 » visible)
 > « Notre premier cas : Atelier Nova, une boutique en ligne. Ses salariés sont de vraies personnes, enregistrées au travail par Stanford. Six, multipliées par dix pour simuler 60 postes. »
@@ -37,12 +39,12 @@ Montage : la lecture dure environ 30 s. On peut l'accélérer ×1,5 à condition
 *Si ce plan n'est pas prêt à 13h30 : on le coupe, et la vidéo finit sur la skill créée (1 min 30 au total).*
 
 ## 1:45 – 1:55 · La fin — intro.html, écran D, puis le lien GitHub
-> « screenpipe a les données. ACG apporte le cabinet. »
+> « screenpipe a les données. DeloAI apporte le cabinet. »
 
 ---
 
 ## À vérifier avant d'exporter
 - [ ] Le plan 3 est d'un seul tenant : on voit le clic sur Sophie, puis le chrono qui tourne jusqu'au bilan.
 - [ ] Aucun chiffre dit dans la voix off ne manque à l'écran : 60 postes, 19 tâches, 72 000 €, 40 %, 790 fois.
-- [ ] Le dashboard dit encore « CAIbinet » en haut à gauche : à faire renommer par adamaass en « ACG » avant de filmer.
+- [ ] Le dashboard dit encore « CAIbinet » en haut à gauche : à faire renommer par adamaass en « DeloAI » avant de filmer.
 - [ ] La vidéo fait 2 min ou moins.

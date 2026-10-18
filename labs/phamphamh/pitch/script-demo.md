@@ -19,9 +19,9 @@ Les passages marqués **[À CONSTRUIRE]** n'existent pas encore : on ne les dit 
 ## 0:00 – 0:10 · La promesse
 **À l'écran** : `intro.html`, écran A, encore vide.
 
-> « Nous, c'est ACG, AI Consulting Group. Ce matin, on a lancé des agents dans une entreprise. Ils tournent en ce moment. Dans trois minutes, vous verrez ce qu'ils ont fait. Mais d'abord, une question. »
+> « Nous, c'est DeloAI. Ce matin, on a lancé des agents dans une entreprise. Ils tournent en ce moment. Dans trois minutes, vous verrez ce qu'ils ont fait. Mais d'abord, une question. »
 
-*Si les agents ne tournent pas encore pour de vrai, on garde seulement « Nous, c'est ACG, AI Consulting Group » et on passe à l'écran A.* **[À CONSTRUIRE]**
+*Si les agents ne tournent pas encore pour de vrai, on garde seulement « Nous, c'est DeloAI » et on passe à l'écran A.* **[À CONSTRUIRE]**
 
 ## 0:10 – 0:45 · L'intro (`intro.html`)
 **Écran A — Louis.**
@@ -34,7 +34,7 @@ Les passages marqués **[À CONSTRUIRE]** n'existent pas encore : on ne les dit 
 > « Des milliers de captures par jour. Personne ne les relit. Personne ne sait quoi automatiser. L'outil existe. Il manque le cabinet. »
 
 **Écran D — ce qu'on a construit.**
-> « Alors on l'a construit. ACG, un cabinet IA natif. Il observe. Il analyse avec les méthodes des grands cabinets. Il déploie les agents. Et il vérifie qu'ils servent. Parce que le vrai problème, ce n'est pas l'IA qui ne marche pas. C'est l'agent que personne n'utilise. »
+> « Alors on l'a construit. DeloAI, un cabinet IA natif. Il observe. Il analyse avec les méthodes des grands cabinets. Il déploie les agents. Et il vérifie qu'ils servent. Parce que le vrai problème, ce n'est pas l'IA qui ne marche pas. C'est l'agent que personne n'utilise. »
 
 ## 0:45 – 1:00 · L'entreprise et l'étude
 **À l'écran** : dashboard, écran 1. Pointer « Simulation ×10 » en bas à gauche.
@@ -64,7 +64,7 @@ Les passages marqués **[À CONSTRUIRE]** n'existent pas encore : on ne les dit 
 > « Et maintenant, ce que je vous ai promis. Cette automatisation, on l'a lancée ce matin. Voici son journal : [X] actions, chacune tracée. [X] prix modifiés en [X] secondes, contre [X] minutes à la main. Et quand une information manquait, l'agent s'est arrêté pour demander à un humain. »
 
 ## 2:45 – 3:00 · La fin
-> « Louis, vos utilisateurs ont les données. ACG leur apporte le cabinet. Merci. »
+> « Louis, vos utilisateurs ont les données. DeloAI leur apporte le cabinet. Merci. »
 
 **À trancher** : la réponse de Louis, avec ses mots exacts si l'un de vous s'en souvient.
 
