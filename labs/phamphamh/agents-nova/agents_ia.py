@@ -108,7 +108,15 @@ def ouvrir_fenetre():
     raise RuntimeError("la fenêtre Chromium ne répond pas")
 
 
-def passage(agent_id, visible=None):
+def personne_workflow(personne, agent_id=None):
+    """(personne, workflow) depuis personnes.json (construire_personnes.py)."""
+    gens = json.load(open(os.path.join(ICI, "personnes.json")))
+    p = next(x for x in gens if x["id"] == personne)
+    w = next(w for w in p["workflows"] if agent_id in (None, w["agent"]))
+    return p, w
+
+
+def passage(agent_id, visible=None, personne=None):
     """Un passage de l'agent : prochaine demande (rotation), vrai agent Claude, bilan dans runs.jsonl.
     visible=True (ou BOUTIQUE_VISIBLE=1) : l'agent agit dans une fenêtre Chromium qu'on voit (démo en direct)."""
     global en_cours
@@ -118,15 +126,22 @@ def passage(agent_id, visible=None):
     deja = [r for r in lire_jsonl("runs.jsonl") if r.get("agent") == agent_id]
     i = len(deja) % len(liste)
     d = liste[i]
+    qui = None
+    if personne:  # la demande du workflow de cette personne (bureau 3D → « Créer le workflow »)
+        qui, w = personne_workflow(personne, agent_id)
+        d = {"id": f"{personne}-{agent_id}", "intention": w["demande"]["en"], "fr": w["demande"]["fr"]}
     run = datetime.now().strftime("%Y%m%d-%H%M%S-") + uuid.uuid4().hex[:4]
     t0 = time.time()
-    en_cours = {"run": run, "agent": agent_id, "demande_fr": d["fr"], "depuis": maintenant()}
+    en_cours = {"run": run, "agent": agent_id, "demande_fr": d["fr"], "depuis": maintenant(),
+                "personne": personne}
     env = {**os.environ, "AGENT_ID": agent_id, "AGENT_RUN": run, "BOUTIQUE_VISIBLE": "1" if visible else "0",
-           "AGENT_BANDEAU": f"Agent DeloAI · {SKILLS[agent_id]['nom']} · demande Stanford : {d['intention']}"}
+           "AGENT_BANDEAU": (f"DeloAI · {SKILLS[agent_id]['nom']} · pour {qui['prenom']}" if qui else
+                             f"DeloAI · {SKILLS[agent_id]['nom']} · demande Stanford : {d['intention']}")}
     env.pop("BOUTIQUE_CDP", None)
     ecrire_jsonl("journal.jsonl", {"ts": maintenant(), "agent": agent_id, "run": run, "n": 0, "type": "demande",
-                                   "etape": "Reçoit une demande", "detail": d["fr"], "demande": d["intention"],
-                                   "demande_id": d["id"], "capture": None})
+                                   "etape": f"{qui['prenom']} · {SKILLS[agent_id]['nom']}" if qui else "Reçoit une demande",
+                                   "detail": d["fr"], "demande": d["intention"], "demande_id": d["id"],
+                                   "personne": personne, "capture": None})
     if agent_id == "prix-produit" and i == 0 and os.path.exists(os.path.join(SORTIE, "prix-origine.json")):
         # nouveau tour de rotation : on remet les prix d'origine, pour que les baisses ne s'empilent pas
         subprocess.run([sys.executable, OUTIL, "restaurer-prix"], env=env, capture_output=True, timeout=60)
@@ -169,7 +184,7 @@ def passage(agent_id, visible=None):
                                    "detail": reponse, "statut": statut, "capture": None})
     bilan = {"run": run, "agent": agent_id, "demande_id": d["id"], "demande": d["intention"], "fr": d["fr"],
              "statut": statut, "reponse": reponse, "duree_s": duree, "actions": actions, "cout_usd": cout,
-             "visible": bool(visible),
+             "visible": bool(visible), "personne": personne,
              "fini": maintenant()}
     ecrire_jsonl("runs.jsonl", bilan)
     en_cours = None

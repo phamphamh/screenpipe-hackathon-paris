@@ -24,10 +24,10 @@ COMPTE = (os.environ.get("BOUTIQUE_USER", "admin"), os.environ.get("BOUTIQUE_PAS
 AGENT = os.environ.get("AGENT_ID", "manuel")
 RUN = os.environ.get("AGENT_RUN", "manuel")
 RAPPORTS = {  # type → (chemin dans l'admin, libellé)
-    "orders": ("reports/report_sales/sales/", "Ventes (Orders)"),
-    "refunded": ("reports/report_sales/refunded/", "Remboursements (Refunds)"),
-    "tax": ("reports/report_sales/tax/", "Taxes (Tax)"),
-    "bestsellers": ("reports/report_sales/bestsellers/", "Meilleures ventes (Bestsellers)"),
+    "orders": ("reports/report_sales/sales/", "Orders report"),
+    "refunded": ("reports/report_sales/refunded/", "Refunds report"),
+    "tax": ("reports/report_sales/tax/", "Tax report"),
+    "bestsellers": ("reports/report_sales/bestsellers/", "Bestsellers report"),
 }
 
 
@@ -36,8 +36,8 @@ def maintenant():
 
 
 def euros(p):
-    """24.0 → « 24,00 $ » (la boutique est en dollars)."""
-    return f"{float(p):,.2f}".replace(",", " ").replace(".", ",") + " $"
+    """24.0 → « $24.00 » (la boutique est en dollars ; journal en anglais pour le jury)."""
+    return f"${float(p):,.2f}"
 
 
 # ---------- journal ----------
@@ -120,7 +120,7 @@ def chercher(mots):
                                                   champs="items[id,sku,name,price,type_id],total_count"))
     produits = [{"sku": p["sku"], "nom": p["name"], "prix": p.get("price"), "id": p["id"], "type": p.get("type_id")}
                 for p in r.get("items") or []]
-    journal("Cherche dans le catalogue", f"« {mots} » · {len(produits)} produit(s)")
+    journal("Searches the catalog", f"“{mots}” · {len(produits)} product(s)")
     return {"total": r.get("total_count", len(produits)), "produits": produits}
 
 
@@ -145,7 +145,7 @@ def prix(sku, nouveau):
     verifie = float(lire_produit(sku).get("price") or 0)
     if not (CDP or VISIBLE):
         capture = capturer_fiche(p["id"], sku)
-    journal("Change le prix", f"{sku} · {euros(ancien)} → {euros(verifie)}", capture=capture,
+    journal("Changes the price", f"{sku} · {euros(ancien)} → {euros(verifie)}", capture=capture,
             sku=sku, ancien=ancien, nouveau=verifie)
     return {"sku": sku, "nom": p.get("name"), "ancien": ancien, "nouveau": verifie, "capture": capture}
 
@@ -157,7 +157,7 @@ def restaurer_prix():
         appel("PUT", f"products/{urllib.parse.quote(sku, safe='')}", {"product": {"sku": sku, "price": p}}, magasin="all")
     if origine:
         os.remove(chemin)
-    journal("Restaure les prix d'origine", f"{len(origine)} produit(s)")
+    journal("Restores original prices", f"{len(origine)} product(s)")
     return {"restaures": origine}
 
 
@@ -192,7 +192,9 @@ def commandes(statut=None, client=None, limite=10):
 VISIBLE = os.environ.get("BOUTIQUE_VISIBLE") == "1"
 CDP = os.environ.get("BOUTIQUE_CDP")
 BANDEAU = os.environ.get("AGENT_BANDEAU", f"Agent DeloAI · {AGENT}")
-RALENTI_MS = 250
+RALENTI_MS = 700   # chaque geste se voit
+FRAPPE_MS = 80     # frappe caractère par caractère
+PAUSE_PAGE_MS = 1000
 HABILLAGE = """(texte => { const f = () => {
   if (document.getElementById('deloai-bandeau')) return;
   const b = document.createElement('div'); b.id = 'deloai-bandeau'; b.textContent = texte;
@@ -209,6 +211,31 @@ HABILLAGE = """(texte => { const f = () => {
   addEventListener('mousedown', () => c.style.transform = 'translate(-50%,-50%) scale(1.7)', true);
   addEventListener('mouseup', () => c.style.transform = 'translate(-50%,-50%)', true);
 }; document.body ? f() : addEventListener('DOMContentLoaded', f); })"""
+
+
+def montre():
+    return bool(CDP or VISIBLE)
+
+
+def cliquer(page, cible):
+    """Clic ; en mode visible, l'élément s'entoure d'un contour cyan juste avant."""
+    if montre():
+        try:
+            cible.scroll_into_view_if_needed(timeout=5000)
+            cible.evaluate("el => { el.style.outline = '3px solid #06b6d4'; el.style.outlineOffset = '2px'; }")
+            page.wait_for_timeout(450)
+        except Exception:
+            pass
+    cible.click()
+
+
+def saisir(page, cible, texte):
+    if montre():
+        cliquer(page, cible)
+        cible.fill("")
+        cible.type(texte, delay=FRAPPE_MS)
+    else:
+        cible.fill(texte)
 
 
 def habiller(ctx, page):
@@ -262,6 +289,8 @@ def ouvrir(page, ctx, etat, chemin):
             pass
         if chemin not in page.url:
             page.goto(f"{BOUTIQUE}/admin/{chemin}", timeout=120000, wait_until="domcontentloaded")
+    if montre():
+        page.wait_for_timeout(PAUSE_PAGE_MS)
 
 
 def accueil():
@@ -269,7 +298,7 @@ def accueil():
     with admin() as (page, ctx, etat):
         ouvrir(page, ctx, etat, "dashboard/")
         page.wait_for_timeout(800)
-    journal("Ouvre le back-office", BOUTIQUE.replace("http://", "") + "/admin")
+    journal("Opens the admin panel", BOUTIQUE.replace("http://", "") + "/admin")
     return {"ok": True}
 
 
@@ -303,19 +332,19 @@ def prix_par_admin(produit_id, sku, nouveau):
             ouvrir(page, ctx, etat, "catalog/product/")
             recherche = page.locator("#fulltext").first
             recherche.wait_for(state="visible", timeout=30000)
-            recherche.click(); recherche.fill(""); recherche.type(sku, delay=45); recherche.press("Enter")
+            saisir(page, recherche, sku); recherche.press("Enter")
             ligne = page.locator("tr.data-row", has_text=sku).first
             ligne.wait_for(state="visible", timeout=30000)
-            page.wait_for_timeout(400)
-            ligne.locator("a", has_text="Edit").first.click()
+            page.wait_for_timeout(PAUSE_PAGE_MS)
+            cliquer(page, ligne.locator("a", has_text="Edit").first)
             page.wait_for_url("**/catalog/product/edit/**", timeout=60000)
         except Exception:  # la grille n'a pas coopéré : on ouvre la fiche directement
             ouvrir(page, ctx, etat, f"catalog/product/edit/id/{produit_id}/")
         champ = montrer_prix(page, produit_id)
-        champ.click(click_count=3); champ.fill("")
-        champ.type(f"{nouveau:.2f}", delay=120)
-        page.wait_for_timeout(300)
-        page.locator("#save-button").click()
+        page.wait_for_timeout(PAUSE_PAGE_MS)
+        saisir(page, champ, f"{nouveau:.2f}")
+        page.wait_for_timeout(400)
+        cliquer(page, page.locator("#save-button"))
         page.locator(".message-success", has_text="You saved the product").first.wait_for(timeout=120000)
         page.wait_for_timeout(400)
         page.screenshot(path=os.path.join(SORTIE, "captures", nom), type="jpeg", quality=70)
@@ -333,15 +362,16 @@ def montrer_commandes(statut, client):
             page.locator("tr.data-row").first.wait_for(state="visible", timeout=60000)
             vider = page.locator("button[data-action='grid-filter-reset']").first
             if vider.count() and vider.is_visible():
-                vider.click(); page.wait_for_timeout(1500)
+                cliquer(page, vider); page.wait_for_timeout(1500)
             if statut:
-                page.locator("button[data-action='grid-filter-expand']").first.click()
-                page.locator("select[name='status']").first.select_option(statut)
-                page.locator("button[data-action='grid-filter-apply']").first.click()
+                cliquer(page, page.locator("button[data-action='grid-filter-expand']").first)
+                choix = page.locator("select[name='status']").first
+                cliquer(page, choix); choix.select_option(statut)
+                cliquer(page, page.locator("button[data-action='grid-filter-apply']").first)
                 page.wait_for_timeout(2000)
             if client:
                 recherche = page.locator("#fulltext").first
-                recherche.click(); recherche.fill(""); recherche.type(client, delay=45); recherche.press("Enter")
+                saisir(page, recherche, client); recherche.press("Enter")
                 page.wait_for_timeout(2000)
             page.screenshot(path=os.path.join(SORTIE, "captures", nom), type="jpeg", quality=70)
         return nom
@@ -359,9 +389,13 @@ def rapport(type_, du, au, periode=None):
         if True:
             ouvrir(page, ctx, etat, chemin)
             page.wait_for_selector("#sales_report_from", timeout=60000)
-            page.fill("#sales_report_from", du); page.fill("#sales_report_to", au)
+            if montre():
+                cliquer(page, page.locator("#sales_report_period_type"))
             page.select_option("#sales_report_period_type", periode)
-            page.click("#filter_form_submit"); page.wait_for_load_state("networkidle", timeout=120000)
+            saisir(page, page.locator("#sales_report_from"), du); saisir(page, page.locator("#sales_report_to"), au)
+            cliquer(page, page.locator("#filter_form_submit")); page.wait_for_load_state("networkidle", timeout=120000)
+            if montre():
+                page.wait_for_timeout(PAUSE_PAGE_MS)
             grille = page.locator("table.data-grid").first
             entetes = [t.strip() for t in grille.locator("thead th").all_inner_texts()]
             pied = grille.locator("tfoot tr").first
@@ -379,7 +413,7 @@ def rapport(type_, du, au, periode=None):
                 page.wait_for_timeout(1500)
     resume = ", ".join(f"{k} {v}" for k, v in totaux.items()
                        if k not in ("Interval", "Period") and v and v not in ("0", "$0.00"))[:160]
-    journal("Génère le rapport", f"{libelle} du {du} au {au} · {resume or ('aucune donnée sur la période' if not lignes else str(len(lignes)) + ' ligne(s)')}", capture=nom,
+    journal(f"Opens the {libelle}", f"{du} → {au} · {resume or ('no data for this period' if not lignes else str(len(lignes)) + ' row(s)')}", capture=nom,
             totaux=totaux)
     return {"rapport": type_, "du": du, "au": au, "totaux": totaux, "lignes": lignes, "capture": nom}
 

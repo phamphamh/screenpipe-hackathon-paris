@@ -63,12 +63,12 @@ def deploiement():
     return {"depuis": json.load(open(chemin))["depuis"]}
 
 
-def passage(agent_id, visible=False):
+def passage(agent_id, visible=False, personne=None):
     """Un passage ; False si un autre passage est déjà en cours. Le planificateur reste invisible."""
     if not verrou.acquire(blocking=False):
         return False
     try:
-        agents_ia.passage(agent_id, visible)
+        agents_ia.passage(agent_id, visible, personne)
     except Exception as e:  # le planificateur ne doit jamais mourir
         print(f"passage {agent_id} : {e}", flush=True)
         agents_ia.en_cours = None
@@ -121,6 +121,8 @@ class Gestion(SimpleHTTPRequestHandler):
     def do_GET(self):
         if self.path in ("/", "/index.html"):
             self.send_response(302); self.send_header("Location", "/agents-nova/"); self.end_headers(); return
+        if self.path.startswith("/api/personnes"):
+            return self.envoyer_json(json.load(open(os.path.join(ICI, "personnes.json"))))
         if self.path.startswith("/api/etat"):
             return self.envoyer_json(resume())
         if self.path.startswith("/captures/"):
@@ -136,15 +138,22 @@ class Gestion(SimpleHTTPRequestHandler):
         url = urlparse(self.path)
         if url.path == "/api/lancer":
             q = parse_qs(url.query)
-            agent = (q.get("agent") or [None])[0] or prochain_agent()
+            personne = (q.get("personne") or [None])[0]
+            agent = (q.get("agent") or [None])[0]
+            if personne:
+                try:
+                    agent = agents_ia.personne_workflow(personne, agent)[1]["agent"]
+                except StopIteration:
+                    return self.envoyer_json({"lance": False, "raison": f"pas de workflow {agent or ''} pour {personne}"}, 400)
+            agent = agent or prochain_agent()
             visible = (q.get("visible") or ["0"])[0] in ("1", "true", "oui")
             if agent not in EN_SERVICE:
                 return self.envoyer_json({"lance": False, "raison": f"agent inconnu ou pas en service : {agent}"}, 400)
             if verrou.locked() or agents_ia.en_cours:
                 return self.envoyer_json({"lance": False, "raison": "un passage est déjà en cours",
                                           "en_cours": agents_ia.en_cours}, 409)
-            threading.Thread(target=passage, args=(agent, visible), daemon=True).start()
-            return self.envoyer_json({"lance": True, "agent": agent, "visible": visible})
+            threading.Thread(target=passage, args=(agent, visible, personne), daemon=True).start()
+            return self.envoyer_json({"lance": True, "agent": agent, "visible": visible, "personne": personne})
         self.send_error(404)
 
 

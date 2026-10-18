@@ -1,47 +1,45 @@
-# Texte de la démo DeloAI (version du 18/10, avec les 3 corrections)
+# DeloAI — pitch script (English, 18/10)
 
-Corrections par rapport au texte de Youssef : (1) Stanford n'a pas filmé ces personnes « au travail » mais sur de vraies tâches de back-office ; (2) « captures » = ce que l'IA a lu, multiplié par 10 ; (3) l'agent montré est celui du rapport de ventes, annoncé à l'étape 1. Ajout d'une phrase sur screenpipe. Les [X] sont remplacés par les chiffres mesurés.
-
-**Écrans** (`python3 labs/phamphamh/agents-nova/serveur.py` → http://localhost:8798) : 1 Les données · 2 L'audit · 3 Les écarts · 4 Les agents. Flèches ← → pour passer de l'un à l'autre.
+**Setup**: tab 1 = the pitch deck (artifact, arrows to advance). Tab 2 = the live demo, `python3 labs/phamphamh/agents-nova/serveur.py` → http://localhost:8798 (the test store must be running, see `labs/phamphamh/boutique/README.md`). Do one "Run live" right before going on stage: the browser window takes ~10 s to open the first time.
 
 ---
 
-Si vous utilisez screenpipe, vous avez un problème. Et ce n'est pas de votre faute.
+## Deck — opening
 
-Votre ordinateur enregistre tout. Chaque écran. Chaque clic. Chaque réunion. Des milliers de captures par jour.
+**[1]** If you use screenpipe, you have a problem. *(press)* And it's not your fault.
 
-Et pourtant, vous ne savez toujours pas quoi en faire.
+**[2 · screenpipe]** Your computer records everything. Every screen. Every click. Every meeting. Thousands of captures a day. Searchable, local, plugged into Claude and Cursor.
 
-Ce n'est pas nous qui le disons. On a posé la question à Louis, le fondateur de screenpipe. Sa réponse : les utilisateurs ont plein de données, et ils ne savent pas quoi en faire.
+**[3 · Louis]** And yet, you still don't know what to do with it. That's not us saying it. We asked Louis, screenpipe's founder, what his users' biggest problem was. His answer: they have tons of data, and they don't know what to do with it.
 
-La vérité, c'est que le problème n'a jamais été la donnée. C'est le contexte. Savoir quoi regarder. Quoi automatiser. Par où commencer.
+**[4 · what doesn't work]** Today you have two options. A consulting firm: consultants on site for weeks, a 50-page report that ends up in a drawer. Or screenpipe alone: thousands of captures a day that nobody reads. The truth is, the problem was never the data. It's the context. What to look at. What to automate. Where to start.
 
-Avant, pour ça, il fallait un cabinet de conseil. Des consultants sur place pendant des semaines.
+**[5 · DeloAI]** So we built the missing piece. We're DeloAI, an AI-native consulting firm. Our analysis method comes from the big firms. The way we deploy agents comes from the best research labs. And nobody travels.
 
-Nous, c'est DeloAI. Un cabinet IA natif. Notre méthode d'analyse vient des grands cabinets. Notre façon de déployer les agents vient des meilleurs laboratoires de recherche. Et personne ne se déplace.
+**[6 · Atelier Nova]** Our first client: Atelier Nova. An online sportswear store, 60 employees, everything runs in their Magento back-office. One week of screenpipe on every desk: 55,000 captures. To be clear: these are 6 real people, recorded by Stanford doing real back-office work, multiplied by ten. In a real engagement, it's your own team running screenpipe for a week.
 
-Laissez-moi vous montrer.
+**[7 · demo]** Let me show you. *(switch to tab 2)*
 
-**[Écran 1 · Les données]** Atelier Nova. Une boutique en ligne. Ses salariés sont de vraies personnes, filmées par Stanford sur de vraies tâches de back-office. Six personnes, multipliées par dix : 60 salariés. Chez vous, ce seront vos captures screenpipe. Ici, des données publiques, pour ne montrer la vie de personne.
+## Live demo
 
-**[Écran 2 · L'audit]** Étape un : l'audit. 55 000 captures lues par l'IA, salarié par salarié.
+**[Audit]** Step one, the audit. The AI read every capture, employee by employee. Result: €71,700 a year goes into repetitive tasks. 41 hours lost every week. 40% of the time in a single screen, the catalog. And one sales report, always the same, pulled 790 times a week. We found five workflows worth automating. We deploy three.
 
-**[Écran 3 · Les écarts]** Résultat ? 72 000 euros par an partent dans des tâches répétées. Et la première, c'est un rapport de ventes. Toujours le même, sorti 790 fois par semaine. 790.
+**[Office]** Step two: the office. Here are the employees. Let's click on Sophie, a sales analyst. *(click)* These are her workflows, found by the audit: the sales report she runs again and again. *(Create workflow)* The workflow is written from the steps she actually performs. *(Run live)* And now the agent runs it, in the real back-office, right in front of you. Every action is traced. No one at the keyboard.
 
-Étape deux : nos agents en tirent cinq automatisations. La première, ce rapport, s'écrit à partir de ce que les salariés font vraiment.
+*(while it runs)* This is a real request, recorded by Stanford. The agent reads it, opens the store, does the job, and reports back.
 
-**[Écran 4 · Les agents]** Étape trois : on l'a déployée ce matin, dans le vrai logiciel de la boutique. Elle tourne en ce moment. Chaque action est tracée. Un rapport en 4 secondes, contre 23 à la main. 790 fois par semaine, c'est 5 heures rendues aux équipes, sans personne au clavier.
+## Deck — closing *(back to tab 1)*
 
-Alors la question n'est plus : qu'est-ce que je fais de mes données ?
+**[8 · before / after]** Before: weeks on site, a 50-page report, no agent deployed. After: one week of screenpipe, the audit in a day, agents already running.
 
-La question, c'est : qu'est-ce que vous allez faire du temps récupéré ?
+**[9]** So the question is no longer: what do I do with my data? The question is: what will you do with the time you get back?
 
-DeloAI. Votre cabinet et votre ESN, dans votre poche.
+**[10]** DeloAI. Your consulting firm and your IT team, in your pocket.
 
 ---
 
-**Les chiffres et leur source**
-- 6 personnes ×10 = 60 salariés ; 55 510 captures (×10) ; 19 tâches ; 71,7 k€ / an ; 790 rapports / semaine (×10 de 79) : dashboard d'adamaass (`labs/adamaass/caibinet-nova/data.js`).
-- 23 s à la main : médiane de 20 enregistrements Stanford « rapport de ventes » (base brute WONDERBREAD).
-- 4 s pour l'agent : mesuré à chaque passage dans la boutique de test (affiché en direct sur l'écran 4).
-- 5 h / semaine = 790 × 23 s. C'est le temps humain que l'agent remplace, pas un gain en euros.
+**Numbers and sources**
+- 6 real people × 10 = 60 employees; 55,510 captures (×10); 19 repeated tasks; €71.7k / year; 41 h lost / week; 40% in the catalog; sales report 790× / week (79 × 10): adamaass's audit (`labs/adamaass/caibinet-nova/data.js`).
+- Human time per task: sales report 23 s, price change 58 s, cancelled orders 36 s (medians of the Stanford WONDERBREAD recordings).
+- Agent requests: real WONDERBREAD requests (`labs/phamphamh/agents-nova/demandes.json`), run by Claude in the Magento test store.
+- Don't claim the agent is faster in live mode: it is slowed down on purpose so the audience can follow. The point is zero human time.
