@@ -100,6 +100,22 @@
 
 # It all runs on a laptop.
 
+## [+40 s — ONLY IF THE SLOT IS 4–5 MIN]
+
+# Three steps. One: observe.
+
+# screenpipe runs on every desk. We drop the noise: 55,000 captures become 14,000 work moments.
+
+# Claude turns each person's week into tasks, steps and time. The employee validates before anything is shared.
+
+# Two: audit. Same task across people, priced in hours. That's the €71,700.
+
+# Three: deploy. Each workflow is written from the steps people actually take, and given to a Claude agent with the tools of the software.
+
+# Today it's Magento. Tomorrow, any tool with an API or a browser window.
+
+## [END OF OPTIONAL BLOCK]
+
 ---
 
 # Before: weeks on site and a report.

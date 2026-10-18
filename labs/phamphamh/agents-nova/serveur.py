@@ -39,6 +39,7 @@ AGENTS = [
 ]
 EN_SERVICE = [a["id"] for a in AGENTS if a["statut"] == "en service"]
 verrou = threading.Lock()
+attente_visible = False  # un clic « Run it live » attend son tour
 
 
 def lire_jsonl(nom, n=None):
@@ -64,8 +65,13 @@ def deploiement():
 
 
 def passage(agent_id, visible=False, personne=None):
-    """Un passage ; False si un autre passage est déjà en cours. Le planificateur reste invisible."""
-    if not verrou.acquire(blocking=False):
+    """Un passage ; False si un autre passage est déjà en cours. Le planificateur reste invisible.
+    Un passage visible (clic « Run it live ») attend la fin du passage de fond au lieu d'échouer."""
+    global attente_visible
+    pris = verrou.acquire(timeout=90) if visible else verrou.acquire(blocking=False)
+    if visible:
+        attente_visible = False
+    if not pris:
         return False
     try:
         if visible and agent_id == "prix-produit":
@@ -152,9 +158,12 @@ class Gestion(SimpleHTTPRequestHandler):
             visible = (q.get("visible") or ["0"])[0] in ("1", "true", "oui")
             if agent not in EN_SERVICE:
                 return self.envoyer_json({"lance": False, "raison": f"agent inconnu ou pas en service : {agent}"}, 400)
-            if verrou.locked() or agents_ia.en_cours:
+            global attente_visible
+            if attente_visible or ((verrou.locked() or agents_ia.en_cours) and not visible):
                 return self.envoyer_json({"lance": False, "raison": "un passage est déjà en cours",
                                           "en_cours": agents_ia.en_cours}, 409)
+            if visible:
+                attente_visible = True
             threading.Thread(target=passage, args=(agent, visible, personne), daemon=True).start()
             return self.envoyer_json({"lance": True, "agent": agent, "visible": visible, "personne": personne})
         self.send_error(404)
