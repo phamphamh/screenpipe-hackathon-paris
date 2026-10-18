@@ -29,9 +29,9 @@ Base : l'enregistrement du 18/10 (11h24), recalé sur les vrais chiffres du dash
 > « Ces tâches répétées coûtent 72 000 euros par an à Atelier Nova. On peut en récupérer 49 000. Les 5 premières skills, à elles seules : 30 000. »
 
 ## 1:15 – 1:35 · Écran 3 — Où part le temps ?
-**À l'écran** : heures par écran Magento. Cliquer sur l'équipe **Opérations**.
+**À l'écran** : heures par écran Magento. Montrer la barre **Catalogue** (surlignée « 40 % »).
 
-> « 40 % du temps passe dans un seul écran : le catalogue produits. Chez l'équipe Opérations, c'est presque la moitié de la journée. »
+> « 40 % du temps passe dans un seul écran : le catalogue produits. Et c'est l'équipe Opérations qui y passe le plus. »
 
 ## 1:35 – 2:00 · Écran 4 — Qu'est-ce qui coûte le plus ?
 **À l'écran** : le treemap. Cliquer sur **Rapport ventes**.
@@ -39,9 +39,9 @@ Base : l'enregistrement du 18/10 (11h24), recalé sur les vrais chiffres du dash
 > « Trois problèmes font 48 % du coût. Un : sortir le même rapport de ventes, 790 fois par semaine. Deux : vérifier les commandes annulées. Trois : modifier le prix d'un produit. Je clique sur le rapport : voici les étapes qu'on a vues, les cinq noms différents que les gens lui donnent, et les exceptions. Chaque chiffre mène à ce qui a été observé. »
 
 ## 2:00 – 2:35 · Écran 5 — Que faire, dans quel ordre ?
-**À l'écran** : la cascade skill après skill. Puis cliquer **Créer la skill (SKILL.md)** sur la première.
+**À l'écran** : la cascade « De 41 h à 24 h perdues par semaine ». Cliquer la 1re skill (**Prix produit**), puis **Créer la skill (SKILL.md)** dans le panneau qui s'ouvre.
 
-> « Notre recommandation, dans l'ordre. On commence par la modification de prix : c'est elle qui rend le plus d'heures, et elle se construit en une semaine. Les 5 skills rendent 17 heures par semaine à l'équipe, soit 30 000 euros par an. Et la skill sort d'ici, en un clic, écrite à partir des étapes réelles. Il reste à la relire avant de l'activer. »
+> « Notre recommandation, dans l'ordre. On commence par la modification de prix : c'est elle qui rend le plus d'heures, et elle se construit en une semaine. Les 5 skills font passer le temps perdu de 41 à 24 heures par semaine : 17 heures rendues, 30 000 euros par an. Et la skill sort d'ici, en un clic, écrite à partir des étapes réelles. Il reste à la relire avant de l'activer. »
 
 ## 2:35 – 2:55 · La fin
 **À l'écran** : retour sur l'écran 1, ou le lien du dépôt.
@@ -72,7 +72,7 @@ Base : l'enregistrement du 18/10 (11h24), recalé sur les vrais chiffres du dash
 - **« Quel lien avec screenpipe ? »** On utilise sa capture, son format de workflow, et on ajoute ce qui leur manque : la campagne avec relecture par le salarié, la fusion de plusieurs personnes, et le rapport pour le dirigeant.
 
 ## Avant de monter sur scène
-- [ ] Dashboard ouvert, thème clair, **mode Présenter**, écran 1 affiché.
-- [ ] Répéter les 3 clics : équipe Opérations (écran 3), Rapport ventes (écran 4), Créer la skill (écran 5).
+- [ ] Dashboard ouvert, bouton **☀︎ Clair** cliqué (il s'ouvre en sombre), **mode Présenter**, écran 1 affiché.
+- [ ] Répéter les 2 clics : Rapport ventes (écran 4) ; Prix produit puis Créer la skill (écran 5). Vérifiés le 18/10 : ils marchent.
 - [ ] Chronométrer une fois en entier : viser 2 min 50.
 - [ ] Choisir qui parle et qui clique.

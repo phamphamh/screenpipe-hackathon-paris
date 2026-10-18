@@ -1,0 +1,6 @@
+# Script de la démo finale (3 min) sur le dashboard Atelier Nova
+- **Fait** : `labs/phamphamh/pitch/script-demo.md` — le texte à dire écran par écran (≈ 420 mots, 2 min 50), les questions probables du jury avec leurs réponses, et la liste des chiffres de l'enregistrement de 11h24 à corriger.
+- **Preuve** : chaque chiffre relu dans `labs/adamaass/caibinet-nova/data.js` et à l'écran du dashboard (71,7 k€, 49,3 k€, 30,1 k€, 40 % catalogue, 48 % du coût, 41 h → 24 h) ; les clics « Rapport ventes » et « Prix produit → Créer la skill » testés dans le navigateur.
+- **À corriger à l'oral** : 6 vraies personnes ×10 (pas 60 observés), Magento (pas « Magneto »), 17 h / semaine soit un mi-temps (pas un temps plein, pas « 24 h par jour »), euros (pas dollars).
+- **Pas vérifié** : la durée réelle à voix haute (pas encore chronométrée) ; le nombre d'heures du jeu WONDERBREAD.
+- **Pour les autres** : le script suit l'ordre du dashboard d'adamaass, sans rien y changer.
