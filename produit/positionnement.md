@@ -2,18 +2,20 @@
 
 Texte source pour la **description du rendu** et le **pitch** (section 9 du découpage). Aligné sur la section 21 du brief (« le FDE en produit, clé en main »). Rien à reconstruire : le produit déjà construit EST ce SaaS — il lui manquait le nom et le récit.
 
+**Nom du rendu (18/10)** : **DeloAI** — « votre cabinet et votre ESN, dans votre poche » ; dans le dépôt, le produit garde son nom de travail « Wrapped ».
+
 **Validations** : ✅ 09125o (17/10, 10h42) — en attente : phamphamh, adamaass, JA.
 
 ## En une phrase
 Un forward deployed engineer virtuel : screenpipe tourne une semaine chez des volontaires, le produit découvre ce que l'entreprise fait vraiment, le fait valider par chacun — puis livre le diagnostic **et la première automatisation**, personnalisés aux vraies tâches, sans consultant sur place.
 
 ## Le paragraphe (description du rendu)
-Les entreprises paient des ingénieurs très chers pour s'asseoir à côté de leurs équipes et regarder comment elles travaillent (« les entreprises paient des ingénieurs pour regarder leurs salariés travailler » — screenpipe). Notre produit fait ce travail tout seul : une semaine de capture **locale**, un tri 80/20 avant toute IA, chaque personne **relit et valide son propre résumé**, puis la fusion produit le **Wrapped de l'entreprise** — les tâches répétées, leur coût réel, ce qui vaut le coup d'être automatisé — et génère l'**automatisation (skill)** de la tâche choisie, testée sur une seconde personne. Aujourd'hui il faut des semaines et un consultant sur place ; ici : une semaine, zéro consultant, des données validées par les intéressés et supprimées à la fin.
+Les entreprises paient des ingénieurs très chers pour s'asseoir à côté de leurs équipes et regarder comment elles travaillent (« les entreprises paient des ingénieurs pour regarder leurs salariés travailler » — screenpipe). Notre produit fait ce travail tout seul : une semaine de capture **locale**, un tri 80/20 avant toute IA, chaque personne **relit et valide son propre résumé**, puis la fusion produit le **Wrapped de l'entreprise** — les tâches répétées, leur coût réel, ce qui vaut le coup d'être automatisé — et génère l'**automatisation (skill)** de la tâche choisie, testée sur une seconde personne. Aujourd'hui il faut des semaines et un consultant sur place ; ici : une semaine, zéro consultant, des données validées par les intéressés et supprimées à la fin. Et l'étape d'après est déjà montrée pour de vrai : dans la démo, l'agent déployé refait le rapport de ventes en 4 s là où l'humain met 23 s.
 
-## Pour le formulaire de rendu (prêt à coller)
-- **Une phrase** : Un forward deployed engineer virtuel : une semaine de screenpipe, le Wrapped de l'entreprise et sa première automatisation — sans consultant sur place.
-- **Version courte (~300 caractères)** : Les entreprises paient des ingénieurs très chers pour regarder leurs équipes travailler. Wrapped le fait tout seul : capture locale une semaine, résumé validé par chaque salarié, fusion anonymisée (moins de 3 personnes = masqué), Wrapped de l'entreprise — puis la première skill générée, testée sur une 2e personne.
-- **Version longue** : le paragraphe ci-dessus.
+## Pour le formulaire de rendu (prêt à coller — récit final du 18/10, celui de la vidéo)
+- **Une phrase** : DeloAI, un cabinet IA natif : une semaine de screenpipe, le Wrapped de l'entreprise — tâches répétées, coût réel — et ses agents déployés dans ses vrais outils, sans consultant sur place.
+- **Version courte (~300 caractères)** : Le problème de screenpipe n'est pas la donnée, c'est le contexte. DeloAI le transforme en produit : capture locale une semaine, chaque salarié relit et valide son résumé, le Wrapped de l'entreprise — puis ses agents déployés dans ses outils. Une semaine, zéro consultant sur place.
+- **Version longue** : le paragraphe ci-dessus. Texte de la démo et sources (validé par Youssef) : [`labs/phamphamh/agents-nova/script.md`](../labs/phamphamh/agents-nova/script.md).
 
 ## Pourquoi c'est un FDE virtuel (et pas un simple task mining)
 Un FDE fait quatre choses : **Map** (voir le travail réel), **Installer** (mettre les capteurs), **Improve** (chiffrer ce qui peut être automatisé), **Deploy** (livrer l'automatisation). Le produit reprend les quatre :

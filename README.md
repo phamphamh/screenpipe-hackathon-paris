@@ -1,8 +1,10 @@
-# Wrapped — le FDE virtuel
+# DeloAI — votre cabinet et votre ESN, dans votre poche
 
-**Le produit** : une semaine de screenpipe chez des salariés volontaires ; chacun relit et valide son propre résumé ; l'entreprise reçoit son **Wrapped** — ses tâches répétées, leur coût réel, quoi automatiser en premier — **et sa première automatisation** (skill générée, testée sur une seconde personne). Zéro consultant sur place. Le récit complet : [`produit/positionnement.md`](produit/positionnement.md).
+**Le produit** : une semaine de screenpipe chez des salariés volontaires ; chacun relit et valide son propre résumé ; l'entreprise reçoit son **Wrapped** — l'audit de son travail réel : ses tâches répétées, leur coût réel, quoi automatiser en premier — **et sa première automatisation** (skill générée, testée sur une seconde personne). L'étape suivante est déjà montrée pour de vrai : un agent « Rapport de ventes » **déployé dans un vrai back-office Magento** refait en 4 s un rapport établi à la main en 23 s. Zéro consultant sur place : la mission d'un forward deployed engineer, livrée en logiciel. Le découpage : [`produit/decoupage.md`](produit/decoupage.md) ; le récit complet : [`produit/positionnement.md`](produit/positionnement.md).
 
-Hackathon screenpipe × 42 Paris, 16–18 octobre 2026 (« Build Agents That Remember »). **La vidéo (2 min)** : à venir — dimanche.
+Hackathon screenpipe × 42 Paris, 16–18 octobre 2026 (« Build Agents That Remember »). **La vidéo (2 min)** : à venir — dimanche (le lien sera collé ici dès qu'elle est en ligne).
+
+**Deux démos** : ci-dessous, « L'essayer en 2 minutes » — la boucle complète sur l'entreprise fictive **Maison Corvo**, rien à installer d'autre que Python 3 ; et **DeloAI × Atelier Nova**, la démo de la vidéo — l'audit et l'agent en direct dans un vrai back-office Magento, sur des données publiques (×10).
 
 ## L'essayer en 2 minutes
 Rien à installer d'autre que Python 3. Double-clic sur [`labs/phamphamh/ouvrir-wrapped.command`](labs/phamphamh/ouvrir-wrapped.command) (macOS) ou :
@@ -17,6 +19,17 @@ python3 labs/phamphamh/app/serveur.py
 |---|---|---|
 | ![accueil](docs/captures/accueil.png) | ![relecture](docs/captures/relecture.png) | ![wrapped](docs/captures/wrapped.png) |
 
+## La démo de la vidéo — DeloAI × Atelier Nova
+**Atelier Nova**, une boutique en ligne : ses « salariés » sont les enregistrements publics de Stanford sur de vraies tâches de back-office (WONDERBREAD / WebArena) — 6 personnes ×10 = 60. Des données publiques, pour ne montrer la vie de personne.
+
+```sh
+python3 labs/phamphamh/agents-nova/serveur.py
+```
+
+→ http://localhost:8798, quatre écrans (flèches ← →) : **les données** (55 510 captures ×10, lues par l'IA) → **l'audit** (19 tâches répétées, ≈ 72 000 €/an — le dashboard d'[`adamaass`](labs/adamaass/nova-dashboard/), renommé DeloAI) → **les écarts** → **les agents** : 5 automatisations recommandées, la première **en service** — l'agent « Rapport de ventes » (790 fois par semaine, ×10 de 79) tourne tout seul dans la vraie boutique de test Magento ([`labs/phamphamh/boutique/`](labs/phamphamh/boutique/)) : **4 s contre 23 s** à la main, ≈ 5 h par semaine de temps humain remplacé (pas un gain en euros).
+
+Chaque chiffre et sa source : [`labs/phamphamh/agents-nova/script.md`](labs/phamphamh/agents-nova/script.md). L'écran des agents est en direct quand la boutique de test tourne — elle s'installe à part ([mode d'emploi](labs/phamphamh/boutique/README.md), image WebArena de 9,6 Go).
+
 ## Pour le jury — la checklist du rendu
 - **Problème et utilisateur** : la mission d'un forward deployed engineer (des semaines, un profil rare, ≈ 255 k$/an de rémunération médiane) transformée en produit — utilisateur : le dirigeant et ses équipes. Repères sourcés : [`produit/positionnement.md`](produit/positionnement.md).
 - **Installation / OS** : Python 3 seulement, macOS testé — « L'essayer en 2 minutes », aucune dépendance, aucun réglage.
@@ -28,6 +41,7 @@ python3 labs/phamphamh/app/serveur.py
 
 ## Ce qui est construit et vérifié
 - **La boucle complète, en local** : dérush 80/20 (screenpipe → moments) → résumé des tâches → **relecture par la personne** (corriger, retirer, masquer, contester) → fusion (agrégats seulement) → Wrapped → skill.
+- **La démo de la vidéo, en vrai** (18/10) : l'agent « Rapport de ventes » déployé dans le back-office Magento (WebArena), relancé toutes les 15 min — 2 passages réussis mesurés à 4,1–4,2 s contre 23 s à la main ; et l'audit complet (55 510 captures ×10, 19 tâches, ≈ 72 k€/an, 5 skills recommandées) : [`labs/phamphamh/agents-nova/`](labs/phamphamh/agents-nova/) et le dashboard d'[`adamaass`](labs/adamaass/nova-dashboard/).
 - **La 2e entrée, montrée** (17/10) : « la même tâche chez plusieurs personnes » — pour chaque tâche commune de la démo, la comparaison des façons de faire et des outils, et ce que la skill doit encore absorber : [`labs/09125o/deuxieme-entree/`](labs/09125o/deuxieme-entree/) (page régénérable en une commande).
 - **La skill générée, déjà là** (17/10) : le fichier exact que produit le bouton « Créer la skill », testé à la main sur une commande piégée (il s'arrête et fait préparer — il n'agit pas seul) : [`docs/skill-exemple/`](docs/skill-exemple/).
 - **La skill qui agit pour de vrai** (17/10) : la skill générée donnée à Claude dans un **faux Gmail + faux Sage**, sur 4 commandes fictives (propre, 2ᵉ client, référence inconnue, écart de prix). « Agit et notifie » → **4/4**, client prévenu, arrêt net sur les deux exceptions ; « prépare » → rien n'est envoyé ni validé, mais la réponse au client reste dans le compte rendu au lieu d'un brouillon (piste signalée dans `pack.py`). Banc d'essai et rapports : [`labs/natsuwy/tester-en-vrai/`](labs/natsuwy/tester-en-vrai/).
